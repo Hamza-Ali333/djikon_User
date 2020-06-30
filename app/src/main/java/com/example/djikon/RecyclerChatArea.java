@@ -70,8 +70,7 @@ public class RecyclerChatArea extends RecyclerView.Adapter<RecyclerChatArea.View
            @Override
            public void onClick(View view) {
 
-               Intent intent = new Intent(view.getContext(), DjPrpfileActivity.class);
-               view.getContext().startActivity(intent);
+               Toast.makeText(view.getContext(), "This Feature Will Available Soon", Toast.LENGTH_SHORT).show();
            }
        });
 

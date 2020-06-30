@@ -6,16 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/colorBlack">
 
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/img_UserImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintStart_toStartOf="@+id/guideline8"
-        app:layout_constraintTop_toTopOf="@+id/guideline7"
-        app:srcCompat="@drawable/ic_doctor" />
+
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
@@ -37,6 +29,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="16dp" />
+
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/img_UserImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="32dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toTopOf="@+id/guideline7"
+        app:srcCompat="@drawable/ic_doctor" />
+
 
     <EditText
         android:id="@+id/edt_User_First_Name"
@@ -157,9 +162,10 @@
         app:layout_constraintTop_toBottomOf="@+id/edt_UserAddress" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
@@ -195,8 +201,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
             android:background="@color/Graycolor" />
+
 
         <RelativeLayout
             android:id="@+id/rlt_paymentMethod"
@@ -316,7 +322,6 @@
 
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
