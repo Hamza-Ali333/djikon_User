@@ -51,8 +51,10 @@ public class PurchaseServiceActivity extends AppCompatActivity {
         txt_OK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alertDialog.dismiss();
                Intent i = new Intent(view.getContext(),MainActivity.class);
                view.getContext().startActivity(i);
+
             }
         });
 
