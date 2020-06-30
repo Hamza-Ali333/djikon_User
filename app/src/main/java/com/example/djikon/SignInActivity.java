@@ -237,13 +237,12 @@ public class SignInActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                Intent i = new Intent( view.getContext(), ResetPasswordActivity.class);
+                Intent i = new Intent( view.getContext(), MainActivity.class);
                 startActivity(i);
             }
         });
 
     }
-
 
 
         private void createReferencer() {

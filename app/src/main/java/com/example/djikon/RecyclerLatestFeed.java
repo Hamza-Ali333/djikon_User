@@ -1,5 +1,6 @@
 package com.example.djikon;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,31 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
         holder.txt_Description.setText(currentItem.getTxt_Description());
         holder.txt_LikesNo.setText(currentItem.getTxt_LikesNo());
         holder.txt_ChatNo.setText(currentItem.getTxt_ChatNo());
+
+        holder.img_uploaderProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
+                v.getContext().startActivity(i);
+            }
+        });
+
+        holder.img_feedImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
+                v.getContext().startActivity(i);
+            }
+        });
+
+        holder.img_feedImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
+                v.getContext().startActivity(i);
+            }
+        });
+
 }
 
     @Override
