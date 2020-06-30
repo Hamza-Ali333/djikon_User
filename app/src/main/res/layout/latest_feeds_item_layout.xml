@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start"
+    android:background="#fff"
+    android:layout_marginTop="4dp"
+    app:cardCornerRadius="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="8dp"
+        >
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/img_uploaderImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/woman"
+            />
+
+        <TextView
+            android:id="@+id/txt_uploaderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:text="Fransic Briggs"
+            android:textSize="16sp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toEndOf="@+id/img_uploaderImage"
+            app:layout_constraintTop_toTopOf="@+id/img_uploaderImage"
+            tools:text="Fransic Briggs" />
+
+        <TextView
+            android:id="@+id/txt_uploadTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="31m ago"
+            app:layout_constraintStart_toStartOf="@+id/txt_uploaderName"
+            app:layout_constraintTop_toBottomOf="@+id/txt_uploaderName" />
+
+        <ImageView
+            android:id="@+id/img_feedImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_uploaderImage"
+            app:srcCompat="@drawable/rectangle" />
+
+        <TextView
+            android:id="@+id/txt_imgDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="8dp"
+            android:text="You love having a second home but the mortgage is putting a crater in your weller"
+            android:textColor="#000"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/img_uploaderImage"
+            app:layout_constraintTop_toBottomOf="@+id/img_feedImage" />
+
+        <TextView
+            android:id="@+id/txt_ReadMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Read more..."
+            android:textColor="#ACB1C0"
+            app:layout_constraintStart_toStartOf="@+id/txt_imgDescription"
+            app:layout_constraintTop_toBottomOf="@+id/txt_imgDescription"
+            tools:text="Read more..." />
+
+        <TextView
+            android:id="@+id/txt_chatNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="348"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_chat"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="348" />
+
+        <ImageView
+            android:id="@+id/img_chat"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/txt_chatNo"
+            app:layout_constraintTop_toBottomOf="@+id/txt_ReadMore"
+            app:srcCompat="@drawable/ic_chat"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:id="@+id/txt_LikesNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:text="1122"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_chat"
+            app:layout_constraintEnd_toStartOf="@+id/img_chat"
+            tools:text="1122" />
+
+        <ImageView
+            android:id="@+id/img_likes"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_LikesNo"
+            app:layout_constraintEnd_toStartOf="@+id/txt_LikesNo"
+            app:layout_constraintTop_toBottomOf="@+id/txt_ReadMore"
+            app:srcCompat="@drawable/ic_heart_fill"
+            tools:ignore="VectorDrawableCompat" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_uploaderName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.96"
+            app:layout_constraintStart_toEndOf="@+id/txt_uploaderName"
+            app:layout_constraintTop_toTopOf="@+id/txt_uploaderName"
+            app:srcCompat="@drawable/ic_more_horiz" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

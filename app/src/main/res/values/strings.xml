@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">DJ IKON</string>
+    <string name="latestFeed">Latest Feed</string>
+    <string name="liveToArtist">Live To Artist</string>
+    <string name="ChatArea">Chat Area</string>
+    <string name="SocialMediaSharing">Social Media Sharing</string>
+    <string name="RequestASong">Request A Song</string>
+    <string name="CurrentLiveArtist">Current Live Artist</string>
+    <string name="SubscribeArtist">Subscribe Artist</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>

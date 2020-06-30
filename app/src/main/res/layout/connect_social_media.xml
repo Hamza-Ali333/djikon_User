@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="32dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/connectWithTwitter"
+            android:layout_width="match_parent"
+            android:background="@drawable/btn_twitter_shape"
+            android:layout_height="50dp">
+
+            <ImageView
+                android:id="@+id/ic_twitter"
+                android:layout_width="25dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                app:srcCompat="@drawable/ic_twitter"/>
+
+            <TextView
+                android:id="@+id/txt_twitter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect With Twitter"
+                android:textSize="18sp"
+                android:layout_toRightOf="@+id/ic_twitter"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:textColor="#fff"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/connectWithFB"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:background="@drawable/btn_fb_shape"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/ic_fb"
+                android:layout_width="25dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="40dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/f"/>
+
+            <TextView
+                android:id="@+id/txt_fb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect With Facebook "
+                android:layout_toRightOf="@+id/ic_fb"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:layout_marginLeft="6dp"
+                android:textColor="#fff"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/connectWithInstagram"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:background="@drawable/btn_insta_shape"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/ic_insta"
+                android:layout_width="25dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                app:srcCompat="@drawable/ic_instagram"/>
+
+            <TextView
+                android:id="@+id/txt_insta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect With Instagram"
+                android:layout_toRightOf="@+id/ic_insta"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:layout_marginLeft="6dp"
+                android:textColor="#fff"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/connectWithPinterst"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:background="@drawable/btn_printer_shape"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/ic_printer"
+                android:layout_width="25dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                app:srcCompat="@drawable/ic_pinterest"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect With Printrest"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:layout_toRightOf="@+id/ic_printer"
+                android:layout_marginLeft="6dp"
+                android:textColor="#fff"/>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

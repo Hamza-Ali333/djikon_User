@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".SignInActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="76dp" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline6"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/activity_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Sign In"
+        android:textColor="@color/colorBlue"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        tools:text="Sign In" />
+
+    <EditText
+        android:id="@+id/edt_Email"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="24dp"
+        android:background="#FFFFFF"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textPersonName"
+        android:paddingLeft="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/activity_name" />
+
+    <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
+        android:id="@+id/edt_Password"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/edt_Email" />
+
+    <Button
+        android:id="@+id/btn_SignIn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorBlue"
+        android:text="Sign In"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/edt_Password"
+        tools:text="Sign In" />
+
+    <Button
+        android:id="@+id/btn_fb_sign_up"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorBlue"
+        android:drawableLeft="@drawable/f"
+        android:gravity="center"
+        android:paddingLeft="28dp"
+        android:text="Sign Up With Facebook"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/btn_SignIn" />
+
+    <Button
+        android:id="@+id/btn_google_sign_up"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorgoogle"
+        android:drawableLeft="@drawable/g"
+        android:paddingLeft="28dp"
+        android:text="Sign Up With FaceBook"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/btn_fb_sign_up" />
+
+    <TextView
+        android:id="@+id/txt_finger_print"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:onClick="signInWithFigerPrint"
+        android:text="Sign In With Finger Print"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/img_finger_print"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toEndOf="@+id/img_finger_print" />
+
+    <TextView
+        android:id="@+id/txt_face_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:onClick="signInWithFaceId"
+        android:text="Sign In With Face Id"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/img_face_id"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toEndOf="@+id/img_face_id"
+        tools:text="Sign In With Face Id" />
+
+    <ImageView
+        android:id="@+id/img_finger_print"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:onClick="signInWithFigerPrint"
+        app:layout_constraintBottom_toTopOf="@+id/img_face_id"
+        app:layout_constraintEnd_toStartOf="@+id/txt_finger_print"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:srcCompat="@drawable/ic_white_fingerprint" />
+
+    <ImageView
+        android:id="@+id/img_face_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:onClick="signInWithFaceId"
+        app:layout_constraintBottom_toTopOf="@+id/txt_signInWithPIN"
+        app:layout_constraintEnd_toStartOf="@+id/txt_face_id"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:srcCompat="@drawable/face_id" />
+
+    <TextView
+        android:id="@+id/txt_Forgot_Password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Forgot your password?"
+        android:textColor="@color/colorBlue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        tools:text="Forgot your password?" />
+
+    <TextView
+        android:id="@+id/txt_create_new_acount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Don't have an acount?"
+        android:textColor="@color/colorBlue"
+        app:layout_constraintEnd_toStartOf="@+id/txt_Create_new_account"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/btn_google_sign_up"
+        tools:text="don't have an acount?" />
+
+    <TextView
+        android:id="@+id/txt_Create_new_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="Create"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_create_new_acount"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txt_create_new_acount"
+        tools:text="Create" />
+
+    <TextView
+        android:id="@+id/txt_signInWithPIN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Sign In With PIN Code"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/txt_Forgot_Password"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
