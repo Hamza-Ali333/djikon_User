@@ -10,30 +10,63 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
+            android:resizeableActivity="false"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity android:name=".UserProfileActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             />
         <activity android:name=".PurchaseServiceActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             />
-        <activity android:name=".BookArtistActivity" />
-        <activity android:name=".ServiceDetailActivity" />
-        <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".DjPrpfileActivity" />
-        <activity android:name=".BookingHistoryActivity" />
-        <activity android:name=".ProfileSettingActivity" />
-        <activity android:name=".PaymentMethodActivity" />
+        <activity android:name=".BookArtistActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            />
+        <activity android:name=".ServiceDetailActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            />
+        <activity android:name=".ResetPasswordActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            />
+        <activity android:name=".DjPrpfileActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            />
+        <activity android:name=".BookingHistoryActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            />
+        <activity android:name=".ProfileSettingActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            />
+        <activity android:name=".PaymentMethodActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
+            />
         <activity android:name=".BookingPaymentMethodActivity"
-
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
             />
         <activity android:name=".SignInActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
             />
         <activity android:name=".RegistrationActivity"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"
             />
         <activity android:name=".SplashScreenActivity"
-            >
+            android:resizeableActivity="false"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
