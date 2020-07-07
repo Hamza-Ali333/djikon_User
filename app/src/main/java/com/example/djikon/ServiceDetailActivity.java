@@ -55,11 +55,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
 
-
-
-
-
-
         btn_Proceed_To_Pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

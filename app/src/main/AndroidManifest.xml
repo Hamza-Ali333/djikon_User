@@ -9,62 +9,64 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity android:name=".BlogDetailActivity"></activity>
+        <activity
+            android:name=".MainActivity"
             android:resizeableActivity="false"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-        <activity android:name=".UserProfileActivity"
-            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UserProfileActivity"
             android:resizeableActivity="false"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            />
-        <activity android:name=".PurchaseServiceActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".PurchaseServiceActivity"
             android:resizeableActivity="false"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            />
-        <activity android:name=".BookArtistActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".BookArtistActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".ServiceDetailActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ServiceDetailActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".ResetPasswordActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ResetPasswordActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".DjPrpfileActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DjPrpfileActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".BookingHistoryActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BookingHistoryActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".ProfileSettingActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileSettingActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".PaymentMethodActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PaymentMethodActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".BookingPaymentMethodActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BookingPaymentMethodActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".SignInActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignInActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".RegistrationActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegistrationActivity"
             android:resizeableActivity="false"
-            />
-        <activity android:name=".SplashScreenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SplashScreenActivity"
             android:resizeableActivity="false"
             android:screenOrientation="portrait">
             <intent-filter>

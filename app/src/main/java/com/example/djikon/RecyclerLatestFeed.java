@@ -88,7 +88,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
         holder.img_feedImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
+                Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
                 v.getContext().startActivity(i);
             }
         });

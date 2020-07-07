@@ -140,7 +140,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new LiveToArtistFragment()).commit();
                 break;
 
-
+            case R.id.nav_Logout:
+                startActivity(new Intent(MainActivity.this,SignInActivity.class));
+                break;
 
         }
         drawer.closeDrawer(GravityCompat.START);
