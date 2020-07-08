@@ -52,9 +52,11 @@ public class SliderAdapterExample extends
 
         SliderItem currentItem = mSliderItems.get(position);
 
-        viewHolder.textViewDescription.setText(currentItem.getDescription());
-        viewHolder.textViewDescription.setTextSize(16);
-        viewHolder.textViewDescription.setTextColor(Color.WHITE);
+               //This is the code for showing title on the image
+       // viewHolder.textViewDescription.setText(currentItem.getDescription());
+       // viewHolder.textViewDescription.setTextSize(16);
+       // viewHolder.textViewDescription.setTextColor(Color.WHITE);
+
 //        Glide.with(viewHolder.itemView)
 //                .load(currentItem.getImage())
 //                .fitCenter()

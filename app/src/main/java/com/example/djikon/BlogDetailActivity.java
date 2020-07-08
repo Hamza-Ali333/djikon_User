@@ -3,7 +3,14 @@ package com.example.djikon;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -12,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlogDetailActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +36,7 @@ public class BlogDetailActivity extends AppCompatActivity {
         sliderItems.add(new SliderItem(R.drawable.rectangle,"You Have to Join this"));
 
 
+
         SliderView sliderView = findViewById(R.id.imageSlider);
 
         SliderAdapterExample adapter = new SliderAdapterExample(sliderItems,this);
@@ -42,6 +51,15 @@ public class BlogDetailActivity extends AppCompatActivity {
         sliderView.setScrollTimeInSec(3); //set scroll delay in seconds :
         sliderView.startAutoCycle();
 
+
+        //video will play through this
+        VideoView videoView = findViewById(R.id.videoView);
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video;
+        Uri uri = Uri.parse(videoPath);
+        videoView.setVideoURI(uri);
+        MediaController mediaController = new MediaController(this);
+        videoView.setMediaController(mediaController);
+        mediaController.setAnchorView(videoView);
 
     }
 }
