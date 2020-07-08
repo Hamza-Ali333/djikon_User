@@ -1,10 +1,10 @@
 package com.example.djikon;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class LatestFeedFragment extends Fragment {
@@ -30,18 +37,44 @@ public class LatestFeedFragment extends Fragment {
 
         mRecyclerView = v.findViewById(R.id.recyclerViewLatestFeed);
 
-        ArrayList<LatestFeedItem> latestFeedItemArrayList = new ArrayList<>();
-        latestFeedItemArrayList.add(new LatestFeedItem(R.drawable.ic_doctor,R.drawable.rectangle,"Hamza","2m ago","you will enjoye the event","1","23"));
-        latestFeedItemArrayList.add(new LatestFeedItem(R.drawable.woman,R.drawable.rectangle2,"Ahmad","6m ago","you will enjoye the event","5","3"));
-        latestFeedItemArrayList.add(new LatestFeedItem(R.drawable.ic_doctor,R.drawable.rectangle,"Bilawal","6m ago","you will enjoye the event","8","23"));
-        latestFeedItemArrayList.add(new LatestFeedItem(R.drawable.woman,R.drawable.rectangle2,"Usama","7m ago","you will enjoye the event","90","34"));
 
-            mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-            mLayoutManager = new LinearLayoutManager(this.getContext());
-            mAdapter = new RecyclerLatestFeed(latestFeedItemArrayList);
 
-            mRecyclerView.setLayoutManager(mLayoutManager);
-            mRecyclerView.setAdapter(mAdapter);
+
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        LatestFeedJsonApi feedJsonApi = retrofit.create(LatestFeedJsonApi.class);
+
+
+        Call<List<Blog_Model>> call = feedJsonApi.getBlogs();
+
+        call.enqueue(new Callback<List<Blog_Model>>() {
+            @Override
+            public void onResponse(Call<List<Blog_Model>> call, Response<List<Blog_Model>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getContext(), response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<Blog_Model> blogs = response.body();
+                mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+                mLayoutManager = new LinearLayoutManager(getContext());
+                mAdapter = new RecyclerLatestFeed(blogs,getContext());
+
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+            @Override
+            public void onFailure(Call<List<Blog_Model>> call, Throwable t) {
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
 
         return v;
     }
