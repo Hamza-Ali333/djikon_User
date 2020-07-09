@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smarteist.autoimageslider.SliderViewAdapter;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +64,29 @@ public class SliderAdapterExample extends
 //                .fitCenter()
 //                .into(viewHolder.imageViewBackground);
        // viewHolder.itemView.setBackgroundResource(currentItem.getImage());
-        viewHolder.imageViewBackground.setImageResource(currentItem.getImage());
+
+
+            Picasso.get().load(currentItem.getImage())
+                    .placeholder(R.drawable.rectangle2)
+                    .into(viewHolder.imageViewBackground, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                            //holder.progressBar.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(context, "Something Happend Wrong Uploader Profile", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
+
+
+
+
+
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

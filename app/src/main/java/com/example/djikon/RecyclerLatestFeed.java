@@ -118,7 +118,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                     public void onClick(View v) {
                        // Toast.makeText(context, currentItem.getSingle_blog_link(), Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
-                        i.putExtra("url",currentItem.getSingle_blog_link());
+                        i.putExtra("url",currentItem.getId());
                         v.getContext().startActivity(i);
                     }
                 });

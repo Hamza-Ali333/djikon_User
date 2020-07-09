@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +36,9 @@ public class LatestFeedFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private ProgressBar progressBar;
+
     private SwipeRefreshLayout pullToRefresh;
+    private RelativeLayout rlt_progressBar;
 
 
     @Nullable
@@ -56,20 +58,13 @@ public class LatestFeedFragment extends Fragment {
         });
 
 
-
-
-
-
-
-
-
         return v;
     }
 
     private void createRefrences (View v) {
         mRecyclerView = v.findViewById(R.id.recyclerViewLatestFeed);
-        progressBar = v.findViewById(R.id.progressBar);
         pullToRefresh =v.findViewById(R.id.pullToRefresh);
+        rlt_progressBar = v.findViewById(R.id.progressbar);
     }
 
     private void downloadBlogs() {
@@ -78,7 +73,6 @@ public class LatestFeedFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         LatestFeedJsonApi feedJsonApi = retrofit.create(LatestFeedJsonApi.class);
-
 
         Call<List<Blog_Model>> call = feedJsonApi.getBlogs();
 
@@ -90,18 +84,22 @@ public class LatestFeedFragment extends Fragment {
                     Toast.makeText(getContext(), response.code(), Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 List<Blog_Model> blogs = response.body();
                 mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
                 mLayoutManager = new LinearLayoutManager(getContext());
                 mAdapter = new RecyclerLatestFeed(blogs,getContext());
-                progressBar.setVisibility(View.GONE);
+
+                rlt_progressBar.setVisibility(View.GONE);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
+
             }
+
             @Override
             public void onFailure(Call<List<Blog_Model>> call, Throwable t) {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
+                rlt_progressBar.setVisibility(View.INVISIBLE);
             }
         });
     }
