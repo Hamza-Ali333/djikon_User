@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,29 +105,25 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 holder.txt_LikesNo.setText(currentItem.getLikes());
                 // holder.txt_ChatNo.setText(currentItem.getTxt_ChatNo());
 
-//                holder.img_uploaderProfile.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
-//                        v.getContext().startActivity(i);
-//                    }
-//                });
-//
-//                holder.img_feedImage.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
-//                        v.getContext().startActivity(i);
-//                    }
-//                });
-//
-//                holder.img_feedImage.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
-//                        v.getContext().startActivity(i);
-//                    }
-//                });
+                holder.img_uploaderProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
+                        v.getContext().startActivity(i);
+                    }
+                });
+
+                holder.img_feedImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       // Toast.makeText(context, currentItem.getSingle_blog_link(), Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
+                        i.putExtra("url",currentItem.getSingle_blog_link());
+                        v.getContext().startActivity(i);
+                    }
+                });
+
+
 
             }
 

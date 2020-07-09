@@ -9,5 +9,9 @@ public interface LatestFeedJsonApi {
 
     @GET ("blog")
     Call<List<Blog_Model>> getBlogs();
+
+    @GET("blog/1")
+    Call<SingleBlog_Model> getSingleBlog();
 }
+
 

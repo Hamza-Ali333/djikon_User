@@ -1,9 +1,15 @@
 package com.example.djikon;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +35,44 @@ public class LatestFeedFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private ProgressBar progressBar;
+    private SwipeRefreshLayout pullToRefresh;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_latestfeed,container,false);
+        createRefrences(v);
 
+        downloadBlogs();
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                downloadBlogs();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
+
+
+
+
+
+
+
+
+        return v;
+    }
+
+    private void createRefrences (View v) {
         mRecyclerView = v.findViewById(R.id.recyclerViewLatestFeed);
+        progressBar = v.findViewById(R.id.progressBar);
+        pullToRefresh =v.findViewById(R.id.pullToRefresh);
+    }
 
-
-
-
-
-
+    private void downloadBlogs() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -51,6 +82,7 @@ public class LatestFeedFragment extends Fragment {
 
         Call<List<Blog_Model>> call = feedJsonApi.getBlogs();
 
+
         call.enqueue(new Callback<List<Blog_Model>>() {
             @Override
             public void onResponse(Call<List<Blog_Model>> call, Response<List<Blog_Model>> response) {
@@ -58,24 +90,20 @@ public class LatestFeedFragment extends Fragment {
                     Toast.makeText(getContext(), response.code(), Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 List<Blog_Model> blogs = response.body();
                 mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
                 mLayoutManager = new LinearLayoutManager(getContext());
                 mAdapter = new RecyclerLatestFeed(blogs,getContext());
-
+                progressBar.setVisibility(View.GONE);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
             }
             @Override
             public void onFailure(Call<List<Blog_Model>> call, Throwable t) {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             }
         });
-
-
-
-
-        return v;
     }
+
 }

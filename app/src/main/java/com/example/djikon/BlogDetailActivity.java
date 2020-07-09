@@ -1,31 +1,49 @@
 package com.example.djikon;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.MediaController;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.gson.JsonObject;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class BlogDetailActivity extends AppCompatActivity {
 
 
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blog_detail);
+        textView = findViewById(R.id.textView);
 
+        Intent intent = getIntent();
+        String Url = intent.getStringExtra("url");
+        Url += "/";
+        downloadBlogs("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/");
         List<SliderItem> sliderItems = new ArrayList<>();
 
         sliderItems.add(new SliderItem(R.drawable.rectangle2,"Image Yo Yo"));
@@ -62,4 +80,48 @@ public class BlogDetailActivity extends AppCompatActivity {
         mediaController.setAnchorView(videoView);
 
     }
+
+
+
+
+    private void downloadBlogs(String SERVER_Url) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(SERVER_Url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        LatestFeedJsonApi feedJsonApi = retrofit.create(LatestFeedJsonApi.class);
+
+
+        Call<SingleBlog_Model> call = feedJsonApi.getSingleBlog();
+        call.enqueue(new Callback<SingleBlog_Model>() {
+            @Override
+            public void onResponse(Call<SingleBlog_Model> call, Response<SingleBlog_Model> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(BlogDetailActivity.this, response.code(), Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+                JsonObject post = new JsonObject().get(response.body().toString()).getAsJsonObject();
+                String Name =response.body().getArtist_name();
+                List<String> Gallery = response.body().getGallery();
+                String CreateTime = response.body().getCreated_at();
+                String Title = response.body().getTitle();
+                String Discription = response.body().getDescription();
+
+                textView.setText(post+ "\n"+Gallery+ "\n"+ CreateTime+ "\n"+ Title+ "\n"+ Discription +"\n");
+
+
+
+
+            }
+            @Override
+            public void onFailure(Call<SingleBlog_Model> call, Throwable t) {
+                Toast.makeText(BlogDetailActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+               // progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+
+
 }

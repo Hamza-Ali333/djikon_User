@@ -3,7 +3,8 @@ package com.example.djikon;
 public class Blog_Model {
 
     private String title;
-    private String description,
+    private String  id,
+            description,
             photo,
             likes,
             created_at,
@@ -12,7 +13,8 @@ public class Blog_Model {
             like_link,
             single_blog_link;
 
-    public Blog_Model(String title, String description, String photo, String likes, String created_at, String artist_image, String artist_profile_link, String like_link, String single_blog_link) {
+    public Blog_Model(String id, String title, String description, String photo, String likes, String created_at, String artist_image, String artist_profile_link, String like_link, String single_blog_link) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.photo = photo;
@@ -22,6 +24,10 @@ public class Blog_Model {
         this.artist_profile_link = artist_profile_link;
         this.like_link = like_link;
         this.single_blog_link = single_blog_link;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getTitle() {
