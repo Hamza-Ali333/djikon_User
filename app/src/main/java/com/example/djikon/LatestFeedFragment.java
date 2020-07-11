@@ -1,16 +1,10 @@
 package com.example.djikon;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -72,7 +65,7 @@ public class LatestFeedFragment extends Fragment {
                 .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        LatestFeedJsonApi feedJsonApi = retrofit.create(LatestFeedJsonApi.class);
+        JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
         Call<List<Blog_Model>> call = feedJsonApi.getBlogs();
 

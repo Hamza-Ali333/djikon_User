@@ -3,14 +3,22 @@ package com.example.djikon;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignInActivity  extends AppCompatActivity {
 
@@ -48,10 +56,42 @@ public class SignInActivity  extends AppCompatActivity {
         btn_SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(SignInActivity.this,
-                        MainActivity.class);
-                startActivity(i);
-                finish();
+
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
+
+
+
+                Call<LoginModel> call = feedJsonApi.Login("hamzaregardless333@gmail.com","12345678");
+                call.enqueue(new Callback<LoginModel>() {
+                    @Override
+                    public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                        if(!response.isSuccessful()){
+                            Log.i("TAG", "fail: "+response.code());
+                        }else {
+                            Log.i("TAG", "succ: "+response.code());
+                            LoginModel loginModel = response.body();
+                            Toast.makeText(SignInActivity.this, loginModel.getEmail(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginModel> call, Throwable t) {
+                        Log.i("TAG", "onFailure: "+t.getMessage());
+                    }
+                });
+
+
+
+//                Intent i = new Intent(SignInActivity.this,
+//                        MainActivity.class);
+//                startActivity(i);
+//                finish();
 
             }
         });

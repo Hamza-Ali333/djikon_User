@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -22,7 +21,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Url;
 
 public class BlogDetailActivity extends AppCompatActivity {
 
@@ -35,6 +33,7 @@ public class BlogDetailActivity extends AppCompatActivity {
    String BASEURL_IMAGES="http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
    String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
+   SingleBlog_Model singleBlog_model;
     List<SliderItem> sliderItems = new ArrayList<>();
 
     VideoView videoView;
@@ -82,7 +81,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                 .baseUrl(SERVER_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        LatestFeedJsonApi feedJsonApi = retrofit.create(LatestFeedJsonApi.class);
+        JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
 
         Call<SingleBlog_Model> call = feedJsonApi.getSingleBlog(BlogId);
@@ -97,6 +96,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                     return;
                 }else {
 
+
                     String  Name = response.body().getArtist_name();
                     String  Gallery = response.body().getGallery();
                     String CreateTime = response.body().getCreated_at();
@@ -105,6 +105,10 @@ public class BlogDetailActivity extends AppCompatActivity {
                     String Likes = response.body().getLikes_count();
                     String Comments = response.body().getComments_count();
                     String Video = response.body().getVideo();
+
+
+                    //WillPass The Data Through this This Work Good
+                    singleBlog_model = new SingleBlog_Model(Title,CreateTime,Name,Gallery,Likes,Comments,Video,Description,Description);
 
                     setDataIntoFields(Name,Title,Description,Likes,Comments,CreateTime);
 
