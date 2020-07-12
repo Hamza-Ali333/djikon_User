@@ -1,5 +1,7 @@
 package com.example.djikon;
 
+import android.media.session.MediaSession;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -20,7 +22,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("register")
-    Call <RegisterModel> registerUser(
+    Call <GetToken> registerUser(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
             @Field("email") String email,
@@ -29,6 +31,8 @@ public interface JSONApiHolder {
             @Field("refferal") String refferal,
             @Field("role") int role
             );
+
+
 
     @FormUrlEncoded
     @POST("login")

@@ -10,12 +10,12 @@
     tools:ignore="MissingDefaultResource">
 
     <ImageView
-        android:layout_gravity="center_horizontal"
         android:id="@+id/imageView7"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/blue_face" />
 
     <TextView

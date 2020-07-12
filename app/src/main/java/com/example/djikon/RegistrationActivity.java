@@ -8,16 +8,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -25,7 +26,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button btn_SignUp;
 
     private  RegisterModel registerModel;
-    JSONApiHolder jsonApiHolder;
+
     String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +86,22 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     private void sendDataToServer() {
+
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .addInterceptor(interceptor)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                 .baseUrl(BASEURL_DATA)
+                .baseUrl(BASEURL_DATA)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
+
 
 //        RegisterModel model1 = new RegisterModel("Hamza","Ali",
 //                "Hamzaregardless333@gmail.com",
@@ -98,32 +110,29 @@ public class RegistrationActivity extends AppCompatActivity {
 //                "sdfsd",1);
 
 
-        Call<RegisterModel> call = feedJsonApi.registerUser("Hamza","Ali Sawal",
-                "malikafzal420420@gmail.com",
+        Call<GetToken> call = feedJsonApi.registerUser("Hamza","Ali Sawal",
+                "malikafzal555@gmail.com",
                 "12345678",
                 "12345678",
                 "46579899867",
                 2);
 
-        call.enqueue(new Callback<RegisterModel>() {
+        call.enqueue(new Callback<GetToken>() {
             @Override
-            public void onResponse(Call<RegisterModel> call, Response<RegisterModel> response) {
-                if (!response.isSuccessful()) {
-                   // textViewResult.setText("Code: " + response.code());
-                   // Log.i("TAG", "onFailed: "+response.code());
-                    Log.i("TAG", "onRes: "+response.body().toString()+"  Code:  "+ response.code());
-                    return;
-                }
-                else {
-                   // Log.i("TAG", "onSuccess: "+response.code());
-                    Log.i("TAG", "onRes: "+response.body().toString() +"  Code:  "+ response.code());
-                }
+            public void onResponse(Call<GetToken> call, Response<GetToken> response) {
+                if(response.isSuccessful()){
+                    Log.i("TAG", "onSuc"+"  Success   "+response.code()+"\n"+
+                            response.body().getSuccess().getToken()+"\nName"+response.body().getSuccess().getName());
+                }else{
+                    //List<String> get = (List<String>) response.body().getErrors();
 
+                    Log.i("TAG", "onfail"+"  failed   "+response.code());
+                }
             }
 
             @Override
-            public void onFailure(Call<RegisterModel>call, Throwable t) {
-               // textViewResult.setText(t.getMessage());
+            public void onFailure(Call<GetToken> call, Throwable t) {
+                Log.i("TAG", "onFailure: "+t.getMessage());
             }
         });
 
@@ -148,7 +157,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-            private void createRefrences(){
+    private void createRefrences(){
         edt_Name = findViewById(R.id.edt_first_name);
         edt_LastName = findViewById(R.id.edt_last_name);
         edt_Email = findViewById(R.id.edt_email);

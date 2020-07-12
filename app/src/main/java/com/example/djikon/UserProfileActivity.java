@@ -31,7 +31,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
             }
         });
-
+ 
         rlt_PaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,7 +43,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         rlt_AboutApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAboutAppDialoue();
+                openAboutAppDialogue();
             }
         });
 
@@ -66,7 +66,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
 
-    private void openAboutAppDialoue() {
+    private void openAboutAppDialogue() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
