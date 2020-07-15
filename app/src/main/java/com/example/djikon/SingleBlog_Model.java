@@ -1,5 +1,10 @@
 package com.example.djikon;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
 public class SingleBlog_Model {
 
     //Galler is also an array oh no
@@ -10,13 +15,19 @@ public class SingleBlog_Model {
     video,
     artist_name,
     artist_profile_image,
-    gallery,
-    likes_count,
+    gallery;
+
+    private int   likes_count,
             comments_count;
 
+    @SerializedName("comments")
+    @Expose
+    public List<Comment> comments = null;
 
 
-    public SingleBlog_Model(String title, String created_at, String gallery , String description, String video, String artist_name, String artist_profile_image, String likes_count,String comments_count) {
+    public SingleBlog_Model(String title, String created_at, String gallery ,
+                            String description, String video, String artist_name, String artist_profile_image,
+                            int likes_count,int comments_count , List<Comment> comments) {
         this.title = title;
         this.created_at = created_at;
         this.description = description;
@@ -26,6 +37,7 @@ public class SingleBlog_Model {
         this.artist_profile_image = artist_profile_image;
         this.likes_count = likes_count;
         this.comments_count = comments_count;
+        this.comments = comments;
     }
 
     public String getTitle() {
@@ -56,11 +68,11 @@ public class SingleBlog_Model {
         return artist_profile_image;
     }
 
-    public String getLikes_count() {
+    public int getLikes_count() {
         return likes_count;
     }
 
-    public String getComments_count() {
+    public int getComments_count() {
         return comments_count;
     }
 }

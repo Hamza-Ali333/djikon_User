@@ -1,7 +1,6 @@
 package com.example.djikon;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ public class SliderAdapterExample extends
 
     private Context context;
     private List<SliderItem> mSliderItems = new ArrayList<>();
+
 
     public SliderAdapterExample(List<SliderItem> sliderItems,Context context) {
         this.context = context;
@@ -66,22 +66,23 @@ public class SliderAdapterExample extends
        // viewHolder.itemView.setBackgroundResource(currentItem.getImage());
 
 
+        if(!currentItem.getImage().isEmpty() && !currentItem.getImage().equals("no") ){
+            viewHolder.loading.setVisibility(View.VISIBLE);
             Picasso.get().load(currentItem.getImage())
-                    .placeholder(R.drawable.rectangle2)
                     .into(viewHolder.imageViewBackground, new Callback() {
                         @Override
                         public void onSuccess() {
 
-                            //holder.progressBar.setVisibility(View.GONE);
+                            viewHolder.loading.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            Toast.makeText(context, "Something Happend Wrong Uploader Profile", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Something Happend With Slider Image", Toast.LENGTH_LONG).show();
                         }
                     });
 
-
+        }
 
 
 
@@ -105,14 +106,16 @@ public class SliderAdapterExample extends
 
         View itemView;
         ImageView imageViewBackground;
+        TextView loading;
        // ImageView imageGifContainer;
-        TextView textViewDescription;
+
 
         public SliderAdapterVH(View itemView) {
             super(itemView);
             imageViewBackground = itemView.findViewById(R.id.slide);
+            loading = itemView.findViewById(R.id.loading);
           //imageGifContainer = itemView.findViewById(R.id.slide);
-            textViewDescription = itemView.findViewById(R.id.description);
+
             this.itemView = itemView;
         }
     }

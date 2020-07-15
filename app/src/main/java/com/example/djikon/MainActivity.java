@@ -46,12 +46,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         createRefrencer();
 
         preferenceData = new PreferenceData();
-
-        //Intent i = getIntent();
-        //header = i.getStringExtra("Token");
         Token = preferenceData.getUserToken(MainActivity.this);
 
-        Toast.makeText(this, Token, Toast.LENGTH_LONG).show();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
