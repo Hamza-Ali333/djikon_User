@@ -1,15 +1,15 @@
 package com.example.djikon;
 
-import android.media.session.MediaSession;
-
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Url;
 
 public interface JSONApiHolder {
@@ -22,7 +22,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("register")
-    Call <GetToken> registerUser(
+    Call <SuccessToken> registerUser(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
             @Field("email") String email,
@@ -33,13 +33,17 @@ public interface JSONApiHolder {
             );
 
 
-
     @FormUrlEncoded
     @POST("login")
-    Call <LoginModel> Login(
+    Call <SuccessToken> Login(
             @Field("email") String email,
             @Field("password") String password
     );
+
+
+//    @Headers("Authorization: 123")
+    @POST("logout")
+    Call <SuccessToken> logout();
 }
 
 

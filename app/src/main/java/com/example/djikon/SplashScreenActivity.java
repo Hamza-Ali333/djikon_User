@@ -12,13 +12,19 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        PreferenceData preferenceData = new PreferenceData();
         getSupportActionBar().hide();
          new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(SplashScreenActivity.this,SignInActivity.class);
-                startActivity(i);
-                finish();
+                if(preferenceData.getUserLoggedInStatus(SplashScreenActivity.this)){
+                    startActivity(new Intent(SplashScreenActivity.this,MainActivity.class));
+                    finish();
+                }else {
+                    startActivity(new Intent(SplashScreenActivity.this,SignInActivity.class));
+                    finish();
+                }
+
             }
         },2000);
     }

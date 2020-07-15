@@ -54,6 +54,10 @@ dependencies {
     //loggin_intersepter
     implementation("com.squareup.okhttp3:logging-interceptor:4.7.2")
 
+//    //braintree
+//    implementation 'com.braintreepayments.api:drop-in:4.6.0'
+
+
     //picaso
     implementation 'com.squareup.picasso:picasso:2.71828'
 

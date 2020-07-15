@@ -1,5 +1,6 @@
 package com.example.djikon;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -18,12 +20,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
 
 public class RegistrationActivity extends AppCompatActivity {
 
     private EditText edt_Name, edt_LastName, edt_Email, edt_Password, edt_C_Password, edt_Refral_Code;
     private Button btn_SignUp;
+
+    private PreferenceData preferenceData;
 
     private  RegisterModel registerModel;
 
@@ -35,15 +38,14 @@ public class RegistrationActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         createRefrences();
 
+        preferenceData = new PreferenceData();
+
         btn_SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RegistrationActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
-                /*if(checkInfo()) {
-                    sendDataToServer(setDataIntoModel());
-                }*/
-
-                sendDataToServer();
+                if(isInfoRight()) {
+                    sendDataToServer();
+                }
             }//if
         });
 
@@ -63,21 +65,53 @@ public class RegistrationActivity extends AppCompatActivity {
         return  registerModel;
     }
 
-    private boolean checkInfo () {
+    private boolean isInfoRight() {
         Log.i("TAG", "checkInfo: Runing");
         boolean result = true;
-        if (edt_Name.getText().toString().isEmpty()) {
+        if (edt_Name.getText().toString().trim().isEmpty()) {
             edt_Name.setError("Please Enter Your First Name");
-        } else if (edt_LastName.getText().toString().isEmpty()) {
-            edt_LastName.setError("Please Enter Your First Name");
-        } else if (edt_Email.getText().toString().isEmpty()) {
-            edt_Email.setError("Please Enter Your First Name");
-        }else if (edt_Password.getText().toString().isEmpty()) {
-            edt_Password.setError("Please Enter Your First Name");
-        }else if (edt_C_Password.getText().toString().isEmpty()) {
-            edt_C_Password.setError("Please Enter Your First Name");
-        }else if (edt_Refral_Code.getText().toString().isEmpty()) {
-            edt_Refral_Code.setError("Please Enter Your First Name");
+            edt_Name.requestFocus();
+            result = false;
+        }
+        else if (edt_LastName.getText().toString().trim().isEmpty()) {
+            edt_LastName.setError("Please Enter Your Last Name");
+            edt_LastName.requestFocus();
+            result = false;
+        }
+        else if (edt_Email.getText().toString().trim().isEmpty()) {
+            edt_Email.setError("Please Enter Email");
+            edt_Email.requestFocus();
+            result = false;
+        }
+        else if (!isEmailValid(edt_Email.getText().toString().trim())) {
+            edt_Email.setError("Not a Valid Email Address");
+            edt_Email.requestFocus();
+            result = false;
+        }
+        else if (edt_Password.getText().toString().trim().isEmpty()) {
+            edt_Password.setError("Please Enter Your Password");
+            edt_Password.requestFocus();
+            result = false;
+        }
+        else if (edt_Password.getText().toString().trim().length()!= 8) {
+            edt_Password.setError("Password Can't be less then 8 Digits!");
+            edt_Password.requestFocus();
+            result = false;
+        }
+        else if (edt_C_Password.getText().toString().trim().isEmpty()) {
+            edt_C_Password.setError("Please Confirm Your Password");
+            edt_C_Password.requestFocus();
+            result = false;
+        }
+        else if (!edt_Password.getText().toString().trim().equals(edt_C_Password.getText().toString().trim())) {
+            edt_Password.setError("Password Not Matched");
+            edt_Password.requestFocus();
+            result = false;
+        }
+        else if (edt_Refral_Code.getText().toString().trim().isEmpty()) {
+            edt_Refral_Code.setError("Please Enter Referal Code");
+            edt_Refral_Code.requestFocus();
+            result = false;
         }
 
         return result;
@@ -86,8 +120,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     private void sendDataToServer() {
-
-
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -102,58 +134,53 @@ public class RegistrationActivity extends AppCompatActivity {
                 .build();
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-
-//        RegisterModel model1 = new RegisterModel("Hamza","Ali",
-//                "Hamzaregardless333@gmail.com",
-//                "12345678",
-//                "12345678",
-//                "sdfsd",1);
-
-
-        Call<GetToken> call = feedJsonApi.registerUser("Hamza","Ali Sawal",
-                "malikafzal555@gmail.com",
-                "12345678",
-                "12345678",
-                "46579899867",
+        Call<SuccessToken> call = feedJsonApi.registerUser(
+                edt_Name.getText().toString().trim(),
+                edt_LastName.getText().toString().trim(),
+                edt_Email.getText().toString().trim(),
+                edt_Password.getText().toString().trim(),
+                edt_C_Password.getText().toString().trim(),
+                edt_Refral_Code.getText().toString().trim(),
                 2);
 
-        call.enqueue(new Callback<GetToken>() {
+        call.enqueue(new Callback<SuccessToken>() {
             @Override
-            public void onResponse(Call<GetToken> call, Response<GetToken> response) {
+            public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
                 if(response.isSuccessful()){
-                    Log.i("TAG", "onSuc"+"  Success   "+response.code()+"\n"+
-                            response.body().getSuccess().getToken()+"\nName"+response.body().getSuccess().getName());
-                }else{
-                    //List<String> get = (List<String>) response.body().getErrors();
 
-                    Log.i("TAG", "onfail"+"  failed   "+response.code());
+                    preferenceData.setUserToken(RegistrationActivity.this,response.body().getSuccess());
+                    preferenceData.setUserLoggedInStatus(RegistrationActivity.this,true);
+                    startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
+
+                }else if(response.code() == 409 ){
+                    Log.i("TAG", "onResponse"+" Email Already Exit \n"+response.code());
+                    edt_Email.requestFocus();
+                    edt_Email.setError("Email Is Already Exit");
+                }
+                else if(response.code() == 400 ){
+                    //reffral
+                    edt_Refral_Code.requestFocus();
+                    edt_Refral_Code.setError("Refferal not found");
+                }else {
+                    Toast.makeText(RegistrationActivity.this, "Something Happend Wrong", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<GetToken> call, Throwable t) {
+            public void onFailure(Call<SuccessToken> call, Throwable t) {
                 Log.i("TAG", "onFailure: "+t.getMessage());
             }
         });
 
-//        Call <RegisterModel> call = feedJsonApi.registerUser(model);
-//
-//        call.enqueue(new Callback<RegisterModel>() {
-//            @Override
-//            public void onResponse(Call<RegisterModel>call, Response <RegisterModel> response) {
-//                if (!response.isSuccessful()) {
-//                    Log.i("TAG", "onResp: ");
-//                    return;
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call <RegisterModel> call, Throwable t) {
-//
-//            }
-//        });
+
+    }
+
+
+    private static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
 
