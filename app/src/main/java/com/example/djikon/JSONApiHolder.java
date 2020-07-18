@@ -32,6 +32,12 @@ public interface JSONApiHolder {
             @Field("role") int role
             );
 
+    @FormUrlEncoded
+    @POST()
+    Call<SuccessToken> postComment(@Url String blogId,
+    @Field("body") String body
+    );
+
 
     @FormUrlEncoded
     @POST("login")

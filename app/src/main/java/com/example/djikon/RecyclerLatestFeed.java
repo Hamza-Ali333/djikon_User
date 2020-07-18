@@ -105,7 +105,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 holder.txt_uploadTime.setText(currentItem.getCreated_at());
                 holder.txt_Description.setText(currentItem.getDescription());
                 holder.txt_LikesNo.setText(currentItem.getLikes());
-                // holder.txt_ChatNo.setText(currentItem.getTxt_ChatNo());
+               //holder.txt_ChatNo.setText(currentItem.getTxt_ChatNo());
 
                 holder.img_uploaderProfile.setOnClickListener(new View.OnClickListener() {
                     @Override

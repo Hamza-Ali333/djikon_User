@@ -293,8 +293,6 @@ private boolean isInfoRight() {
 
 
     private void isUserExits(){
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -353,6 +351,9 @@ private boolean isInfoRight() {
         img_face_Id = findViewById(R.id.img_face_id);
         img_Finger_Print = findViewById(R.id.img_finger_print);
         }
+
+
+
 
     }
 

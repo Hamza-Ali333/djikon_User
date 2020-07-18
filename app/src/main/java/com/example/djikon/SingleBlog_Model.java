@@ -17,7 +17,9 @@ public class SingleBlog_Model {
     artist_profile_image,
     gallery;
 
-    private int   likes_count,
+
+
+    private int  id, likes_count,
             comments_count;
 
     @SerializedName("comments")
@@ -27,7 +29,7 @@ public class SingleBlog_Model {
 
     public SingleBlog_Model(String title, String created_at, String gallery ,
                             String description, String video, String artist_name, String artist_profile_image,
-                            int likes_count,int comments_count , List<Comment> comments) {
+                            int likes_count, int comments_count , int id, List<Comment> comments) {
         this.title = title;
         this.created_at = created_at;
         this.description = description;
@@ -37,7 +39,12 @@ public class SingleBlog_Model {
         this.artist_profile_image = artist_profile_image;
         this.likes_count = likes_count;
         this.comments_count = comments_count;
+        this.id = id;
         this.comments = comments;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {

@@ -4,41 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="4dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="20dp"
-    android:background="@drawable/bg_cmnt_from"
-    android:padding="10dp">
+    android:padding="4dp">
 
-    <TextView
-        android:id="@+id/txt_user_name"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Bilwal"
-        android:textColor="@color/colorBlack"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="4dp"
+        android:padding="8dp"
+        android:background="@drawable/bg_cmnt_from"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_commentor"
         app:layout_constraintTop_toTopOf="parent">
 
-    </TextView>
+        <TextView
+            android:id="@+id/txt_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bilwal"
+            android:textColor="@color/colorBlack"
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="68dp">
 
-    <TextView
-        android:id="@+id/txt_body"
+        </TextView>
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="This is my first comment on the ap so i m doing this for checking"
-        android:textSize="14sp"
+        <TextView
+            android:id="@+id/txt_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_user_name"
+            android:text="This is my first commenso i m doing this for checking"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/txt_user_name"
+            tools:layout_editor_absoluteX="68dp" />
+
+        <TextView
+            android:id="@+id/txt_created_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="11/23/2020" />
+    </RelativeLayout>
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/img_commentor"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="0dp"
+        android:scaleType="centerCrop"
+        app:civ_border_width="1dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_user_name" />
-
-    <TextView
-        android:id="@+id/txt_created_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="11/23/2020"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_user_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_doctor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
