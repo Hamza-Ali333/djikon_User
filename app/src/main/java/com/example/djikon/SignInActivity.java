@@ -42,7 +42,10 @@ public class SignInActivity  extends AppCompatActivity {
 
         createReferencer();
 
+
         preferenceData = new PreferenceData();
+
+
 
         txt_Create_new_account.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,8 +138,6 @@ public class SignInActivity  extends AppCompatActivity {
 
         }
 
-
-
     private void openVerfiyOTPDialogue() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -177,6 +178,8 @@ public class SignInActivity  extends AppCompatActivity {
         });
 
     }
+
+
 
 
 

@@ -3,26 +3,85 @@ package com.example.djikon;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DjPrpfileActivity extends AppCompatActivity {
 
-    Button btn_Book_Artist, btn_Request_A_Song;
-    RelativeLayout Service1;
+    private Button btn_Book_Artist,
+            btn_Request_A_Song,
+            btn_Message,
+            btn_Follow;
+
+    private TextView
+            txt_DJ_Name,
+            txt_address,
+            txt_Total_Follower,
+            txt_about;
+
+    private CircularImageView img_DJ_Profile;
+
+
+    private String mDJName,
+            mAddress,
+            mProfile,
+            mAbout;
+
+   private RecyclerView mServicesRecycler;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+
+    List<Services_Model> services;
+
+
+
+    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dj_profile);
-        getSupportActionBar().setTitle("Julian Hudson");
+        getSupportActionBar().setTitle("Dj Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        createRefrences();
+
+
+        Thread InitailWorkOfActivity = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                createRefrences();
+                Intent i = getIntent();
+                int blogId= i.getIntExtra("id",0);
+                getProfileDataFromServer(String.valueOf(blogId));
+                services = new ArrayList<Services_Model>();
+            }
+        });
+        InitailWorkOfActivity.start();
+
+
+
 
         btn_Book_Artist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,6 +91,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
             }
         });
 
+
         btn_Request_A_Song.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,14 +99,41 @@ public class DjPrpfileActivity extends AppCompatActivity {
             }
         });
 
-        Service1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(DjPrpfileActivity.this, ServiceDetailActivity.class);
-                startActivity(i);
-            }
-        });
 
+
+    }
+
+    private void setDataInToViews() {
+        txt_DJ_Name.setText(mDJName);
+        if(mAddress.equals(null))
+            Toast.makeText(this, "Address null", Toast.LENGTH_SHORT).show();
+        else
+        txt_address.setText(mAddress);
+
+        txt_Total_Follower.setText("0");
+//        if (!mProfile.equals("no") && mProfile.equals(null)) {
+//            Picasso.get().load(mDJProfileModel.getProfile_image())
+//                    .into(img_DJ_Profile, new com.squareup.picasso.Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//
+//                        }
+//                        @Override
+//                        public void onError(Exception e) {
+//                            Toast.makeText(DjPrpfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//        }
+    }
+
+
+    private void buildServiceRecycler (List<Services_Model> serviceList) {
+        mServicesRecycler.setHasFixedSize(true);//if the recycler view not increase run time
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mAdapter = new RecyclerServices(serviceList);
+
+        mServicesRecycler.setLayoutManager(mLayoutManager);
+        mServicesRecycler.setAdapter(mAdapter);
     }
 
 
@@ -78,12 +165,78 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     }
 
+    private void getProfileDataFromServer(String blogId) {
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
+
+        Call<DJProfileModel> call = jsonApiHolder.getDjProfile(blogId);
+
+        call.enqueue(new Callback<DJProfileModel>() {
+            @Override
+            public void onResponse(Call<DJProfileModel> call, Response<DJProfileModel> response) {
+                if(response.isSuccessful()){
+                    Log.i("TAG", "onResponse: "+response.code());
+
+                    mDJName = response.body().getFirstname()+" "+response.body().getLastname();
+                    mAddress = response.body().getAddress();
+                    mProfile = response.body().getProfile_image();
+
+                    services = response.body().getServices();
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            buildServiceRecycler(services);
+                        }
+                    }).start();
+
+
+                    setDataInToViews();
+
+                }else {
+                    Log.i("TAG", "onResponse: "+response.code());
+
+                    return;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DJProfileModel> call, Throwable t) {
+
+                Log.i("TAG", "onFailure: "+t.getMessage());
+                Toast.makeText(DjPrpfileActivity.this, "Response Failed: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+    }
 
     private void createRefrences () {
 
         btn_Book_Artist = findViewById(R.id.btn_book_artist);
         btn_Request_A_Song = findViewById(R.id.btn_RequestASong);
-        Service1 = findViewById(R.id.rlt_servic1);
+        btn_Follow = findViewById(R.id.Follow_Dj);
+        btn_Message = findViewById(R.id.message_dj);
+
+
+        txt_DJ_Name = findViewById(R.id.txt_dj_name);
+        txt_address = findViewById(R.id.txt_address);
+        txt_Total_Follower = findViewById(R.id.txt_followers);
+        txt_about = findViewById(R.id.txt_about_dj);
+
+        mServicesRecycler = findViewById(R.id.services_recycler);
+
+        img_DJ_Profile = findViewById(R.id.img_dj_profile);
     }
 
     @Override

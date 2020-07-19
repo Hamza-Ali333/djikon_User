@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.Currency;
 import java.util.List;
 
 public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.ViewHolder> {
@@ -67,6 +68,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
         if (!currentItem.getArtist_image().equals("no")) {
 
             Picasso.get().load(currentItem.getArtist_image())
+                    .fit()
                     .placeholder(R.drawable.ic_doctor)
                     .into(holder.img_uploaderProfile, new Callback() {
                         @Override
@@ -86,6 +88,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
             if (!currentItem.getPhoto().equals("no")) {
                 holder.txt_Loading.setVisibility(View.VISIBLE);
                 Picasso.get().load(currentItem.getPhoto())
+                        .fit()
                         .into(holder.img_feedImage, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -104,13 +107,14 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 holder.txt_uploaderName.setText(currentItem.getTitle());
                 holder.txt_uploadTime.setText(currentItem.getCreated_at());
                 holder.txt_Description.setText(currentItem.getDescription());
-                holder.txt_LikesNo.setText(currentItem.getLikes());
+               holder.txt_LikesNo.setText(String.valueOf(currentItem.getLikes()));
                //holder.txt_ChatNo.setText(currentItem.getTxt_ChatNo());
 
                 holder.img_uploaderProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
+                        i.putExtra("id",currentItem.getId());
                         v.getContext().startActivity(i);
                     }
                 });

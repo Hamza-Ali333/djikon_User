@@ -76,8 +76,6 @@ public class UserProfileActivity extends AppCompatActivity  {
         ImageView img_close = view.findViewById(R.id.close);
 
 
-
-
         builder.setView(view);
         builder.setCancelable(false);
 

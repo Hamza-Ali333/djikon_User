@@ -20,6 +20,9 @@ public interface JSONApiHolder {
     @GET
     Call<SingleBlog_Model> getSingleBlog(@Url String url);
 
+    @GET
+    Call<DJProfileModel> getDjProfile(@Url String url);
+
     @FormUrlEncoded
     @POST("register")
     Call <SuccessToken> registerUser(

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:id="@+id/servic1"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:paddingBottom="1dp"
+    app:cardCornerRadius="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:id="@+id/rlt_servic1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="2dp">
+
+        <ImageView
+            android:id="@+id/img_servic_image"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:paddingLeft="1dp"
+            android:paddingTop="1dp"
+            android:paddingRight="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dj_event" />
+
+        <TextView
+            android:id="@+id/txt_servic_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_servic_image"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="2dp"
+            android:text="Night Sirves"
+            android:textColor="@color/colorBlack"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txt_servic_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_servic_name"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="1dp"
+            android:text="A product description is the marketing copy that explains what a product is and why it’s worth purchasing."
+            android:textColor="@color/Graycolor"
+            android:textSize="12sp" />
+
+        <RatingBar
+            android:id="@+id/ratbar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="4dp"
+            android:layout_below="@+id/txt_servic_description"
+            android:layout_marginTop="2dp"
+            android:numStars="5"
+            android:rating="4" />
+
+        <TextView
+            android:id="@+id/pricetype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ratbar"
+            android:textColor="@color/colorBlue"
+            android:layout_marginLeft="4dp"
+            android:text="fix"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/txt_servic_charges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pricetype"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="2dp"
+            android:text="Price"
+            android:textColor="@color/Graycolor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txt_service_prize"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:textSize="12sp"
+            android:layout_below="@+id/pricetype"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/blueround_stroke"
+            android:gravity="center"
+            android:text="$5"
+            android:textColor="@color/colorBlack" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

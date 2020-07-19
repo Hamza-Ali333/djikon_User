@@ -1,6 +1,8 @@
 package com.example.djikon;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.content.ContentValues.TAG;
+
 
 public class LatestFeedFragment extends Fragment {
 
@@ -42,6 +46,8 @@ public class LatestFeedFragment extends Fragment {
         createRefrences(v);
 
         downloadBlogs();
+       //new background().execute();
+
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -61,6 +67,7 @@ public class LatestFeedFragment extends Fragment {
     }
 
     private void downloadBlogs() {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -78,14 +85,26 @@ public class LatestFeedFragment extends Fragment {
                     return;
                 }
 
-                List<Blog_Model> blogs = response.body();
-                mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-                mLayoutManager = new LinearLayoutManager(getContext());
-                mAdapter = new RecyclerLatestFeed(blogs,getContext());
 
+                Thread builderAdapter = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Blog_Model> blogs = response.body();
+                        mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+                        mLayoutManager = new LinearLayoutManager(getContext());
+                        mAdapter = new RecyclerLatestFeed(blogs,getContext());
+
+                        mRecyclerView.setItemViewCacheSize(20);
+                        mRecyclerView.setDrawingCacheEnabled(true);
+                        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
+                        mRecyclerView.setLayoutManager(mLayoutManager);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                });
                 rlt_progressBar.setVisibility(View.GONE);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                mRecyclerView.setAdapter(mAdapter);
+                builderAdapter.start();
+
 
             }
 
@@ -96,5 +115,64 @@ public class LatestFeedFragment extends Fragment {
             }
         });
     }
+
+
+    private class background extends AsyncTask<Void,Void,Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
+
+            Call<List<Blog_Model>> call = feedJsonApi.getBlogs();
+
+
+            call.enqueue(new Callback<List<Blog_Model>>() {
+                @Override
+                public void onResponse(Call<List<Blog_Model>> call, Response<List<Blog_Model>> response) {
+                    if (!response.isSuccessful()) {
+                        Log.i(TAG, "onResponse: "+response.code());
+                        return;
+                    }
+
+
+                    List<Blog_Model> blogs = response.body();
+                    mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+                    mLayoutManager = new LinearLayoutManager(getContext());
+                    mAdapter = new RecyclerLatestFeed(blogs,getContext());
+
+                    rlt_progressBar.setVisibility(View.GONE);
+                    mRecyclerView.setLayoutManager(mLayoutManager);
+                    mRecyclerView.setAdapter(mAdapter);
+
+                }
+
+                @Override
+                public void onFailure(Call<List<Blog_Model>> call, Throwable t) {
+                    Log.i(TAG, "onFailure: "+t.getMessage());
+
+                }
+            });
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            rlt_progressBar.setVisibility(View.INVISIBLE);
+        }
+
+
+    }
+
 
 }

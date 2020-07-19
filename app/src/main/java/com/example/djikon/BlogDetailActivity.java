@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,11 +63,12 @@ public class BlogDetailActivity extends AppCompatActivity {
    private static final String ADD_COMMENT_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/comment_store/";
 
    private int   blogId;
-    String  Gallery;
-    String Video;
+   private String  Gallery;
+   private String Video;
 
    private SingleBlog_Model singleBlog_model;
    private List<SliderItem> sliderItems = new ArrayList<>();
+    List <Comment> mCommentList;
    private String Token;
    private PreferenceData preferenceData;
 
@@ -95,13 +97,15 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         Log.i("TAG", "threadm: "+Thread.currentThread().getId());
 
-       showLoadingDialogue();
+       showLoadingDialogue(); //show loading Dialogue when it's downloading from server
 
 
 
         Intent intent = getIntent();
         String Url = "blog/";
-        Url +=intent.getStringExtra("url");
+
+        int id =intent.getIntExtra("url", 0);
+        Url += String.valueOf(id);
         downloadBlogs(BASEURL_DATA,Url);
 
         preferenceData = new PreferenceData();
@@ -120,6 +124,9 @@ public class BlogDetailActivity extends AppCompatActivity {
                      String comment = edt_Comment.getText().toString().trim();
                      edt_Comment.getText().clear();
                      hideKeyboard(BlogDetailActivity.this);
+
+                     mCommentList.add(0,new Comment(comment,"123go","go go go","Current User","no"));
+                     mAdapter.notifyDataSetChanged();
 
                      new Handler().postDelayed(new Runnable() {
                          @Override
@@ -173,21 +180,22 @@ public class BlogDetailActivity extends AppCompatActivity {
                     Thread thread = new Thread(new Runnable(){
                         @Override
                         public void run(){
-                            Log.i("TAG", "thread1: "+Thread.currentThread().getId());
-                            //if comment is not Zero
+
+                            //if comment is not Zero build recycler view
                             mRecyclerView.setVisibility(View.GONE);
                             if(Comments != 0){
                                 mRecyclerView.setVisibility(View.VISIBLE);
                                 initializeCommentRecycler(response.body().comments);
-                            }else {
-                                Toast.makeText(BlogDetailActivity.this, "No Comments", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                     thread.start();
 
 
+
                     setDataIntoFields(Name,Profile,Title,Description,Likes,Comments,CreateTime);
+
+
                     //WillPass The Data Through this This Work Good
                    // singleBlog_model = new SingleBlog_Model(Title,CreateTime,Name,Gallery,Likes,Comments,Video,Description,Description);
 
@@ -268,6 +276,8 @@ public class BlogDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
                 if(response.isSuccessful()){
+
+
                     Toast.makeText(BlogDetailActivity.this, "Post SuccessFully", Toast.LENGTH_SHORT).show();
                 }else {
                     Log.i("TAG", "onResponse: "+response.code()+"\n"+response.errorBody()+"\n"+response.body());
@@ -373,10 +383,11 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     private void initializeCommentRecycler (List<Comment> commentList) {
 
+        mCommentList = commentList;
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mRecyclerView.setNestedScrollingEnabled(false);
         mLayoutManager = new LinearLayoutManager(BlogDetailActivity.this);
-        mAdapter = new RecyclerBlogComment(commentList);
+        mAdapter = new RecyclerBlogComment(mCommentList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
