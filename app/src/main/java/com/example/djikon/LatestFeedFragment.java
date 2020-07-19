@@ -94,9 +94,7 @@ public class LatestFeedFragment extends Fragment {
                         mLayoutManager = new LinearLayoutManager(getContext());
                         mAdapter = new RecyclerLatestFeed(blogs,getContext());
 
-                        mRecyclerView.setItemViewCacheSize(20);
-                        mRecyclerView.setDrawingCacheEnabled(true);
-                        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
 
                         mRecyclerView.setLayoutManager(mLayoutManager);
                         mRecyclerView.setAdapter(mAdapter);

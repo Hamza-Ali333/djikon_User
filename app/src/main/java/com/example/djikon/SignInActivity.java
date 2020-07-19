@@ -2,6 +2,7 @@ package com.example.djikon;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -116,11 +117,11 @@ public class SignInActivity  extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dailoge_password_forgot, null);
+        final View view = inflater.inflate(R.layout.dailoge_loading, null);
 
 
-        EditText edtEmail = view.findViewById(R.id.edt_Email);
-        Button btnResetPassword = view.findViewById(R.id.btn_Reset_Password);
+        //EditText edtEmail = view.findViewById(R.id.edt_Email);
+        //Button btnResetPassword = view.findViewById(R.id.btn_Reset_Password);
 
         builder.setView(view);
         builder.setCancelable(true);
@@ -128,13 +129,13 @@ public class SignInActivity  extends AppCompatActivity {
 
         final AlertDialog alertDialog =  builder.show();
 
-        btnResetPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                openVerfiyOTPDialogue();
-            }
-        });
+//        btnResetPassword.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                alertDialog.dismiss();
+//                openVerfiyOTPDialogue();
+//            }
+//        });
 
         }
 
