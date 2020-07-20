@@ -1,7 +1,5 @@
 package com.example.djikon;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -16,24 +14,22 @@ public class DJProfileModel {
 
     private String lastname;
 
-    @SerializedName("address")
-    @Expose
+    private Integer followers,
+    follow_status;
+
+
     private String address;
 
-    private List<Blog_Model> blog;
+    private List<Dj_Blogs_Model> blog;
 
     private List<Services_Model> services;
 
-    /**
-     * No args constructor for use in serialization
-     *
-     * @param body
-     */
+
     public DJProfileModel(DJProfileModel body) {
     }
 
 
-    public DJProfileModel(Integer id, String profileImage, String firstname, String lastname, String address, List<Blog_Model> blog, List<Services_Model> services) {
+    public DJProfileModel(Integer id, String profileImage, String firstname, String lastname, String address, int followers, int follow_status, List<Dj_Blogs_Model> blog, List<Services_Model> services) {
         super();
         this.id = id;
         this.profile_image = profileImage;
@@ -42,6 +38,17 @@ public class DJProfileModel {
         this.address = address;
         this.blog = blog;
         this.services = services;
+        this.followers = followers;
+        this.follow_status = follow_status;
+    }
+
+
+    public Integer getFollowers() {
+        return followers;
+    }
+
+    public Integer getFollow_status() {
+        return follow_status;
     }
 
     public Integer getId() {
@@ -64,7 +71,7 @@ public class DJProfileModel {
         return address;
     }
 
-    public List<Blog_Model> getBlog() {
+    public List<Dj_Blogs_Model> getBlog() {
         return blog;
     }
 

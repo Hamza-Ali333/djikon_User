@@ -15,12 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.Currency;
 import java.util.List;
 
 public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.ViewHolder> {
 
-    private List<Blog_Model> mBlogModelArrayList;
+    private List<feed_Blog_Model> mBlogModelArrayList;
     private Context context;
 
     //view holder class
@@ -47,7 +46,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     }
 
     //constructor
-    public RecyclerLatestFeed(List<Blog_Model> blogModelArrayList, Context context) {
+    public RecyclerLatestFeed(List<feed_Blog_Model> blogModelArrayList, Context context) {
         this.mBlogModelArrayList = blogModelArrayList;
         this.context = context;
     }
@@ -63,7 +62,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Blog_Model currentItem = mBlogModelArrayList.get(position);
+        feed_Blog_Model currentItem = mBlogModelArrayList.get(position);
 
         if (!currentItem.getArtist_image().equals("no")) {
 
@@ -114,7 +113,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
-                        i.putExtra("id",currentItem.getId());
+                        i.putExtra("id", currentItem.getArtist_profile_id());
                         v.getContext().startActivity(i);
                     }
                 });
@@ -122,7 +121,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 holder.img_feedImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       // Toast.makeText(context, currentItem.getSingle_blog_link(), Toast.LENGTH_SHORT).show();
+
                         Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
                         i.putExtra("url",currentItem.getId());
                         v.getContext().startActivity(i);

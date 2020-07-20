@@ -1,12 +1,16 @@
 package com.example.djikon;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,9 +24,11 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
 
 
         public TextView txt_ServiceName, txt_ServiceDetail, txt_Price,txt_ChargesType;
+        public ImageView img_featured;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            img_featured = itemView.findViewById(R.id.img_servic_image);
             txt_ServiceName = itemView.findViewById(R.id.txt_servic_name);
             txt_ServiceDetail = itemView.findViewById(R.id.txt_servic_description);
             txt_Price = itemView.findViewById(R.id.txt_service_prize);
@@ -31,9 +37,8 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(itemView.getContext(), String.valueOf(itemView.getId()), Toast.LENGTH_SHORT).show();
-//                    Intent i = new Intent(view.getContext(), ServiceDetailActivity.class);
-//                    view.getContext().startActivity(i);
+                    Intent i = new Intent(view.getContext(), ServiceDetailActivity.class);
+                    view.getContext().startActivity(i);
                 }
             });
         }
@@ -60,11 +65,24 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
 
                 holder.txt_ServiceName.setText(currentItem.getName());
                 holder.txt_ServiceDetail.setText(currentItem.getDetails());
-                holder.txt_Price.setText(String.valueOf(currentItem.getPrice()));
+                holder.txt_ChargesType.setText(currentItem.getPrice_type());
+                holder.txt_Price.setText("$"+String.valueOf(currentItem.getPrice()));
 
+        if (!currentItem.getFeature_image().equals("no")) {
+            Picasso.get().load(currentItem.getFeature_image())
+                    .fit()
+                    .centerCrop()
+                    .into(holder.img_featured, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
 
-
-
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                          // Toast.makeText(g, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
             }
 
 

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBlack"
-    android:weightSum="2"
     >
 
     <ScrollView
+        android:id="@+id/scrollable"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.9"
+        android:layout_height="fill_parent"
         android:background="@color/colorBlack"
         android:fillViewport="true">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -190,31 +189,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rlt_about" />
 
-        <ImageView
-            android:id="@+id/img_all_servic"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_ViewAll"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt_ViewAll"
-            app:srcCompat="@drawable/ic_arrow_forward" />
-
-        <TextView
-            android:id="@+id/txt_ViewAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:text="View All"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/img_all_servic"
-            app:layout_constraintTop_toBottomOf="@+id/rlt_about" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/services_recycler"
             android:layout_width="0dp"
@@ -227,16 +201,45 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Blogs"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/services_recycler" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/blog_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView7"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blog_recyclerview"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+
+
     <Button
         android:id="@+id/btn_book_artist"
         android:layout_width="match_parent"
-        android:layout_weight="0.1"
-        android:layout_height="0dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorBlue"
         android:text="Book This DJ"
         android:textColor="#fff"
         android:textSize="20sp" />
-</LinearLayout>
+</RelativeLayout>

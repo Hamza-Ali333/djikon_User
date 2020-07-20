@@ -1,5 +1,6 @@
 package com.example.djikon;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,9 +29,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private PreferenceData preferenceData;
 
-    private  RegisterModel registerModel;
+
 
     String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+
+    ProgressDialog progressDailoge;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,31 +41,21 @@ public class RegistrationActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         createRefrences();
 
+
+
         preferenceData = new PreferenceData();
 
         btn_SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(isInfoRight()) {
+                 progressDailoge =DialogsUtils.showProgressDialog(RegistrationActivity.this,"Checking Credentials","Please Wait...");
+
                     sendDataToServer();
                 }
             }//if
         });
 
-    }
-
-
-
-    private RegisterModel setDataIntoModel(){
-        Log.i("TAG", "set: Runing");
-        registerModel = new RegisterModel(edt_Name.getText().toString(),
-                edt_LastName.getText().toString(),
-                edt_Email.getText().toString(),
-                edt_Password.getText().toString(),
-                edt_C_Password.getText().toString(),
-                edt_Refral_Code.getText().toString(),
-                1);
-        return  registerModel;
     }
 
     private boolean isInfoRight() {
@@ -93,7 +86,7 @@ public class RegistrationActivity extends AppCompatActivity {
             edt_Password.requestFocus();
             result = false;
         }
-        else if (edt_Password.getText().toString().trim().length()!= 8) {
+        else if (edt_Password.getText().toString().trim().length() < 8) {
             edt_Password.setError("Password Can't be less then 8 Digits!");
             edt_Password.requestFocus();
             result = false;
@@ -146,8 +139,9 @@ public class RegistrationActivity extends AppCompatActivity {
         call.enqueue(new Callback<SuccessToken>() {
             @Override
             public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
+                progressDailoge.dismiss();
                 if(response.isSuccessful()){
-
+                    Log.i("TAG", "onResponse: "+response.code());
                     preferenceData.setUserToken(RegistrationActivity.this,response.body().getSuccess());
                     preferenceData.setUserLoggedInStatus(RegistrationActivity.this,true);
                     startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
@@ -155,20 +149,21 @@ public class RegistrationActivity extends AppCompatActivity {
                 }else if(response.code() == 409 ){
                     Log.i("TAG", "onResponse"+" Email Already Exit \n"+response.code());
                     edt_Email.requestFocus();
-                    edt_Email.setError("Email Is Already Exit");
+                    edt_Email.setError("Email Already Exit");
                 }
                 else if(response.code() == 400 ){
                     //reffral
                     edt_Refral_Code.requestFocus();
                     edt_Refral_Code.setError("Refferal not found");
                 }else {
-                    Toast.makeText(RegistrationActivity.this, "Something Happend Wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegistrationActivity.this, "Somthing Happend Wrong", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessToken> call, Throwable t) {
                 Log.i("TAG", "onFailure: "+t.getMessage());
+                progressDailoge.dismiss();
             }
         });
 

@@ -92,13 +92,11 @@ public class BlogDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefreances();
-
         parentLayout.setVisibility(View.GONE);
 
         Log.i("TAG", "threadm: "+Thread.currentThread().getId());
 
-       showLoadingDialogue(); //show loading Dialogue when it's downloading from server
-
+        showLoadingDialogue(); //show loading Dialogue when it's downloading from server
 
 
         Intent intent = getIntent();
@@ -404,7 +402,6 @@ public class BlogDetailActivity extends AppCompatActivity {
     }
 
     private void showLoadingDialogue() {
-
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialogue_loading, null);
@@ -412,7 +409,6 @@ public class BlogDetailActivity extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
         alertDialog =  builder.show();
-
     }
 
 

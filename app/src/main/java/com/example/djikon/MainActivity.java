@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         preferenceData = new PreferenceData();
         Token = preferenceData.getUserToken(MainActivity.this);
-
+        //Toast.makeText(this, Token, Toast.LENGTH_SHORT).show();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -194,22 +194,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
-        JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
+        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-       // feedJsonApi.userlogout(preferenceData.getLoggedInUserToken(MainActivity.this));
 
-        Call<SuccessToken> call = feedJsonApi.logout();
+
+        Call<SuccessToken> call = jsonApiHolder.logout();
 
         call.enqueue(new Callback<SuccessToken>() {
             @Override
             public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
                 if(response.isSuccessful()){
                     Log.i("TAG", "onResponse: "+response.code()+response.body().getSuccess());
-                    PreferenceData preferenceData = new PreferenceData();
-                    preferenceData.setUserLoggedInStatus(MainActivity.this,false);
-                    preferenceData.clearLoggedInEmailAddress(MainActivity.this);
+
+                    preferenceData.clearPrefrences(MainActivity.this);
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
                     finish();
+
                 }
                 else {
                     Log.i("TAG", "onResponse: "+response.code());

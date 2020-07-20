@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,11 +19,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,9 +46,17 @@ public class DjPrpfileActivity extends AppCompatActivity {
             txt_DJ_Name,
             txt_address,
             txt_Total_Follower,
-            txt_about;
+            txt_about,
+    txt_Progress_Msg;
+
+    private ScrollView parenLayout;
 
     private CircularImageView img_DJ_Profile;
+
+
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
+
 
 
     private String mDJName,
@@ -49,14 +64,23 @@ public class DjPrpfileActivity extends AppCompatActivity {
             mProfile,
             mAbout;
 
-   private RecyclerView mServicesRecycler;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private int mFollower_Count,mFollow_Status;
+
+    private RecyclerView mServicesRecycler, mBlogRecyclerView;
+    private RecyclerView.Adapter serviceAdapter;
+    private RecyclerView.LayoutManager serviceLayoutManager;
+
+    private RecyclerView.Adapter BlogAdapter;
+    private RecyclerView.LayoutManager BlogLayoutManager;
+
+
 
 
     List<Services_Model> services;
+    List<Dj_Blogs_Model> blogs;
 
-
+    String Token;
+    private PreferenceData preferenceData;
 
     private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
     @Override
@@ -66,22 +90,21 @@ public class DjPrpfileActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Dj Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
-        Thread InitailWorkOfActivity = new Thread(new Runnable() {
-            @Override
-            public void run() {
                 createRefrences();
+
+                parenLayout.setVisibility(View.GONE);//hide the parent view
+
+                showLoadingDialogue();//show lodaing dailoge while data is dowloading from the server
+
+                services = new ArrayList<Services_Model>();
                 Intent i = getIntent();
                 int blogId= i.getIntExtra("id",0);
                 getProfileDataFromServer(String.valueOf(blogId));
-                services = new ArrayList<Services_Model>();
-            }
-        });
-        InitailWorkOfActivity.start();
 
 
 
+        preferenceData = new PreferenceData();
+        Token = preferenceData.getUserToken(DjPrpfileActivity.this);
 
         btn_Book_Artist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,37 +128,57 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     private void setDataInToViews() {
         txt_DJ_Name.setText(mDJName);
-        if(mAddress.equals(null))
+        txt_Total_Follower.setText(String.valueOf(mFollower_Count));
+
+       if (mFollow_Status==0){
+           btn_Follow.setText("Follow");
+       }else {
+           btn_Follow.setText("UnFollow");
+       }
+
+
+    if(mAddress.equals(null))
             Toast.makeText(this, "Address null", Toast.LENGTH_SHORT).show();
         else
         txt_address.setText(mAddress);
 
+
         txt_Total_Follower.setText("0");
-//        if (!mProfile.equals("no") && mProfile.equals(null)) {
-//            Picasso.get().load(mDJProfileModel.getProfile_image())
-//                    .into(img_DJ_Profile, new com.squareup.picasso.Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//
-//                        }
-//                        @Override
-//                        public void onError(Exception e) {
-//                            Toast.makeText(DjPrpfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//        }
+        if (!mProfile.equals("no")) {
+            Picasso.get().load(mProfile)
+                    .fit()
+                    .centerCrop()
+                    .into(img_DJ_Profile, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(DjPrpfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 
 
     private void buildServiceRecycler (List<Services_Model> serviceList) {
         mServicesRecycler.setHasFixedSize(true);//if the recycler view not increase run time
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mAdapter = new RecyclerServices(serviceList);
+        serviceLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        serviceAdapter = new RecyclerServices(serviceList);
 
-        mServicesRecycler.setLayoutManager(mLayoutManager);
-        mServicesRecycler.setAdapter(mAdapter);
+        mServicesRecycler.setLayoutManager(serviceLayoutManager);
+        mServicesRecycler.setAdapter(serviceAdapter);
     }
 
+    private void buildBlogRecycler (List<Dj_Blogs_Model> blogslist) {
+        mBlogRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+        BlogLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        BlogAdapter = new RecyclerDjBlogs(blogslist);
+
+        mBlogRecyclerView.setLayoutManager(BlogLayoutManager);
+        mBlogRecyclerView.setAdapter(BlogAdapter);
+    }
 
     private void openRequestASongDialogue() {
 
@@ -169,7 +212,21 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public okhttp3.Response intercept(Chain chain) throws IOException {
+                        Request originalRequest = chain.request();
+                        Request newRequest = originalRequest.newBuilder()
+                                .header( "Accept:", "application/json")
+                                .header("Authorization","Bearer "+Token)
+                                .build();
+                        return chain.proceed(newRequest);
+                    }
+                })
+                .addInterceptor(interceptor)
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -189,8 +246,14 @@ public class DjPrpfileActivity extends AppCompatActivity {
                     mDJName = response.body().getFirstname()+" "+response.body().getLastname();
                     mAddress = response.body().getAddress();
                     mProfile = response.body().getProfile_image();
+                    mFollower_Count = response.body().getFollowers();
+                    mFollow_Status = response.body().getFollow_status();
 
                     services = response.body().getServices();
+                    blogs = response.body().getBlog();
+
+                    parenLayout.setVisibility(View.VISIBLE);
+                    alertDialog.dismiss();//hide the loading Dailoge
 
                     new Thread(new Runnable() {
                         @Override
@@ -199,6 +262,12 @@ public class DjPrpfileActivity extends AppCompatActivity {
                         }
                     }).start();
 
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            buildBlogRecycler(blogs);
+                        }
+                    }).start();
 
                     setDataInToViews();
 
@@ -222,7 +291,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
     }
 
     private void createRefrences () {
-
+        parenLayout = findViewById(R.id.scrollable);
         btn_Book_Artist = findViewById(R.id.btn_book_artist);
         btn_Request_A_Song = findViewById(R.id.btn_RequestASong);
         btn_Follow = findViewById(R.id.Follow_Dj);
@@ -235,14 +304,31 @@ public class DjPrpfileActivity extends AppCompatActivity {
         txt_about = findViewById(R.id.txt_about_dj);
 
         mServicesRecycler = findViewById(R.id.services_recycler);
+        mBlogRecyclerView = findViewById(R.id.blog_recyclerview);
 
         img_DJ_Profile = findViewById(R.id.img_dj_profile);
+
+
+
+
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+
+    private void showLoadingDialogue() {
+        builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View view = inflater.inflate(R.layout.dialogue_loading, null);
+
+        builder.setView(view);
+        builder.setCancelable(false);
+        alertDialog =  builder.show();
+
     }
 
 }

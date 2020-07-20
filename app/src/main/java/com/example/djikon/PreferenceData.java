@@ -42,7 +42,7 @@ public class PreferenceData
     }
 
     //clear the memory of the shared prefrences
-    public static void clearLoggedInEmailAddress(Context ctx)
+    public static void clearPrefrences(Context ctx)
     {
         Editor editor = getSharedPreferences(ctx).edit();
         editor.remove(PREF_LOGGEDIN_USER_TOKEN);

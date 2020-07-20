@@ -1,6 +1,6 @@
 package com.example.djikon;
 
-public class Blog_Model {
+public class feed_Blog_Model {
 
         private Integer id;
         private Integer artist_profile_id;
@@ -14,15 +14,7 @@ public class Blog_Model {
 
         private String single_blog_link;
 
-        /**
-         * No args constructor for use in serialization
-         *
-         */
-        public Blog_Model() {
-        }
-
-
-        public Blog_Model(Integer id, Integer artist_profile_id, String title, String description, String photo, Integer likes, String created_at, String likeLink, String artistImage, String singleBlogLink) {
+        public feed_Blog_Model(Integer id, Integer artist_profile_id, String title, String description, String photo, Integer likes, String created_at, String likeLink, String artistImage, String singleBlogLink) {
             super();
             this.id = id;
             this.artist_profile_id = artist_profile_id;

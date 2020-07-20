@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,17 +37,16 @@ public class SignInActivity  extends AppCompatActivity {
    private EditText edt_Email,edt_password;
    private PreferenceData preferenceData;
 
+
+   private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign__in);
         getSupportActionBar().hide();
-
         createReferencer();
-
-
         preferenceData = new PreferenceData();
-
 
 
         txt_Create_new_account.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +68,7 @@ public class SignInActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isInfoRight()) {
+                    progressDialog =DialogsUtils.showProgressDialog(SignInActivity.this,"Checking Credentials","Please Wait While Cheking...");
                     isUserExits();
                 }
 
@@ -117,7 +119,7 @@ public class SignInActivity  extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dailoge_loading, null);
+        final View view = inflater.inflate(R.layout.dailoge_password_forgot, null);
 
 
         //EditText edtEmail = view.findViewById(R.id.edt_Email);
@@ -309,23 +311,27 @@ private boolean isInfoRight() {
             @Override
             public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
                 if (response.isSuccessful()) {
+
                     Log.i("TAG", "onResponse: "+"token:>>  "+response.body().getSuccess());
 
                     preferenceData.setUserToken(SignInActivity.this,response.body().getSuccess());
                     preferenceData.setUserLoggedInStatus(SignInActivity.this,true);
                     txt_Error.setVisibility(View.GONE);
+                    progressDialog.dismiss();
                     startActivity(new Intent(SignInActivity.this,MainActivity.class));
                     finish();
                 } else {
                     Log.i("TAG", "onResponse: "+response.code());
                     txt_Error.setVisibility(View.VISIBLE);
                     txt_Error.setText("Email or Password is in Correct");
+                    progressDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessToken> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
+                progressDialog.dismiss();
             }
         });
 
@@ -354,6 +360,9 @@ private boolean isInfoRight() {
         btn_SignIn = findViewById(R.id.btn_SignIn);
         img_face_Id = findViewById(R.id.img_face_id);
         img_Finger_Print = findViewById(R.id.img_finger_print);
+
+
+
         }
 
 
