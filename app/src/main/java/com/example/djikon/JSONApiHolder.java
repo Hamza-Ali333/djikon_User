@@ -11,14 +11,22 @@ import retrofit2.http.Url;
 
 public interface JSONApiHolder {
 
+    //will return all the blogs
     @GET ("blog")
     Call<List<feed_Blog_Model>> getBlogs();
 
+    //will return detail of a blog
     @GET
-    Call<SingleBlog_Model> getSingleBlog(@Url String url);
+    Call<SingleBlog_Model> getSingleBlog(@Url String id);
 
+    //this will return full detail dj profile
     @GET
-    Call<DJProfileModel> getDjProfile(@Url String url);
+    Call<DJProfileModel> getDjProfile(@Url String id);
+
+
+    //this will return full detail of a service
+    @GET
+    Call<SingleServiceModle> getSingleServieData(@Url String id);
 
     @FormUrlEncoded
     @POST("register")

@@ -36,18 +36,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
 
     private Toolbar toolbar;
-    private PreferenceData preferenceData;
     String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
-    String Token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createRefrencer();
 
-        preferenceData = new PreferenceData();
-        Token = preferenceData.getUserToken(MainActivity.this);
-        //Toast.makeText(this, Token, Toast.LENGTH_SHORT).show();
+
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -171,30 +168,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private  void userLogOut () {
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
+      Retrofit retrofit= ApiResponse.retrofit(BASEURL_DATA,this);
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public okhttp3.Response intercept(Chain chain) throws IOException {
-                        Request originalRequest = chain.request();
-                        Request newRequest = originalRequest.newBuilder()
-                                .header( "Accept:", "application/json")
-                                .header("Authorization","Bearer "+Token)
-                                .build();
-                        return chain.proceed(newRequest);
-                    }
-                })
-                .addInterceptor(interceptor)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASEURL_DATA)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
-        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
+      JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
 
@@ -205,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
                 if(response.isSuccessful()){
                     Log.i("TAG", "onResponse: "+response.code()+response.body().getSuccess());
-
+                    PreferenceData preferenceData = new PreferenceData();
                     preferenceData.clearPrefrences(MainActivity.this);
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
                     finish();

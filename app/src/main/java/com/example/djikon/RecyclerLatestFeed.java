@@ -124,6 +124,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
 
                         Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
                         i.putExtra("url",currentItem.getId());
+                        i.putExtra("featured_image",currentItem.getPhoto());
                         v.getContext().startActivity(i);
                     }
                 });

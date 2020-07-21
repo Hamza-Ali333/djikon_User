@@ -1,20 +1,22 @@
 package com.example.djikon;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerServiceGallery extends RecyclerView.Adapter<RecyclerServiceGallery.ViewHolder>{
 
-    private ArrayList<ServiceImage_Model> mServiceImage;
+    private List<SliderItem> mServiceImage;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -27,18 +29,12 @@ public class RecyclerServiceGallery extends RecyclerView.Adapter<RecyclerService
         public ViewHolder(View itemView){
             super(itemView);
             img_gallery_Image = itemView.findViewById(R.id.service_image);
-
-            txt_Image_Name = itemView.findViewById(R.id.service_image_name);
-
-
-
-
         }
     }
 
-//constructor
-    public RecyclerServiceGallery(ArrayList<ServiceImage_Model> serviceImage_modelArrayList) {
-        this.mServiceImage = serviceImage_modelArrayList;
+    //constructor
+    public RecyclerServiceGallery(List<SliderItem> sliderItems) {
+        this.mServiceImage = sliderItems;
     }
 
 
@@ -53,11 +49,27 @@ public class RecyclerServiceGallery extends RecyclerView.Adapter<RecyclerService
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final ServiceImage_Model currentItem = mServiceImage.get(position);
+        final SliderItem currentItem = mServiceImage.get(position);
 
-       holder.img_gallery_Image.setImageResource(currentItem.getService_Gallery_Image());
-       holder.txt_Image_Name.setText(currentItem.getService_Image_Name());
 
+        if (!currentItem.getImage().equals("no")){
+            Picasso.get().load(currentItem.getImage())
+                    .fit()
+                    .centerCrop()
+                    .into(holder.img_gallery_Image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                            // holder.txt_Loading.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            // Toast.makeText(getC, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+        }
 
 }
 

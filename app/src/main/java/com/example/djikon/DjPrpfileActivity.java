@@ -47,7 +47,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
             txt_address,
             txt_Total_Follower,
             txt_about,
-    txt_Progress_Msg;
+            txt_Progress_Msg;
 
     private ScrollView parenLayout;
 
@@ -58,13 +58,12 @@ public class DjPrpfileActivity extends AppCompatActivity {
     private AlertDialog alertDialog;
 
 
-
     private String mDJName,
             mAddress,
             mProfile,
             mAbout;
 
-    private int mFollower_Count,mFollow_Status;
+    private int mFollower_Count, mFollow_Status;
 
     private RecyclerView mServicesRecycler, mBlogRecyclerView;
     private RecyclerView.Adapter serviceAdapter;
@@ -74,15 +73,13 @@ public class DjPrpfileActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager BlogLayoutManager;
 
 
-
-
     List<Services_Model> services;
     List<Dj_Blogs_Model> blogs;
 
-    String Token;
-    private PreferenceData preferenceData;
+
 
     private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,21 +87,20 @@ public class DjPrpfileActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Dj Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-                createRefrences();
+        createRefrences();
 
-                parenLayout.setVisibility(View.GONE);//hide the parent view
+        parenLayout.setVisibility(View.GONE);//hide the parent view
 
-                showLoadingDialogue();//show lodaing dailoge while data is dowloading from the server
+        showLoadingDialogue();//show lodaing dailoge while data is dowloading from the server
 
-                services = new ArrayList<Services_Model>();
-                Intent i = getIntent();
-                int blogId= i.getIntExtra("id",0);
-                getProfileDataFromServer(String.valueOf(blogId));
-
+        services = new ArrayList<Services_Model>();
+        Intent i = getIntent();
+        int blogId = i.getIntExtra("id", 0);
 
 
-        preferenceData = new PreferenceData();
-        Token = preferenceData.getUserToken(DjPrpfileActivity.this);
+        getProfileDataFromServer(String.valueOf(blogId));
+
+
 
         btn_Book_Artist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,10 +114,9 @@ public class DjPrpfileActivity extends AppCompatActivity {
         btn_Request_A_Song.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               openRequestASongDialogue();
+                openRequestASongDialogue();
             }
         });
-
 
 
     }
@@ -130,17 +125,17 @@ public class DjPrpfileActivity extends AppCompatActivity {
         txt_DJ_Name.setText(mDJName);
         txt_Total_Follower.setText(String.valueOf(mFollower_Count));
 
-       if (mFollow_Status==0){
-           btn_Follow.setText("Follow");
-       }else {
-           btn_Follow.setText("UnFollow");
-       }
+        if (mFollow_Status == 0) {
+            btn_Follow.setText("Follow");
+        } else {
+            btn_Follow.setText("UnFollow");
+        }
 
 
-    if(mAddress.equals(null))
+        if (mAddress.equals(null))
             Toast.makeText(this, "Address null", Toast.LENGTH_SHORT).show();
         else
-        txt_address.setText(mAddress);
+            txt_address.setText(mAddress);
 
 
         txt_Total_Follower.setText("0");
@@ -153,6 +148,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
                         public void onSuccess() {
 
                         }
+
                         @Override
                         public void onError(Exception e) {
                             Toast.makeText(DjPrpfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
@@ -162,16 +158,19 @@ public class DjPrpfileActivity extends AppCompatActivity {
     }
 
 
-    private void buildServiceRecycler (List<Services_Model> serviceList) {
+    private void buildServiceRecycler(List<Services_Model> serviceList) {
+
         mServicesRecycler.setHasFixedSize(true);//if the recycler view not increase run time
         serviceLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         serviceAdapter = new RecyclerServices(serviceList);
 
         mServicesRecycler.setLayoutManager(serviceLayoutManager);
         mServicesRecycler.setAdapter(serviceAdapter);
+
     }
 
-    private void buildBlogRecycler (List<Dj_Blogs_Model> blogslist) {
+    private void buildBlogRecycler(List<Dj_Blogs_Model> blogslist) {
+
         mBlogRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         BlogLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         BlogAdapter = new RecyclerDjBlogs(blogslist);
@@ -196,7 +195,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
         builder.setCancelable(true);
 
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         btn_Submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,29 +209,9 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     private void getProfileDataFromServer(String blogId) {
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
+        Retrofit retrofit= ApiResponse.retrofit(BASE_URL,this);
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public okhttp3.Response intercept(Chain chain) throws IOException {
-                        Request originalRequest = chain.request();
-                        Request newRequest = originalRequest.newBuilder()
-                                .header( "Accept:", "application/json")
-                                .header("Authorization","Bearer "+Token)
-                                .build();
-                        return chain.proceed(newRequest);
-                    }
-                })
-                .addInterceptor(interceptor)
-                .build();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         Call<DJProfileModel> call = jsonApiHolder.getDjProfile(blogId);
@@ -240,10 +219,12 @@ public class DjPrpfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<DJProfileModel>() {
             @Override
             public void onResponse(Call<DJProfileModel> call, Response<DJProfileModel> response) {
-                if(response.isSuccessful()){
-                    Log.i("TAG", "onResponse: "+response.code());
 
-                    mDJName = response.body().getFirstname()+" "+response.body().getLastname();
+                if (response.isSuccessful()) {
+
+                    Log.i("TAG", "onResponse: " + response.code());
+
+                    mDJName = response.body().getFirstname() + " " + response.body().getLastname();
                     mAddress = response.body().getAddress();
                     mProfile = response.body().getProfile_image();
                     mFollower_Count = response.body().getFollowers();
@@ -271,8 +252,8 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
                     setDataInToViews();
 
-                }else {
-                    Log.i("TAG", "onResponse: "+response.code());
+                } else {
+                    Log.i("TAG", "onResponse: " + response.code());
 
                     return;
                 }
@@ -281,16 +262,16 @@ public class DjPrpfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<DJProfileModel> call, Throwable t) {
 
-                Log.i("TAG", "onFailure: "+t.getMessage());
-                Toast.makeText(DjPrpfileActivity.this, "Response Failed: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("TAG", "onFailure: " + t.getMessage());
+                Toast.makeText(DjPrpfileActivity.this, "Response Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
-
-
 
     }
 
-    private void createRefrences () {
+    private void createRefrences() {
+
         parenLayout = findViewById(R.id.scrollable);
         btn_Book_Artist = findViewById(R.id.btn_book_artist);
         btn_Request_A_Song = findViewById(R.id.btn_RequestASong);
@@ -308,9 +289,6 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
         img_DJ_Profile = findViewById(R.id.img_dj_profile);
 
-
-
-
     }
 
     @Override
@@ -321,13 +299,14 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
 
     private void showLoadingDialogue() {
+
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialogue_loading, null);
 
         builder.setView(view);
         builder.setCancelable(false);
-        alertDialog =  builder.show();
+        alertDialog = builder.show();
 
     }
 

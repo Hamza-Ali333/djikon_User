@@ -37,6 +37,8 @@ public class LatestFeedFragment extends Fragment {
     private SwipeRefreshLayout pullToRefresh;
     private RelativeLayout rlt_progressBar;
 
+    private static final String BASE_URL="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+
 
     @Nullable
     @Override
@@ -68,10 +70,8 @@ public class LatestFeedFragment extends Fragment {
 
     private void downloadBlogs() {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = ApiResponse.retrofit(BASE_URL,getContext());
+
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
         Call<List<feed_Blog_Model>> call = feedJsonApi.getBlogs();

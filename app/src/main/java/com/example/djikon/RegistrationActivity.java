@@ -49,7 +49,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isInfoRight()) {
-                 progressDailoge =DialogsUtils.showProgressDialog(RegistrationActivity.this,"Checking Credentials","Please Wait...");
+                 progressDailoge = DialogsUtils.showProgressDialog(RegistrationActivity.this,"Checking Credentials","Please Wait...");
 
                     sendDataToServer();
                 }
@@ -113,18 +113,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     private void sendDataToServer() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .addInterceptor(interceptor)
-                .build();
+        Retrofit retrofit = ApiResponse.retrofit(BASEURL_DATA,this);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASEURL_DATA)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
         Call<SuccessToken> call = feedJsonApi.registerUser(

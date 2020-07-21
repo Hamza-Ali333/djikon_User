@@ -34,13 +34,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
             txt_Price = itemView.findViewById(R.id.txt_service_prize);
             txt_ChargesType = itemView.findViewById(R.id.pricetype);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(view.getContext(), ServiceDetailActivity.class);
-                    view.getContext().startActivity(i);
-                }
-            });
+
         }
     }
 
@@ -76,6 +70,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                         @Override
                         public void onSuccess() {
 
+
                         }
                         @Override
                         public void onError(Exception e) {
@@ -83,6 +78,16 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                         }
                     });
         }
+
+
+        holder.img_featured.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), ServiceDetailActivity.class);
+                i.putExtra("id",currentItem.getId());
+                v.getContext().startActivity(i);
+            }
+        });
             }
 
 

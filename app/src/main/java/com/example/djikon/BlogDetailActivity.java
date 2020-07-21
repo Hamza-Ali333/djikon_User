@@ -31,19 +31,15 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class BlogDetailActivity extends AppCompatActivity {
 
@@ -66,11 +62,10 @@ public class BlogDetailActivity extends AppCompatActivity {
    private String  Gallery;
    private String Video;
 
-   private SingleBlog_Model singleBlog_model;
+
    private List<SliderItem> sliderItems = new ArrayList<>();
-    List <Comment> mCommentList;
-   private String Token;
-   private PreferenceData preferenceData;
+   private List <Comment> mCommentList;
+   private  String Featured_image;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -98,16 +93,18 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         showLoadingDialogue(); //show loading Dialogue when it's downloading from server
 
+        mCommentList = new ArrayList<>();//for avoid null pointer exeption when there is no comment in data base
+
 
         Intent intent = getIntent();
         String Url = "blog/";
 
         int id =intent.getIntExtra("url", 0);
         Url += String.valueOf(id);
-        downloadBlogs(BASEURL_DATA,Url);
+       Featured_image = intent.getStringExtra("featured_image");
 
-        preferenceData = new PreferenceData();
-        Token = preferenceData.getUserToken(BlogDetailActivity.this);
+
+        downloadBlogs(BASEURL_DATA,Url);
 
 
         //setting the controller's on the videoView
@@ -123,8 +120,15 @@ public class BlogDetailActivity extends AppCompatActivity {
                      edt_Comment.getText().clear();
                      hideKeyboard(BlogDetailActivity.this);
 
-                     mCommentList.add(0,new Comment(comment,"123go","go go go","Current User","no"));
-                     mAdapter.notifyDataSetChanged();
+                     if ( !mCommentList.isEmpty() && mCommentList!=null ) {
+                         mCommentList.add(0,new Comment(comment,"123go","go go go","Current User","no"));
+                         mAdapter.notifyDataSetChanged();
+                     }else {
+                         mCommentList.add(0,new Comment(comment,"123go","go go go","Current User","no"));
+                         mRecyclerView.setVisibility(View.VISIBLE);
+                         initializeCommentRecycler(mCommentList);
+                     }
+
 
                      new Handler().postDelayed(new Runnable() {
                          @Override
@@ -146,10 +150,8 @@ public class BlogDetailActivity extends AppCompatActivity {
 
 
     private void downloadBlogs(String SERVER_Url,String BlogId) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SERVER_Url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+
+        Retrofit retrofit= ApiResponse.retrofit(SERVER_Url,this);
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
 
@@ -161,7 +163,7 @@ public class BlogDetailActivity extends AppCompatActivity {
             public void onResponse(Call<SingleBlog_Model> call, Response<SingleBlog_Model> response) {
                 if (response.isSuccessful()) {
                     String  Name = response.body().getArtist_name();
-                     Gallery = response.body().getGallery();
+                    Gallery = response.body().getGallery();
                     String CreateTime = response.body().getCreated_at();
                     String Title = response.body().getTitle();
                     String Description = response.body().getDescription();
@@ -202,9 +204,9 @@ public class BlogDetailActivity extends AppCompatActivity {
                                 sliderView.setVisibility(View.VISIBLE);
                                 Gallery =Gallery.replaceAll("\\[", "").replaceAll("\\]","").replace("\"", "");
                                 String[] GalleryArray = Gallery.split(",");
-                                initializeImageSlider(GalleryArray);
+                                initializeImageSlider(GalleryArray,true);
                             }else {
-                                sliderView.setVisibility(View.GONE);
+                                initializeImageSlider(null,false);
                             }
 
 
@@ -244,28 +246,8 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     private void postComment(String Comment){
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public okhttp3.Response intercept(Chain chain) throws IOException {
-                        Request originalRequest = chain.request();
-                        Request newRequest = originalRequest.newBuilder()
-                                .header( "Accept:", "application/json")
-                                .header("Authorization","Bearer "+Token)
-                                .build();
-                        return chain.proceed(newRequest);
-                    }
-                })
-                .addInterceptor(interceptor)
-                .build();
+        Retrofit retrofit = ApiResponse.retrofit(ADD_COMMENT_URL,this);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ADD_COMMENT_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
         Call<SuccessToken> call = feedJsonApi.postComment(String.valueOf(blogId),Comment);
@@ -275,8 +257,6 @@ public class BlogDetailActivity extends AppCompatActivity {
             public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
                 if(response.isSuccessful()){
 
-
-                    Toast.makeText(BlogDetailActivity.this, "Post SuccessFully", Toast.LENGTH_SHORT).show();
                 }else {
                     Log.i("TAG", "onResponse: "+response.code()+"\n"+response.errorBody()+"\n"+response.body());
                     Toast.makeText(BlogDetailActivity.this, "Post Failed", Toast.LENGTH_SHORT).show();
@@ -285,12 +265,11 @@ public class BlogDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SuccessToken> call, Throwable t) {
-
+                Toast.makeText(BlogDetailActivity.this, "Network Error:"+t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
-
 
 
 
@@ -355,11 +334,16 @@ public class BlogDetailActivity extends AppCompatActivity {
     }
 
 
-    private void initializeImageSlider(String[] Gallery){
+    private void initializeImageSlider(String[] Gallery,Boolean Slider){
 
-        for(int i=0; i<=Gallery.length-1; i++){
-            sliderItems.add(new SliderItem(BASEURL_IMAGES+Gallery[i]));
+        if(Slider){
+            for(int i=0; i<=Gallery.length-1; i++){
+                sliderItems.add(new SliderItem(BASEURL_IMAGES+Gallery[i]));
+            }
+        }else {
+            sliderItems.add(new SliderItem(Featured_image));
         }
+
 
         SliderAdapterExample adapter = new SliderAdapterExample(sliderItems,this);
 

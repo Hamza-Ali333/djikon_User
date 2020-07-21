@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 public class Services_Model {
+    private int id;
     private String name,
     details,
     feature_image,
@@ -9,13 +10,18 @@ public class Services_Model {
 
     private int price;
 
-    public Services_Model(String name, String details, String feature_image, int price, String price_type, String rating) {
+    public Services_Model(int id,String name, String details, String feature_image, int price, String price_type, String rating) {
         this.name = name;
         this.details = details;
         this.feature_image = feature_image;
         this.price = price;
         this.price_type = price_type;
         this.rating = rating;
+        this.id= id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

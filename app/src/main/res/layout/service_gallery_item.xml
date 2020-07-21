@@ -18,17 +18,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/photo3" />
-
-    <TextView
-        android:id="@+id/service_image_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Image Name"
-        android:textColor="#FBF6F6"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/service_image"
-        app:layout_constraintEnd_toEndOf="@+id/service_image"
-        app:layout_constraintStart_toStartOf="@+id/service_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>
