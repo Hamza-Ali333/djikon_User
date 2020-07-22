@@ -44,7 +44,7 @@ public class SignInActivity  extends AppCompatActivity {
 
    private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
-   private  Integer OTP = 0;
+   private  int OTP = 0;
    private  String EmailForOTP;
 
     @Override
@@ -54,10 +54,10 @@ public class SignInActivity  extends AppCompatActivity {
         getSupportActionBar().hide();
         createReferencer();
 
-
+        openVerfiyOTPDialogue();
 
         retrofit = ApiResponse.retrofit(BASEURL,this);
-       jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
         preferenceData = new PreferenceData();
@@ -149,11 +149,13 @@ public class SignInActivity  extends AppCompatActivity {
 
                 if (isEmailValid(edtEmail.getText().toString().trim())) {
                     EmailForOTP =edtEmail.getText().toString().trim();
-                   getOTP(EmailForOTP);
+
+                    progressDialog =DialogsUtils.showProgressDialog(SignInActivity.this,"Checking Email","Please Wait...");
+                    getOTP (EmailForOTP);
 
                 }else {
                     edtEmail.setError("Not An Valid Email");
-                    edtEmail.setFocusable(true);
+                    edtEmail.requestFocus();
                 }
 
             }
@@ -174,9 +176,8 @@ public class SignInActivity  extends AppCompatActivity {
         edt_pin3 = view.findViewById(R.id.pin3);
         edt_pin4 = view.findViewById(R.id.pin4);
 
+        TextView error =view.findViewById(R.id.txt_error);
 
-
-        moveCursorToNext(edt_pin1,edt_pin2,edt_pin3,edt_pin4);
 
 
         ImageView img_close = view.findViewById(R.id.close);
@@ -196,16 +197,14 @@ public class SignInActivity  extends AppCompatActivity {
 
 
 
-        StringBuilder sb=new StringBuilder();
-
         edt_pin1.setFocusable(true);
 
         edt_pin1.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(sb.length()==0 & edt_pin1.length()==1)
+                if(edt_pin1.length()==1)
                 {
-                    sb.append(s);
+
                     edt_pin1.clearFocus();
                     edt_pin2.requestFocus();
                     edt_pin2.setCursorVisible(true);
@@ -217,18 +216,10 @@ public class SignInActivity  extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
-//                if(sb.length()==1)
-//                {
-//                    sb.deleteCharAt(0);
-//                }
 
             }
 
             public void afterTextChanged(Editable s) {
-                if(sb.length()==0)
-                {
-                    edt_pin1.requestFocus();
-                }
 
             }
         });
@@ -238,14 +229,11 @@ public class SignInActivity  extends AppCompatActivity {
 
 
 
-
-
         edt_pin2.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(sb.length() == 1 & edt_pin2.length()==1)
+                if (edt_pin2.length()==1)
                 {
-                    sb.append(s);
                     edt_pin2.clearFocus();
                     edt_pin3.requestFocus();
                     edt_pin3.setCursorVisible(true);
@@ -256,18 +244,10 @@ public class SignInActivity  extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
-//                if(sb.length()==2)
-//                {
-//                    sb.deleteCharAt(2);
-//                }
-
             }
 
             public void afterTextChanged(Editable s) {
-                if(sb.length()==1)
-                {
-                    edt_pin2.requestFocus();
-                }
+
 
             }
         });
@@ -279,9 +259,9 @@ public class SignInActivity  extends AppCompatActivity {
         edt_pin3.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(sb.length()==2 & edt_pin3.length()==1)
+                if(edt_pin3.length()==1)
                 {
-                    sb.append(s);
+
                     edt_pin3.clearFocus();
                     edt_pin4.requestFocus();
                     edt_pin4.setCursorVisible(true);
@@ -292,18 +272,10 @@ public class SignInActivity  extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
-//                if(sb.length()==3)
-//                {
-//                    sb.deleteCharAt(3);
-//                }
-
             }
 
             public void afterTextChanged(Editable s) {
-                if(sb.length() == 3)
-                {
-                    edt_pin4.requestFocus();
-                }
+
 
             }
         });
@@ -311,13 +283,24 @@ public class SignInActivity  extends AppCompatActivity {
 
 
         edt_pin4.addTextChangedListener(new TextWatcher() {
+
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(sb.length()==3 & edt_pin4.length()==1)
+                if(edt_pin4.length()==1)
                 {
-                    sb.append(s);
-                    OTP  =Integer.parseInt(sb.toString());
+                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this,"Checking OTP","Please Wait");
+
+                    String builder= edt_pin1.getText().toString()
+                            +edt_pin2.getText().toString()
+                            +edt_pin3.getText().toString()+
+                            edt_pin4.getText().toString();
+
                     edt_pin4.clearFocus();
+
+                         OTP  =Integer.parseInt(builder);
+
+
+
 
                     Call <SuccessErrorModel> call = jsonApiHolder.confirmOTP(EmailForOTP,OTP);
 
@@ -326,16 +309,19 @@ public class SignInActivity  extends AppCompatActivity {
                         public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                             if(response.isSuccessful()){
                                 alertDialog.dismiss();
+                                progressDialog.dismiss();
                                 openUpdatePasswrodDialoge();
+
                             }else {
-                                Log.i("TAG", "onResponse: "+response.code());
-                                Toast.makeText(SignInActivity.this, "Not Matched", Toast.LENGTH_SHORT).show();
+                                error.setVisibility(View.VISIBLE);
+                                progressDialog.dismiss();
+
                             }
                         }
 
                         @Override
                         public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-
+                            progressDialog.dismiss();
                         }
                     });
 
@@ -397,21 +383,23 @@ public class SignInActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-              if(checkUpdatePasswordInput(Password,confirmPassword)){
-
-                  Log.i("TAG", "onClick: "+EmailForOTP+"\n"+"Password "+Password.getText().toString());
-                   
+                btn_update.setEnabled(false);
+              if(checkUpdatePasswordInput (Password, confirmPassword)) {
+                  progressDialog= DialogsUtils.showProgressDialog(SignInActivity.this,"Updating Password","Please Wait...");
                    Call <SuccessErrorModel> call = jsonApiHolder.updatePassword(EmailForOTP,
                            Password.getText().toString().trim());
 
                    call.enqueue(new Callback<SuccessErrorModel>() {
                        @Override
                        public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+
                            if(response.isSuccessful()){
                                alertDialog.dismiss();
+                               progressDialog.dismiss();
                                Toast.makeText(SignInActivity.this, "Login With Your New Password", Toast.LENGTH_SHORT).show();
                            }else {
-                               Log.i("TAG", "onResponse: "+response.code());
+                               progressDialog.dismiss();
+                               btn_update.setEnabled(true);
                            }
                        }
 
@@ -433,7 +421,8 @@ public class SignInActivity  extends AppCompatActivity {
     }
 
 
-    private boolean checkUpdatePasswordInput(EditText Password, EditText confirmPassword){
+    private boolean checkUpdatePasswordInput (EditText Password, EditText confirmPassword) {
+
         boolean result = true;
         if(Password.getText().toString().trim().isEmpty()){
             Password.setError("Please Enter Your New Password");
@@ -455,9 +444,6 @@ public class SignInActivity  extends AppCompatActivity {
         }
         return result;
     }
-
-
-
 
 
 
@@ -626,26 +612,25 @@ private boolean isInfoRight() {
        call.enqueue(new Callback<SuccessErrorModel>() {
            @Override
            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-               if(response.isSuccessful()){
+
+               if (response.isSuccessful()) {
                    forgetDailoge.dismiss();
+                   progressDialog.dismiss();
                    openVerfiyOTPDialogue();
+
                }else {
+                   progressDialog.dismiss();
                    Toast.makeText(SignInActivity.this, "Email Not Found", Toast.LENGTH_SHORT).show();
                }
            }
 
            @Override
            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-
+               progressDialog.dismiss();
            }
        });
     }
 
-    private void moveCursorToNext(EditText edt_pin1, EditText edt_pin2, EditText edt_pin3, EditText edt_pin4){
-
-
-
-    }
 
     private static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
