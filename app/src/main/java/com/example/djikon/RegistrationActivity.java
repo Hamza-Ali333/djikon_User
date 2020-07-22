@@ -14,13 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -28,8 +25,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button btn_SignUp;
 
     private PreferenceData preferenceData;
-
-
 
     String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
@@ -118,7 +113,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-        Call<SuccessToken> call = feedJsonApi.registerUser(
+        Call<LoginRegistrationModel> call = feedJsonApi.registerUser(
                 edt_Name.getText().toString().trim(),
                 edt_LastName.getText().toString().trim(),
                 edt_Email.getText().toString().trim(),
@@ -127,14 +122,20 @@ public class RegistrationActivity extends AppCompatActivity {
                 edt_Refral_Code.getText().toString().trim(),
                 2);
 
-        call.enqueue(new Callback<SuccessToken>() {
+        call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
-            public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
+            public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                 progressDailoge.dismiss();
                 if(response.isSuccessful()){
-                    Log.i("TAG", "onResponse: "+response.code());
+
+
                     preferenceData.setUserToken(RegistrationActivity.this,response.body().getSuccess());
+
+                    String id= String.valueOf(response.body().getId());
+
+                    preferenceData.setUserId(RegistrationActivity.this,id);
                     preferenceData.setUserLoggedInStatus(RegistrationActivity.this,true);
+
                     startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
 
                 }else if(response.code() == 409 ){
@@ -152,7 +153,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<SuccessToken> call, Throwable t) {
+            public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: "+t.getMessage());
                 progressDailoge.dismiss();
             }

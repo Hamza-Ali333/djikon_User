@@ -8,7 +8,9 @@ import android.preference.PreferenceManager;
 public class PreferenceData
 {
     static final String PREF_LOGGEDIN_USER_TOKEN = "logged_token_is";
+    static final String PREF_LOGGEDIN_USER_ID = "logged_id_is";
     static final String PREF_USER_LOGGEDIN_STATUS = "logged_in_status";
+    static final String PREF_USER_IAMAGE = "Current_User_Image";
 
 
     public static SharedPreferences getSharedPreferences(Context ctx)
@@ -28,6 +30,36 @@ public class PreferenceData
     {
         return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_TOKEN, "No Token");
     }
+
+
+
+    public static void setUserId(Context ctx, String id)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_LOGGEDIN_USER_ID, id);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getUserId(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_ID, "No Id");
+    }
+
+
+    public static void setUserImage(Context ctx, String imageName)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_USER_IAMAGE, imageName);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getUserImage(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_USER_IAMAGE, "No Image");
+    }
+
 
     public static void setUserLoggedInStatus(Context ctx, boolean status)
     {

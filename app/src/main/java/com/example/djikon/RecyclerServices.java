@@ -60,7 +60,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                 holder.txt_ServiceName.setText(currentItem.getName());
                 holder.txt_ServiceDetail.setText(currentItem.getDetails());
                 holder.txt_ChargesType.setText(currentItem.getPrice_type());
-                holder.txt_Price.setText("$"+String.valueOf(currentItem.getPrice()));
+                holder.txt_Price.setText("$"+String.valueOf(currentItem.getPrice())+" ");
 
         if (!currentItem.getFeature_image().equals("no")) {
             Picasso.get().load(currentItem.getFeature_image())

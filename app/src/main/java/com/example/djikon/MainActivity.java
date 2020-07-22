@@ -17,18 +17,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
@@ -36,22 +30,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
 
     private Toolbar toolbar;
-    String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+    private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+    private static String IMAGEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/";
+    private  PreferenceData preferenceData;
+
+    private CircularImageView currentUserProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createRefrencer();
+
+        createRefrences();
 
 
+        preferenceData = new PreferenceData();
+        getCurrentUserImage();
 
-        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        CircularImageView img = findViewById(R.id.loginUser);
 
-        img.setOnClickListener(new View.OnClickListener() {
+//tool bar image
+        currentUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
@@ -99,7 +99,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void createRefrencer(){
+    private void createRefrences(){
+
+        toolbar = findViewById(R.id.toolbar);
+        currentUserProfile = findViewById(R.id.currentUserProfile);
+
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_View);
 
@@ -168,20 +172,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private  void userLogOut () {
 
-      Retrofit retrofit= ApiResponse.retrofit(BASEURL_DATA,this);
+      Retrofit retrofit= ApiResponse.retrofit(BASEURL,this);
 
       JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
 
-        Call<SuccessToken> call = jsonApiHolder.logout();
+        Call<LoginRegistrationModel> call = jsonApiHolder.logout();
 
-        call.enqueue(new Callback<SuccessToken>() {
+        call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
-            public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
+            public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                 if(response.isSuccessful()){
                     Log.i("TAG", "onResponse: "+response.code()+response.body().getSuccess());
-                    PreferenceData preferenceData = new PreferenceData();
+
                     preferenceData.clearPrefrences(MainActivity.this);
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
                     finish();
@@ -193,10 +197,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             @Override
-            public void onFailure(Call<SuccessToken> call, Throwable t) {
+            public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: "+t.getMessage());
             }
         });
+
+    }
+
+    private void getCurrentUserImage() {
+
+        String imageName = preferenceData.getUserImage(this);
+
+        if (!imageName.equals("No Image") && !imageName.equals("no")){
+            Toast.makeText(this, "findIamge", Toast.LENGTH_SHORT).show();
+            IMAGEURL += imageName;
+            Picasso.get().load(IMAGEURL)
+                    .fit()
+                    .centerCrop()
+                    .into(currentUserProfile, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                            // holder.txt_Loading.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            // Toast.makeText(getC, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+        }
 
     }
 

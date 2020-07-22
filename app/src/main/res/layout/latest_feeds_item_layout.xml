@@ -138,17 +138,6 @@
             app:srcCompat="@drawable/ic_heart_fill"
             tools:ignore="VectorDrawableCompat" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_uploaderName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.96"
-            app:layout_constraintStart_toEndOf="@+id/txt_uploaderName"
-            app:layout_constraintTop_toTopOf="@+id/txt_uploaderName"
-            app:srcCompat="@drawable/ic_more_horiz" />
-
         <TextView
             android:id="@+id/loading"
             android:layout_width="wrap_content"

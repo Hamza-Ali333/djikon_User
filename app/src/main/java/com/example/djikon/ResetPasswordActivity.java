@@ -31,6 +31,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
     private void createRefrences(){
+
         btn_Change_Password = findViewById(R.id.btn_changepassword);
     }
 

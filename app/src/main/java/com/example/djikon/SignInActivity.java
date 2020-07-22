@@ -3,18 +3,21 @@ package com.example.djikon;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,12 +26,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignInActivity  extends AppCompatActivity {
 
    private TextView txt_Create_new_account,txt_Forgot_Password , txt_signwith_face, txt_signwith_Finger,txt_signwith_PIN,txt_Error;
-
 
 
    private Button btn_SignIn;
@@ -36,9 +37,15 @@ public class SignInActivity  extends AppCompatActivity {
    private ImageView img_face_Id, img_Finger_Print;
    private EditText edt_Email,edt_password;
    private PreferenceData preferenceData;
-
-
+   private  Retrofit retrofit;
+   private  JSONApiHolder jsonApiHolder;
    private ProgressDialog progressDialog;
+   private AlertDialog forgetDailoge;
+
+   private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+
+   private  Integer OTP = 0;
+   private  String EmailForOTP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,13 @@ public class SignInActivity  extends AppCompatActivity {
         setContentView(R.layout.activity_sign__in);
         getSupportActionBar().hide();
         createReferencer();
+
+
+
+        retrofit = ApiResponse.retrofit(BASEURL,this);
+       jsonApiHolder = retrofit.create(JSONApiHolder.class);
+
+
         preferenceData = new PreferenceData();
 
 
@@ -71,8 +85,6 @@ public class SignInActivity  extends AppCompatActivity {
                     progressDialog =DialogsUtils.showProgressDialog(SignInActivity.this,"Checking Credentials","Please Wait While Cheking...");
                     isUserExits();
                 }
-
-
 
             }
         });
@@ -122,22 +134,30 @@ public class SignInActivity  extends AppCompatActivity {
         final View view = inflater.inflate(R.layout.dailoge_password_forgot, null);
 
 
-        //EditText edtEmail = view.findViewById(R.id.edt_Email);
-        //Button btnResetPassword = view.findViewById(R.id.btn_Reset_Password);
+        EditText edtEmail = view.findViewById(R.id.edt_Email);
+        Button btnResetPassword = view.findViewById(R.id.btn_Reset_Password);
 
         builder.setView(view);
         builder.setCancelable(true);
 
 
-        final AlertDialog alertDialog =  builder.show();
+        forgetDailoge =  builder.show();
 
-//        btnResetPassword.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                alertDialog.dismiss();
-//                openVerfiyOTPDialogue();
-//            }
-//        });
+        btnResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isEmailValid(edtEmail.getText().toString().trim())) {
+                    EmailForOTP =edtEmail.getText().toString().trim();
+                   getOTP(EmailForOTP);
+
+                }else {
+                    edtEmail.setError("Not An Valid Email");
+                    edtEmail.setFocusable(true);
+                }
+
+            }
+        });
 
         }
 
@@ -155,9 +175,12 @@ public class SignInActivity  extends AppCompatActivity {
         edt_pin4 = view.findViewById(R.id.pin4);
 
 
+
+        moveCursorToNext(edt_pin1,edt_pin2,edt_pin3,edt_pin4);
+
+
         ImageView img_close = view.findViewById(R.id.close);
 
-        Button btn_Verify_OTP = view.findViewById(R.id.btn_Verify_OTP);
 
         builder.setView(view);
         builder.setCancelable(false);
@@ -171,16 +194,269 @@ public class SignInActivity  extends AppCompatActivity {
             }
         });
 
-        btn_Verify_OTP.setOnClickListener(new View.OnClickListener() {
+
+
+        StringBuilder sb=new StringBuilder();
+
+        edt_pin1.setFocusable(true);
+
+        edt_pin1.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(sb.length()==0 & edt_pin1.length()==1)
+                {
+                    sb.append(s);
+                    edt_pin1.clearFocus();
+                    edt_pin2.requestFocus();
+                    edt_pin2.setCursorVisible(true);
+
+                }
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+//                if(sb.length()==1)
+//                {
+//                    sb.deleteCharAt(0);
+//                }
+
+            }
+
+            public void afterTextChanged(Editable s) {
+                if(sb.length()==0)
+                {
+                    edt_pin1.requestFocus();
+                }
+
+            }
+        });
+
+
+
+
+
+
+
+
+        edt_pin2.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(sb.length() == 1 & edt_pin2.length()==1)
+                {
+                    sb.append(s);
+                    edt_pin2.clearFocus();
+                    edt_pin3.requestFocus();
+                    edt_pin3.setCursorVisible(true);
+                }
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+//                if(sb.length()==2)
+//                {
+//                    sb.deleteCharAt(2);
+//                }
+
+            }
+
+            public void afterTextChanged(Editable s) {
+                if(sb.length()==1)
+                {
+                    edt_pin2.requestFocus();
+                }
+
+            }
+        });
+
+
+
+
+
+        edt_pin3.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(sb.length()==2 & edt_pin3.length()==1)
+                {
+                    sb.append(s);
+                    edt_pin3.clearFocus();
+                    edt_pin4.requestFocus();
+                    edt_pin4.setCursorVisible(true);
+                }
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+//                if(sb.length()==3)
+//                {
+//                    sb.deleteCharAt(3);
+//                }
+
+            }
+
+            public void afterTextChanged(Editable s) {
+                if(sb.length() == 3)
+                {
+                    edt_pin4.requestFocus();
+                }
+
+            }
+        });
+
+
+
+        edt_pin4.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(sb.length()==3 & edt_pin4.length()==1)
+                {
+                    sb.append(s);
+                    OTP  =Integer.parseInt(sb.toString());
+                    edt_pin4.clearFocus();
+
+                    Call <SuccessErrorModel> call = jsonApiHolder.confirmOTP(EmailForOTP,OTP);
+
+                    call.enqueue(new Callback<SuccessErrorModel>() {
+                        @Override
+                        public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                            if(response.isSuccessful()){
+                                alertDialog.dismiss();
+                                openUpdatePasswrodDialoge();
+                            }else {
+                                Log.i("TAG", "onResponse: "+response.code());
+                                Toast.makeText(SignInActivity.this, "Not Matched", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+
+                        }
+                    });
+
+
+
+
+                }
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+    private void openUpdatePasswrodDialoge() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dailoge_update_password, null);
+
+
+        ShowHidePasswordEditText Password = view.findViewById(R.id.edt_new_password);
+        ShowHidePasswordEditText confirmPassword = view.findViewById(R.id.edt_ConfirmPassword);
+
+        Button btn_update = view.findViewById(R.id.btn_changepassword);
+
+        builder.setView(view);
+        builder.setCancelable(false);
+
+
+        final AlertDialog alertDialog =  builder.show();
+
+        btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialog.dismiss();
-                Intent i = new Intent( view.getContext(), ResetPasswordActivity.class);
-                startActivity(i);
+
+              if(checkUpdatePasswordInput(Password,confirmPassword)){
+
+                  Log.i("TAG", "onClick: "+EmailForOTP+"\n"+"Password "+Password.getText().toString());
+                   
+                   Call <SuccessErrorModel> call = jsonApiHolder.updatePassword(EmailForOTP,
+                           Password.getText().toString().trim());
+
+                   call.enqueue(new Callback<SuccessErrorModel>() {
+                       @Override
+                       public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                           if(response.isSuccessful()){
+                               alertDialog.dismiss();
+                               Toast.makeText(SignInActivity.this, "Login With Your New Password", Toast.LENGTH_SHORT).show();
+                           }else {
+                               Log.i("TAG", "onResponse: "+response.code());
+                           }
+                       }
+
+                       @Override
+                       public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                           Toast.makeText(SignInActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                       }
+                   });
+               }else {
+                  Toast.makeText(SignInActivity.this, "not Correct", Toast.LENGTH_SHORT).show();
+              }
+
+
+
+                //alertDialog.dismiss();
             }
         });
 
     }
+
+
+    private boolean checkUpdatePasswordInput(EditText Password, EditText confirmPassword){
+        boolean result = true;
+        if(Password.getText().toString().trim().isEmpty()){
+            Password.setError("Please Enter Your New Password");
+            Password.requestFocus();
+            result = false;
+        }else if(confirmPassword.getText().toString().isEmpty()){
+            confirmPassword.setError("Please Enter Your Password Again");
+            confirmPassword.requestFocus();
+            result = false;
+        } else if(Password.getText().length() < 8 ){
+            Password.setError("Password can't be less then 8 digit");
+            edt_password.requestFocus();
+            result = false;
+        }
+        else if(!Password.getText().toString().trim().equals(confirmPassword.getText().toString().trim())){
+            Password.setError("Password not matched");
+            edt_password.requestFocus();
+            result = false;
+        }
+        return result;
+    }
+
+
 
 
 
@@ -282,8 +558,7 @@ private boolean isInfoRight() {
             edt_Email.setError("Not a Valid Email Address");
             edt_Email.requestFocus();
             result = false;
-        }
-         else if (edt_password.getText().toString().trim().isEmpty()) {
+        }else if (edt_password.getText().toString().trim().isEmpty()) {
              edt_password.setError("Please Enter Password");
              edt_password.requestFocus();
              result = false;
@@ -298,29 +573,36 @@ private boolean isInfoRight() {
     }
 
 
+
+
     private void isUserExits(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-        Call<SuccessToken> call = feedJsonApi.Login(edt_Email.getText().toString().trim(), edt_password.getText().toString().trim());
+        Call<LoginRegistrationModel> call = jsonApiHolder.Login(edt_Email.getText().toString().trim(), edt_password.getText().toString().trim());
 
-        call.enqueue(new Callback<SuccessToken>() {
+        call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
-            public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
+            public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                 if (response.isSuccessful()) {
 
                     Log.i("TAG", "onResponse: "+"token:>>  "+response.body().getSuccess());
 
                     preferenceData.setUserToken(SignInActivity.this,response.body().getSuccess());
+
+                    String id = String.valueOf(response.body().getId());
+
+                    preferenceData.setUserId(SignInActivity.this,id);
+                    preferenceData.setUserImage(SignInActivity.this,response.body().getProfile_image());
                     preferenceData.setUserLoggedInStatus(SignInActivity.this,true);
+
                     txt_Error.setVisibility(View.GONE);
                     progressDialog.dismiss();
+
+
                     startActivity(new Intent(SignInActivity.this,MainActivity.class));
                     finish();
+
                 } else {
+
                     Log.i("TAG", "onResponse: "+response.code());
                     txt_Error.setVisibility(View.VISIBLE);
                     txt_Error.setText("Email or Password is in Correct");
@@ -329,7 +611,7 @@ private boolean isInfoRight() {
             }
 
             @Override
-            public void onFailure(Call<SuccessToken> call, Throwable t) {
+            public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDialog.dismiss();
             }
@@ -338,6 +620,32 @@ private boolean isInfoRight() {
 
     }
 
+    private void getOTP(String Email){
+       Call<SuccessErrorModel> call = jsonApiHolder.sendOTP(Email);
+
+       call.enqueue(new Callback<SuccessErrorModel>() {
+           @Override
+           public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+               if(response.isSuccessful()){
+                   forgetDailoge.dismiss();
+                   openVerfiyOTPDialogue();
+               }else {
+                   Toast.makeText(SignInActivity.this, "Email Not Found", Toast.LENGTH_SHORT).show();
+               }
+           }
+
+           @Override
+           public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+
+           }
+       });
+    }
+
+    private void moveCursorToNext(EditText edt_pin1, EditText edt_pin2, EditText edt_pin3, EditText edt_pin4){
+
+
+
+    }
 
     private static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";

@@ -11,7 +11,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +22,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -144,6 +143,33 @@ public class BlogDetailActivity extends AppCompatActivity {
          });
 
 
+
+
+
+        edt_Comment.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                if(!edt_Comment.getText().toString().isEmpty())
+                btn_SendComment.setVisibility(View.VISIBLE);
+                else
+                    btn_SendComment.setVisibility(View.GONE);
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+                btn_SendComment.setVisibility(View.GONE);
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+
+            }
+        });
+
+
+
     }
 
 
@@ -250,11 +276,11 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-        Call<SuccessToken> call = feedJsonApi.postComment(String.valueOf(blogId),Comment);
+        Call<SuccessErrorModel> call = feedJsonApi.postComment(String.valueOf(blogId),Comment);
 
-        call.enqueue(new Callback<SuccessToken>() {
+        call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
-            public void onResponse(Call<SuccessToken> call, Response<SuccessToken> response) {
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
 
                 }else {
@@ -264,7 +290,7 @@ public class BlogDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<SuccessToken> call, Throwable t) {
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 Toast.makeText(BlogDetailActivity.this, "Network Error:"+t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

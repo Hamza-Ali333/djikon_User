@@ -24,7 +24,7 @@
             >
 
             <com.mikhaellopez.circularimageview.CircularImageView
-                android:id="@+id/loginUser"
+                android:id="@+id/currentUserProfile"
                 android:layout_gravity="right|center_vertical"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"

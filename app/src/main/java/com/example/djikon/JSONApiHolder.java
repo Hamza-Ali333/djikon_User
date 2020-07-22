@@ -20,8 +20,9 @@ public interface JSONApiHolder {
     Call<SingleBlog_Model> getSingleBlog(@Url String id);
 
     //this will return full detail dj profile
+    //same for user current user profile
     @GET
-    Call<DJProfileModel> getDjProfile(@Url String id);
+    Call<DJProfileModel> getDjOrUserProfile(@Url String id);
 
 
     //this will return full detail of a service
@@ -30,7 +31,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("register")
-    Call <SuccessToken> registerUser(
+    Call <LoginRegistrationModel> registerUser(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
             @Field("email") String email,
@@ -42,22 +43,42 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST()
-    Call<SuccessToken> postComment(@Url String blogId,
-    @Field("body") String body
+    Call<SuccessErrorModel> postComment(@Url String blogId,
+                                             @Field("body") String body
     );
 
 
     @FormUrlEncoded
     @POST("login")
-    Call <SuccessToken> Login(
+    Call <LoginRegistrationModel> Login(
             @Field("email") String email,
             @Field("password") String password
     );
 
+    @FormUrlEncoded
+    @POST("send_otp")
+    Call <SuccessErrorModel> sendOTP(
+            @Field("email") String email
+    );
+
+    @FormUrlEncoded
+    @POST("confirm_otp")
+    Call <SuccessErrorModel>  confirmOTP(
+            @Field("email") String email,
+            @Field("otp") Integer otp
+
+    );
+
+    @FormUrlEncoded
+    @POST("update_password")
+    Call <SuccessErrorModel>  updatePassword(
+            @Field("email") String email,
+            @Field("password") String newpassord
+    );
 
 
     @POST("logout")
-    Call <SuccessToken> logout();
+    Call <LoginRegistrationModel> logout();
 }
 
 

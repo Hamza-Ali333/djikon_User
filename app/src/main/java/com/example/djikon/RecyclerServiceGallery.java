@@ -22,7 +22,7 @@ public class RecyclerServiceGallery extends RecyclerView.Adapter<RecyclerService
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
         public ImageView img_gallery_Image;
-        public TextView txt_Image_Name;
+
 
 
 

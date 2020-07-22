@@ -62,6 +62,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Service Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         createRefrences();
 
         Intent intent = getIntent();
@@ -70,7 +71,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         downloadServiceData(String.valueOf(id));
 
         singleServiceModleArrayList = new ArrayList<>();
-
 
 
 
@@ -146,7 +146,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private void setDataintoView () {
         txt_Service_Name.setText(serviceName);
         txt_Dj_Name.setText(dj_Name);
-        txt_Price.setText(price);
+        txt_Price.setText(" $"+price+" ");
         txt_Price_Type.setText(price_type);
         txt_Description.setText(description);
 
@@ -179,6 +179,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.recyclerview_service_gallery);
         btn_Proceed_To_Pay = findViewById(R.id.btn_proceed_to_pay);
+
     }
 
 
