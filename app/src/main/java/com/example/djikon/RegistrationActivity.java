@@ -134,6 +134,9 @@ public class RegistrationActivity extends AppCompatActivity {
                     String id= String.valueOf(response.body().getId());
 
                     preferenceData.setUserId(RegistrationActivity.this,id);
+
+                    preferenceData.setUserName(RegistrationActivity.this, response.body().getFirstname() + " " + response.body().getLastname());
+
                     preferenceData.setUserLoggedInStatus(RegistrationActivity.this,true);
 
                     startActivity(new Intent(RegistrationActivity.this,MainActivity.class));

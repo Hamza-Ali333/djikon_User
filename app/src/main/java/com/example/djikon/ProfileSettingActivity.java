@@ -1,17 +1,26 @@
 package com.example.djikon;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.JsonReader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProfileSettingActivity extends AppCompatActivity {
 
@@ -19,7 +28,13 @@ public class ProfileSettingActivity extends AppCompatActivity {
     RelativeLayout rlt_LiveStreaming, rlt_FaceId, rlt_Biometrics, rlt_ChangePassword, rlt_ChangePin, rlt_BookingHistory,
     rlt_ConnectSocial;
 
-    Switch swt_FaceId_State, swt_Biometric_State;
+    private Switch swt_FaceId_State, swt_Biometric_State;
+    private Retrofit mRetrofit;
+    private JSONApiHolder mJSONApiHolder;
+
+
+    private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -82,8 +97,8 @@ public class ProfileSettingActivity extends AppCompatActivity {
         Button btnResetPassword;
 
         edt_oldPassword = view.findViewById(R.id.edt_old_password);
-        edt_oldPassword = view.findViewById(R.id.edt_new_password);
-        edt_oldPassword = view.findViewById(R.id.edt_ConfirmPassword);
+        edt_newPassword = view.findViewById(R.id.edt_new_password);
+        edt_confirmPassword = view.findViewById(R.id.edt_ConfirmPassword);
         btnResetPassword = view.findViewById(R.id.btn_Reset_Password);
 
         builder.setView(view);
@@ -94,7 +109,28 @@ public class ProfileSettingActivity extends AppCompatActivity {
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialog.dismiss();
+                if(edt_oldPassword.getText().toString().trim().isEmpty()){
+                    edt_oldPassword.setError("Enter Old Password");
+                    edt_oldPassword.requestFocus();
+                }
+                else if(edt_newPassword.getText().toString().trim().isEmpty()){
+                    edt_newPassword.setError("Enter New Password");
+                    edt_newPassword.requestFocus();
+                }
+                else if(edt_confirmPassword.getText().toString().trim().isEmpty()){
+                    edt_confirmPassword.setError("Enter New Password");
+                    edt_confirmPassword.requestFocus();
+                }
+                else if(!edt_newPassword.getText().toString().trim().equals(edt_newPassword.getText().toString().trim().isEmpty())){
+                    edt_newPassword.setError("New Password Not Matched");
+                    edt_newPassword.requestFocus();
+                }
+                else {
+                    alertDialog.dismiss();
+                    changePasswrod();
+                    mProgressDialog = DialogsUtils.showProgressDialog(ProfileSettingActivity.this,"Updating Password","Please Wait...");
+                }
+
             }
         });
 
@@ -180,6 +216,35 @@ public class ProfileSettingActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void changePasswrod(){
+        mRetrofit = ApiResponse.retrofit(BASEURL,this);
+        mJSONApiHolder = mRetrofit.create(JSONApiHolder.class);
+
+        Call<SuccessErrorModel> call = mJSONApiHolder.updatePassword("","","");
+
+        call.enqueue(new Callback<SuccessErrorModel>() {
+            @Override
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                if(response.isSuccessful()){
+
+                    mProgressDialog.dismiss();
+                    Toast.makeText(ProfileSettingActivity.this, "Done", Toast.LENGTH_SHORT).show();
+                    Log.i("TAG", "onResponse: "+response.code());
+                }else {
+
+                    mProgressDialog.dismiss();
+                    Toast.makeText(ProfileSettingActivity.this, "Failded", Toast.LENGTH_SHORT).show();
+                    Log.i("TAG", "onResponse: "+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+
+            }
+        });
     }
 
 

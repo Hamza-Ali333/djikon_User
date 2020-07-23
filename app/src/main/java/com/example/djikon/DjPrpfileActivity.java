@@ -205,11 +205,11 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<DJProfileModel> call = jsonApiHolder.getDjOrUserProfile(blogId);
+        Call<ProfileModel> call = jsonApiHolder.getDjOrUserProfile(blogId);
 
-        call.enqueue(new Callback<DJProfileModel>() {
+        call.enqueue(new Callback<ProfileModel>() {
             @Override
-            public void onResponse(Call<DJProfileModel> call, Response<DJProfileModel> response) {
+            public void onResponse(Call<ProfileModel> call, Response<ProfileModel> response) {
 
                 if (response.isSuccessful()) {
 
@@ -251,7 +251,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<DJProfileModel> call, Throwable t) {
+            public void onFailure(Call<ProfileModel> call, Throwable t) {
 
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 Toast.makeText(DjPrpfileActivity.this, "Response Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();

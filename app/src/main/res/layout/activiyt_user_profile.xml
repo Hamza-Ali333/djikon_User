@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:gravity="center_vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBlack">
 
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:secondaryProgress="0"
+        android:indeterminateDrawable="@drawable/progressbar"
+        />
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading.."
+        android:layout_centerInParent="true"
+        android:textColor="#fff"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -109,7 +125,7 @@
         android:layout_marginRight="2dp"
         android:background="@drawable/edt_shape"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="phone"
         android:paddingLeft="8dp"
         android:hint="Phone No"
         android:textColorHint="#fff"
@@ -152,7 +168,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline9"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline8"
-            app:layout_constraintTop_toBottomOf="@+id/spinner" />
+            app:layout_constraintTop_toBottomOf="@+id/layout" />
 
         <Button
         android:id="@+id/btn_UpdateProfile"
@@ -333,17 +349,25 @@
 
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinner"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginTop="8dp"
+            android:background="#666666"
+            app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline9"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline8"
-            app:layout_constraintTop_toBottomOf="@+id/edt_User_PhoneNo" />
+            app:layout_constraintTop_toBottomOf="@+id/edt_User_PhoneNo">
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+             />
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

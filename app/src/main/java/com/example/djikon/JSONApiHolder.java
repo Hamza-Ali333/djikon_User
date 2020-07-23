@@ -22,7 +22,7 @@ public interface JSONApiHolder {
     //this will return full detail dj profile
     //same for user current user profile
     @GET
-    Call<DJProfileModel> getDjOrUserProfile(@Url String id);
+    Call<ProfileModel> getDjOrUserProfile(@Url String id);
 
 
     //this will return full detail of a service
@@ -41,10 +41,34 @@ public interface JSONApiHolder {
             @Field("role") int role
             );
 
+
+
+    @FormUrlEncoded
+    @POST()
+    Call <SuccessErrorModel> UpdateUserProfile(
+            @Url String userid,
+            @Field("firstname") String firstname,
+            @Field("lastname") String lastname,
+            @Field("contact") String contact,
+            @Field("gender") String gender,
+            @Field("address") String address,
+            @Field("location") String location
+    );
+
+
     @FormUrlEncoded
     @POST()
     Call<SuccessErrorModel> postComment(@Url String blogId,
                                              @Field("body") String body
+    );
+
+
+    @FormUrlEncoded
+    @POST("login")
+    Call <SuccessErrorModel> updatePassword(
+            @Field("oldpassword") String oldpassword,
+            @Field("newpassword") String newpassword,
+            @Field("role") String againpassword
     );
 
 

@@ -541,14 +541,12 @@ public class SignInActivity extends AppCompatActivity {
 
                     preferenceData.setUserId(SignInActivity.this, id);
 
-                    String Name = response.body().getFirstname()+" "+response.body().getLastname();
 
-                    preferenceData.setUserName(SignInActivity.this, Name);
-
-                    Log.i("TAG", "onResponse: first "+Name);
-
+                    preferenceData.setUserName(SignInActivity.this,response.body().getFirstname()+" "+response.body().getLastname());
+                    Log.i("TAG", "onResponse: first "+response.body().getFirstname()+" "+response.body().getLastname());
 
                     preferenceData.setUserImage(SignInActivity.this, response.body().getProfile_image());
+
                     preferenceData.setUserLoggedInStatus(SignInActivity.this, true);
 
                     txt_Error.setVisibility(View.GONE);

@@ -8,10 +8,11 @@ import android.preference.PreferenceManager;
 public class PreferenceData
 {
     static final String PREF_LOGGEDIN_USER_TOKEN = "logged_token_is";
-    static final String PREF_LOGGEDIN_USER_FUll_NAME = "USER_FULL_NAME";
     static final String PREF_LOGGEDIN_USER_ID = "logged_id_is";
     static final String PREF_USER_LOGGEDIN_STATUS = "logged_in_status";
     static final String PREF_USER_IAMAGE = "Current_User_Image";
+
+    static final String PREF_LOGGEDIN_USER_FullName = "USER_FULL_NAME";
 
 
     public static SharedPreferences getSharedPreferences(Context ctx)
@@ -32,6 +33,18 @@ public class PreferenceData
         return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_TOKEN, "No Token");
     }
 
+    public static void setUserName(Context ctx, String fullName)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_LOGGEDIN_USER_FullName, fullName);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getUserName(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_FullName, "No Name");
+    }
 
 
     public static void setUserId(Context ctx, String id)
@@ -48,23 +61,12 @@ public class PreferenceData
     }
 
 
-    public static void setUserName(Context ctx, String UserName)
-    {
-        Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(PREF_LOGGEDIN_USER_FUll_NAME, UserName);
-        editor.apply();
-        editor.commit();
-    }
 
-    public static String getUserName(Context ctx)
-    {
-        return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_FUll_NAME, "NoName");
-    }
 
     public static void setUserImage(Context ctx, String imageName)
     {
         Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(PREF_LOGGEDIN_USER_FUll_NAME, imageName);
+        editor.putString(PREF_USER_IAMAGE, imageName);
         editor.apply();
         editor.commit();
     }
@@ -93,9 +95,9 @@ public class PreferenceData
         Editor editor = getSharedPreferences(ctx).edit();
         editor.remove(PREF_LOGGEDIN_USER_TOKEN);
         editor.remove(PREF_LOGGEDIN_USER_ID);
-        editor.remove(PREF_LOGGEDIN_USER_FUll_NAME);
         editor.remove(PREF_USER_LOGGEDIN_STATUS);
         editor.remove(PREF_USER_IAMAGE);
+        editor.remove(PREF_LOGGEDIN_USER_FullName);
         editor.commit();
     }
 }

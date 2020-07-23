@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         UserName.setText(preferenceData.getUserName(MainActivity.this));
 
 
-
         getCurrentUserImage();
 
         setSupportActionBar(toolbar);
