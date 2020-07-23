@@ -179,13 +179,12 @@
             android:id="@+id/textView14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Blog Comments"
-            android:textSize="18sp"
             android:layout_marginTop="8dp"
+            android:text="Blog Comments"
+            android:textColor="#fff"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/colorBlue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline7"
             app:layout_constraintTop_toBottomOf="@+id/fram" />
 
 

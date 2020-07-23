@@ -2,8 +2,8 @@ package com.example.djikon;
 
 public class LoginRegistrationModel {
     private String success,
-    first_name,
-    last_name,
+    firstname,
+    lastname,
     profile_image;
 
     private int id;
@@ -19,5 +19,13 @@ public class LoginRegistrationModel {
 
     public String getProfile_image() {
         return profile_image;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
     }
 }

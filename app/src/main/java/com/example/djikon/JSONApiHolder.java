@@ -13,7 +13,7 @@ public interface JSONApiHolder {
 
     //will return all the blogs
     @GET ("blog")
-    Call<List<feed_Blog_Model>> getBlogs();
+    Call<List<Feed_Blog_Model>> getBlogs();
 
     //will return detail of a blog
     @GET
@@ -52,7 +52,8 @@ public interface JSONApiHolder {
     @POST("login")
     Call <LoginRegistrationModel> Login(
             @Field("email") String email,
-            @Field("password") String password
+            @Field("password") String password,
+            @Field("role") Integer role
     );
 
     @FormUrlEncoded
@@ -74,6 +75,14 @@ public interface JSONApiHolder {
     Call <SuccessErrorModel>  updatePassword(
             @Field("email") String email,
             @Field("password") String newpassord
+    );
+
+    @FormUrlEncoded
+    @POST()
+    Call <SuccessErrorModel>  LikeUnlike(
+            @Url String blogid,
+            @Field("status") Integer likeStatus
+
     );
 
 

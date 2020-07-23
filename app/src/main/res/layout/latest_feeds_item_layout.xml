@@ -27,13 +27,19 @@
 
         <TextView
             android:id="@+id/txt_uploaderName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginLeft="12dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:text="Fransic Briggs"
             android:textSize="16sp"
+            android:maxLines="1"
+            android:textColor="@color/colorBlack"
             app:layout_constraintBottom_toTopOf="@+id/txt_uploadTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/img_uploaderImage"
             app:layout_constraintTop_toTopOf="@+id/img_uploaderImage"
             app:layout_constraintVertical_chainStyle="packed"
@@ -66,28 +72,20 @@
 
         <TextView
             android:id="@+id/txt_imgDescription"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:layout_marginLeft="3dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:maxLines="3"
             android:text="You love having a second home but the mortgage is putting a crater in your weller"
             android:textColor="#000"
-            android:maxLines="3"
             android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/img_uploaderImage"
             app:layout_constraintTop_toBottomOf="@+id/img_feedImage" />
-
-        <TextView
-            android:id="@+id/txt_ReadMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Read more..."
-            android:textColor="#ACB1C0"
-            app:layout_constraintStart_toStartOf="@+id/txt_imgDescription"
-            app:layout_constraintTop_toBottomOf="@+id/txt_imgDescription"
-            tools:text="Read more..." />
 
         <TextView
             android:id="@+id/txt_chatNo"
@@ -100,6 +98,7 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/img_chat"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_chat"
             tools:text="348" />
 
         <ImageView
@@ -109,8 +108,9 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:contentDescription="TODO"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_LikesNo"
             app:layout_constraintEnd_toStartOf="@+id/txt_chatNo"
-            app:layout_constraintTop_toBottomOf="@+id/txt_ReadMore"
+            app:layout_constraintTop_toTopOf="@+id/txt_LikesNo"
             app:srcCompat="@drawable/ic_chat" />
 
         <TextView
@@ -122,8 +122,9 @@
             android:text="1122"
             android:textColor="#000000"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/img_chat"
+            app:layout_constraintBottom_toBottomOf="@+id/img_likes"
             app:layout_constraintStart_toEndOf="@+id/img_likes"
+            app:layout_constraintTop_toTopOf="@+id/img_likes"
             tools:text="1122" />
 
         <ImageView
@@ -132,10 +133,10 @@
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_LikesNo"
+            android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_ReadMore"
-            app:srcCompat="@drawable/ic_heart_fill"
+            app:layout_constraintTop_toBottomOf="@+id/txt_imgDescription"
+            app:srcCompat="@drawable/ic_unlike"
             tools:ignore="VectorDrawableCompat" />
 
         <TextView

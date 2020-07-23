@@ -27,25 +27,25 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class SignInActivity  extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
 
-   private TextView txt_Create_new_account,txt_Forgot_Password , txt_signwith_face, txt_signwith_Finger,txt_signwith_PIN,txt_Error;
+    private TextView txt_Create_new_account, txt_Forgot_Password, txt_signwith_face, txt_signwith_Finger, txt_signwith_PIN, txt_Error;
 
 
-   private Button btn_SignIn;
+    private Button btn_SignIn;
 
-   private ImageView img_face_Id, img_Finger_Print;
-   private EditText edt_Email,edt_password;
-   private PreferenceData preferenceData;
-   private  Retrofit retrofit;
-   private  JSONApiHolder jsonApiHolder;
-   private ProgressDialog progressDialog;
-   private AlertDialog forgetDailoge;
+    private ImageView img_face_Id, img_Finger_Print, img_Error_Sign;
+    private EditText edt_Email, edt_password;
+    private PreferenceData preferenceData;
+    private Retrofit retrofit;
+    private JSONApiHolder jsonApiHolder;
+    private ProgressDialog progressDialog;
+    private AlertDialog forgetDailoge;
 
-   private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+    private static final String BASEURL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
-   private  int OTP = 0;
-   private  String EmailForOTP;
+    private int OTP = 0;
+    private String EmailForOTP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +54,8 @@ public class SignInActivity  extends AppCompatActivity {
         getSupportActionBar().hide();
         createReferencer();
 
-        openVerfiyOTPDialogue();
 
-        retrofit = ApiResponse.retrofit(BASEURL,this);
+        retrofit = ApiResponse.retrofit(BASEURL, this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
@@ -66,7 +65,7 @@ public class SignInActivity  extends AppCompatActivity {
         txt_Create_new_account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(),RegistrationActivity.class));
+                startActivity(new Intent(v.getContext(), RegistrationActivity.class));
                 finish();
             }
         });
@@ -74,15 +73,15 @@ public class SignInActivity  extends AppCompatActivity {
         txt_Forgot_Password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-           openForgotDialogue();
+                openForgotDialogue();
             }
         });
 
         btn_SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isInfoRight()) {
-                    progressDialog =DialogsUtils.showProgressDialog(SignInActivity.this,"Checking Credentials","Please Wait While Cheking...");
+                if (isInfoRight()) {
+                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Cheking...");
                     isUserExits();
                 }
 
@@ -92,7 +91,7 @@ public class SignInActivity  extends AppCompatActivity {
         txt_signwith_face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               openLoginWithFaceId();
+                openLoginWithFaceId();
             }
         });
 
@@ -141,19 +140,19 @@ public class SignInActivity  extends AppCompatActivity {
         builder.setCancelable(true);
 
 
-        forgetDailoge =  builder.show();
+        forgetDailoge = builder.show();
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (isEmailValid(edtEmail.getText().toString().trim())) {
-                    EmailForOTP =edtEmail.getText().toString().trim();
+                    EmailForOTP = edtEmail.getText().toString().trim();
 
-                    progressDialog =DialogsUtils.showProgressDialog(SignInActivity.this,"Checking Email","Please Wait...");
-                    getOTP (EmailForOTP);
+                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Email", "Please Wait...");
+                    getOTP(EmailForOTP);
 
-                }else {
+                } else {
                     edtEmail.setError("Not An Valid Email");
                     edtEmail.requestFocus();
                 }
@@ -161,7 +160,7 @@ public class SignInActivity  extends AppCompatActivity {
             }
         });
 
-        }
+    }
 
     private void openVerfiyOTPDialogue() {
 
@@ -170,14 +169,13 @@ public class SignInActivity  extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dailogue_varification_code, null);
 
-       EditText edt_pin1, edt_pin2, edt_pin3,edt_pin4;
+        EditText edt_pin1, edt_pin2, edt_pin3, edt_pin4;
         edt_pin1 = view.findViewById(R.id.pin1);
         edt_pin2 = view.findViewById(R.id.pin2);
         edt_pin3 = view.findViewById(R.id.pin3);
         edt_pin4 = view.findViewById(R.id.pin4);
 
-        TextView error =view.findViewById(R.id.txt_error);
-
+        TextView error = view.findViewById(R.id.txt_error);
 
 
         ImageView img_close = view.findViewById(R.id.close);
@@ -186,7 +184,7 @@ public class SignInActivity  extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,14 +194,12 @@ public class SignInActivity  extends AppCompatActivity {
         });
 
 
-
         edt_pin1.setFocusable(true);
 
         edt_pin1.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(edt_pin1.length()==1)
-                {
+                if (edt_pin1.length() == 1) {
 
                     edt_pin1.clearFocus();
                     edt_pin2.requestFocus();
@@ -213,6 +209,7 @@ public class SignInActivity  extends AppCompatActivity {
 
             }
 
+            //textWatcher extra method not in use
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
@@ -225,15 +222,10 @@ public class SignInActivity  extends AppCompatActivity {
         });
 
 
-
-
-
-
         edt_pin2.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if (edt_pin2.length()==1)
-                {
+                if (edt_pin2.length() == 1) {
                     edt_pin2.clearFocus();
                     edt_pin3.requestFocus();
                     edt_pin3.setCursorVisible(true);
@@ -241,6 +233,7 @@ public class SignInActivity  extends AppCompatActivity {
 
             }
 
+            //textWatcher extra method not in use
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
@@ -253,14 +246,10 @@ public class SignInActivity  extends AppCompatActivity {
         });
 
 
-
-
-
         edt_pin3.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(edt_pin3.length()==1)
-                {
+                if (edt_pin3.length() == 1) {
 
                     edt_pin3.clearFocus();
                     edt_pin4.requestFocus();
@@ -269,6 +258,7 @@ public class SignInActivity  extends AppCompatActivity {
 
             }
 
+            //textWatcher extra method not in use
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
@@ -281,38 +271,36 @@ public class SignInActivity  extends AppCompatActivity {
         });
 
 
-
         edt_pin4.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(edt_pin4.length()==1)
-                {
-                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this,"Checking OTP","Please Wait");
+                if (edt_pin4.length() == 1) {
+                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking OTP", "Please Wait");
 
-                    String builder= edt_pin1.getText().toString()
-                            +edt_pin2.getText().toString()
-                            +edt_pin3.getText().toString()+
+                    String builder = edt_pin1.getText().toString()
+                            + edt_pin2.getText().toString()
+                            + edt_pin3.getText().toString() +
                             edt_pin4.getText().toString();
 
                     edt_pin4.clearFocus();
 
-                         OTP  =Integer.parseInt(builder);
+                    OTP = Integer.parseInt(builder);
 
 
-
-
-                    Call <SuccessErrorModel> call = jsonApiHolder.confirmOTP(EmailForOTP,OTP);
+                    Call<SuccessErrorModel> call = jsonApiHolder.confirmOTP(EmailForOTP, OTP);
 
                     call.enqueue(new Callback<SuccessErrorModel>() {
                         @Override
                         public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                            if(response.isSuccessful()){
+
+                            if (response.isSuccessful()) {
+                                error.setVisibility(View.GONE);
                                 alertDialog.dismiss();
                                 progressDialog.dismiss();
                                 openUpdatePasswrodDialoge();
 
-                            }else {
+                            } else {
                                 error.setVisibility(View.VISIBLE);
                                 progressDialog.dismiss();
 
@@ -326,12 +314,11 @@ public class SignInActivity  extends AppCompatActivity {
                     });
 
 
-
-
                 }
 
             }
 
+            //textWatcher extra method not in use
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
@@ -341,23 +328,10 @@ public class SignInActivity  extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
 
-
             }
         });
 
-
-
-
-
-
-
-
-
-
-    }
-
-
-
+    }//openVerifyOTPDialoge
 
 
     private void openUpdatePasswrodDialoge() {
@@ -377,41 +351,40 @@ public class SignInActivity  extends AppCompatActivity {
         builder.setCancelable(false);
 
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 btn_update.setEnabled(false);
-              if(checkUpdatePasswordInput (Password, confirmPassword)) {
-                  progressDialog= DialogsUtils.showProgressDialog(SignInActivity.this,"Updating Password","Please Wait...");
-                   Call <SuccessErrorModel> call = jsonApiHolder.updatePassword(EmailForOTP,
-                           Password.getText().toString().trim());
+                if (checkUpdatePasswordInput(Password, confirmPassword)) {
+                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Updating Password", "Please Wait...");
+                    Call<SuccessErrorModel> call = jsonApiHolder.updatePassword(EmailForOTP,
+                            Password.getText().toString().trim());
 
-                   call.enqueue(new Callback<SuccessErrorModel>() {
-                       @Override
-                       public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                    call.enqueue(new Callback<SuccessErrorModel>() {
+                        @Override
+                        public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
 
-                           if(response.isSuccessful()){
-                               alertDialog.dismiss();
-                               progressDialog.dismiss();
-                               Toast.makeText(SignInActivity.this, "Login With Your New Password", Toast.LENGTH_SHORT).show();
-                           }else {
-                               progressDialog.dismiss();
-                               btn_update.setEnabled(true);
-                           }
-                       }
+                            if (response.isSuccessful()) {
+                                alertDialog.dismiss();
+                                progressDialog.dismiss();
+                                Toast.makeText(SignInActivity.this, "Login With Your New Password", Toast.LENGTH_SHORT).show();
+                            } else {
+                                progressDialog.dismiss();
+                                btn_update.setEnabled(true);
+                            }
+                        }
 
-                       @Override
-                       public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                           Toast.makeText(SignInActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                       }
-                   });
-               }else {
-                  Toast.makeText(SignInActivity.this, "not Correct", Toast.LENGTH_SHORT).show();
-              }
-
+                        @Override
+                        public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                            Toast.makeText(SignInActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(SignInActivity.this, "not Correct", Toast.LENGTH_SHORT).show();
+                }
 
 
                 //alertDialog.dismiss();
@@ -421,31 +394,28 @@ public class SignInActivity  extends AppCompatActivity {
     }
 
 
-    private boolean checkUpdatePasswordInput (EditText Password, EditText confirmPassword) {
+    private boolean checkUpdatePasswordInput(EditText Password, EditText confirmPassword) {
 
         boolean result = true;
-        if(Password.getText().toString().trim().isEmpty()){
+        if (Password.getText().toString().trim().isEmpty()) {
             Password.setError("Please Enter Your New Password");
             Password.requestFocus();
             result = false;
-        }else if(confirmPassword.getText().toString().isEmpty()){
+        } else if (confirmPassword.getText().toString().isEmpty()) {
             confirmPassword.setError("Please Enter Your Password Again");
             confirmPassword.requestFocus();
             result = false;
-        } else if(Password.getText().length() < 8 ){
+        } else if (Password.getText().length() < 8) {
             Password.setError("Password can't be less then 8 digit");
             edt_password.requestFocus();
             result = false;
-        }
-        else if(!Password.getText().toString().trim().equals(confirmPassword.getText().toString().trim())){
+        } else if (!Password.getText().toString().trim().equals(confirmPassword.getText().toString().trim())) {
             Password.setError("Password not matched");
             edt_password.requestFocus();
             result = false;
         }
         return result;
     }
-
-
 
 
     private void openLoginWithFaceId() {
@@ -456,14 +426,13 @@ public class SignInActivity  extends AppCompatActivity {
         View view = inflater.inflate(R.layout.dailoge_faceid, null);
 
 
-
-         Button btn_cancle_Face_Id = view.findViewById(R.id.cancel_faceid);
+        Button btn_cancle_Face_Id = view.findViewById(R.id.cancel_faceid);
 
         builder.setView(view);
         builder.setCancelable(false);
 
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         btn_cancle_Face_Id.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -482,14 +451,13 @@ public class SignInActivity  extends AppCompatActivity {
         View view = inflater.inflate(R.layout.dailoge_finger_print, null);
 
 
-
         Button btn_cancle_Face_Id = view.findViewById(R.id.cancel_fingerprint);
 
         builder.setView(view);
         builder.setCancelable(false);
 
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         btn_cancle_Face_Id.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -514,83 +482,93 @@ public class SignInActivity  extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         btn_Login_Pin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                Intent i = new Intent( view.getContext(), MainActivity.class);
+                Intent i = new Intent(view.getContext(), MainActivity.class);
                 startActivity(i);
             }
         });
 
     }
 
-private boolean isInfoRight() {
+    private boolean isInfoRight() {
 
         boolean result = true;
-         if (edt_Email.getText().toString().trim().isEmpty()) {
+        if (edt_Email.getText().toString().trim().isEmpty()) {
             edt_Email.setError("Please Enter Your Last Name");
             edt_Email.requestFocus();
             result = false;
-        }
-        else if (edt_Email.getText().toString().trim().isEmpty()) {
+        } else if (edt_Email.getText().toString().trim().isEmpty()) {
             edt_Email.setError("Please Enter Email");
             edt_Email.requestFocus();
             result = false;
-        }
-        else if (!isEmailValid(edt_Email.getText().toString().trim())) {
+        } else if (!isEmailValid(edt_Email.getText().toString().trim())) {
             edt_Email.setError("Not a Valid Email Address");
             edt_Email.requestFocus();
             result = false;
-        }else if (edt_password.getText().toString().trim().isEmpty()) {
-             edt_password.setError("Please Enter Password");
-             edt_password.requestFocus();
-             result = false;
-         }
-         else if (edt_password.getText().toString().trim().length() < 8) {
-             edt_password.setError("Password Can't be less then 8 Digits!");
-             edt_password.requestFocus();
-             result = false;
-         }
+        } else if (edt_password.getText().toString().trim().isEmpty()) {
+            edt_password.setError("Please Enter Password");
+            edt_password.requestFocus();
+            result = false;
+        } else if (edt_password.getText().toString().trim().length() < 8) {
+            edt_password.setError("Password Can't be less then 8 Digits!");
+            edt_password.requestFocus();
+            result = false;
+        }
 
         return result;
     }
 
 
+    private void isUserExits() {
 
-
-    private void isUserExits(){
-
-        Call<LoginRegistrationModel> call = jsonApiHolder.Login(edt_Email.getText().toString().trim(), edt_password.getText().toString().trim());
+        Call<LoginRegistrationModel> call = jsonApiHolder.Login(edt_Email.getText().toString().trim(), edt_password.getText().toString().trim(),2);
 
         call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
             public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                 if (response.isSuccessful()) {
 
-                    Log.i("TAG", "onResponse: "+"token:>>  "+response.body().getSuccess());
+                    Log.i("TAG", "onResponse: " + "token:>>  " + response.body().getSuccess());
 
-                    preferenceData.setUserToken(SignInActivity.this,response.body().getSuccess());
+                    preferenceData.setUserToken(SignInActivity.this, response.body().getSuccess());
 
                     String id = String.valueOf(response.body().getId());
 
-                    preferenceData.setUserId(SignInActivity.this,id);
-                    preferenceData.setUserImage(SignInActivity.this,response.body().getProfile_image());
-                    preferenceData.setUserLoggedInStatus(SignInActivity.this,true);
+                    preferenceData.setUserId(SignInActivity.this, id);
+
+                    String Name = response.body().getFirstname()+" "+response.body().getLastname();
+
+                    preferenceData.setUserName(SignInActivity.this, Name);
+
+                    Log.i("TAG", "onResponse: first "+Name);
+
+
+                    preferenceData.setUserImage(SignInActivity.this, response.body().getProfile_image());
+                    preferenceData.setUserLoggedInStatus(SignInActivity.this, true);
 
                     txt_Error.setVisibility(View.GONE);
+                    img_Error_Sign.setVisibility(View.GONE);
                     progressDialog.dismiss();
 
 
-                    startActivity(new Intent(SignInActivity.this,MainActivity.class));
+                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
                     finish();
 
+                }else if(response.code()==403){
+                    txt_Error.setText("This Email is not Belongs To User App");
+                    txt_Error.setVisibility(View.VISIBLE);
+                    img_Error_Sign.setVisibility(View.VISIBLE);
+                    progressDialog.dismiss();
                 } else {
 
-                    Log.i("TAG", "onResponse: "+response.code());
+                    Log.i("TAG", "onResponse: " + response.code());
                     txt_Error.setVisibility(View.VISIBLE);
+                    img_Error_Sign.setVisibility(View.VISIBLE);
                     txt_Error.setText("Email or Password is in Correct");
                     progressDialog.dismiss();
                 }
@@ -606,29 +584,29 @@ private boolean isInfoRight() {
 
     }
 
-    private void getOTP(String Email){
-       Call<SuccessErrorModel> call = jsonApiHolder.sendOTP(Email);
+    private void getOTP(String Email) {
+        Call<SuccessErrorModel> call = jsonApiHolder.sendOTP(Email);
 
-       call.enqueue(new Callback<SuccessErrorModel>() {
-           @Override
-           public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+        call.enqueue(new Callback<SuccessErrorModel>() {
+            @Override
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
 
-               if (response.isSuccessful()) {
-                   forgetDailoge.dismiss();
-                   progressDialog.dismiss();
-                   openVerfiyOTPDialogue();
+                if (response.isSuccessful()) {
+                    forgetDailoge.dismiss();
+                    progressDialog.dismiss();
+                    openVerfiyOTPDialogue();
 
-               }else {
-                   progressDialog.dismiss();
-                   Toast.makeText(SignInActivity.this, "Email Not Found", Toast.LENGTH_SHORT).show();
-               }
-           }
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(SignInActivity.this, "Email Not Found", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-           @Override
-           public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-               progressDialog.dismiss();
-           }
-       });
+            @Override
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                progressDialog.dismiss();
+            }
+        });
     }
 
 
@@ -641,7 +619,7 @@ private boolean isInfoRight() {
 
     private void createReferencer() {
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);
-        txt_Forgot_Password= findViewById(R.id.txt_Forgot_Password);
+        txt_Forgot_Password = findViewById(R.id.txt_Forgot_Password);
         txt_signwith_Finger = findViewById(R.id.txt_finger_print);
         txt_signwith_face = findViewById(R.id.txt_face_id);
         txt_signwith_PIN = findViewById(R.id.txt_signInWithPIN);
@@ -653,15 +631,13 @@ private boolean isInfoRight() {
         btn_SignIn = findViewById(R.id.btn_SignIn);
         img_face_Id = findViewById(R.id.img_face_id);
         img_Finger_Print = findViewById(R.id.img_finger_print);
-
-
-
-        }
-
-
+        img_Error_Sign = findViewById(R.id.img_error_sign);
 
 
     }
+
+
+}
 
 
 

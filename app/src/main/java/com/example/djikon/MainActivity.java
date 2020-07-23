@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private View navHeaderView;
 
     private Toolbar toolbar;
     private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private  PreferenceData preferenceData;
 
     private CircularImageView currentUserProfile;
+    private ImageView UserProfileHeader;
+    private TextView UserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         preferenceData = new PreferenceData();
+
+
+        UserName.setText(preferenceData.getUserName(MainActivity.this));
+
+
+
         getCurrentUserImage();
 
         setSupportActionBar(toolbar);
@@ -106,12 +117,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_View);
+        navHeaderView =  navigationView.getHeaderView(0);
+
+        UserProfileHeader = navHeaderView.findViewById(R.id.img_userProfile);
+        UserName = navHeaderView.findViewById(R.id.txt_userName);
+
 
     }
 
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+
+
+
         switch (menuItem.getItemId()) {
 
             case R.id.nav_LatestFeed:
@@ -177,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
-
         Call<LoginRegistrationModel> call = jsonApiHolder.logout();
 
         call.enqueue(new Callback<LoginRegistrationModel>() {
@@ -187,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("TAG", "onResponse: "+response.code()+response.body().getSuccess());
 
                     preferenceData.clearPrefrences(MainActivity.this);
+
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
                     finish();
 
@@ -217,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .into(currentUserProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
+                            UserProfileHeader.setImageDrawable(currentUserProfile.getDrawable());
                             // holder.txt_Loading.setVisibility(View.GONE);
                         }
 

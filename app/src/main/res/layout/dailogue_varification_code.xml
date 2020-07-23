@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:layout_gravity="center_horizontal"
-            android:text="Phone Verification"
+            android:text="Check Your Email"
             android:textColor="@color/colorBlack"/>
         <TextView
             android:layout_width="wrap_content"
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
-
+            android:visibility="gone"
             android:textStyle="bold"
             android:text="Wrong Code"
             android:textColor="@color/print_btn_color"

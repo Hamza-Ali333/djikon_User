@@ -31,6 +31,7 @@
             android:layout_below="@+id/img_servic_image"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="2dp"
+            android:maxLines="1"
             android:text="Night Sirves"
             android:textColor="@color/colorBlack"
             android:textSize="14sp" />

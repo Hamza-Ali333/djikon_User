@@ -74,22 +74,22 @@ public class LatestFeedFragment extends Fragment {
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-        Call<List<feed_Blog_Model>> call = feedJsonApi.getBlogs();
+        Call<List<Feed_Blog_Model>> call = feedJsonApi.getBlogs();
 
 
-        call.enqueue(new Callback<List<feed_Blog_Model>>() {
+        call.enqueue(new Callback<List<Feed_Blog_Model>>() {
             @Override
-            public void onResponse(Call<List<feed_Blog_Model>> call, Response<List<feed_Blog_Model>> response) {
+            public void onResponse(Call<List<Feed_Blog_Model>> call, Response<List<Feed_Blog_Model>> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(getContext(), response.code(), Toast.LENGTH_SHORT).show();
+
+                    Log.i(TAG, "onResponse: "+response.code());
                     return;
                 }
 
-                        List<feed_Blog_Model> blogs = response.body();
+                        List<Feed_Blog_Model> blogs = response.body();
                         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
                         mLayoutManager = new LinearLayoutManager(getContext());
                         mAdapter = new RecyclerLatestFeed(blogs,getContext());
-
 
 
                         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -97,12 +97,10 @@ public class LatestFeedFragment extends Fragment {
 
                 rlt_progressBar.setVisibility(View.GONE);
 
-
-
             }
 
             @Override
-            public void onFailure(Call<List<feed_Blog_Model>> call, Throwable t) {
+            public void onFailure(Call<List<Feed_Blog_Model>> call, Throwable t) {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 rlt_progressBar.setVisibility(View.INVISIBLE);
             }
@@ -125,18 +123,18 @@ public class LatestFeedFragment extends Fragment {
                     .build();
             JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-            Call<List<feed_Blog_Model>> call = feedJsonApi.getBlogs();
+            Call<List<Feed_Blog_Model>> call = feedJsonApi.getBlogs();
 
 
-            call.enqueue(new Callback<List<feed_Blog_Model>>() {
+            call.enqueue(new Callback<List<Feed_Blog_Model>>() {
                 @Override
-                public void onResponse(Call<List<feed_Blog_Model>> call, Response<List<feed_Blog_Model>> response) {
+                public void onResponse(Call<List<Feed_Blog_Model>> call, Response<List<Feed_Blog_Model>> response) {
                     if (!response.isSuccessful()) {
                         Log.i(TAG, "onResponse: "+response.code());
                         return;
                     }
 
-                    List<feed_Blog_Model> blogs = response.body();
+                    List<Feed_Blog_Model> blogs = response.body();
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
                     mLayoutManager = new LinearLayoutManager(getContext());
                     mAdapter = new RecyclerLatestFeed(blogs,getContext());
@@ -148,7 +146,7 @@ public class LatestFeedFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<List<feed_Blog_Model>> call, Throwable t) {
+                public void onFailure(Call<List<Feed_Blog_Model>> call, Throwable t) {
                     Log.i(TAG, "onFailure: "+t.getMessage());
 
                 }
