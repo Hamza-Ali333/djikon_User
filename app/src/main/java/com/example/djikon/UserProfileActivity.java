@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +35,8 @@ public class UserProfileActivity extends AppCompatActivity  {
     private Spinner mSpinner;
 
 
-    private RelativeLayout  rlt_Parent,rlt_PaymentMethod, rlt_AboutApp, rlt_Setting ,rlt_Disclosures;
+    private RelativeLayout  rlt_PaymentMethod, rlt_AboutApp, rlt_Setting ,rlt_Disclosures;
+    private ConstraintLayout rlt_Parent;
     private Switch swt_subcribeState;
     private ProgressBar mProgressBar;
     private TextView msg;
