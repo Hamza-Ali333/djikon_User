@@ -58,6 +58,9 @@ dependencies {
     //picaso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    //imagecrop
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
 }

@@ -2,7 +2,7 @@ package com.example.djikon;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,14 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
 
@@ -26,10 +26,11 @@ import java.util.Calendar;
 public class BookArtistActivity extends AppCompatActivity {
 
     private  Button btn_Check_Cost;
-    private RelativeLayout startDate,startTime,end_Date,end_start;
-    private String _pickedDate;
+    private EditText edt_Name, edt_Phone, edt_Email, edt_Address;
+    private LinearLayout rlt_Start_Date, rlt_End_Date, rlt_Start_Time, rlt_End_Time;
 
-    private TextView txt_Start_Date,txt_Start_Time;
+
+    private TextView txt_Start_Date, txt_End_Date,txt_Start_Time, txt_End_Time;
 
 
 
@@ -44,31 +45,48 @@ public class BookArtistActivity extends AppCompatActivity {
 
 
 
+
+        rlt_Start_Date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatPiker(txt_Start_Date);
+            }
+        });
+
+
+        rlt_End_Date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showDatPiker(txt_End_Date);
+            }
+        });
+
+        rlt_Start_Time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePiker(txt_Start_Time);
+            }
+        });
+
+
+        rlt_End_Time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showTimePiker(txt_End_Time);
+            }
+        });
+
         btn_Check_Cost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openCheckCostDialogue();
 
+               if(isInfoRight()){
+                   openCheckCostDialogue();
+               }
             }
         });
-
-        end_Date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(BookArtistActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
-                showDatPiker(txt_Start_Date);
-            }
-        });
-
-
-        startDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(BookArtistActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
-                showDatPiker(txt_Start_Date);
-            }
-        });
-
     }//onCreate
 
 
@@ -120,7 +138,7 @@ public class BookArtistActivity extends AppCompatActivity {
     }
 
 
-    private void showDatPiker (TextView txt_view) {
+    private void showDatPiker (TextView textView) {
         Calendar c = Calendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialog(BookArtistActivity.this, new DatePickerDialog.OnDateSetListener() {
@@ -129,9 +147,10 @@ public class BookArtistActivity extends AppCompatActivity {
                 String _year = String.valueOf(year);
                 String _month = (month+1) < 10 ? "0" + (month+1) : String.valueOf(month+1);
                 String _date = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
-                _pickedDate = _year + "-" + _month + "-" + _date;
+                String _pickedDate = _year + "-" + _month + "-" + _date;
 
-                txt_view.setText(_pickedDate);
+                textView.setText(_pickedDate);
+                textView.setVisibility(View.VISIBLE);
                 Log.e("PickedDate: ", "Date: " + _pickedDate); //2019-02-12
             }
         },c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.MONTH));
@@ -143,14 +162,91 @@ public class BookArtistActivity extends AppCompatActivity {
     }
 
 
+    private void showTimePiker (TextView textView) {
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(BookArtistActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+              textView.setText( selectedHour + ":" + selectedMinute);
+              textView.setVisibility(View.VISIBLE);
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
+    }
+
+    private boolean isInfoRight () {
+        boolean result= true;
+        if (txt_Start_Date.getText().toString().isEmpty()) {
+            txt_Start_Date.setVisibility(View.VISIBLE);
+            txt_Start_Date.setError("Start Date Required");
+            txt_Start_Date.requestFocus();
+            result = false;
+        }
+        else if (txt_End_Date.getText().toString().isEmpty()) {
+            txt_Start_Date.setVisibility(View.VISIBLE);
+            txt_Start_Date.setError("End Date Required");
+            txt_Start_Date.requestFocus();
+            result = false;
+        } else if (txt_Start_Time.getText().toString().isEmpty()) {
+            txt_Start_Time.setVisibility(View.VISIBLE);
+            txt_Start_Time.setError("Start Time Required");
+            txt_Start_Time.requestFocus();
+            result = false;
+        }else if (txt_End_Time.getText().toString().isEmpty()) {
+            txt_End_Time.setVisibility(View.VISIBLE);
+            txt_End_Time.setError("End Time Required");
+            txt_End_Time.requestFocus();
+            result = false;
+        }
+
+        //EditText
+        else if (edt_Name.getText().toString().isEmpty()) {
+            edt_Name.setVisibility(View.VISIBLE);
+            edt_Name.setError("Name Required");
+            edt_Name.requestFocus();
+            result = false;
+        }
+        else if (edt_Phone.getText().toString().isEmpty()) {
+            edt_Phone.setVisibility(View.VISIBLE);
+            edt_Phone.setError("Phone No Required");
+            edt_Phone.requestFocus();
+            result = false;
+        }
+        else if (edt_Email.getText().toString().isEmpty()) {
+            edt_Email.setVisibility(View.VISIBLE);
+            edt_Email.setError("Email Required");
+            edt_Email.requestFocus();
+            result = false;
+        }
+
+
+        return result;
+    }
+
+
 
     private void createRefrences () {
+
         btn_Check_Cost = findViewById(R.id.btn_Check_Cost);
-        startDate = findViewById(R.id.rlt_start_Date);
-        startTime = findViewById(R.id.rlt_start_time);
-        end_Date = findViewById(R.id.rlt_end_Date);
+
+        rlt_Start_Date = findViewById(R.id.rlt_start_Date);
+        rlt_End_Date   = findViewById(R.id.rlt_end_Date);
+        rlt_Start_Time = findViewById(R.id.rlt_start_time);
+        rlt_End_Time   = findViewById(R.id.rlt_end_time);
+
+        edt_Name = findViewById(R.id.edt_booker_name);
+        edt_Phone = findViewById(R.id.edt_booker_phone);
+        edt_Email = findViewById(R.id.edt_booker_email);
+        edt_Address = findViewById(R.id.edt_booker_address);
+
         txt_Start_Date = findViewById(R.id.txt_start_date);
-        txt_Start_Date = findViewById(R.id.txt_start_time);
+        txt_End_Date = findViewById(R.id.txt_date_end);
+        txt_Start_Time = findViewById(R.id.txt_start_time);
+        txt_End_Time = findViewById(R.id.txt_time_end);
 
     }
 

@@ -1,14 +1,22 @@
 package com.example.djikon;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,22 +27,33 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static java.security.AccessController.getContext;
+
 public class UserProfileActivity extends AppCompatActivity  {
 
 
-    private EditText edt_FirstName, edt_LastName, edt_Email, edt_Phone_No, edt_Location, edt_Address;
-
+    private EditText edt_FirstName, edt_LastName, edt_Email, edt_Phone_No, edt_Address;
+    private AutoCompleteTextView edt_Location;
     private Button btn_Update_Profile;
     private Spinner mSpinner;
-
+    private ImageView img_Profile;
 
     private RelativeLayout  rlt_PaymentMethod, rlt_AboutApp, rlt_Setting ,rlt_Disclosures;
     private ConstraintLayout rlt_Parent;
@@ -66,10 +85,21 @@ public class UserProfileActivity extends AppCompatActivity  {
     private String[] newData;
 
 
+    private static final int CAMERA_REQUEST_CODE = 300;
+    private static final int STORAFGE_REQUEST_CODE = 400;
+    private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
+    private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 2000;
+
+    String cameraPermission[];
+    String storagePermission[];
+    Uri Image_uri;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activiyt_user_profile);
+        setContentView(R.layout.activity_user_profile);
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -79,7 +109,23 @@ public class UserProfileActivity extends AppCompatActivity  {
         msg.setVisibility(View.VISIBLE);
         preferenceData= new PreferenceData();
 
+
         getUserDataFromServer();
+
+        //camerapermission
+        cameraPermission = new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        //storagepermission
+        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        //Ask for Required Permissions
+        final String[] permissions = new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CALL_PHONE
+        };
+
+        ActivityCompat.requestPermissions(this, permissions, 123);
+
 
         swt_subcribeState.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +199,32 @@ public class UserProfileActivity extends AppCompatActivity  {
 
             }
         });
-    }
+
+        img_Profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showImageImportDailog();
+            }
+        });
+
+
+
+        ArrayList<String> countryArrayList = new ArrayList<String>(Arrays.asList(CountriesList.getCountry()));
+
+        ArrayAdapter<String> Cadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countryArrayList);
+
+        edt_Location.setAdapter(Cadapter);///HERE YOUR_LIST_VIEW IS YOUR LISTVIEW NAME
+
+        edt_Location.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(UserProfileActivity.this, countryArrayList.get(i), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+    }//onCreate
 
 
     private void openAboutAppDialogue() {
@@ -358,6 +429,160 @@ public class UserProfileActivity extends AppCompatActivity  {
     }
 
 
+
+
+    //image import
+    private void showImageImportDailog(){
+
+        String[] items ={"Camera","Gallary"};
+        AlertDialog.Builder dailog = new AlertDialog.Builder(UserProfileActivity.this);
+        dailog.setTitle("Select Image");
+        dailog.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == 1){
+                    //camera run
+                    if(!checkCameraPermissions()){
+                        //RequestCamera Permission
+                        requestPermissionCamera();
+                    }
+                }else {
+                    //pick Camera
+                    pickCamera();
+                }
+                if(which == 0){
+                    //open Gallary
+                    if(!checkStoragePermissions()){
+                        //RequestStorage Permission
+                        requestPermissionStorage();
+                    }
+                }else {
+                    //pick Gallary
+                    pickGallary();
+                }
+            }
+        });
+        dailog.create().show();
+    }
+
+    private boolean checkCameraPermissions(){
+        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.CAMERA) ==(PackageManager.PERMISSION_GRANTED);
+        boolean result1 = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==(PackageManager.PERMISSION_GRANTED);
+
+
+        return result && result1;
+    }
+
+    private boolean checkStoragePermissions(){
+        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==(PackageManager.PERMISSION_GRANTED);
+
+
+        return result;
+    }
+
+    private void requestPermissionCamera(){
+        ActivityCompat.requestPermissions(UserProfileActivity.this,cameraPermission,CAMERA_REQUEST_CODE);
+    }
+
+    private void requestPermissionStorage(){
+        ActivityCompat.requestPermissions(UserProfileActivity.this,storagePermission,STORAFGE_REQUEST_CODE);
+    }
+
+    private void pickCamera(){
+        //Intent to take Image for camera
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE,"New Pic");//title of the picture
+        values.put(MediaStore.Images.Media.DESCRIPTION,"Image To Text");//discription of the picture
+        Image_uri = this.getContentResolver()
+                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,Image_uri);
+        startActivityForResult(cameraIntent,IMAGE_PICK_CAMERA_REQUEST_CODE);
+    }
+
+    private void pickGallary(){
+        //  intent for the Image from Gallary
+        Intent gallery = new Intent(Intent.ACTION_PICK);
+        gallery.setType("image/*");
+        startActivityForResult(gallery,IMAGE_PICK_GALLARY_REQUEST_CODE);
+    }
+
+
+    //handle Request for permission
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case CAMERA_REQUEST_CODE:
+                if(grantResults.length > 0){
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if(cameraAccepted && storageAccepted){
+                        pickCamera();
+                    }else {
+                        Toast.makeText(UserProfileActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+
+            case STORAFGE_REQUEST_CODE:
+                if(grantResults.length > 0){
+                    boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if(storageAccepted){
+                        pickGallary();
+                    }else {
+                        Toast.makeText(UserProfileActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
+
+    }
+
+    //Handle Image Result
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        //get selected image Image
+        if(resultCode ==RESULT_OK) {
+
+            Toast.makeText(this, "Result is Ok", Toast.LENGTH_SHORT).show();
+            if(requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE){
+
+                CropImage.activity(Image_uri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(UserProfileActivity.this);
+            }
+            //from gallary
+            if(requestCode == IMAGE_PICK_GALLARY_REQUEST_CODE){
+                CropImage.activity(data.getData())
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+            }
+            //getcroped Image
+            if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                Image_uri = result.getUri();
+
+//                generateText();
+            }
+        }else {
+            Toast.makeText(this, "Image is not Selected", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }//onActivity Result
+
+
+
+
+
+
+
+
+
+
     public void createRefrences(){
 
         edt_FirstName = findViewById(R.id.edt_User_First_Name);
@@ -367,6 +592,8 @@ public class UserProfileActivity extends AppCompatActivity  {
         edt_Location = findViewById(R.id.edt_User_Location);
         edt_Address = findViewById(R.id.edt_UserAddress);
         mSpinner = findViewById(R.id.spinner);
+
+        img_Profile = findViewById(R.id.img_UserImage);
 
         btn_Update_Profile = findViewById(R.id.btn_UpdateProfile);
 
