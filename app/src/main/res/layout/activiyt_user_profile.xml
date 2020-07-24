@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
+
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:secondaryProgress="0"
+        android:indeterminateDrawable="@drawable/progressbar"
+        />
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading.."
+        android:layout_centerInParent="true"
+        android:textColor="#fff"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
+
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/img_UserImage"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_doctor" />
+
+
+    <EditText
+        android:id="@+id/edt_User_First_Name"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/edt_shape"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:paddingLeft="8dp"
+        android:hint="First Name"
+        android:textColorHint="#fff"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toStartOf="@+id/edt_User_LastName"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toTopOf="@+id/edt_User_LastName"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/edt_User_LastName"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/edt_shape"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:paddingLeft="8dp"
+        android:hint="Last Name"
+        android:textColorHint="#fff"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/edt_User_First_Name"
+        app:layout_constraintTop_toBottomOf="@+id/img_UserImage"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/edt_UserEmail"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/edt_shape"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:paddingLeft="8dp"
+        android:hint="Email"
+        android:focusable="false"
+        android:clickable="false"
+        android:editable="false"
+        android:textColorHint="#fff"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toBottomOf="@+id/edt_User_First_Name" />
+
+    <EditText
+        android:id="@+id/edt_User_PhoneNo"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/edt_shape"
+        android:ems="10"
+        android:inputType="phone"
+        android:paddingLeft="8dp"
+        android:hint="Phone No"
+        android:textColorHint="#fff"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toStartOf="@+id/edt_User_Location"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toBottomOf="@+id/edt_UserEmail"
+        tools:text="Phone No" />
+
+    <EditText
+        android:id="@+id/edt_User_Location"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:background="@drawable/edt_shape"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:paddingLeft="8dp"
+        android:hint="Country"
+        android:textColorHint="#fff"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintStart_toEndOf="@+id/edt_User_PhoneNo"
+        app:layout_constraintTop_toTopOf="@+id/edt_User_PhoneNo"
+        tools:text="Location" />
+
+        <EditText
+            android:id="@+id/edt_UserAddress"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edt_shape"
+            android:ems="10"
+            android:hint="Address (Optional)"
+            android:inputType="textPersonName"
+            android:paddingLeft="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff"
+            app:layout_constraintEnd_toStartOf="@+id/guideline9"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline8"
+            app:layout_constraintTop_toBottomOf="@+id/layout" />
+
+        <Button
+        android:id="@+id/btn_UpdateProfile"
+        android:layout_width="175dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/fullroundshape"
+        android:text="Update"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toBottomOf="@+id/edt_UserAddress" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline9"
+            app:layout_constraintStart_toStartOf="@+id/guideline8"
+            app:layout_constraintTop_toBottomOf="@+id/btn_UpdateProfile"
+            app:layout_constraintVertical_bias="0.32999998"
+            tools:ignore="MissingConstraints">
+
+            <LinearLayout
+                android:id="@+id/rlt_subcribing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txt_subscribingToEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Subscribe to a email list from the artist"
+                    android:textColor="@color/Graycolor"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/swt_subscribeState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="5dp"
+                    android:padding="0dp"
+                    android:theme="@style/SCBSwitch" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/Graycolor" />
+
+
+            <RelativeLayout
+                android:id="@+id/rlt_paymentMethod"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="Payment Method"
+                    android:textColor="@color/Graycolor"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    app:srcCompat="@drawable/ic_arrow_forward" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/Graycolor" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlt_aboutApp"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="About App"
+                    android:textColor="@color/Graycolor"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    app:srcCompat="@drawable/ic_arrow_forward" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/Graycolor" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlt_disclosures"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="Disclosures"
+                    android:textColor="@color/Graycolor"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    app:srcCompat="@drawable/ic_arrow_forward" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/Graycolor" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlt_setting"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="Setting"
+                    android:textColor="@color/Graycolor"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    app:srcCompat="@drawable/ic_arrow_forward" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/Graycolor" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="#666666"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline9"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline8"
+            app:layout_constraintTop_toBottomOf="@+id/edt_User_PhoneNo">
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+             />
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>

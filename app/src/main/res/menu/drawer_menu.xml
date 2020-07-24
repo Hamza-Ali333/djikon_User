@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item android:id="@+id/nav_LatestFeed"
+        android:icon="@drawable/microsoft"
+        android:title="Latest Feed"/>
+
+        <item android:id="@+id/nav_LiveToArtist"
+            android:icon="@drawable/fire"
+            android:title="Live To Artist"/>
+
+        <item android:id="@+id/nav_ChatArea"
+        android:icon="@drawable/notification"
+        android:title="Chat Area"/>
+
+        <item android:id="@+id/nav_SocialMedia"
+        android:icon="@drawable/social_media"
+        android:title="Social Media Sharing"/>
+
+        <item android:id="@+id/nav_RequestASong"
+        android:icon="@drawable/song"
+        android:title="Request A Song"/>
+
+        <item android:id="@+id/nav_CurrentLiveArtist"
+        android:icon="@drawable/teacher"
+        android:title="Current Live Artist"/>
+
+        <item android:id="@+id/nav_SubscribedArtist"
+        android:icon="@drawable/dj"
+        android:title="Subscribe Artist"/>
+
+        <item android:id="@+id/nav_Logout"
+            android:icon="@drawable/logout"
+            android:title="Logout"/>
+
+    </group>
+
+<!--    this will divied the menu-->
+
+    <!--    <item android:title="Communicate">-->
+<!--        <menu>-->
+<!--            <item android:id="@+id/nave_"-->
+<!--        </menu>-->
+<!--    </item>-->
+</menu>
