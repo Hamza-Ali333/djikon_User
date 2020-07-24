@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,15 +52,14 @@ public class UserProfileActivity extends AppCompatActivity  {
 
     private  Retrofit retrofit;
     private  JSONApiHolder jsonApiHolder;
-
+    private ProgressDialog progressDialog;
 
 
     private String[] genderArray = {"Select Gender","Male", "Female", "Other"};
-    private String SelectedGender,
-            FirstName, LastName;
+    private String FirstName, LastName;
 
+    private String SelectedGender ="Select Gender";
     private String PhoneNo= "no";
-    private String  Location = "no";
     private String  Address = "no";
 
     private String[] serverData;
@@ -88,7 +88,6 @@ public class UserProfileActivity extends AppCompatActivity  {
             }
         });
 
-
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.spinner_item, R.id.genders, genderArray);
 
@@ -96,6 +95,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
                 SelectedGender = genderArray[i];
 
             }
@@ -140,15 +140,15 @@ public class UserProfileActivity extends AppCompatActivity  {
         btn_Update_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(isInfoRight()){
-                    updateProfile(preferenceData.getUserId(UserProfileActivity.this));
-//                    if(isDataChange()){
-//
-//                        Toast.makeText(UserProfileActivity.this, "Changed Found", Toast.LENGTH_SHORT).show();
-//                    }else {
-//                        Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
-//                    }
+                    if(isDataChange()){
+
+                        progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,"Uploading","Please Wait...");
+                        updateProfile(preferenceData.getUserId(UserProfileActivity.this));
+
+                    }else {
+                        Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
+                    }
             }
 
             }
@@ -235,14 +235,18 @@ public class UserProfileActivity extends AppCompatActivity  {
 
                     edt_Email.setText(response.body().getEmail());
 
-                  //  Location = response.body().getLocation();
-                    Address = response.body().getAddress();
+                    Address = response.body().getLocation();
                     PhoneNo = response.body().getContact();
+                    SelectedGender = response.body().getGender();
+
+                    for (int j = 0; j <genderArray.length-1 ; j++) {
+                        if(genderArray[j].equals(SelectedGender)){
+                            mSpinner.setSelection(j);
+                        }
+                    }
 
                     setDataInToFields();
 
-                    if(!response.body().getAddress().equals("no"))
-                    edt_Address.setText(response.body().getAddress());
                 }else {
                     rlt_Parent.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
@@ -270,13 +274,16 @@ public class UserProfileActivity extends AppCompatActivity  {
                 edt_LastName.getText().toString(),
                 edt_Phone_No.getText().toString(),
                 SelectedGender,
-                edt_Address.getText().toString(),
-                edt_Location.getText().toString());
+                edt_Location.getText().toString()
+               );
 
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
+                    progressDialog.dismiss();
+                    finish();
+                    startActivity(getIntent());
                     Log.i("TAG", "onResponse: "+response.code());
                 }else {
                     Log.i("TAG", "onResponse: "+response.code());
@@ -292,7 +299,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
     private boolean isInfoRight () {
-        boolean result= false;
+        boolean result;
         if (edt_FirstName.getText().toString().trim().isEmpty()) {
             edt_FirstName.setError("Required");
             edt_FirstName.requestFocus();
@@ -319,20 +326,17 @@ public class UserProfileActivity extends AppCompatActivity  {
         if (!edt_Phone_No.getText().toString().trim().isEmpty()){
             PhoneNo = edt_Phone_No.getText().toString().trim();
         }
-        if (!edt_Address.getText().toString().trim().isEmpty()){
-            Address = edt_Address.getText().toString().trim();
-        }
         if (!edt_Location.getText().toString().trim().isEmpty()){
-            Location = edt_Location.getText().toString().trim();
+            Address = edt_Location.getText().toString().trim();
         }
 
-        newData = new String[]{FirstName,LastName,PhoneNo,Location,SelectedGender,Address};
+        newData = new String[]{FirstName,LastName,PhoneNo,SelectedGender,Address};
     }
 
 
     private boolean isDataChange(){
         boolean result= false;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 5; i++) {
             if(!serverData[i].equals(newData[i])){
                 serverData[i]= newData[i];
                 result= true;
@@ -343,15 +347,14 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
     private void setDataInToFields(){
-        serverData = new String[]{FirstName, LastName, PhoneNo, Location, SelectedGender, Address};
+        serverData = new String[]{FirstName, LastName, PhoneNo , SelectedGender , Address};
+
         edt_FirstName.setText(FirstName);
         edt_LastName.setText(LastName);
         if(!PhoneNo.equals("no"))
             edt_Phone_No.setText(PhoneNo);
-        if(!Location.equals("no"))
-            edt_Location.setText(Location);
         if(!Address.equals("no"))
-            edt_Address.setText(Address);
+            edt_Location.setText(Address);
     }
 
 

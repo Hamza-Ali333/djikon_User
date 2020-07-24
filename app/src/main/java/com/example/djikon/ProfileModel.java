@@ -3,8 +3,6 @@ package com.example.djikon;
 
 import java.util.List;
 
-import retrofit2.http.Field;
-
 public class ProfileModel {
 
 
@@ -14,9 +12,8 @@ public class ProfileModel {
      firstname,
      lastname,
      email,
-     address,
     contact,
-    genger,
+      gender,
     location;
 
 
@@ -31,13 +28,13 @@ public class ProfileModel {
     private List<Services_Model> services;
 
 
-    public ProfileModel(Integer id, String profileImage, String firstname, String lastname, String address, String email, int followers, int follow_status, List<Dj_Blogs_Model> blog, List<Services_Model> services) {
+    public ProfileModel(Integer id, String profileImage, String firstname, String lastname,  String email, int followers, int follow_status, List<Dj_Blogs_Model> blog, List<Services_Model> services) {
         super();
         this.id = id;
         this.profile_image = profileImage;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.address = address;
+
         this.email = email;
         this.blog = blog;
         this.services = services;
@@ -74,10 +71,6 @@ public class ProfileModel {
         return email;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
     public List<Dj_Blogs_Model> getBlog() {
         return blog;
     }
@@ -90,8 +83,8 @@ public class ProfileModel {
         return contact;
     }
 
-    public String getGenger() {
-        return genger;
+    public String getGender() {
+        return gender;
     }
 
     public String getLocation() {

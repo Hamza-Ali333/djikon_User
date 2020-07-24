@@ -160,6 +160,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/edt_shape"
             android:ems="10"
+            android:visibility="gone"
             android:hint="Address (Optional)"
             android:inputType="textPersonName"
             android:paddingLeft="8dp"

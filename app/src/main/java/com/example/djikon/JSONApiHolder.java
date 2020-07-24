@@ -51,7 +51,6 @@ public interface JSONApiHolder {
             @Field("lastname") String lastname,
             @Field("contact") String contact,
             @Field("gender") String gender,
-            @Field("address") String address,
             @Field("location") String location
     );
 

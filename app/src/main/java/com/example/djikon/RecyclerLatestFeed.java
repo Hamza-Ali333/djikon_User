@@ -80,6 +80,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
 
             Picasso.get().load(currentItem.getArtist_image())
                     .fit()
+                    .centerCrop()
                     .placeholder(R.drawable.ic_doctor)
                     .into(holder.img_uploaderProfile, new Callback() {
                         @Override
@@ -100,6 +101,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 holder.txt_Loading.setVisibility(View.VISIBLE);
                 Picasso.get().load(currentItem.getPhoto())
                         .fit()
+                        .centerCrop()
                         .into(holder.img_feedImage, new Callback() {
                             @Override
                             public void onSuccess() {

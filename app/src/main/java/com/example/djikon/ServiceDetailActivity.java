@@ -113,7 +113,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     description = response.body().getDescription();
 
 
-
+                    btn_Proceed_To_Pay.setText("Proceed To Pay "+price+"$");
                     Gallery = response.body().getGallery();
 
                     setDataintoView();

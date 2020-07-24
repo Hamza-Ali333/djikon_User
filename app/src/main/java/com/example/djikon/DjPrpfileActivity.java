@@ -216,7 +216,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
                     Log.i("TAG", "onResponse: " + response.code());
 
                     mDJName = response.body().getFirstname() + " " + response.body().getLastname();
-                    mAddress = response.body().getAddress();
+                    mAddress = response.body().getLocation();
                     mProfile = response.body().getProfile_image();
                     mFollower_Count = response.body().getFollowers();
                     mFollow_Status = response.body().getFollow_status();
