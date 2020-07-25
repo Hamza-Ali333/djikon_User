@@ -1,9 +1,18 @@
 package com.example.djikon;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyPermanentlyInvalidatedException;
+import android.security.keystore.KeyProperties;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,18 +24,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
 
     private TextView txt_Create_new_account, txt_Forgot_Password, txt_signwith_face, txt_signwith_Finger, txt_signwith_PIN, txt_Error;
@@ -46,6 +72,14 @@ public class SignInActivity extends AppCompatActivity {
 
     private int OTP = 0;
     private String EmailForOTP;
+
+
+    private FingerprintManager fingerprintManager;
+    private KeyguardManager keyguardManager;
+
+    private KeyStore keyStore;
+    private Cipher cipher;
+    private String KEY_NAME = "AndroidKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -451,10 +485,69 @@ public class SignInActivity extends AppCompatActivity {
         View view = inflater.inflate(R.layout.dailoge_finger_print, null);
 
 
+        TextView Msg = view.findViewById(R.id.msg);
         Button btn_cancle_Face_Id = view.findViewById(R.id.cancel_fingerprint);
 
         builder.setView(view);
         builder.setCancelable(false);
+
+        //TODO Check 1: Android version should be greater or equal to Marshmallow
+        //TODO Check 2: Device has Fingerprint Scanner
+        //TODO Check 3: Have permission to use fingerprint
+        //TODO Check 4: Lock Screen is secured with alteast 1 type of lock
+        //TODO Check 5: Alteast 1 finger print is registered
+
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+
+            fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+            keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+
+            if (!fingerprintManager.isHardwareDetected()) {
+                Msg.setText("Fingerprint Scanner is not Detected");
+            }
+            else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+               Msg.setText("Permission is not Granted");
+            }
+            //if Lock Screen is not secured with atleast 1 type of lock
+            else if(!keyguardManager.isKeyguardSecure()) {
+
+                Msg.setText("Please lock your screen with finger print");
+            }
+            else if (!fingerprintManager.hasEnrolledFingerprints()) {
+                Msg.setText("Please Enroll Atleast on fingerprint to Use this Feature");
+            }
+            else {
+
+                Msg.setText("Can Use Finger Print to Login At Your Own Risk");
+
+
+                try {
+                    generateKey();
+                } catch (KeyStoreException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (CertificateException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                } catch (NoSuchProviderException e) {
+                    e.printStackTrace();
+                }
+
+                if (cipherInit()) {
+                    FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this);
+                    fingerPrintHandler.startAuth(fingerprintManager, null);
+                }
+                }
+        }
+
+
+
 
 
         final AlertDialog alertDialog = builder.show();
@@ -614,6 +707,59 @@ public class SignInActivity extends AppCompatActivity {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
+
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private void generateKey() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException {
+
+        keyStore = KeyStore.getInstance("AndroidKeyStore");
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+
+        keyStore.load(null);
+        keyGenerator.init(new
+                KeyGenParameterSpec.Builder(KEY_NAME,
+                KeyProperties.PURPOSE_ENCRYPT |
+                        KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                .setUserAuthenticationRequired(true)
+                .setEncryptionPaddings(
+                        KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                .build());
+        keyGenerator.generateKey();
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    public boolean cipherInit() {
+        try {
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new RuntimeException("Failed to get Cipher", e);
+        }
+
+
+        try {
+
+            keyStore.load(null);
+
+            SecretKey key = (SecretKey) keyStore.getKey(KEY_NAME,
+                    null);
+
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+
+            return true;
+
+        } catch (KeyPermanentlyInvalidatedException e) {
+            return false;
+        } catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new RuntimeException("Failed to init Cipher", (Throwable) e);
+        }
+
+    }
+
+
+
 
     private void createReferencer() {
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);

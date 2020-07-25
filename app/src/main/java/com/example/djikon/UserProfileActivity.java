@@ -3,14 +3,19 @@ package com.example.djikon;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,13 +41,20 @@ import androidx.core.content.ContextCompat;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static java.security.AccessController.getContext;
 
@@ -64,7 +76,6 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
     private static final String BASEURL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
-
     private static final String UPDATEPROFILE = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/update_profile/";
 
     private PreferenceData preferenceData;
@@ -92,7 +103,9 @@ public class UserProfileActivity extends AppCompatActivity  {
 
     String cameraPermission[];
     String storagePermission[];
-    Uri Image_uri;
+    private Bitmap bitmap;
+    private Uri Image_uri;
+
 
 
 
@@ -111,6 +124,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
         getUserDataFromServer();
+
 
         //camerapermission
         cameraPermission = new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -339,8 +353,11 @@ public class UserProfileActivity extends AppCompatActivity  {
 
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
+        String image = imageToString();
+
         Call<SuccessErrorModel> call = jsonApiHolder.UpdateUserProfile(
                 UserId,
+                image,
                 edt_FirstName.getText().toString(),
                 edt_LastName.getText().toString(),
                 edt_Phone_No.getText().toString(),
@@ -546,9 +563,8 @@ public class UserProfileActivity extends AppCompatActivity  {
         //get selected image Image
         if(resultCode ==RESULT_OK) {
 
-            Toast.makeText(this, "Result is Ok", Toast.LENGTH_SHORT).show();
-            if(requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE){
 
+            if(requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE){
                 CropImage.activity(Image_uri)
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .start(UserProfileActivity.this);
@@ -564,21 +580,40 @@ public class UserProfileActivity extends AppCompatActivity  {
 
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 Image_uri = result.getUri();
+                //img_Profile.setImageURI(Image_uri);
+                //Image_uri = data.getData();//data is getting null have to check
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Image_uri);
+                    img_Profile.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    Log.i("TAG", "onActivityResult: "+e.getMessage());
+                }
 
-//                generateText();
             }
+
+
+
         }else {
-            Toast.makeText(this, "Image is not Selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Image is not Selected try Again", Toast.LENGTH_SHORT).show();
         }
 
 
     }//onActivity Result
 
 
+    //compress the image and decode it
+    private  String imageToString () {
+        //this veriable will contain all the bytes
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
+        //compress the bitmap into jpg formate
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);
+        //convert the byte array output stream into array of byte
+        byte[] imageByte = byteArrayOutputStream.toByteArray();
 
-
-
+        //now encode the byte array
+     return Base64.encodeToString(imageByte,Base64.DEFAULT);
+    }
 
 
 
