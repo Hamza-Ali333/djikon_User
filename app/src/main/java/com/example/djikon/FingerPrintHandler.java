@@ -1,12 +1,17 @@
 package com.example.djikon;
 
+import android.annotation.SuppressLint;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
+import android.os.Handler;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.RequiresApi;
 
@@ -14,9 +19,13 @@ import androidx.annotation.RequiresApi;
 public class FingerPrintHandler extends FingerprintManager.AuthenticationCallback {
 
     private Context mContext;
+    private TextView mTextView;
+    private ImageView mImageView;
 
-    public FingerPrintHandler(Context context) {
+    public FingerPrintHandler(Context context, TextView textView, ImageView imageView) {
         this.mContext = context;
+        this.mTextView = textView;
+        this.mImageView = imageView;
     }
 
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject){
@@ -45,14 +54,24 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
         this.update("Enrolled Success Fully", true);
     }
 
+    @SuppressLint("ResourceAsColor")
     private void update(String s, boolean b) {
 
-        Toast.makeText(mContext, s , Toast.LENGTH_SHORT).show();
-        if (b== false){
-            Toast.makeText(mContext, "get an error", Toast.LENGTH_SHORT).show();
+        mTextView.setText(s);
+        if (b == false){
+            mTextView.setTextColor(Color.parseColor("#FC0000"));
+            mTextView.setText(s);
         }else {
-            Intent intent = new Intent(mContext,MainActivity.class);
-            mContext.startActivity(intent);
+            mTextView.setTextColor(Color.parseColor("#07C02D"));
+            mTextView.setText("You can proceed to next");
+            mImageView.setImageResource(R.drawable.ic_check);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mContext.startActivity(new Intent(mContext,MainActivity.class));
+                }
+            },1000);
 
         }
     }

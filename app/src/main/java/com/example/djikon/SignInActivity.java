@@ -7,6 +7,8 @@ import android.app.KeyguardManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.biometrics.BiometricManager;
+import android.hardware.biometrics.BiometricPrompt;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,16 +79,22 @@ public class SignInActivity extends AppCompatActivity {
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
 
+
     private KeyStore keyStore;
     private Cipher cipher;
     private String KEY_NAME = "AndroidKey";
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign__in);
         getSupportActionBar().hide();
         createReferencer();
+
+
+
+        //AlertDialog alertDialog = DialogsUtils.showAlertDailog(this,false,"Sing In Alert","Please do the right thing");
 
 
         retrofit = ApiResponse.retrofit(BASEURL, this);
@@ -486,6 +494,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
         TextView Msg = view.findViewById(R.id.msg);
+        ImageView img_fingerprint= view.findViewById(R.id.img_finger_print);
         Button btn_cancle_Face_Id = view.findViewById(R.id.cancel_fingerprint);
 
         builder.setView(view);
@@ -540,11 +549,12 @@ public class SignInActivity extends AppCompatActivity {
                 }
 
                 if (cipherInit()) {
-                    FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this);
+                    FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this,Msg,img_fingerprint);
                     fingerPrintHandler.startAuth(fingerprintManager, null);
                 }
                 }
         }
+
 
 
 
