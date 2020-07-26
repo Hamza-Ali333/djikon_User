@@ -1,14 +1,16 @@
 package com.example.djikon;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.hardware.biometrics.BiometricManager;
-import android.hardware.biometrics.BiometricPrompt;
+
+import androidx.biometric.BiometricPrompt;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,10 +28,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import java.io.IOException;
@@ -41,6 +46,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +59,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static com.example.djikon.NetworkChangeReciever.IS_NETWORK_AVAILABLE;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
@@ -84,6 +92,12 @@ public class SignInActivity extends AppCompatActivity {
     private Cipher cipher;
     private String KEY_NAME = "AndroidKey";
 
+    private Executor executor;
+    public BiometricPrompt biometricPrompt;
+    private BiometricPrompt.PromptInfo promptInfo;
+
+
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +105,72 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign__in);
         getSupportActionBar().hide();
         createReferencer();
+
+        checkNetworkState();//Available Or not
+
+        executor = ContextCompat.getMainExecutor(this);
+        biometricPrompt = new BiometricPrompt(SignInActivity.this,
+                executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode,
+                                              @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                Toast.makeText(getApplicationContext(),
+                        "Authentication error: " + errString, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(
+                    @NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                Toast.makeText(getApplicationContext(),
+                        "Authentication succeeded!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(getApplicationContext(), "Authentication failed",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+//        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+//                .setTitle("Biometric login for my app")
+//                .setSubtitle("Log in using your biometric credential")
+//                .setNegativeButtonText("Use account Credentials")
+//                .build();
+//
+
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric login for my app")
+                .setSubtitle("Log in using your biometric credential")
+               //.setNegativeButtonText("Use account password")
+                .setConfirmationRequired(false)
+                .setDeviceCredentialAllowed(true)
+                .build();
+        biometricPrompt.authenticate(promptInfo);
+
+//        BiometricManager biometricManager = BiometricManager.(this);
+//        switch (biometricManager.canAuthenticate()) {
+//            case BiometricManager.BIOMETRIC_SUCCESS:
+//                Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
+//                break;
+//            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+//                Log.e("MY_APP_TAG", "No biometric features available on this device.");
+//                break;
+//            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+//                Log.e("MY_APP_TAG", "Biometric features are currently unavailable.");
+//                break;
+//            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+//                Log.e("MY_APP_TAG", "The user hasn't associated " +
+//                        "any biometric credentials with their account.");
+//                break;
+//        }
+
 
 
 
@@ -766,6 +846,20 @@ public class SignInActivity extends AppCompatActivity {
             throw new RuntimeException("Failed to init Cipher", (Throwable) e);
         }
 
+    }
+
+
+    private void checkNetworkState () {
+        IntentFilter intentFilter = new IntentFilter(NetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
+                String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
+
+                Toast.makeText(context, "Network Status: " + networkStatus, Toast.LENGTH_SHORT).show();
+            }
+        }, intentFilter);
     }
 
 

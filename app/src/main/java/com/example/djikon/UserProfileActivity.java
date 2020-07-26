@@ -14,6 +14,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -123,22 +125,40 @@ public class UserProfileActivity extends AppCompatActivity  {
         preferenceData= new PreferenceData();
 
 
-        getUserDataFromServer();
 
 
-        //camerapermission
-        cameraPermission = new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        //storagepermission
-        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        Thread downloadData = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getUserDataFromServer();
+            }
+        });
 
-        //Ask for Required Permissions
-        final String[] permissions = new String[]{
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CALL_PHONE
-        };
+        downloadData.start();
 
-        ActivityCompat.requestPermissions(this, permissions, 123);
+
+
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //camerapermission
+                cameraPermission = new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                //storagepermission
+                storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+                //Ask for Required Permissions
+                final String[] permissions = new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.CALL_PHONE
+                };
+
+                ActivityCompat.requestPermissions(UserProfileActivity.this, permissions, 123);
+            }
+        });
+
+        thread.start();
 
 
         swt_subcribeState.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +224,13 @@ public class UserProfileActivity extends AppCompatActivity  {
                     if(isDataChange()){
 
                         progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,"Uploading","Please Wait...");
-                        updateProfile(preferenceData.getUserId(UserProfileActivity.this));
+                        Thread update = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateProfile(preferenceData.getUserId(UserProfileActivity.this));
+                            }
+                        });
+
 
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
@@ -311,9 +337,7 @@ public class UserProfileActivity extends AppCompatActivity  {
             @Override
             public void onResponse(Call<ProfileModel> call, Response<ProfileModel> response) {
                 if(response.isSuccessful()){
-                    rlt_Parent.setVisibility(View.VISIBLE);
-                    mProgressBar.setVisibility(View.GONE);
-                    msg.setVisibility(View.GONE);
+
 
                     FirstName=response.body().getFirstname();
                     LastName=response.body().getLastname();
@@ -329,8 +353,16 @@ public class UserProfileActivity extends AppCompatActivity  {
                             mSpinner.setSelection(j);
                         }
                     }
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            rlt_Parent.setVisibility(View.VISIBLE);
+                            mProgressBar.setVisibility(View.GONE);
+                            msg.setVisibility(View.GONE);
+                            setDataInToFields();
+                        }
+                    }));
 
-                    setDataInToFields();
 
                 }else {
                     rlt_Parent.setVisibility(View.VISIBLE);
@@ -352,8 +384,11 @@ public class UserProfileActivity extends AppCompatActivity  {
         retrofit = ApiResponse.retrofit ( UPDATEPROFILE,this);
 
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        String image = " ";
+        if(Image_uri == null){
+           image = imageToString();
+        }
 
-        String image = imageToString();
 
         Call<SuccessErrorModel> call = jsonApiHolder.UpdateUserProfile(
                 UserId,
@@ -369,9 +404,16 @@ public class UserProfileActivity extends AppCompatActivity  {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
-                    progressDialog.dismiss();
-                    finish();
-                    startActivity(getIntent());
+                    runOnUiThread(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    }));
+
+
                     Log.i("TAG", "onResponse: "+response.code());
                 }else {
                     Log.i("TAG", "onResponse: "+response.code());

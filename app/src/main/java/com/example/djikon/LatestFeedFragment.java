@@ -53,11 +53,11 @@ public class LatestFeedFragment extends Fragment {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                rlt_progressBar.setVisibility(View.VISIBLE);
                 downloadBlogs();
                 pullToRefresh.setRefreshing(false);
             }
         });
-
 
         return v;
     }
@@ -80,12 +80,14 @@ public class LatestFeedFragment extends Fragment {
         call.enqueue(new Callback<List<Feed_Blog_Model>>() {
             @Override
             public void onResponse(Call<List<Feed_Blog_Model>> call, Response<List<Feed_Blog_Model>> response) {
-                if (!response.isSuccessful()) {
 
+                if (!response.isSuccessful()) {
                     Log.i(TAG, "onResponse: "+response.code());
                     return;
                 }
-
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
                         List<Feed_Blog_Model> blogs = response.body();
                         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
                         mLayoutManager = new LinearLayoutManager(getContext());
@@ -94,6 +96,10 @@ public class LatestFeedFragment extends Fragment {
 
                         mRecyclerView.setLayoutManager(mLayoutManager);
                         mRecyclerView.setAdapter(mAdapter);
+
+                    }
+                });
+                thread.start();
 
                 rlt_progressBar.setVisibility(View.GONE);
 
