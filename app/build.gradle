@@ -66,4 +66,7 @@ dependencies {
     //biomatric
     implementation 'androidx.biometric:biometric:1.0.1'
 
+    //facebook
+    implementation 'com.facebook.android:facebook-login:[5,6)'
+
 }

@@ -162,6 +162,7 @@
         android:layout_marginTop="8dp"
         android:text="Terms of Use and Privacy Policy , as well as acknowledge receipt of our Privacy Notice."
         android:textColor="#FFFFFF"
+        android:checked="false"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/term_info"
@@ -181,12 +182,11 @@
         app:layout_constraintTop_toBottomOf="@+id/radiobutton_term"
         tools:text="Sign Up" />
 
-    <Button
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/btn_fb_sign_up"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
-        android:drawableLeft="@drawable/f"
         android:paddingLeft="28dp"
         android:background="@color/colorBlue"
         android:text="Sign Up With Facebook"

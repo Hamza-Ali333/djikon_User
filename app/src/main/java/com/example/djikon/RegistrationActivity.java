@@ -2,15 +2,29 @@ package com.example.djikon;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,22 +37,69 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private EditText edt_Name, edt_LastName, edt_Email, edt_Password, edt_C_Password, edt_Refral_Code;
     private Button btn_SignUp;
+    private LoginButton btn_FBSignUp;
+    private RadioButton radioButton;
 
     private PreferenceData preferenceData;
 
     String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
     ProgressDialog progressDailoge;
+
+
+
+    CallbackManager mCallbackManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_registration);
         getSupportActionBar().hide();
         createRefrences();
-
-
-
         preferenceData = new PreferenceData();
+
+
+
+
+
+
+        mCallbackManager = CallbackManager.Factory.create();
+
+        btn_FBSignUp.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                Toast.makeText(RegistrationActivity.this, "Success Fully logined", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+                Toast.makeText(RegistrationActivity.this, "FaceBook Login is Cancled", Toast.LENGTH_SHORT).show();
+                }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+                Toast.makeText(RegistrationActivity.this, "Something Happend Wrong: try Again", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        radioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(RegistrationActivity.this, "get", Toast.LENGTH_SHORT).show();
+                if (!radioButton.isSelected()){
+                    radioButton.setChecked(true);
+                    radioButton.setSelected(true);
+                } else {
+                    radioButton.setChecked(false);
+                    radioButton.setSelected(false);
+                }
+            }
+        });
 
         btn_SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +112,12 @@ public class RegistrationActivity extends AppCompatActivity {
             }//if
         });
 
+    }//onCreate
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private boolean isInfoRight() {
@@ -99,6 +166,9 @@ public class RegistrationActivity extends AppCompatActivity {
         else if (edt_Refral_Code.getText().toString().trim().isEmpty()) {
             edt_Refral_Code.setError("Please Enter Referal Code");
             edt_Refral_Code.requestFocus();
+            result = false;
+        }else if(!radioButton.isChecked()){
+            Toast.makeText(this, "You are not Agree with Terms And Condition", Toast.LENGTH_SHORT).show();
             result = false;
         }
 
@@ -182,7 +252,9 @@ public class RegistrationActivity extends AppCompatActivity {
         edt_C_Password = findViewById(R.id.edt_c_password);
         edt_Refral_Code  = findViewById(R.id.edt_refrel_code);
         btn_SignUp = findViewById(R.id.btn_sign_up);
+        btn_FBSignUp = findViewById(R.id.btn_fb_sign_up);
 
+        radioButton = findViewById(R.id.radiobutton_term);
     }
 
 }
