@@ -12,19 +12,23 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+
 import java.util.Calendar;
 
 public class BookArtistActivity extends AppCompatActivity {
 
+    private static final String TAG ="Book this Artist" ;
     private  Button btn_Check_Cost;
     private EditText edt_Name, edt_Phone, edt_Email, edt_Address;
     private LinearLayout rlt_Start_Date, rlt_End_Date, rlt_Start_Time, rlt_End_Time;
@@ -42,8 +46,7 @@ public class BookArtistActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
-
-
+        getTimeDuration("","");
 
 
         rlt_Start_Date.setOnClickListener(new View.OnClickListener() {
@@ -82,9 +85,17 @@ public class BookArtistActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               if(isInfoRight()){
-                   openCheckCostDialogue();
-               }
+                String startDate = txt_Start_Date.getText().toString()+" "+txt_Start_Time.getText().toString() ;
+
+                String endTime = txt_End_Date.getText().toString()+" "+txt_End_Time.getText().toString();
+                getTimeDuration(startDate,endTime);
+
+
+               // getTimeDuration(startDate+" "+startTime,endDate+" "+endTime);
+              /* if(isInfoRight()){
+
+                   //openCheckCostDialogue();
+               }*/
             }
         });
     }//onCreate
@@ -147,7 +158,7 @@ public class BookArtistActivity extends AppCompatActivity {
                 String _year = String.valueOf(year);
                 String _month = (month+1) < 10 ? "0" + (month+1) : String.valueOf(month+1);
                 String _date = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
-                String _pickedDate = _year + "-" + _month + "-" + _date;
+                String _pickedDate = _month + "/" + _date + "/" + _year;
 
                 textView.setText(_pickedDate);
                 textView.setVisibility(View.VISIBLE);
@@ -163,17 +174,25 @@ public class BookArtistActivity extends AppCompatActivity {
 
 
     private void showTimePiker (TextView textView) {
+
         Calendar mcurrentTime = Calendar.getInstance();
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
+
         TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(BookArtistActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-              textView.setText( selectedHour + ":" + selectedMinute);
-              textView.setVisibility(View.VISIBLE);
+
+                textView.setText( selectedHour + ":" + selectedMinute+":00");
+                textView.setVisibility(View.VISIBLE);
+                if(selectedHour>12){
+                    //PM
+                }else {
+                    //AM
+                }
             }
-        }, hour, minute, true);//Yes 24 hour time
+        }, hour, minute, false);//No 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
     }
@@ -248,6 +267,41 @@ public class BookArtistActivity extends AppCompatActivity {
         txt_Start_Time = findViewById(R.id.txt_start_time);
         txt_End_Time = findViewById(R.id.txt_time_end);
 
+    }
+
+
+    //return time of the
+    private void getTimeDuration(String Start, String End){
+        String dateStart = "07/27/2020 14:29:00";
+        String dateStop = "07/29/2020 09:31:00";
+
+        //HH converts hour in 24 hours format (0-23), day calculation
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+        Date d1 = null;
+        Date d2 = null;
+
+        try {
+            d1 = format.parse(Start);
+            d2 = format.parse(End);
+
+            //in milliseconds
+            long diff = d2.getTime() - d1.getTime();
+
+            //long diffSeconds = diff / 1000 % 60;
+            long diffMinutes = diff / (60 * 1000) % 60;
+            long diffHours = diff / (60 * 60 * 1000) % 24;
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+
+            Log.i(TAG, "getTimeDuration: "+diffDays + " days, ");
+            Log.i(TAG, "getTimeDuration: "+diffHours + " hours, ");
+            Log.i(TAG, "getTimeDuration: "+diffMinutes + " minutes, ");
+
+         //   System.out.print(diffSeconds + " seconds.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

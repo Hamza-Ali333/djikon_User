@@ -6,14 +6,18 @@ import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -44,13 +48,17 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -107,6 +115,8 @@ public class UserProfileActivity extends AppCompatActivity  {
     String storagePermission[];
     private Bitmap bitmap;
     private Uri Image_uri;
+
+    private File finalFile;
 
 
 
@@ -230,7 +240,7 @@ public class UserProfileActivity extends AppCompatActivity  {
                                 updateProfile(preferenceData.getUserId(UserProfileActivity.this));
                             }
                         });
-
+                        update.start();
 
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
@@ -381,23 +391,32 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
     private void updateProfile(String UserId){
-        retrofit = ApiResponse.retrofit ( UPDATEPROFILE,this);
 
+        retrofit = ApiResponse.retrofit(BASEURL,this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        String image = " ";
-        if(Image_uri == null){
-           image = imageToString();
-        }
+
+        RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpeg"),
+                finalFile);
+        RequestBody firstname = RequestBody.create(MediaType.parse("text/plain"),
+                edt_FirstName.getText().toString());
+        RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"),
+                edt_LastName.getText().toString());
+        RequestBody phone = RequestBody.create(MediaType.parse("text/plain"),
+                edt_Phone_No.getText().toString());
+        RequestBody location = RequestBody.create(MediaType.parse("text/plain"),
+                edt_Location.getText().toString());
+        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"),
+               SelectedGender);
 
 
         Call<SuccessErrorModel> call = jsonApiHolder.UpdateUserProfile(
                 UserId,
-                image,
-                edt_FirstName.getText().toString(),
-                edt_LastName.getText().toString(),
-                edt_Phone_No.getText().toString(),
-                SelectedGender,
-                edt_Location.getText().toString()
+                      reqFile,
+                        firstname,
+                        lastName,
+                        phone,
+                        gender,
+                        location
                );
 
         call.enqueue(new Callback<SuccessErrorModel>() {
@@ -416,6 +435,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
                     Log.i("TAG", "onResponse: "+response.code());
                 }else {
+                    progressDialog.dismiss();
                     Log.i("TAG", "onResponse: "+response.code());
                 }
             }
@@ -425,7 +445,7 @@ public class UserProfileActivity extends AppCompatActivity  {
                 Toast.makeText(UserProfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
+        }
 
 
     private boolean isInfoRight () {
@@ -602,9 +622,9 @@ public class UserProfileActivity extends AppCompatActivity  {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
+
         //get selected image Image
         if(resultCode ==RESULT_OK) {
-
 
             if(requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE){
                 CropImage.activity(Image_uri)
@@ -626,10 +646,23 @@ public class UserProfileActivity extends AppCompatActivity  {
                 //Image_uri = data.getData();//data is getting null have to check
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Image_uri);
-                    img_Profile.setImageBitmap(bitmap);
+                    //img_Profile.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     Log.i("TAG", "onActivityResult: "+e.getMessage());
                 }
+
+
+                // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+                Uri tempUri = getImageUri(getApplicationContext(), bitmap);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                finalFile = new File(getRealPathFromURI(tempUri));
+
+                img_Profile.setImageURI(tempUri);
+
+                Log.i("TAG", "onActivityResult: "+finalFile);
+
+                //System.out.println(mImageCaptureUri);
 
             }
 
@@ -641,6 +674,24 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
     }//onActivity Result
+
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
+
+
 
 
     //compress the image and decode it

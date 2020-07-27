@@ -1,8 +1,13 @@
 package com.example.djikon;
 
+import android.database.Observable;
+
+import java.io.File;
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -46,17 +51,18 @@ public interface JSONApiHolder {
 
 
 
-    @FormUrlEncoded
+    @Multipart
     @POST()
     Call <SuccessErrorModel> UpdateUserProfile(
             @Url String userid,
-            @Field("image") String image,
-            @Field("firstname") String firstname,
-            @Field("lastname") String lastname,
-            @Field("contact") String contact,
-            @Field("gender") String gender,
-            @Field("location") String location
+            @Part("image") RequestBody image,
+            @Part("firstname") RequestBody  firstname,
+            @Part("lastname") RequestBody  lastname,
+            @Part("contact") RequestBody  contact,
+            @Part("gender") RequestBody  gender,
+            @Part("location") RequestBody  location
     );
+
 
 
     @FormUrlEncoded
