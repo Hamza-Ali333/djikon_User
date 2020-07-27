@@ -16,18 +16,26 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.LoginStatusCallback;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,7 +57,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     CallbackManager mCallbackManager;
-
+    private static final String EMAIL = "email";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +72,18 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
 
+        btn_FBSignUp.setReadPermissions(Arrays.asList(EMAIL));
         mCallbackManager = CallbackManager.Factory.create();
 
         btn_FBSignUp.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
-                Toast.makeText(RegistrationActivity.this, "Success Fully logined", Toast.LENGTH_SHORT).show();
+                String id = loginResult.getAccessToken().getUserId();
+
+                    Toast.makeText(RegistrationActivity.this, id, Toast.LENGTH_SHORT).show();
+
+
             }
 
             @Override
@@ -85,6 +98,10 @@ public class RegistrationActivity extends AppCompatActivity {
                 Toast.makeText(RegistrationActivity.this, "Something Happend Wrong: try Again", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
+
 
 
         radioButton.setOnClickListener(new View.OnClickListener() {
