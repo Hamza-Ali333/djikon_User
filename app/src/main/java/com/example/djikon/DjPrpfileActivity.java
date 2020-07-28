@@ -2,6 +2,7 @@ package com.example.djikon;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,7 +54,8 @@ public class DjPrpfileActivity extends AppCompatActivity {
     private String mDJName,
             mAddress,
             mProfile,
-            mAbout;
+            mAbout,
+    DjBookingRatePerHour;
 
     private int mFollower_Count, mFollow_Status;
 
@@ -97,7 +99,14 @@ public class DjPrpfileActivity extends AppCompatActivity {
         btn_Book_Artist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                img_DJ_Profile.buildDrawingCache();
+                Bitmap bitmap = img_DJ_Profile.getDrawingCache();
                 Intent i = new Intent(DjPrpfileActivity.this, BookArtistActivity.class);
+                i.putExtra("BitmapImage", bitmap);
+                i.putExtra("price",DjBookingRatePerHour);//rate per hour
+                i.putExtra("name",mDJName);
+                i.putExtra("request_code", 1);//one for dj booking
+                i.putExtra("description",mAbout);
                 startActivity(i);
             }
         });
@@ -214,15 +223,16 @@ public class DjPrpfileActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     Log.i("TAG", "onResponse: " + response.code());
-
-                    mDJName = response.body().getFirstname() + " " + response.body().getLastname();
-                    mAddress = response.body().getLocation();
-                    mProfile = response.body().getProfile_image();
-                    mFollower_Count = response.body().getFollowers();
-                    mFollow_Status = response.body().getFollow_status();
+                    ProfileModel profileModel = response.body();
+                    mDJName = profileModel.getFirstname() + " " + response.body().getLastname();
+                    mAddress = profileModel.getLocation();
+                    mProfile = profileModel.getProfile_image();
+                    mFollower_Count = profileModel.getFollowers();
+                    mFollow_Status = profileModel.getFollow_status();
 
                     services = response.body().getServices();
                     blogs = response.body().getBlog();
+                    DjBookingRatePerHour = response.body().getRate_per_hour();
 
                     parenLayout.setVisibility(View.VISIBLE);
                     alertDialog.dismiss();//hide the loading Dailoge

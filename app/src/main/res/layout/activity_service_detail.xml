@@ -16,7 +16,7 @@
 <RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/img_seervice_image"
             android:layout_width="100dp"
             android:layout_height="100dp"

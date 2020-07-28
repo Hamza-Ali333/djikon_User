@@ -5,13 +5,13 @@ public class SingleServiceModle {
     private int price;
 
     private String id,
-    name,
-    description,
-    price_type,
-    featured_image,
-    gallery,
-    artist_name,
-    rating;
+            name,
+            description,
+            price_type,
+            feature_image,
+            gallery,
+            artist_name,
+            rating;
 
 
     public int getPrice() {
@@ -34,8 +34,8 @@ public class SingleServiceModle {
         return price_type;
     }
 
-    public String getFeatured_image() {
-        return featured_image;
+    public String getFeature_image() {
+        return feature_image;
     }
 
     public String getGallery() {

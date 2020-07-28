@@ -176,7 +176,7 @@ public class SignInActivity extends AppCompatActivity {
                 .setDeviceCredentialAllowed(true)
                 .build();
 
-       biometricPrompt.authenticate(promptInfo);
+      // biometricPrompt.authenticate(promptInfo);
 
 
 //        BiometricManager biometricManager = BiometricManager.(this);

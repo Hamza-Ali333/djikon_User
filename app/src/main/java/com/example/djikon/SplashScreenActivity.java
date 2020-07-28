@@ -16,7 +16,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         PreferenceData preferenceData = new PreferenceData();
 
-
         //preferenceData.clearPrefrences(this);
 
         getSupportActionBar().hide();

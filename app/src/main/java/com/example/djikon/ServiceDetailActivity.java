@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,9 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,6 +27,7 @@ import retrofit2.Retrofit;
 
 public class ServiceDetailActivity extends AppCompatActivity {
 
+    private static final String TAG = "ServiceDetailActivity";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -39,21 +42,24 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     private RatingBar ratingBar;
 
-    private ImageView ServiceImage;
+    private ImageView Featured_img;
 
 
-    private String serviceName,
-    dj_Name,
-    price,
-    price_type,
-    description,
-    Gallery;
+    private String
+            serviceImage,
+            serviceName,
+            dj_Name,
+            price,
+            price_type,
+            description,
+            Gallery;
 
-    private static final String BASEURL_IMAGES="http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
+    private static final String BASEURL_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
+    private static final String FEATURED_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/";
 
     private List<SliderItem> singleServiceModleArrayList;
 
-    private static final String BASE_URL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/products/";
+    private static final String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/products/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,19 +72,26 @@ public class ServiceDetailActivity extends AppCompatActivity {
         createRefrences();
 
         Intent intent = getIntent();
-        int id= intent.getIntExtra("id",0);
+        int id = intent.getIntExtra("id", 0);
 
         downloadServiceData(String.valueOf(id));
 
         singleServiceModleArrayList = new ArrayList<>();
 
 
-
-
         btn_Proceed_To_Pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Featured_img.buildDrawingCache();
+                Bitmap bitmap = Featured_img.getDrawingCache();
                 Intent i = new Intent(ServiceDetailActivity.this, BookArtistActivity.class);
+                i.putExtra("priceType",price_type);
+                i.putExtra("BitmapImage", bitmap);
+                i.putExtra("price",price);//rate per hour
+                i.putExtra("name",serviceName);
+                i.putExtra("request_code", 2);//2 for Service booking
+                i.putExtra("description",description);
                 startActivity(i);
             }
         });
@@ -93,9 +106,9 @@ public class ServiceDetailActivity extends AppCompatActivity {
     }
 
 
-    private void downloadServiceData(String id){
+    private void downloadServiceData(String id) {
 
-        Retrofit retrofit = ApiResponse.retrofit(BASE_URL,this);
+        Retrofit retrofit = ApiResponse.retrofit(BASE_URL, this);
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -105,15 +118,16 @@ public class ServiceDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SingleServiceModle> call, Response<SingleServiceModle> response) {
 
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
+                    serviceImage = response.body().getFeature_image();
                     serviceName = response.body().getName();
                     dj_Name = response.body().getArtist_name();
-                    price =String.valueOf(response.body().getPrice());
+                    price = String.valueOf(response.body().getPrice());
                     price_type = response.body().getPrice_type();
                     description = response.body().getDescription();
 
 
-                    btn_Proceed_To_Pay.setText("Proceed To Pay "+price+"$");
+                    btn_Proceed_To_Pay.setText("Proceed To Pay " + price + "$");
                     Gallery = response.body().getGallery();
 
                     setDataintoView();
@@ -121,17 +135,16 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     if (!Gallery.equals("no") || Gallery.isEmpty()) {
 
                         mRecyclerView.setVisibility(View.VISIBLE);
-                        Gallery =Gallery.replaceAll("\\[", "").replaceAll("\\]","").replace("\"", "");
+                        Gallery = Gallery.replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
                         String[] GalleryArray = Gallery.split(",");
                         buildServiceGalleryRecycler(GalleryArray);
-                    }else {
+                    } else {
                         mRecyclerView.setVisibility(View.GONE);
                     }
 
 
-
-                }else {
-                    Log.i("TAG", "onResponse: "+response.code());
+                } else {
+                    Log.i("TAG", "onResponse: " + response.code());
                 }
             }
 
@@ -143,23 +156,38 @@ public class ServiceDetailActivity extends AppCompatActivity {
     }
 
 
-    private void setDataintoView () {
+    private void setDataintoView() {
+
+        //should see the response of the server here note
+        Picasso.get().load(FEATURED_IMAGES+serviceImage)
+                .fit()
+                .centerCrop()
+                .into(Featured_img, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+                    @Override
+                    public void onError(Exception e) {
+                        Toast.makeText(ServiceDetailActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                    }
+                });
         txt_Service_Name.setText(serviceName);
         txt_Dj_Name.setText(dj_Name);
-        txt_Price.setText(" $"+price+" ");
+        txt_Price.setText(" $" + price + " ");
         txt_Price_Type.setText(price_type);
         txt_Description.setText(description);
 
     }
 
 
-    private void buildServiceGalleryRecycler (String[] gallery) {
+    private void buildServiceGalleryRecycler(String[] gallery) {
 
-        for(int i=0; i<=gallery.length-1; i++){
-            singleServiceModleArrayList.add(new SliderItem(BASEURL_IMAGES+gallery[i]));
+        for (int i = 0; i <= gallery.length - 1; i++) {
+            singleServiceModleArrayList.add(new SliderItem(BASEURL_IMAGES + gallery[i]));
         }
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-        mLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mAdapter = new RecyclerServiceGallery(singleServiceModleArrayList);
 
 
@@ -167,10 +195,10 @@ public class ServiceDetailActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void createRefrences () {
+    private void createRefrences() {
 
-        ServiceImage = findViewById(R.id.img_seervice_image);
-        txt_Service_Name= findViewById(R.id.txt_Servic_Name);
+        Featured_img = findViewById(R.id.img_seervice_image);
+        txt_Service_Name = findViewById(R.id.txt_Servic_Name);
         txt_Dj_Name = findViewById(R.id.txt_dj_name);
         txt_Price = findViewById(R.id.txt_service_charges);
         txt_Price_Type = findViewById(R.id.txt_price_type);
@@ -181,7 +209,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         btn_Proceed_To_Pay = findViewById(R.id.btn_proceed_to_pay);
 
     }
-
 
 
 }

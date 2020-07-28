@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,8 +84,14 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
         holder.img_featured.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //sending Featured Image only
+                holder.img_featured.buildDrawingCache();
+                Bitmap bitmap = holder.img_featured.getDrawingCache();
+
                 Intent i = new Intent(v.getContext(), ServiceDetailActivity.class);
                 i.putExtra("id",currentItem.getId());
+                i.putExtra("BitmapImage", bitmap);
                 v.getContext().startActivity(i);
             }
         });

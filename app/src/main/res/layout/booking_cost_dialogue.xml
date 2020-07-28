@@ -25,11 +25,11 @@
         android:layout_height="70dp"
         android:src="@drawable/woman"/>
         <TextView
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:id="@+id/txt_dj_name"
             android:layout_toRightOf="@+id/img_dj_profile"
             android:layout_marginLeft="4dp"
-            android:text="Bilawal Yo Dj"
+            android:text="Bilawal Yo Dj "
             android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -40,8 +40,8 @@
             android:layout_toRightOf="@+id/img_dj_profile"
             android:layout_marginLeft="4dp"
             android:textColor="#fff"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/roundshape"
@@ -55,6 +55,7 @@
             android:textColor="@color/colorBlack"
             android:text="$25.00"
             android:textSize="18sp"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
@@ -65,7 +66,64 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/purchserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Graycolor"
+                android:text="Name"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/txt_purchseName"
+                android:layout_below="@id/purchserName"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="Hamza Ali"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_below="@+id/txt_purchseName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Graycolor"
+                android:text="Email"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/txt_email"
+                android:layout_below="@id/email"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="hamzaregardless333@gmail.com"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/phone"
+                android:layout_below="@+id/txt_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Graycolor"
+                android:text="Phone"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/txt_phone"
+                android:layout_below="@+id/phone"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="03131425080"
+                android:textSize="16sp"/>
+
+            <TextView
                 android:id="@+id/address"
+                android:layout_below="@+id/txt_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Graycolor"
@@ -82,13 +140,6 @@
                 android:text="105 William St, Chicago, US"
                 android:textSize="16sp"/>
 
-<!--            <view-->
-<!--                android:id="@+id/divider"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:layout_marginTop="1dp"-->
-<!--                android:background="@color/Graycolor"-->
-<!--                android:layout_below="@+id/txt_dj_address"/>-->
 
             <TextView
                 android:id="@+id/Note"
@@ -111,13 +162,13 @@
                 android:textSize="12sp"/>
 
 
-<!--            <view-->
-<!--                android:id="@+id/divider2"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:layout_marginTop="3dp"-->
-<!--                android:background="@color/Graycolor"-->
-<!--                android:layout_below="@+id/txt_dj_information"/>-->
+            <view
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/colorBlue"
+                android:layout_below="@+id/txt_dj_information"/>
 
 
             <TextView
@@ -132,18 +183,83 @@
 
 
             <TextView
-                android:id="@+id/txt_service"
+                android:id="@+id/days"
                 android:layout_below="@id/total"
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBlack"
-                android:text="Service Charges"
+                android:text="Days"
                 android:textSize="14sp"/>
 
             <TextView
-                android:id="@+id/txt_service_amount"
+                android:id="@+id/txt_days"
                 android:layout_below="@id/total"
+                android:layout_marginTop="4dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="0"
+                android:textSize="14sp"/>
+
+
+            <TextView
+                android:id="@+id/Hour"
+                android:layout_below="@id/days"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="Hours"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/txt_hour"
+                android:layout_below="@id/days"
+                android:layout_marginTop="4dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="0"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/minut"
+                android:layout_below="@id/txt_hour"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="Minuts"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/txt_minut"
+                android:layout_below="@id/txt_hour"
+                android:layout_marginTop="4dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="0"
+                android:textSize="14sp"/>
+
+
+            <TextView
+                android:id="@+id/txt_rate_per_hour"
+                android:layout_below="@id/minut"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="Rate Per Hour"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/txt_rph"
+                android:layout_below="@id/minut"
                 android:layout_marginTop="4dp"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
@@ -152,49 +268,27 @@
                 android:text="$15.00"
                 android:textSize="14sp"/>
 
-
             <TextView
-                android:id="@+id/tax"
-                android:layout_below="@id/txt_service"
+                android:id="@+id/txt_service"
+                android:layout_below="@id/txt_rph"
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="Tax"
+                android:textColor="@color/colorBlue"
+                android:text="Paid Charges"
                 android:textSize="14sp"/>
 
             <TextView
-                android:id="@+id/txt_tax_amount"
-                android:layout_below="@id/txt_service"
-                android:layout_marginTop="4dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="$10.00"
-                android:textSize="14sp"/>
-
-
-            <TextView
-                android:id="@+id/paid"
-                android:layout_below="@id/tax"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="Paid Amount"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/txt_paid_amount"
-                android:layout_below="@id/tax"
+                android:id="@+id/txt_service_amount"
+                android:layout_below="@id/txt_rate_per_hour"
                 android:layout_marginTop="4dp"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="$25.00"
+                android:textColor="@color/colorBlue"
+                android:text="$15.00"
                 android:textSize="14sp"/>
+
 
 
             <Button
@@ -203,7 +297,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/edt_shape"
                 android:textColor="#fff"
-                android:layout_below="@+id/txt_paid_amount"
+                android:layout_below="@+id/txt_service_amount"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"

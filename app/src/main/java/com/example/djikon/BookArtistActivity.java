@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +15,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,6 +26,8 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 
 
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BookArtistActivity extends AppCompatActivity {
 
@@ -36,7 +39,12 @@ public class BookArtistActivity extends AppCompatActivity {
 
     private TextView txt_Start_Date, txt_End_Date,txt_Start_Time, txt_End_Time;
 
-
+    private String RPH ;//Rate Per Hour
+    private String Name;
+    private String Description;
+    private String PriceType;
+    private  Bitmap bitmap;
+    private int requestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,20 @@ public class BookArtistActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
-        getTimeDuration("","");
+
+
+        Intent intent = getIntent();
+        requestCode = intent.getIntExtra("request_code",0);
+        Toast.makeText(this, String.valueOf(requestCode), Toast.LENGTH_SHORT).show();
+        if(requestCode == 1) {
+            RPH = intent.getStringExtra("rph");
+        }else if (requestCode == 2) {
+            PriceType = intent.getStringExtra("priceType");
+        }
+            RPH = intent.getStringExtra("price");
+            Name = intent.getStringExtra("name");
+            Description = intent.getStringExtra("about");
+            bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
 
 
         rlt_Start_Date.setOnClickListener(new View.OnClickListener() {
@@ -85,46 +106,59 @@ public class BookArtistActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String startDate = txt_Start_Date.getText().toString()+" "+txt_Start_Time.getText().toString() ;
+               if(isInfoRight()){
+                   String startDate = txt_Start_Date.getText().toString()+" "+txt_Start_Time.getText().toString() ;
+                   String endTime = txt_End_Date.getText().toString()+" "+txt_End_Time.getText().toString();
+                   getTimeDuration(startDate,endTime);
+                   if(requestCode == 2 && !PriceType.equals("Fix")){
+                       getTimeDuration(startDate,endTime);
+                   }else if(requestCode == 1){
+                       getTimeDuration(startDate,endTime);
+                   }
 
-                String endTime = txt_End_Date.getText().toString()+" "+txt_End_Time.getText().toString();
-                getTimeDuration(startDate,endTime);
-
-
-               // getTimeDuration(startDate+" "+startTime,endDate+" "+endTime);
-              /* if(isInfoRight()){
-
-                   //openCheckCostDialogue();
-               }*/
+               }
             }
         });
     }//onCreate
 
 
-    private void openCheckCostDialogue() {
+    private void openCheckCostDialogue(String TotalCost) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.booking_cost_dialogue, null);
 
-        CircularImageView img_DJ_Profile;
-        TextView txt_dj_Name, txt_Service_Name, txt_Servives_prize,
-                txt_Dj_Address, txt_Service_Discription,
-        txt_Service_Amount, txt_Tax_Amount, txt_Paid_Amount;
+        CircularImageView img_Profile;
+        TextView txt_Name, txt_Service_Name, txt_Servives_prize,
+                txt_Address, txt_Service_Discription,
+        txt_Service_Amount, txt_Rate_Per_Hour, txt_Paid_Amount;
         Button btn_Cancle_Booking, btn_Book_Now;
 
-        img_DJ_Profile = view.findViewById(R.id.img_dj_profile);
+        img_Profile = view.findViewById(R.id.img_dj_profile);
 
-        txt_dj_Name = view.findViewById(R.id.txt_dj_name);
+        txt_Name = view.findViewById(R.id.txt_dj_name);
         txt_Service_Name = view.findViewById(R.id.txt_service_name);
-        txt_Dj_Address = view.findViewById(R.id.txt_dj_address);
+        txt_Address = view.findViewById(R.id.txt_dj_address);
+        txt_Servives_prize = view.findViewById(R.id.txt_service_charges);
         txt_Service_Discription = view.findViewById(R.id.txt_dj_information);
-        txt_Service_Amount = view.findViewById(R.id.txt_dj_address);
-        txt_Tax_Amount = view.findViewById(R.id.txt_tax_amount);
-        txt_Paid_Amount = view.findViewById(R.id.txt_paid_amount);
+        txt_Service_Amount = view.findViewById(R.id.txt_service_amount);
+        txt_Rate_Per_Hour = view.findViewById(R.id.txt_rph);
+
         btn_Cancle_Booking = view.findViewById(R.id.btn_booking_cancle);
         btn_Book_Now = view.findViewById(R.id.btn_book_now);
+
+
+        img_Profile.setImageBitmap(bitmap);
+        txt_Name.setText(Name);
+        txt_Service_Name.setText("Book This Dj");
+        txt_Address.setText(edt_Address.getText());
+        txt_Service_Discription.setText(Description);
+        txt_Service_Amount.setText("$"+TotalCost);
+        txt_Rate_Per_Hour.setText("$"+RPH);
+        txt_Servives_prize.setText("$"+TotalCost);
+
+
 
         builder.setView(view);
         builder.setCancelable(true);
@@ -224,21 +258,23 @@ public class BookArtistActivity extends AppCompatActivity {
 
         //EditText
         else if (edt_Name.getText().toString().isEmpty()) {
-            edt_Name.setVisibility(View.VISIBLE);
             edt_Name.setError("Name Required");
             edt_Name.requestFocus();
             result = false;
         }
         else if (edt_Phone.getText().toString().isEmpty()) {
-            edt_Phone.setVisibility(View.VISIBLE);
             edt_Phone.setError("Phone No Required");
             edt_Phone.requestFocus();
             result = false;
         }
         else if (edt_Email.getText().toString().isEmpty()) {
-            edt_Email.setVisibility(View.VISIBLE);
             edt_Email.setError("Email Required");
             edt_Email.requestFocus();
+            result = false;
+        }
+        else if(edt_Address.getText().toString().isEmpty()){
+            edt_Address.setError("Email Required");
+            edt_Address.requestFocus();
             result = false;
         }
 
@@ -285,10 +321,12 @@ public class BookArtistActivity extends AppCompatActivity {
             d1 = format.parse(Start);
             d2 = format.parse(End);
 
+
+
             //in milliseconds
             long diff = d2.getTime() - d1.getTime();
 
-            //long diffSeconds = diff / 1000 % 60;
+
             long diffMinutes = diff / (60 * 1000) % 60;
             long diffHours = diff / (60 * 60 * 1000) % 24;
             long diffDays = diff / (24 * 60 * 60 * 1000);
@@ -297,11 +335,44 @@ public class BookArtistActivity extends AppCompatActivity {
             Log.i(TAG, "getTimeDuration: "+diffHours + " hours, ");
             Log.i(TAG, "getTimeDuration: "+diffMinutes + " minutes, ");
 
-         //   System.out.print(diffSeconds + " seconds.");
+            Integer Day = (int) (long) diffDays;
+            Integer Hour = (int) (long) diffHours;
+            Integer Minutes = (int) (long) diffMinutes;
+
+            if(Day != 0){
+                Day = (Day * 24)*60;
+            }else {
+                Day = 0;
+            }
+            if(Hour!=0){
+                Hour = Hour * 60;
+            }else {
+                Hour =0;
+            }
+
+
+
+            //getting total minuts
+            Minutes = Day+Hour+Minutes;
+
+            Integer ratePerHour = Integer.parseInt(RPH);
+
+            Double perMint = Double.valueOf((double)ratePerHour / 60);
+
+            perMint = perMint * Minutes;
+
+            openCheckCostDialogue(String.valueOf(perMint));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     @Override

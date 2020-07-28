@@ -9,18 +9,17 @@ public class ProfileModel {
     private Integer id;
 
     private String profile_image,
-     firstname,
-     lastname,
-     email,
-    contact,
-      gender,
-    location;
+            firstname,
+            lastname,
+            email,
+            contact,
+            gender,
+            location,
+            rate_per_hour;
 
 
     private Integer followers,
-    follow_status;
-
-
+            follow_status;
 
 
     private List<Dj_Blogs_Model> blog;
@@ -28,8 +27,8 @@ public class ProfileModel {
     private List<Services_Model> services;
 
 
-    public ProfileModel(Integer id, String profileImage, String firstname, String lastname,  String email, int followers, int follow_status, List<Dj_Blogs_Model> blog, List<Services_Model> services) {
-        super();
+    public ProfileModel(Integer id, String profileImage, String firstname, String lastname, String email, int followers, int follow_status, List<Dj_Blogs_Model> blog, List<Services_Model> services) {
+
         this.id = id;
         this.profile_image = profileImage;
         this.firstname = firstname;
@@ -42,6 +41,9 @@ public class ProfileModel {
         this.follow_status = follow_status;
     }
 
+    public String getRate_per_hour() {
+        return rate_per_hour;
+    }
 
     public Integer getFollowers() {
         return followers;
