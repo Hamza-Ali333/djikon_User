@@ -89,6 +89,7 @@
             android:layout_weight="1"
             android:background="@drawable/edt_shape"
             android:hint="Name"
+            android:textColorHint="#ACACAC"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
@@ -103,6 +104,7 @@
             android:layout_weight="1"
             android:background="@drawable/edt_shape"
             android:hint="Phone"
+            android:textColorHint="#ACACAC"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
@@ -117,6 +119,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/edt_shape"
         android:hint="Email"
+        android:textColorHint="#ACACAC"
         android:paddingLeft="8dp"
         android:paddingTop="8dp"
         android:paddingRight="8dp"
@@ -198,7 +201,8 @@
         android:layout_height="80dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/edt_shape"
-        android:hint="Address (optional)"
+        android:hint="Address"
+        android:textColorHint="#ACACAC"
         android:paddingLeft="8dp"
         android:textColor="#fff"
         android:textSize="20sp" />
@@ -209,7 +213,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:buttonTint="@color/colorBlue"
-        android:checked="true"
+        android:checked="false"
         android:text="When Artist Confirm Your booking then Payment will charged?"
         android:textColor="#fff" />
 

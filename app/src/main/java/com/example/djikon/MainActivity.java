@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "findIamge", Toast.LENGTH_SHORT).show();
             IMAGEURL += imageName;
             Picasso.get().load(IMAGEURL)
+                    .placeholder(R.drawable.ic_doctor)
                     .fit()
                     .centerCrop()
                     .into(currentUserProfile, new com.squareup.picasso.Callback() {

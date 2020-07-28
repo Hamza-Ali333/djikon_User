@@ -100,27 +100,6 @@ public class SignInActivity extends AppCompatActivity {
 
 
 
-
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mNetworkChangeReciever = new NetworkChangeReciever();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        this.registerReceiver(mNetworkChangeReciever, filter);
-    }
-
-
-
-
-
-
-
-
-
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -873,7 +852,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
     private void checkNetworkState () {
-        IntentFilter intentFilter = new IntentFilter(NetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
+        IntentFilter intentFilter = new IntentFilter(mNetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -889,6 +868,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
     private void createReferencer() {
+
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);
         txt_Forgot_Password = findViewById(R.id.txt_Forgot_Password);
         txt_signwith_Finger = findViewById(R.id.txt_finger_print);
@@ -911,13 +891,13 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        this.unregisterReceiver(mNetworkChangeReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mNetworkChangeReciever);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.unregisterReceiver(mNetworkChangeReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mNetworkChangeReciever);
     }
 
 }

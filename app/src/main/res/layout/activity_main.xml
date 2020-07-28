@@ -28,7 +28,7 @@
                 android:layout_gravity="right|center_vertical"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="16dp"
                 app:srcCompat="@drawable/ic_doctor"/>
         </androidx.appcompat.widget.Toolbar>
 

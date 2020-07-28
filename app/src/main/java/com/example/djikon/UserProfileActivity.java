@@ -238,6 +238,7 @@ public class UserProfileActivity extends AppCompatActivity  {
                             @Override
                             public void run() {
                                 updateProfile(preferenceData.getUserId(UserProfileActivity.this));
+                              //  uploadImage();
                             }
                         });
                         update.start();
@@ -390,33 +391,35 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
 
+
+
     private void updateProfile(String UserId){
 
         retrofit = ApiResponse.retrofit(BASEURL,this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpeg"),
-                finalFile);
-        RequestBody firstname = RequestBody.create(MediaType.parse("text/plain"),
-                edt_FirstName.getText().toString());
-        RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"),
-                edt_LastName.getText().toString());
-        RequestBody phone = RequestBody.create(MediaType.parse("text/plain"),
-                edt_Phone_No.getText().toString());
-        RequestBody location = RequestBody.create(MediaType.parse("text/plain"),
-                edt_Location.getText().toString());
-        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"),
-               SelectedGender);
+//        RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpeg"),
+//                finalFile);
+//        RequestBody firstname = RequestBody.create(MediaType.parse("text/plain"),
+//                edt_FirstName.getText().toString());
+//        RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"),
+//                edt_LastName.getText().toString());
+//        RequestBody phone = RequestBody.create(MediaType.parse("text/plain"),
+//                edt_Phone_No.getText().toString());
+//        RequestBody location = RequestBody.create(MediaType.parse("text/plain"),
+//                edt_Location.getText().toString());
+//        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"),
+//               SelectedGender);
 
-
+String img= imageToString();
         Call<SuccessErrorModel> call = jsonApiHolder.UpdateUserProfile(
                 UserId,
-                      reqFile,
-                        firstname,
-                        lastName,
-                        phone,
-                        gender,
-                        location
+                     img ,
+                edt_FirstName.getText().toString(),
+                edt_LastName.getText().toString(),
+                edt_Phone_No.getText().toString(),
+                SelectedGender,
+                edt_Location.getText().toString()
                );
 
         call.enqueue(new Callback<SuccessErrorModel>() {
@@ -445,6 +448,40 @@ public class UserProfileActivity extends AppCompatActivity  {
                 Toast.makeText(UserProfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+        }
+
+        private void uploadImage(){
+            retrofit = ApiResponse.retrofit(BASEURL,this);
+
+           // String path = Image_uri.getPath();
+
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("image","imageName",RequestBody.create(MediaType.parse("multipart/form-data"), finalFile));
+            jsonApiHolder = retrofit.create(JSONApiHolder.class);
+
+            File file = new File(Image_uri.getPath());
+            Call<SuccessErrorModel> uploadCall = jsonApiHolder.uploadImage(preferenceData.getUserId(UserProfileActivity.this),filePart);
+            uploadCall.enqueue(new Callback<SuccessErrorModel>() {
+                @Override
+                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+
+                    if(response.isSuccessful()){
+                        Toast.makeText(UserProfileActivity.this, "Yes Got it", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                    else {
+                        progressDialog.dismiss();
+                        Log.i("TAG", "onResponse: "+response.code());
+                        Toast.makeText(UserProfileActivity.this, "Again Fucked", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Toast.makeText(UserProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                    Log.i("TAG", "onFailure: "+t.getMessage());
+                }
+            });
         }
 
 
@@ -659,10 +696,6 @@ public class UserProfileActivity extends AppCompatActivity  {
                 finalFile = new File(getRealPathFromURI(tempUri));
 
                 img_Profile.setImageURI(tempUri);
-
-                Log.i("TAG", "onActivityResult: "+finalFile);
-
-                //System.out.println(mImageCaptureUri);
 
             }
 

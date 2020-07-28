@@ -51,17 +51,26 @@ public interface JSONApiHolder {
 
 
 
-    @Multipart
+    @FormUrlEncoded
     @POST()
     Call <SuccessErrorModel> UpdateUserProfile(
             @Url String userid,
-            @Part("image") RequestBody image,
-            @Part("firstname") RequestBody  firstname,
-            @Part("lastname") RequestBody  lastname,
-            @Part("contact") RequestBody  contact,
-            @Part("gender") RequestBody  gender,
-            @Part("location") RequestBody  location
+            @Field("image") String image,
+            @Field("firstname") String  firstname,
+            @Field("lastname") String  lastname,
+            @Field("contact") String  contact,
+            @Field("gender") String  gender,
+            @Field("location") String  location
     );
+
+
+        @Multipart
+        @POST()
+        Call<SuccessErrorModel> uploadImage(
+                @Url String userid,
+                @Part MultipartBody.Part image
+        );
+
 
 
 

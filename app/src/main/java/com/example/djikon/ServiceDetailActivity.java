@@ -86,12 +86,12 @@ public class ServiceDetailActivity extends AppCompatActivity {
                 Featured_img.buildDrawingCache();
                 Bitmap bitmap = Featured_img.getDrawingCache();
                 Intent i = new Intent(ServiceDetailActivity.this, BookArtistActivity.class);
-                i.putExtra("priceType",price_type);
+                i.putExtra("priceType", price_type);
                 i.putExtra("BitmapImage", bitmap);
-                i.putExtra("price",price);//rate per hour
-                i.putExtra("name",serviceName);
+                i.putExtra("price", price);//rate per hour
+                i.putExtra("name", serviceName);
                 i.putExtra("request_code", 2);//2 for Service booking
-                i.putExtra("description",description);
+                i.putExtra("description", description);
                 startActivity(i);
             }
         });
@@ -159,7 +159,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private void setDataintoView() {
 
         //should see the response of the server here note
-        Picasso.get().load(FEATURED_IMAGES+serviceImage)
+        Picasso.get().load(FEATURED_IMAGES + serviceImage)
                 .fit()
                 .centerCrop()
                 .into(Featured_img, new com.squareup.picasso.Callback() {
@@ -167,6 +167,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     public void onSuccess() {
 
                     }
+
                     @Override
                     public void onError(Exception e) {
                         Toast.makeText(ServiceDetailActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();

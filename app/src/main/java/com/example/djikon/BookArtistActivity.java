@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -81,7 +82,6 @@ public class BookArtistActivity extends AppCompatActivity {
         rlt_End_Date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 showDatPiker(txt_End_Date);
             }
         });
@@ -97,7 +97,6 @@ public class BookArtistActivity extends AppCompatActivity {
         rlt_End_Time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 showTimePiker(txt_End_Time);
             }
         });
@@ -122,65 +121,7 @@ public class BookArtistActivity extends AppCompatActivity {
     }//onCreate
 
 
-    private void openCheckCostDialogue(String TotalCost) {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.booking_cost_dialogue, null);
-
-        CircularImageView img_Profile;
-        TextView txt_Name, txt_Service_Name, txt_Servives_prize,
-                txt_Address, txt_Service_Discription,
-        txt_Service_Amount, txt_Rate_Per_Hour, txt_Paid_Amount;
-        Button btn_Cancle_Booking, btn_Book_Now;
-
-        img_Profile = view.findViewById(R.id.img_dj_profile);
-
-        txt_Name = view.findViewById(R.id.txt_dj_name);
-        txt_Service_Name = view.findViewById(R.id.txt_service_name);
-        txt_Address = view.findViewById(R.id.txt_dj_address);
-        txt_Servives_prize = view.findViewById(R.id.txt_service_charges);
-        txt_Service_Discription = view.findViewById(R.id.txt_dj_information);
-        txt_Service_Amount = view.findViewById(R.id.txt_service_amount);
-        txt_Rate_Per_Hour = view.findViewById(R.id.txt_rph);
-
-        btn_Cancle_Booking = view.findViewById(R.id.btn_booking_cancle);
-        btn_Book_Now = view.findViewById(R.id.btn_book_now);
-
-
-        img_Profile.setImageBitmap(bitmap);
-        txt_Name.setText(Name);
-        txt_Service_Name.setText("Book This Dj");
-        txt_Address.setText(edt_Address.getText());
-        txt_Service_Discription.setText(Description);
-        txt_Service_Amount.setText("$"+TotalCost);
-        txt_Rate_Per_Hour.setText("$"+RPH);
-        txt_Servives_prize.setText("$"+TotalCost);
-
-
-
-        builder.setView(view);
-        builder.setCancelable(true);
-
-        final AlertDialog alertDialog =  builder.show();
-
-        btn_Cancle_Booking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-
-        btn_Book_Now.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(view.getContext(), BookingPaymentMethodActivity.class);
-                view.getContext().startActivity(i);
-            }
-        });
-
-    }
 
 
     private void showDatPiker (TextView textView) {
@@ -255,10 +196,22 @@ public class BookArtistActivity extends AppCompatActivity {
             txt_End_Time.requestFocus();
             result = false;
         }
+        else if (txt_End_Time.getText().toString().startsWith("0:")) {
+            txt_End_Time.setVisibility(View.VISIBLE);
+            txt_End_Time.setError("check");
+            Toast.makeText(this, "Wrong Time Selected Check PM AM", Toast.LENGTH_LONG).show();
+            txt_End_Time.requestFocus();
+            result = false;
+        }
 
         //EditText
         else if (edt_Name.getText().toString().isEmpty()) {
             edt_Name.setError("Name Required");
+            edt_Name.requestFocus();
+            result = false;
+        }
+        else if (edt_Name.getText().toString().length() < 3) {
+            edt_Name.setError("Name is Not Valid");
             edt_Name.requestFocus();
             result = false;
         }
@@ -272,8 +225,13 @@ public class BookArtistActivity extends AppCompatActivity {
             edt_Email.requestFocus();
             result = false;
         }
+        else if(!isEmailValid(edt_Email.getText().toString())){
+            edt_Email.setError("Email is Not Valid");
+            edt_Email.requestFocus();
+            result = false;
+        }
         else if(edt_Address.getText().toString().isEmpty()){
-            edt_Address.setError("Email Required");
+            edt_Address.setError("Address Required");
             edt_Address.requestFocus();
             result = false;
         }
@@ -308,8 +266,6 @@ public class BookArtistActivity extends AppCompatActivity {
 
     //return time of the
     private void getTimeDuration(String Start, String End){
-        String dateStart = "07/27/2020 14:29:00";
-        String dateStop = "07/29/2020 09:31:00";
 
         //HH converts hour in 24 hours format (0-23), day calculation
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
@@ -320,7 +276,6 @@ public class BookArtistActivity extends AppCompatActivity {
         try {
             d1 = format.parse(Start);
             d2 = format.parse(End);
-
 
 
             //in milliseconds
@@ -351,7 +306,6 @@ public class BookArtistActivity extends AppCompatActivity {
             }
 
 
-
             //getting total minuts
             Minutes = Day+Hour+Minutes;
 
@@ -361,12 +315,110 @@ public class BookArtistActivity extends AppCompatActivity {
 
             perMint = perMint * Minutes;
 
-            openCheckCostDialogue(String.valueOf(perMint));
+            //open Dailoge after Calculation and pass the value
+            openCheckCostDialogue (perMint,
+                    String.valueOf(Day),
+                    String.valueOf(Hour),
+                    String.valueOf(Minutes) );
+
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.i(TAG, "getTimeDuration: "+e.getMessage());
         }
     }
+
+
+    private void openCheckCostDialogue(Double TotalCost,String Days,String Hour,String Minutes) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View view = inflater.inflate(R.layout.booking_cost_dialogue, null);
+
+
+        CircularImageView img_Profile;
+        TextView txt_Name, txt_Service_Name, txt_Servives_prize,
+                                     txt_Service_Discription,
+                                     txt_Service_Amount,
+        //purchaser detail
+         txt_pName, txt_pEmail, txt_pContact, txt_pAddress,
+                //days,hour,Minutes and Rate per Hour
+        txt_Days,txt_Hour,txt_Minutes,txt_RPH;
+
+        Button btn_Cancle_Booking, btn_Book_Now;
+
+        img_Profile = view.findViewById(R.id.img_dj_profile);
+
+        txt_Name = view.findViewById(R.id.txt_dj_name);
+        txt_Service_Name = view.findViewById(R.id.txt_service_name);
+
+        //purchaser Detail
+        txt_pName = view.findViewById(R.id.txt_pName);
+        txt_pEmail = view.findViewById(R.id.txt_pEmail);
+        txt_pContact = view.findViewById(R.id.txt_pPhone);
+        txt_pAddress = view.findViewById(R.id.txt_pAddress);
+
+
+        //Service Detail
+        txt_Servives_prize = view.findViewById(R.id.txt_service_charges);
+        txt_Service_Discription = view.findViewById(R.id.txt_dj_information);
+        txt_Service_Amount = view.findViewById(R.id.txt_service_amount);
+        //Calculated Time
+        txt_Days= view.findViewById(R.id.txt_days);
+        txt_Hour= view.findViewById(R.id.txt_hour);
+        txt_Minutes= view.findViewById(R.id.txt_minut);
+        txt_RPH= view.findViewById(R.id.txt_rph);
+
+
+        btn_Cancle_Booking = view.findViewById(R.id.btn_booking_cancle);
+        btn_Book_Now = view.findViewById(R.id.btn_book_now);
+
+
+
+        img_Profile.setImageBitmap(bitmap);
+        txt_Name.setText(Name);
+        txt_Service_Name.setText("Book This Dj");
+
+        //purchaser Detail
+        txt_pName.setText(edt_Name.getText().toString());
+        txt_pEmail.setText(edt_Email.getText().toString());
+        txt_pContact.setText(edt_Phone.getText().toString());
+        txt_pAddress.setText(edt_Address.getText());
+
+        //Service Detail
+        txt_Service_Discription.setText(Description);
+        String.format("%.2f", TotalCost);//will remove the value after . decimal in Double
+        txt_Service_Amount.setText("$"+TotalCost);
+        txt_Servives_prize.setText("$"+TotalCost);
+
+        //Calculated Time
+        txt_Days.setText(Days);
+        txt_Hour.setText(Hour);
+        txt_Minutes.setText(Minutes);
+        txt_RPH.setText("$"+RPH);
+
+        builder.setView(view);
+        builder.setCancelable(true);
+
+        final AlertDialog alertDialog =  builder.show();
+
+        btn_Cancle_Booking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        btn_Book_Now.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(view.getContext(), BookingPaymentMethodActivity.class);
+                view.getContext().startActivity(i);
+            }
+        });
+
+    }
+
 
     private static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
