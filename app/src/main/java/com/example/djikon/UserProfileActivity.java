@@ -119,8 +119,6 @@ public class UserProfileActivity extends AppCompatActivity  {
     private File finalFile;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +146,6 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
 
-
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -167,7 +164,6 @@ public class UserProfileActivity extends AppCompatActivity  {
                 ActivityCompat.requestPermissions(UserProfileActivity.this, permissions, 123);
             }
         });
-
         thread.start();
 
 
@@ -364,16 +360,18 @@ public class UserProfileActivity extends AppCompatActivity  {
                             mSpinner.setSelection(j);
                         }
                     }
+
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
+
                             rlt_Parent.setVisibility(View.VISIBLE);
                             mProgressBar.setVisibility(View.GONE);
                             msg.setVisibility(View.GONE);
                             setDataInToFields();
+
                         }
                     }));
-
 
                 }else {
                     rlt_Parent.setVisibility(View.VISIBLE);
@@ -388,8 +386,6 @@ public class UserProfileActivity extends AppCompatActivity  {
             }
         });
     }
-
-
 
 
 

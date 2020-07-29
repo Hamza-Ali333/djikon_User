@@ -4,12 +4,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -41,9 +44,11 @@ public class DjPrpfileActivity extends AppCompatActivity {
             txt_address,
             txt_Total_Follower,
             txt_about,
-            txt_Progress_Msg;
+            txt_Progress_Msg,
+    onlineStatus;
 
     private ScrollView parenLayout;
+    private RelativeLayout rlt_About;
 
     private CircularImageView img_DJ_Profile;
 
@@ -78,6 +83,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
     private final static String URL_REQUEST_SONG = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/request_song/";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,13 +145,16 @@ public class DjPrpfileActivity extends AppCompatActivity {
         }
 
 
-        if (mAddress.equals(null))
-            Toast.makeText(this, "Address null", Toast.LENGTH_SHORT).show();
-        else
             txt_address.setText(mAddress);
 
-
+        if(mAbout.equals(null))
+            rlt_About.setVisibility(View.GONE);
+        else {
+            rlt_About.setVisibility(View.VISIBLE);
+            txt_about.setText(mAbout);
+        }
         txt_Total_Follower.setText("0");
+
         if (!mProfile.equals("no")) {
             Picasso.get().load(mProfile)
                     .fit()
@@ -155,7 +164,6 @@ public class DjPrpfileActivity extends AppCompatActivity {
                         public void onSuccess() {
 
                         }
-
                         @Override
                         public void onError(Exception e) {
                             Toast.makeText(DjPrpfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
@@ -208,11 +216,11 @@ public class DjPrpfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!edt_Requester_Name.getText().toString().isEmpty() && !edt_Song_Name.getText().toString().isEmpty()) {
+                if (isInFoRight(edt_Requester_Name,edt_Song_Name)) {
+
                     progressDialog = DialogsUtils.showProgressDialog(DjPrpfileActivity.this,"Posting Request","Please Wait...");
                     postRequestSong(edt_Requester_Name.getText().toString(), edt_Song_Name.getText().toString());
-                }else {
-                    Toast.makeText(DjPrpfileActivity.this, "Please Enter Info First", Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
                 }
             }
         });
@@ -220,14 +228,26 @@ public class DjPrpfileActivity extends AppCompatActivity {
     }
 
     private boolean isInFoRight (EditText userName,EditText songName) {
-        boolean result = false;
+        boolean result = true;
         if(userName.getText().toString().isEmpty() ){
             userName.setError("Please Enter Your Name");
             userName.requestFocus();
+            result = false;
         }
-        else if(userName.getText().toString().isEmpty() ){
-            userName.setError("Please Enter Your Name");
+        else if(songName.getText().toString().isEmpty() ){
+            userName.setError("Please Enter Song Name");
             userName.requestFocus();
+            result = false;
+        }
+        else if (userName.getText().toString().length() < 3){
+            userName.setError("Two Short Name");
+            userName.requestFocus();
+            result = false;
+        }
+        else if (songName.getText().toString().length() > 10){
+            userName.setError("At least 10 Digit's required");
+            userName.requestFocus();
+            result = false;
         }
         return result;
     }
@@ -247,12 +267,15 @@ public class DjPrpfileActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     Log.i("TAG", "onResponse: " + response.code());
+
                     ProfileModel profileModel = response.body();
                     mDJName = profileModel.getFirstname() + " " + response.body().getLastname();
                     mAddress = profileModel.getLocation();
                     mProfile = profileModel.getProfile_image();
                     mFollower_Count = profileModel.getFollowers();
                     mFollow_Status = profileModel.getFollow_status();
+                    mAbout = profileModel.getAbout();
+
 
                     services = response.body().getServices();
                     blogs = response.body().getBlog();
@@ -277,6 +300,8 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
                     setDataInToViews();
 
+                    setOnlineStatus(0);
+
                 } else {
 
                     Log.i("TAG", "onResponse: " + response.code());
@@ -296,15 +321,26 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     }
 
+    private void setOnlineStatus(int i) {
+    if(i==0){
+        onlineStatus.setText("Offline");
+        onlineStatus.setBackgroundResource(R.drawable.redround_stroke);
+    }else {
+        onlineStatus.setText("Online ");
+        onlineStatus.setBackgroundResource(R.drawable.blueround_stroke);
+    }
+    }
+
     private void createRefrences() {
 
         parenLayout = findViewById(R.id.scrollable);
+        rlt_About = findViewById(R.id.rlt_about);
         btn_Book_Artist = findViewById(R.id.btn_book_artist);
         btn_Request_A_Song = findViewById(R.id.btn_RequestASong);
         btn_Follow = findViewById(R.id.Follow_Dj);
         btn_Message = findViewById(R.id.message_dj);
 
-
+        onlineStatus = findViewById(R.id.txt_dj_status);
         txt_DJ_Name = findViewById(R.id.txt_dj_name);
         txt_address = findViewById(R.id.txt_address);
         txt_Total_Follower = findViewById(R.id.txt_followers);
@@ -324,6 +360,11 @@ public class DjPrpfileActivity extends AppCompatActivity {
     }
 
     private void postRequestSong (String UserName,String SongName) {
+
+        Snackbar snackbar = Snackbar.make(parenLayout, "", Snackbar.LENGTH_LONG);
+        TextView snackBarText =  snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        snackBarText.setTextColor(Color.YELLOW);
+
         retrofit= ApiResponse.retrofit(URL_REQUEST_SONG,this);
 
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
@@ -337,9 +378,14 @@ public class DjPrpfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
-                    progressDialog.dismiss();
+                            progressDialog.dismiss();
+                            snackBarText.setText("Request Posted Successfully");
+                            snackbar.show();
                 }else {
                     progressDialog.dismiss();
+                    snackBarText.setText("OPPS Request Failed To Posted Try Again");
+                    snackbar.show();
+
                     Log.i("TAG", "onResponse: "+response.code());
                 }
             }
@@ -347,6 +393,9 @@ public class DjPrpfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 progressDialog.dismiss();
+                progressDialog.dismiss();
+                snackBarText.setText("OPPS Something Happend Wrong Check Network");
+                snackbar.show();
                 Toast.makeText(DjPrpfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

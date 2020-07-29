@@ -13,6 +13,7 @@ public class ProfileModel {
             lastname,
             email,
             contact,
+            about,
             gender,
             location,
             rate_per_hour;
@@ -27,18 +28,8 @@ public class ProfileModel {
     private List<Services_Model> services;
 
 
-    public ProfileModel(Integer id, String profileImage, String firstname, String lastname, String email, int followers, int follow_status, List<Dj_Blogs_Model> blog, List<Services_Model> services) {
-
-        this.id = id;
-        this.profile_image = profileImage;
-        this.firstname = firstname;
-        this.lastname = lastname;
-
-        this.email = email;
-        this.blog = blog;
-        this.services = services;
-        this.followers = followers;
-        this.follow_status = follow_status;
+    public String getAbout() {
+        return about;
     }
 
     public String getRate_per_hour() {

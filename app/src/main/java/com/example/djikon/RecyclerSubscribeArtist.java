@@ -11,18 +11,18 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscribeArtist.ViewHolder>{
 
-    private ArrayList<SubscribeToArtist> mSubscribeToArtistArrayList;
+    private List<SubscribeArtistModel> mSubscribeToArtistArrayList;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
         public ImageView img_Subscribe_Artist_Profile;
         public TextView txt_Subscribe_Artist_Name;
-        public TextView  txt_Subscribe_Artist_Status;
+        public TextView txt_Subscribe_Artist_Location;
         public TextView  txt_UnFollow;
         public RelativeLayout rlt_SubscribeArtist;
 
@@ -31,14 +31,14 @@ public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscr
             img_Subscribe_Artist_Profile = itemView.findViewById(R.id.img_SubscribeArtist);
 
             txt_Subscribe_Artist_Name = itemView.findViewById(R.id.txt_msg_sender_name);
-            txt_Subscribe_Artist_Status = itemView.findViewById(R.id.txt_SubscribeArtistStatus);
+            txt_Subscribe_Artist_Location = itemView.findViewById(R.id.txt_SubscribeArtistStatus);
             txt_UnFollow = itemView.findViewById(R.id.txt_UnFollow);
             rlt_SubscribeArtist = itemView.findViewById(R.id.subscribe_artist_layout);
         }
     }
 
 //constructor
-    public RecyclerSubscribeArtist(ArrayList<SubscribeToArtist> subscribeToArtistArrayList) {
+    public RecyclerSubscribeArtist(List<SubscribeArtistModel> subscribeToArtistArrayList) {
         this.mSubscribeToArtistArrayList = subscribeToArtistArrayList;
     }
 
@@ -54,17 +54,18 @@ public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscr
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final SubscribeToArtist currentItem = mSubscribeToArtistArrayList.get(position);
+        final SubscribeArtistModel currentItem = mSubscribeToArtistArrayList.get(position);
 
-       holder.img_Subscribe_Artist_Profile.setImageResource(currentItem.getImg_Subscribe_Artist());
-       holder.txt_Subscribe_Artist_Name.setText(currentItem.getTxt_SubscribeArtistName());
-       holder.txt_Subscribe_Artist_Status.setText(currentItem.getTxt_SubscribeArtistStatus());
+      // holder.img_Subscribe_Artist_Profile.setImageResource(currentItem.getImg_Subscribe_Artist());
+       holder.txt_Subscribe_Artist_Name.setText(currentItem.getFirstname()+" "+ currentItem.getLastname());
+       holder.txt_Subscribe_Artist_Location.setText(currentItem.getLocation());
 
        holder.rlt_SubscribeArtist.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
 
                Intent intent = new Intent(view.getContext(), DjPrpfileActivity.class);
+               intent.putExtra("id", currentItem.getId());
                view.getContext().startActivity(intent);
            }
        });
@@ -73,7 +74,7 @@ public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscr
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(view.getContext(), "clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "This Featured will Available Soon", Toast.LENGTH_SHORT).show();
             }
         });
 
