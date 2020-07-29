@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -66,13 +67,17 @@ public class DjPrpfileActivity extends AppCompatActivity {
     private RecyclerView.Adapter BlogAdapter;
     private RecyclerView.LayoutManager BlogLayoutManager;
 
+    private Retrofit retrofit;
+    private JSONApiHolder jsonApiHolder;
+    private ProgressDialog progressDialog;
+
 
     List<Services_Model> services;
     List<Dj_Blogs_Model> blogs;
 
 
-
     private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
+    private final static String URL_REQUEST_SONG = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/request_song/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
                 img_DJ_Profile.buildDrawingCache();
                 Bitmap bitmap = img_DJ_Profile.getDrawingCache();
                 Intent i = new Intent(DjPrpfileActivity.this, BookArtistActivity.class);
+                i.putExtra("id",String.valueOf(blogId));
                 i.putExtra("BitmapImage", bitmap);
                 i.putExtra("price",DjBookingRatePerHour);//rate per hour
                 i.putExtra("name",mDJName);
@@ -201,18 +207,36 @@ public class DjPrpfileActivity extends AppCompatActivity {
         btn_Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialog.dismiss();
 
+                if(!edt_Requester_Name.getText().toString().isEmpty() && !edt_Song_Name.getText().toString().isEmpty()) {
+                    progressDialog = DialogsUtils.showProgressDialog(DjPrpfileActivity.this,"Posting Request","Please Wait...");
+                    postRequestSong(edt_Requester_Name.getText().toString(), edt_Song_Name.getText().toString());
+                }else {
+                    Toast.makeText(DjPrpfileActivity.this, "Please Enter Info First", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
 
+    private boolean isInFoRight (EditText userName,EditText songName) {
+        boolean result = false;
+        if(userName.getText().toString().isEmpty() ){
+            userName.setError("Please Enter Your Name");
+            userName.requestFocus();
+        }
+        else if(userName.getText().toString().isEmpty() ){
+            userName.setError("Please Enter Your Name");
+            userName.requestFocus();
+        }
+        return result;
+    }
+
     private void getProfileDataFromServer(String blogId) {
 
-        Retrofit retrofit= ApiResponse.retrofit(BASE_URL,this);
+         retrofit= ApiResponse.retrofit(BASE_URL,this);
 
-        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
+         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         Call<ProfileModel> call = jsonApiHolder.getDjOrUserProfile(blogId);
 
@@ -254,6 +278,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
                     setDataInToViews();
 
                 } else {
+
                     Log.i("TAG", "onResponse: " + response.code());
 
                     return;
@@ -298,6 +323,34 @@ public class DjPrpfileActivity extends AppCompatActivity {
         return true;
     }
 
+    private void postRequestSong (String UserName,String SongName) {
+        retrofit= ApiResponse.retrofit(URL_REQUEST_SONG,this);
+
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
+
+        Call<SuccessErrorModel> call = jsonApiHolder.postSongRequest("1",
+                UserName,
+                SongName
+                );
+
+        call.enqueue(new Callback<SuccessErrorModel>() {
+            @Override
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                if(response.isSuccessful()){
+                    progressDialog.dismiss();
+                }else {
+                    progressDialog.dismiss();
+                    Log.i("TAG", "onResponse: "+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(DjPrpfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void showLoadingDialogue() {
 

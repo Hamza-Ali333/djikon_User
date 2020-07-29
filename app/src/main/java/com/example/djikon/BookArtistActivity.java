@@ -2,6 +2,7 @@ package com.example.djikon;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -30,22 +32,38 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class BookArtistActivity extends AppCompatActivity {
 
-    private static final String TAG ="Book this Artist" ;
-    private  Button btn_Check_Cost;
+    private static final String TAG = "Book this Artist";
+
+    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/book_artist/";
+    private final static String BASE_URL_SERVICE = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/book_service/";
+
+    private Button btn_Check_Cost;
     private EditText edt_Name, edt_Phone, edt_Email, edt_Address;
     private LinearLayout rlt_Start_Date, rlt_End_Date, rlt_Start_Time, rlt_End_Time;
-
-
-    private TextView txt_Start_Date, txt_End_Date,txt_Start_Time, txt_End_Time;
-
-    private String RPH ;//Rate Per Hour
+    private TextView txt_Start_Date, txt_End_Date, txt_Start_Time, txt_End_Time;
+    private String Id;
+    private String RPH;//Rate Per Hour
     private String Name;
-    private String Description;
     private String PriceType;
-    private  Bitmap bitmap;
-    private int requestCode;
+    private String id;
+    private Bitmap bitmap;
+    private int requestCode ;
+    private ProgressDialog progressDialog;
+    private AlertDialog MsgDialogue;
+
+    private static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +76,26 @@ public class BookArtistActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        requestCode = intent.getIntExtra("request_code",0);
-        Toast.makeText(this, String.valueOf(requestCode), Toast.LENGTH_SHORT).show();
-        if(requestCode == 1) {
+        requestCode = intent.getIntExtra("request_code", 0);
+        id = intent.getStringExtra("id");
+
+        if (requestCode == 1) {//1 for subscriber
             RPH = intent.getStringExtra("rph");
-        }else if (requestCode == 2) {
+            rlt_End_Date.setVisibility(View.VISIBLE);
+            rlt_End_Time.setVisibility(View.VISIBLE);
+        } else if (requestCode == 2) {
             PriceType = intent.getStringExtra("priceType");
         }
-            RPH = intent.getStringExtra("price");
-            Name = intent.getStringExtra("name");
-            Description = intent.getStringExtra("about");
-            bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
+
+
+        if (requestCode == 2 && PriceType.equals("Fix")) {
+            rlt_End_Date.setVisibility(View.GONE);
+            rlt_End_Time.setVisibility(View.GONE);
+        }
+
+        RPH = intent.getStringExtra("price");
+        Name = intent.getStringExtra("name");
+        bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
 
 
         rlt_Start_Date.setOnClickListener(new View.OnClickListener() {
@@ -105,33 +132,29 @@ public class BookArtistActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               if(isInfoRight()){
-                   String startDate = txt_Start_Date.getText().toString()+" "+txt_Start_Time.getText().toString() ;
-                   String endTime = txt_End_Date.getText().toString()+" "+txt_End_Time.getText().toString();
-                   getTimeDuration(startDate,endTime);
-                   if(requestCode == 2 && !PriceType.equals("Fix")){
-                       getTimeDuration(startDate,endTime);
-                   }else if(requestCode == 1){
-                       getTimeDuration(startDate,endTime);
-                   }
+                if (isInfoRight()) {
+                    String startDate = txt_Start_Date.getText().toString() + " " + txt_Start_Time.getText().toString();
+                    String endTime = txt_End_Date.getText().toString() + " " + txt_End_Time.getText().toString();
+                    getTimeDuration(startDate, endTime);
+                    if (requestCode == 2 && !PriceType.equals("Fix")) {
+                        getTimeDuration(startDate, endTime);
+                    } else if (requestCode == 1) {
+                        getTimeDuration(startDate, endTime);
+                    }
 
-               }
+                }
             }
         });
     }//onCreate
 
-
-
-
-
-    private void showDatPiker (TextView textView) {
+    private void showDatPiker(TextView textView) {
         Calendar c = Calendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialog(BookArtistActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String _year = String.valueOf(year);
-                String _month = (month+1) < 10 ? "0" + (month+1) : String.valueOf(month+1);
+                String _month = (month + 1) < 10 ? "0" + (month + 1) : String.valueOf(month + 1);
                 String _date = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
                 String _pickedDate = _month + "/" + _date + "/" + _year;
 
@@ -139,7 +162,7 @@ public class BookArtistActivity extends AppCompatActivity {
                 textView.setVisibility(View.VISIBLE);
                 Log.e("PickedDate: ", "Date: " + _pickedDate); //2019-02-12
             }
-        },c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.MONTH));
+        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.MONTH));
 
         dialog.getDatePicker().setMinDate(c.getTimeInMillis());
 
@@ -147,8 +170,7 @@ public class BookArtistActivity extends AppCompatActivity {
 
     }
 
-
-    private void showTimePiker (TextView textView) {
+    private void showTimePiker(TextView textView) {
 
         Calendar mcurrentTime = Calendar.getInstance();
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
@@ -159,11 +181,11 @@ public class BookArtistActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
 
-                textView.setText( selectedHour + ":" + selectedMinute+":00");
+                textView.setText(selectedHour + ":" + selectedMinute + ":00");
                 textView.setVisibility(View.VISIBLE);
-                if(selectedHour>12){
+                if (selectedHour > 12) {
                     //PM
-                }else {
+                } else {
                     //AM
                 }
             }
@@ -172,15 +194,14 @@ public class BookArtistActivity extends AppCompatActivity {
         mTimePicker.show();
     }
 
-    private boolean isInfoRight () {
-        boolean result= true;
+    private boolean isInfoRight() {
+        boolean result = true;
         if (txt_Start_Date.getText().toString().isEmpty()) {
             txt_Start_Date.setVisibility(View.VISIBLE);
             txt_Start_Date.setError("Start Date Required");
             txt_Start_Date.requestFocus();
             result = false;
-        }
-        else if (txt_End_Date.getText().toString().isEmpty()) {
+        } else if (requestCode == 2 && !PriceType.equals("Fix") && txt_End_Date.getText().toString().isEmpty()) {
             txt_Start_Date.setVisibility(View.VISIBLE);
             txt_Start_Date.setError("End Date Required");
             txt_Start_Date.requestFocus();
@@ -190,13 +211,12 @@ public class BookArtistActivity extends AppCompatActivity {
             txt_Start_Time.setError("Start Time Required");
             txt_Start_Time.requestFocus();
             result = false;
-        }else if (txt_End_Time.getText().toString().isEmpty()) {
+        } else if (requestCode == 2 && !PriceType.equals("Fix") && txt_End_Time.getText().toString().isEmpty()) {
             txt_End_Time.setVisibility(View.VISIBLE);
             txt_End_Time.setError("End Time Required");
             txt_End_Time.requestFocus();
             result = false;
-        }
-        else if (txt_End_Time.getText().toString().startsWith("0:")) {
+        } else if (txt_End_Time.getText().toString().startsWith("0:")) {
             txt_End_Time.setVisibility(View.VISIBLE);
             txt_End_Time.setError("check");
             Toast.makeText(this, "Wrong Time Selected Check PM AM", Toast.LENGTH_LONG).show();
@@ -209,28 +229,23 @@ public class BookArtistActivity extends AppCompatActivity {
             edt_Name.setError("Name Required");
             edt_Name.requestFocus();
             result = false;
-        }
-        else if (edt_Name.getText().toString().length() < 3) {
+        } else if (edt_Name.getText().toString().length() < 3) {
             edt_Name.setError("Name is Not Valid");
             edt_Name.requestFocus();
             result = false;
-        }
-        else if (edt_Phone.getText().toString().isEmpty()) {
+        } else if (edt_Phone.getText().toString().isEmpty()) {
             edt_Phone.setError("Phone No Required");
             edt_Phone.requestFocus();
             result = false;
-        }
-        else if (edt_Email.getText().toString().isEmpty()) {
+        } else if (edt_Email.getText().toString().isEmpty()) {
             edt_Email.setError("Email Required");
             edt_Email.requestFocus();
             result = false;
-        }
-        else if(!isEmailValid(edt_Email.getText().toString())){
+        } else if (!isEmailValid(edt_Email.getText().toString())) {
             edt_Email.setError("Email is Not Valid");
             edt_Email.requestFocus();
             result = false;
-        }
-        else if(edt_Address.getText().toString().isEmpty()){
+        } else if (edt_Address.getText().toString().isEmpty()) {
             edt_Address.setError("Address Required");
             edt_Address.requestFocus();
             result = false;
@@ -240,16 +255,14 @@ public class BookArtistActivity extends AppCompatActivity {
         return result;
     }
 
-
-
-    private void createRefrences () {
+    private void createRefrences() {
 
         btn_Check_Cost = findViewById(R.id.btn_Check_Cost);
 
         rlt_Start_Date = findViewById(R.id.rlt_start_Date);
-        rlt_End_Date   = findViewById(R.id.rlt_end_Date);
+        rlt_End_Date = findViewById(R.id.rlt_end_Date);
         rlt_Start_Time = findViewById(R.id.rlt_start_time);
-        rlt_End_Time   = findViewById(R.id.rlt_end_time);
+        rlt_End_Time = findViewById(R.id.rlt_end_time);
 
         edt_Name = findViewById(R.id.edt_booker_name);
         edt_Phone = findViewById(R.id.edt_booker_phone);
@@ -263,9 +276,8 @@ public class BookArtistActivity extends AppCompatActivity {
 
     }
 
-
     //return time of the
-    private void getTimeDuration(String Start, String End){
+    private void getTimeDuration(String Start, String End) {
 
         //HH converts hour in 24 hours format (0-23), day calculation
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
@@ -286,49 +298,56 @@ public class BookArtistActivity extends AppCompatActivity {
             long diffHours = diff / (60 * 60 * 1000) % 24;
             long diffDays = diff / (24 * 60 * 60 * 1000);
 
-            Log.i(TAG, "getTimeDuration: "+diffDays + " days, ");
-            Log.i(TAG, "getTimeDuration: "+diffHours + " hours, ");
-            Log.i(TAG, "getTimeDuration: "+diffMinutes + " minutes, ");
 
             Integer Day = (int) (long) diffDays;
             Integer Hour = (int) (long) diffHours;
             Integer Minutes = (int) (long) diffMinutes;
 
-            if(Day != 0){
-                Day = (Day * 24)*60;
-            }else {
+            Log.i(TAG, "getTimeDuration: " + Day + " days, ");
+            Log.i(TAG, "getTimeDuration: " + Hour + " hours, ");
+            Log.i(TAG, "getTimeDuration: " + Minutes + " minutes, ");
+
+            int TotalHour = 0;
+            if (Day != 0) {
+                Day = (Day * 24) * 60;
+            } else {
                 Day = 0;
             }
-            if(Hour!=0){
-                Hour = Hour * 60;
-            }else {
-                Hour =0;
+            if (Hour != 0) {
+                TotalHour = Hour * 60;
+            } else {
+                Hour = 0;
             }
 
 
             //getting total minuts
-            Minutes = Day+Hour+Minutes;
+            int TotalMinutes = Day + TotalHour + Minutes;
 
             Integer ratePerHour = Integer.parseInt(RPH);
 
-            Double perMint = Double.valueOf((double)ratePerHour / 60);
+            Double perMint = Double.valueOf((double) ratePerHour / 60);
 
-            perMint = perMint * Minutes;
+            perMint = perMint * TotalMinutes;
 
-            //open Dailoge after Calculation and pass the value
-            openCheckCostDialogue (perMint,
-                    String.valueOf(Day),
-                    String.valueOf(Hour),
-                    String.valueOf(Minutes) );
-
+            if (perMint > 0) {
+                //open Dailoge after Calculation and pass the value
+                openCheckCostDialogue(
+                        perMint,//total cost
+                        Day,
+                        Hour,
+                        Minutes);
+            } else {
+                MsgDialogue = DialogsUtils.showAlertDailog(this, false,
+                        "InValid Time", "Please Select the Time And Date Again With CareFully");
+            }
 
         } catch (Exception e) {
-            Log.i(TAG, "getTimeDuration: "+e.getMessage());
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "getTimeDuration: " + e.getMessage());
         }
     }
 
-
-    private void openCheckCostDialogue(Double TotalCost,String Days,String Hour,String Minutes) {
+    private void openCheckCostDialogue(Double TotalCost, int Days, int Hour, int Minutes) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -338,12 +357,11 @@ public class BookArtistActivity extends AppCompatActivity {
 
         CircularImageView img_Profile;
         TextView txt_Name, txt_Service_Name, txt_Servives_prize,
-                                     txt_Service_Discription,
-                                     txt_Service_Amount,
-        //purchaser detail
-         txt_pName, txt_pEmail, txt_pContact, txt_pAddress,
+                txt_Service_Amount,
+                //purchaser detail
+                txt_pName, txt_pEmail, txt_pContact, txt_pAddress,
                 //days,hour,Minutes and Rate per Hour
-        txt_Days,txt_Hour,txt_Minutes,txt_RPH;
+                txt_Days, txt_Hour, txt_Minutes, txt_RPH;
 
         Button btn_Cancle_Booking, btn_Book_Now;
 
@@ -361,18 +379,16 @@ public class BookArtistActivity extends AppCompatActivity {
 
         //Service Detail
         txt_Servives_prize = view.findViewById(R.id.txt_service_charges);
-        txt_Service_Discription = view.findViewById(R.id.txt_dj_information);
         txt_Service_Amount = view.findViewById(R.id.txt_service_amount);
         //Calculated Time
-        txt_Days= view.findViewById(R.id.txt_days);
-        txt_Hour= view.findViewById(R.id.txt_hour);
-        txt_Minutes= view.findViewById(R.id.txt_minut);
-        txt_RPH= view.findViewById(R.id.txt_rph);
+        txt_Days = view.findViewById(R.id.txt_days);
+        txt_Hour = view.findViewById(R.id.txt_hour);
+        txt_Minutes = view.findViewById(R.id.txt_minut);
+        txt_RPH = view.findViewById(R.id.txt_rph);
 
 
         btn_Cancle_Booking = view.findViewById(R.id.btn_booking_cancle);
         btn_Book_Now = view.findViewById(R.id.btn_book_now);
-
 
 
         img_Profile.setImageBitmap(bitmap);
@@ -386,21 +402,19 @@ public class BookArtistActivity extends AppCompatActivity {
         txt_pAddress.setText(edt_Address.getText());
 
         //Service Detail
-        txt_Service_Discription.setText(Description);
-        String.format("%.2f", TotalCost);//will remove the value after . decimal in Double
-        txt_Service_Amount.setText("$"+TotalCost);
-        txt_Servives_prize.setText("$"+TotalCost);
+        txt_Service_Amount.setText("$" + new DecimalFormat("##.##").format(TotalCost));
+        txt_Servives_prize.setText("$" +  new DecimalFormat("##.##").format(TotalCost));
 
         //Calculated Time
-        txt_Days.setText(Days);
-        txt_Hour.setText(Hour);
-        txt_Minutes.setText(Minutes);
-        txt_RPH.setText("$"+RPH);
+        txt_Days.setText(String.valueOf(Days));
+        txt_Hour.setText(String.valueOf(Hour));
+        txt_Minutes.setText(String.valueOf(Minutes));
+        txt_RPH.setText("$" + RPH);
 
         builder.setView(view);
         builder.setCancelable(true);
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         btn_Cancle_Booking.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -412,19 +426,59 @@ public class BookArtistActivity extends AppCompatActivity {
         btn_Book_Now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(view.getContext(), BookingPaymentMethodActivity.class);
-                view.getContext().startActivity(i);
+                progressDialog = DialogsUtils.showProgressDialog(v.getContext(), "Posting Request", "Please Wait");
+                if(requestCode==1){
+                    postBooking(String.valueOf(TotalCost),BASE_URL);
+                }else {
+                    postBooking(String.valueOf(TotalCost),BASE_URL_SERVICE);
+                }
+
             }
         });
 
-    }
+    }//openCheckCostDialogue
+
+    private void postBooking(String PaidAmount,String BaseUrl) {
+
+        Retrofit retrofit = ApiResponse.retrofit(BaseUrl, this);
+
+        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
-    private static boolean isEmailValid(String email) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        Call<SuccessErrorModel> call = jsonApiHolder.postBooking(
+                id,
+                edt_Name.getText().toString(),
+                edt_Email.getText().toString(),
+                edt_Phone.getText().toString(),
+                edt_Address.getText().toString(),
+                txt_Start_Date.getText().toString(),
+                txt_End_Date.getText().toString(),
+                txt_Start_Time.getText().toString(),
+                txt_End_Time.getText().toString(),
+                PaidAmount);
+
+        call.enqueue(new Callback<SuccessErrorModel>() {
+            @Override
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                if (response.isSuccessful()) {
+                    progressDialog.dismiss();
+                    Intent i = new Intent(BookArtistActivity.this, BookingPaymentMethodActivity.class);
+                    startActivity(i);
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(BookArtistActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "onResponse: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(BookArtistActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,7 +35,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import java.io.IOException;
@@ -96,9 +96,16 @@ public class SignInActivity extends AppCompatActivity {
     public BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     private NetworkChangeReciever mNetworkChangeReciever;
+    private AlertDialog alertDialog;
 
-
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mNetworkChangeReciever = new NetworkChangeReciever();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReciever, filter);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -144,7 +151,6 @@ public class SignInActivity extends AppCompatActivity {
 //                .setSubtitle("Log in using your biometric credential")
 //                .setNegativeButtonText("Use account Credentials")
 //                .build();
-//
 
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
@@ -852,14 +858,31 @@ public class SignInActivity extends AppCompatActivity {
 
 
     private void checkNetworkState () {
-        IntentFilter intentFilter = new IntentFilter(mNetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
+
+        IntentFilter intentFilter = new IntentFilter(NetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
-                String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
 
-                Toast.makeText(context, "Network Status: " + networkStatus, Toast.LENGTH_SHORT).show();
+
+                if(isNetworkAvailable){
+                    //when Network Availabe
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Toast.makeText(context, "connected", Toast.LENGTH_SHORT).show();
+
+
+
+                }else {
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                    alertDialog = DialogsUtils.showAlertDailog(SignInActivity.this,false,
+                            "No Network","Please trun on Network Connect");
+
+                }
+
+
             }
         }, intentFilter);
     }
@@ -891,13 +914,13 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mNetworkChangeReciever);
+       unregisterReceiver(mNetworkChangeReciever);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mNetworkChangeReciever);
+        unregisterReceiver(mNetworkChangeReciever);
     }
 
 }

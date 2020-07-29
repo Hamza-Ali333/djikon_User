@@ -53,6 +53,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
             price_type,
             description,
             Gallery;
+    private int id;
 
     private static final String BASEURL_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
     private static final String FEATURED_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/";
@@ -72,7 +73,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         createRefrences();
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra("id", 0);
+        id = intent.getIntExtra("id", 0);
 
         downloadServiceData(String.valueOf(id));
 
@@ -82,10 +83,10 @@ public class ServiceDetailActivity extends AppCompatActivity {
         btn_Proceed_To_Pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Featured_img.buildDrawingCache();
                 Bitmap bitmap = Featured_img.getDrawingCache();
                 Intent i = new Intent(ServiceDetailActivity.this, BookArtistActivity.class);
+                i.putExtra("id",String.valueOf(id));
                 i.putExtra("priceType", price_type);
                 i.putExtra("BitmapImage", bitmap);
                 i.putExtra("price", price);//rate per hour
@@ -126,7 +127,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     price_type = response.body().getPrice_type();
                     description = response.body().getDescription();
 
-
+                    Toast.makeText(ServiceDetailActivity.this, price_type, Toast.LENGTH_SHORT).show();
                     btn_Proceed_To_Pay.setText("Proceed To Pay " + price + "$");
                     Gallery = response.body().getGallery();
 
@@ -173,6 +174,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                         Toast.makeText(ServiceDetailActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
                     }
                 });
+
         txt_Service_Name.setText(serviceName);
         txt_Dj_Name.setText(dj_Name);
         txt_Price.setText(" $" + price + " ");

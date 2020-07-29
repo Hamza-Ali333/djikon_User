@@ -142,31 +142,10 @@
                 android:textSize="16sp"/>
 
 
-            <TextView
-                android:id="@+id/Note"
-                android:layout_below="@+id/txt_pAddress"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/Graycolor"
-                android:text="Note"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/txt_dj_information"
-                android:layout_below="@id/Note"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="Club disc jockeys often use the equipment purchased by the club owners. That includes the CDs or digital recordings the club owners want to play to attract a certain clientele."
-                android:textSize="12sp"/>
-
-
 
             <TextView
                 android:id="@+id/total"
-                android:layout_below="@+id/txt_dj_information"
+                android:layout_below="@+id/txt_pAddress"
                 android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -261,15 +240,8 @@
                 android:text="$15.00"
                 android:textSize="14sp"/>
 
-            <TextView
-                android:id="@+id/txt_service"
-                android:layout_below="@id/txt_rph"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlue"
-                android:text="Paid Charges"
-                android:textSize="14sp"/>
+
+
 
             <TextView
                 android:id="@+id/txt_service_amount"
