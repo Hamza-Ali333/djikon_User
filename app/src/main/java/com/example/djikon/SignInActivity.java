@@ -49,6 +49,7 @@ import java.security.cert.CertificateException;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.Inflater;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -96,7 +97,7 @@ public class SignInActivity extends AppCompatActivity {
     public BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     private NetworkChangeReciever mNetworkChangeReciever;
-    private AlertDialog alertDialog;
+    private AlertDailogbox alertDailogbox;
 
     @Override
     protected void onStart() {
@@ -115,7 +116,9 @@ public class SignInActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         createReferencer();
 
+
         checkNetworkState();//Available Or not
+
 
         executor = ContextCompat.getMainExecutor(this);
         biometricPrompt = new BiometricPrompt(SignInActivity.this,
@@ -491,7 +494,7 @@ public class SignInActivity extends AppCompatActivity {
                 btn_update.setEnabled(false);
                 if (checkUpdatePasswordInput(Password, confirmPassword)) {
                     progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Updating Password", "Please Wait...");
-                    Call<SuccessErrorModel> call = jsonApiHolder.Updatepasswrod(EmailForOTP,
+                    Call<SuccessErrorModel> call = jsonApiHolder.Updatepassword(EmailForOTP,
                             Password.getText().toString().trim());
 
                     call.enqueue(new Callback<SuccessErrorModel>() {
@@ -863,30 +866,31 @@ public class SignInActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
 
+                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
 
                 if(isNetworkAvailable){
                     //when Network Availabe
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toast.makeText(context, "connected", Toast.LENGTH_SHORT).show();
-
-
-
+                    if(alertDailogbox != null)
+                    alertDailogbox.dismiss();
                 }else {
                     getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-                    alertDialog = DialogsUtils.showAlertDailog(SignInActivity.this,false,
-                            "No Network","Please trun on Network Connect");
-
+                    showMsgDailog("No Network","Check Your Network Connection",false);
                 }
-
 
             }
         }, intentFilter);
+
     }
 
+    private void showMsgDailog(String Title,String Msg, Boolean CloseActivity){
+        alertDailogbox = new AlertDailogbox(Title,
+                Msg,CloseActivity);
+        alertDailogbox.setCancelable(false);
+        alertDailogbox.show(getSupportFragmentManager(),"alert Dailog");
+    }
 
 
 
@@ -907,21 +911,9 @@ public class SignInActivity extends AppCompatActivity {
         img_Finger_Print = findViewById(R.id.img_finger_print);
         img_Error_Sign = findViewById(R.id.img_error_sign);
 
-
     }
 
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-       unregisterReceiver(mNetworkChangeReciever);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mNetworkChangeReciever);
-    }
+    
 
 }
 

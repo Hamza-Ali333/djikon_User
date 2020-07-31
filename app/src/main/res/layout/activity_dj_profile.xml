@@ -94,13 +94,14 @@
 
             <Button
                 android:id="@+id/Follow_Dj"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                android:minWidth="128dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/lighblue_roundshap"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
-                android:text="Follow"
+                android:text="UnFollow"
                 android:textColor="#fff"
                 app:layout_constraintEnd_toEndOf="@+id/message_dj"
                 app:layout_constraintStart_toStartOf="@+id/message_dj"

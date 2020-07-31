@@ -21,17 +21,21 @@
         android:icon="@drawable/social_media"
         android:title="Social Media Sharing"/>
 
-        <item android:id="@+id/nav_RequestASong"
+        <item android:id="@+id/nav_RequestedSong"
         android:icon="@drawable/song"
-        android:title="Request A Song"/>
+        android:title="Requested Songs"/>
 
         <item android:id="@+id/nav_CurrentLiveArtist"
         android:icon="@drawable/teacher"
         android:title="Current Live Artist"/>
 
-        <item android:id="@+id/nav_SubscribedArtist"
+        <item android:id="@+id/nav_Following"
         android:icon="@drawable/dj"
-        android:title="Subscribe Artist"/>
+        android:title="Following Artist"/>
+
+        <item android:id="@+id/nav_Artist"
+            android:icon="@drawable/dj"
+            android:title="Artist"/>
 
         <item android:id="@+id/nav_Logout"
             android:icon="@drawable/logout"

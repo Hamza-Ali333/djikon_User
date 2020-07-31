@@ -21,7 +21,6 @@ public class NetworkChangeReciever extends BroadcastReceiver {
         Intent networkStateIntent = new Intent(NETWORK_AVAILABLE_ACTION);
         networkStateIntent.putExtra(IS_NETWORK_AVAILABLE,  isConnectedToInternet(context));
         LocalBroadcastManager.getInstance(context).sendBroadcast(networkStateIntent);
-        Log.e("Network Available ", "On receive called");
     }
 
     private boolean isConnectedToInternet(Context context) {

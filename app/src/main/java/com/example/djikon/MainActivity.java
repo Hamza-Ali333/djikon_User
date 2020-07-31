@@ -5,11 +5,15 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -26,6 +31,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static com.example.djikon.NetworkChangeReciever.IS_NETWORK_AVAILABLE;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
@@ -43,6 +50,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView UserName;
 
     private ProgressDialog progressDialog;
+    private AlertDailogbox alertDailogbox;
+
+    private NetworkChangeReciever mNetworkChangeReciever;
+    protected App app;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mNetworkChangeReciever = new NetworkChangeReciever();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReciever, filter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         createRefrences();
 
+        app = (App)getApplication();
+
+        checkNetworkState();
 
         preferenceData = new PreferenceData();
 
@@ -89,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                   R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -154,18 +178,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new ChatAreaFragment()).commit();
                 break;
 
-            case R.id.nav_SubscribedArtist:
+            case R.id.nav_Following:
 
-                getSupportActionBar().setTitle(R.string.SubscribeArtist);
+                getSupportActionBar().setTitle(R.string.SubscribedArtist);
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new SubscribeArtistFragment()).commit();
+                        new FollowingArtistFragment()).commit();
 
                 break;
 
             case R.id.nav_SocialMedia:
 
                 getSupportActionBar().setTitle(R.string.SocialMediaSharing);
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new SocialMediaShareFragment()).commit();
+
+                break;
+
+            case R.id.nav_RequestedSong:
+
+                getSupportActionBar().setTitle(R.string.RequestedSong);
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SocialMediaShareFragment()).commit();
@@ -179,7 +212,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new LiveToArtistFragment()).commit();
                 break;
 
+            case R.id.nav_Artist:
+
+                getSupportActionBar().setTitle(R.string.Artist);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ArtistFragment()).commit();
+                break;
+
             case R.id.nav_Logout:
+
                 progressDialog= DialogsUtils.showProgressDialog(this,"LogingOut","Please wait...");
                 userLogOut();
                 break;
@@ -251,6 +292,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+    }
+
+    private void checkNetworkState () {
+
+        IntentFilter intentFilter = new IntentFilter(NetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
+
+                if(isNetworkAvailable){
+                    //when Network Availabe
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    if(alertDailogbox != null)
+                        alertDailogbox.dismiss();
+                }else {
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    showMsgDailog("No Network","Check Your Network Connection",false);
+                }
+
+            }
+        }, intentFilter);
+
+    }
+
+    private void showMsgDailog(String Title,String Msg, Boolean CloseActivity){
+        alertDailogbox = new AlertDailogbox(Title,
+                Msg,CloseActivity);
+        alertDailogbox.setCancelable(false);
+        alertDailogbox.show(getSupportFragmentManager(),"alert Dailog");
     }
 
 }

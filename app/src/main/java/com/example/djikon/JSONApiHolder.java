@@ -117,7 +117,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("update_password")
-    Call <SuccessErrorModel> Updatepasswrod(
+    Call <SuccessErrorModel> Updatepassword(
             @Field("email") String email,
             @Field("password") String newpassord
     );
@@ -130,6 +130,11 @@ public interface JSONApiHolder {
 
     );
 
+
+    @POST()
+    Call <SuccessErrorModel>  followUnFollowArtist(
+            @Url String artistId
+    );
 
     @POST("logout")
     Call <LoginRegistrationModel> logout();

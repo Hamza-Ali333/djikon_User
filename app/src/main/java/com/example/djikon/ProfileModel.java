@@ -16,7 +16,8 @@ public class ProfileModel {
             about,
             gender,
             location,
-            rate_per_hour;
+            rate_per_hour,
+            online_status;
 
 
     private Integer followers,
@@ -27,6 +28,9 @@ public class ProfileModel {
 
     private List<Services_Model> services;
 
+    public String getOnline_status() {
+        return online_status;
+    }
 
     public String getAbout() {
         return about;

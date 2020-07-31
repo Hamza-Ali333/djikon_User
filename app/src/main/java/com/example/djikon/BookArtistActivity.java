@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -337,7 +336,7 @@ public class BookArtistActivity extends AppCompatActivity {
                         Hour,
                         Minutes);
             } else {
-                MsgDialogue = DialogsUtils.showAlertDailog(this, false,
+                MsgDialogue = DialogsUtils.showAlertDialog(this, false,
                         "InValid Time", "Please Select the Time And Date Again With CareFully");
             }
 

@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -48,6 +50,8 @@ public class BlogDetailActivity extends AppCompatActivity {
    private EditText edt_Comment;
    private FrameLayout frameLayout;
    private NestedScrollView parentLayout;
+   private ProgressBar progressBar;
+   private TextView loading;
 
 
     private SliderView sliderView;
@@ -85,7 +89,7 @@ public class BlogDetailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Blog Detail");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        createRefreances();
+        createRefrences();
         parentLayout.setVisibility(View.GONE);
 
         Log.i("TAG", "threadm: "+Thread.currentThread().getId());
@@ -217,10 +221,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                     });
                     thread.start();
 
-
-
                     setDataIntoFields(Name,Profile,Title,Description,Likes,Comments,CreateTime);
-
 
                     //WillPass The Data Through this This Work Good
                    // singleBlog_model = new SingleBlog_Model(Title,CreateTime,Name,Gallery,Likes,Comments,Video,Description,Description);
@@ -243,8 +244,18 @@ public class BlogDetailActivity extends AppCompatActivity {
                             Log.i("TAG", "thread2: "+Thread.currentThread().getId());
                             if (!Video.equals("no")) {
                                 frameLayout.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.VISIBLE);
+                                loading.setVisibility(View.VISIBLE);
                                 videoView.setVideoPath(Video);
-                                videoView.start();
+                                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                                    public void onPrepared(MediaPlayer arg0) {
+                                        progressBar.setVisibility(View.GONE);
+                                        loading.setVisibility(View.GONE);
+                                        videoView.start();
+                                    }
+                                });
+
                             }else {
                                 frameLayout.setVisibility(View.GONE);
                             }
@@ -334,7 +345,8 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     }
 
-    private void createRefreances(){
+    private void createRefrences(){
+
         parentLayout = findViewById(R.id.parent);
         txt_artist_Name= findViewById(R.id.txt_artist_name);
         txt_Title= findViewById(R.id.txt_title);
@@ -347,6 +359,8 @@ public class BlogDetailActivity extends AppCompatActivity {
         img_Profile = findViewById(R.id.img_profile);
         frameLayout = findViewById(R.id.fram);
 
+        progressBar = findViewById(R.id.progress_circular);
+        loading = findViewById(R.id.loading);
 
         btn_SendComment= findViewById(R.id.btn_sendcomment);
         edt_Comment = findViewById(R.id.edt_comment);

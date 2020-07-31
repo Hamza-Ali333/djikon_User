@@ -61,9 +61,10 @@ public class DjPrpfileActivity extends AppCompatActivity {
             mAddress,
             mProfile,
             mAbout,
+            mOnlineStatus,
     DjBookingRatePerHour;
 
-    private int mFollower_Count, mFollow_Status;
+    private int artistID, mFollower_Count, mFollow_Status;
 
     private RecyclerView mServicesRecycler, mBlogRecyclerView;
     private RecyclerView.Adapter serviceAdapter;
@@ -80,10 +81,13 @@ public class DjPrpfileActivity extends AppCompatActivity {
     List<Services_Model> services;
     List<Dj_Blogs_Model> blogs;
 
+    private Snackbar snackbar;
+    private TextView snackBarText;
 
     private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
     private final static String URL_REQUEST_SONG = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/request_song/";
-
+    private final static String URL_FOLLOW_ARTIST = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/follow_artist/";
+    private final static String URL_UN_FOLLOW_ARTIST = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/unfollow_artist/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,10 @@ public class DjPrpfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
+
+        snackbar = Snackbar.make(parenLayout,"",Snackbar.LENGTH_LONG);
+        snackBarText =  snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        snackBarText.setTextColor(Color.YELLOW);
 
         parenLayout.setVisibility(View.GONE);//hide the parent view
 
@@ -106,6 +114,20 @@ public class DjPrpfileActivity extends AppCompatActivity {
         getProfileDataFromServer(String.valueOf(blogId));
 
 
+        btn_Follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_Follow.setClickable(false);
+                btn_Follow.setEnabled(false);
+                if(mFollow_Status== 0){
+                    followUnFollow(URL_FOLLOW_ARTIST,0);
+                }else {
+                    followUnFollow(URL_UN_FOLLOW_ARTIST,1);
+                }
+
+            }
+        });
+
 
         btn_Book_Artist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +135,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
                 img_DJ_Profile.buildDrawingCache();
                 Bitmap bitmap = img_DJ_Profile.getDrawingCache();
                 Intent i = new Intent(DjPrpfileActivity.this, BookArtistActivity.class);
-                i.putExtra("id",String.valueOf(blogId));
+                i.putExtra("id",String.valueOf(artistID));
                 i.putExtra("BitmapImage", bitmap);
                 i.putExtra("price",DjBookingRatePerHour);//rate per hour
                 i.putExtra("name",mDJName);
@@ -147,13 +169,13 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
             txt_address.setText(mAddress);
 
-        if(mAbout.equals(null))
+        if(mAbout == null)
             rlt_About.setVisibility(View.GONE);
         else {
             rlt_About.setVisibility(View.VISIBLE);
             txt_about.setText(mAbout);
         }
-        txt_Total_Follower.setText("0");
+        txt_Total_Follower.setText(String.valueOf(mFollower_Count));
 
         if (!mProfile.equals("no")) {
             Picasso.get().load(mProfile)
@@ -216,41 +238,20 @@ public class DjPrpfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (isInFoRight(edt_Requester_Name,edt_Song_Name)) {
+                if (!edt_Requester_Name.getText().toString().isEmpty() && !edt_Song_Name.getText().toString().isEmpty()) {
 
                     progressDialog = DialogsUtils.showProgressDialog(DjPrpfileActivity.this,"Posting Request","Please Wait...");
                     postRequestSong(edt_Requester_Name.getText().toString(), edt_Song_Name.getText().toString());
                     alertDialog.dismiss();
+                }else {
+                    Toast.makeText(DjPrpfileActivity.this, "Empty", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 
-    private boolean isInFoRight (EditText userName,EditText songName) {
-        boolean result = true;
-        if(userName.getText().toString().isEmpty() ){
-            userName.setError("Please Enter Your Name");
-            userName.requestFocus();
-            result = false;
-        }
-        else if(songName.getText().toString().isEmpty() ){
-            userName.setError("Please Enter Song Name");
-            userName.requestFocus();
-            result = false;
-        }
-        else if (userName.getText().toString().length() < 3){
-            userName.setError("Two Short Name");
-            userName.requestFocus();
-            result = false;
-        }
-        else if (songName.getText().toString().length() > 10){
-            userName.setError("At least 10 Digit's required");
-            userName.requestFocus();
-            result = false;
-        }
-        return result;
-    }
+
 
     private void getProfileDataFromServer(String blogId) {
 
@@ -269,11 +270,13 @@ public class DjPrpfileActivity extends AppCompatActivity {
                     Log.i("TAG", "onResponse: " + response.code());
 
                     ProfileModel profileModel = response.body();
+                    artistID = profileModel.getId();
                     mDJName = profileModel.getFirstname() + " " + response.body().getLastname();
                     mAddress = profileModel.getLocation();
                     mProfile = profileModel.getProfile_image();
                     mFollower_Count = profileModel.getFollowers();
                     mFollow_Status = profileModel.getFollow_status();
+                    mOnlineStatus = profileModel.getOnline_status();
                     mAbout = profileModel.getAbout();
 
 
@@ -300,7 +303,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
                     setDataInToViews();
 
-                    setOnlineStatus(0);
+                    setOnlineStatus(mOnlineStatus);
 
                 } else {
 
@@ -321,13 +324,15 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     }
 
-    private void setOnlineStatus(int i) {
-    if(i==0){
-        onlineStatus.setText("Offline");
-        onlineStatus.setBackgroundResource(R.drawable.redround_stroke);
+    private void setOnlineStatus(String onlineStatus) {
+    if(onlineStatus.equals("0")){
+        this.onlineStatus.setText("Offline");
+        this.onlineStatus.setTextColor(getResources().getColor(R.color.colorRed));
+        this.onlineStatus.setBackgroundResource(R.drawable.redround_stroke);
     }else {
-        onlineStatus.setText("Online ");
-        onlineStatus.setBackgroundResource(R.drawable.blueround_stroke);
+        this.onlineStatus.setText("Online ");
+        this.onlineStatus.setTextColor(getResources().getColor(R.color.colorBlue));
+        this.onlineStatus.setBackgroundResource(R.drawable.blueround_stroke);
     }
     }
 
@@ -360,10 +365,6 @@ public class DjPrpfileActivity extends AppCompatActivity {
     }
 
     private void postRequestSong (String UserName,String SongName) {
-
-        Snackbar snackbar = Snackbar.make(parenLayout, "", Snackbar.LENGTH_LONG);
-        TextView snackBarText =  snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-        snackBarText.setTextColor(Color.YELLOW);
 
         retrofit= ApiResponse.retrofit(URL_REQUEST_SONG,this);
 
@@ -400,6 +401,47 @@ public class DjPrpfileActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void followUnFollow (String Url, int CurrentStatus) {
+        Retrofit retrofit = ApiResponse.retrofit(Url,DjPrpfileActivity.this);
+        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
+
+
+        Call <SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(String.valueOf(artistID));
+
+        call.enqueue(new Callback<SuccessErrorModel>() {
+            @Override
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                if(response.isSuccessful()){
+                    if (CurrentStatus == 0){
+                        snackBarText.setText(" Follow Successfully");
+                        mFollow_Status = 1;
+                        mFollower_Count++;
+                        btn_Follow.setText("UnFollow");
+                    }
+                    else {
+                        mFollow_Status = 0;
+                        mFollower_Count--;
+                        snackBarText.setText(" UnFollow Successfully");
+                        btn_Follow.setText("Follow");
+                    }
+
+                    snackbar.show();
+                    btn_Follow.setClickable(false);
+                    btn_Follow.setEnabled(false);
+                }else {
+                    Log.i("TAG", "onResponse: "+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                Toast.makeText(DjPrpfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void showLoadingDialogue() {
 
