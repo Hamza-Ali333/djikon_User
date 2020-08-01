@@ -14,10 +14,6 @@
     <uses-permission
         android:name="android.permission.USE_FINGERPRINT" />
 
-
-
-
-
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
@@ -27,7 +23,7 @@
         android:supportsRtl="true"
         android:resizeableActivity="false"
         android:screenOrientation="portrait"
-        android:name=".App"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"

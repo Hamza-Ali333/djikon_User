@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AlertDailogbox alertDailogbox;
 
     private NetworkChangeReciever mNetworkChangeReciever;
-    protected App app;
+
 
     @Override
     protected void onStart() {
@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         createRefrences();
-
-        app = (App)getApplication();
 
         checkNetworkState();
 

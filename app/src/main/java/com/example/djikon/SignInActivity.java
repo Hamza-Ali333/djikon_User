@@ -159,12 +159,12 @@ public class SignInActivity extends AppCompatActivity {
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle("Biometric login for my app")
                 .setSubtitle("Log in using your biometric credential")
-               //.setNegativeButtonText("Use account password")
+                //.setNegativeButtonText("Use account password")
                 .setConfirmationRequired(false)
                 .setDeviceCredentialAllowed(true)
                 .build();
 
-      // biometricPrompt.authenticate(promptInfo);
+        // biometricPrompt.authenticate(promptInfo);
 
 
 //        BiometricManager biometricManager = BiometricManager.(this);
@@ -608,7 +608,7 @@ public class SignInActivity extends AppCompatActivity {
                 Msg.setText("Fingerprint Scanner is not Detected");
             }
             else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-               Msg.setText("Permission is not Granted");
+                Msg.setText("Permission is not Granted");
             }
             //if Lock Screen is not secured with atleast 1 type of lock
             else if(!keyguardManager.isKeyguardSecure()) {
@@ -643,7 +643,7 @@ public class SignInActivity extends AppCompatActivity {
                     FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this,Msg,img_fingerprint);
                     fingerPrintHandler.startAuth(fingerprintManager, null);
                 }
-                }
+            }
         }
 
 
@@ -873,7 +873,7 @@ public class SignInActivity extends AppCompatActivity {
                     //when Network Availabe
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     if(alertDailogbox != null)
-                    alertDailogbox.dismiss();
+                        alertDailogbox.dismiss();
                 }else {
                     getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -913,10 +913,6 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    
+
 
 }
-
-
-
-
