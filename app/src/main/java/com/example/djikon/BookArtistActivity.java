@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -64,6 +65,19 @@ public class BookArtistActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +87,7 @@ public class BookArtistActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
 
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         Intent intent = getIntent();
         requestCode = intent.getIntExtra("request_code", 0);
@@ -486,5 +501,9 @@ public class BookArtistActivity extends AppCompatActivity {
         return true;
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -11,6 +12,18 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ResetPasswordActivity extends AppCompatActivity {
 
     Button btn_Change_Password;
+
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +32,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
+
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         btn_Change_Password.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +54,12 @@ public class ResetPasswordActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
     }
 
 }

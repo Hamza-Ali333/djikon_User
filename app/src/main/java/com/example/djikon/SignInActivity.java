@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -22,7 +20,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
@@ -49,7 +45,6 @@ import java.security.cert.CertificateException;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.Inflater;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -61,7 +56,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.example.djikon.NetworkChangeReciever.IS_NETWORK_AVAILABLE;
+
+
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
@@ -96,16 +92,15 @@ public class SignInActivity extends AppCompatActivity {
     private Executor executor;
     public BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
-    private NetworkChangeReciever mNetworkChangeReciever;
-    private AlertDailogbox alertDailogbox;
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
 
     @Override
     protected void onStart() {
         super.onStart();
-        mNetworkChangeReciever = new NetworkChangeReciever();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(mNetworkChangeReciever, filter);
+       registerReceiver(mNetworkChangeReceiver, filter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -115,9 +110,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign__in);
         getSupportActionBar().hide();
         createReferencer();
-
-
-        checkNetworkState();//Available Or not
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
 
         executor = ContextCompat.getMainExecutor(this);
@@ -860,39 +853,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    private void checkNetworkState () {
-
-        IntentFilter intentFilter = new IntentFilter(NetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
-
-                if(isNetworkAvailable){
-                    //when Network Availabe
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    if(alertDailogbox != null)
-                        alertDailogbox.dismiss();
-                }else {
-                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    showMsgDailog("No Network","Check Your Network Connection",false);
-                }
-
-            }
-        }, intentFilter);
-
-    }
-
-    private void showMsgDailog(String Title,String Msg, Boolean CloseActivity){
-        alertDailogbox = new AlertDailogbox(Title,
-                Msg,CloseActivity);
-        alertDailogbox.setCancelable(false);
-        alertDailogbox.show(getSupportFragmentManager(),"alert Dailog");
-    }
-
-
 
     private void createReferencer() {
 
@@ -913,6 +873,10 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+     unregisterReceiver(mNetworkChangeReceiver);
+    }
 
 }

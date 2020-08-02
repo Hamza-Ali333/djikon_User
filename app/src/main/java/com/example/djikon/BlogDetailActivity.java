@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -81,6 +82,18 @@ public class BlogDetailActivity extends AppCompatActivity {
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +104,8 @@ public class BlogDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
         parentLayout.setVisibility(View.GONE);
+
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         Log.i("TAG", "threadm: "+Thread.currentThread().getId());
 

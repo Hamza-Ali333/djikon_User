@@ -3,6 +3,7 @@ package com.example.djikon;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -89,6 +90,19 @@ public class DjPrpfileActivity extends AppCompatActivity {
     private final static String URL_FOLLOW_ARTIST = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/follow_artist/";
     private final static String URL_UN_FOLLOW_ARTIST = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/unfollow_artist/";
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +111,8 @@ public class DjPrpfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
+
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         snackbar = Snackbar.make(parenLayout,"",Snackbar.LENGTH_LONG);
         snackBarText =  snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
@@ -455,4 +471,9 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
+    }
 }

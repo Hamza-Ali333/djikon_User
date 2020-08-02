@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -118,6 +119,18 @@ public class UserProfileActivity extends AppCompatActivity  {
 
     private File finalFile;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +145,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         msg.setVisibility(View.VISIBLE);
         preferenceData= new PreferenceData();
 
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
 
 
@@ -767,7 +781,10 @@ String img= imageToString();
 
     }
 
-
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
     }
+}
 

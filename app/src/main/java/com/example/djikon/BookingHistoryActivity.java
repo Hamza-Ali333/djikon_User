@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -16,6 +17,19 @@ public class BookingHistoryActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +37,8 @@ public class BookingHistoryActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Booking History");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         mRecyclerView = findViewById(R.id.recyclerViewBookingHistory);
 

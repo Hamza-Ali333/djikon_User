@@ -5,15 +5,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.example.djikon.NetworkChangeReciever.IS_NETWORK_AVAILABLE;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
@@ -50,40 +47,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView UserName;
 
     private ProgressDialog progressDialog;
-    private AlertDailogbox alertDailogbox;
 
-    private NetworkChangeReciever mNetworkChangeReciever;
-
+    private NetworkChangeReceiver mNetworkChangeReceiver;
 
     @Override
     protected void onStart() {
         super.onStart();
-        mNetworkChangeReciever = new NetworkChangeReciever();
+
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(mNetworkChangeReciever, filter);
+        registerReceiver(mNetworkChangeReceiver, filter);
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         createRefrences();
-
-        checkNetworkState();
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         preferenceData = new PreferenceData();
 
-
-        UserName.setText(preferenceData.getUserName(MainActivity.this));
-
+        UserName.setText(PreferenceData.getUserName(MainActivity.this));
 
         getCurrentUserImage();
 
         setSupportActionBar(toolbar);
-
-
 //tool bar image
         currentUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                 if(response.isSuccessful()){
                     Log.i("TAG", "onResponse: "+response.code()+response.body().getSuccess());
-                    preferenceData.clearPrefrences(MainActivity.this);
+                    PreferenceData.clearPrefrences(MainActivity.this);
                     progressDialog.dismiss();
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
                     finish();
@@ -266,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getCurrentUserImage() {
 
-        String imageName = preferenceData.getUserImage(this);
+        String imageName = PreferenceData.getUserImage(this);
 
         if (!imageName.equals("No Image") && !imageName.equals("no")){
             Toast.makeText(this, "findIamge", Toast.LENGTH_SHORT).show();
@@ -292,36 +282,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void checkNetworkState () {
 
-        IntentFilter intentFilter = new IntentFilter(NetworkChangeReciever.NETWORK_AVAILABLE_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
-
-                if(isNetworkAvailable){
-                    //when Network Availabe
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    if(alertDailogbox != null)
-                        alertDailogbox.dismiss();
-                }else {
-                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    showMsgDailog("No Network","Check Your Network Connection",false);
-                }
-
-            }
-        }, intentFilter);
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
     }
-
-    private void showMsgDailog(String Title,String Msg, Boolean CloseActivity){
-        alertDailogbox = new AlertDailogbox(Title,
-                Msg,CloseActivity);
-        alertDailogbox.setCancelable(false);
-        alertDailogbox.show(getSupportFragmentManager(),"alert Dailog");
-    }
-
 }

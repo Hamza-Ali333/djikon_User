@@ -2,6 +2,7 @@ package com.example.djikon;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,6 +59,18 @@ public class RegistrationActivity extends AppCompatActivity {
     private static  final Integer RC_SIGN_IN = 736;
 
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +78,9 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         getSupportActionBar().hide();
         createRefrences();
+
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+
         preferenceData = new PreferenceData();
 
         TextView textView = findViewById(R.id.term_info);
@@ -340,4 +356,9 @@ public class RegistrationActivity extends AppCompatActivity {
         radioButton = findViewById(R.id.radiobutton_term);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
+    }
 }

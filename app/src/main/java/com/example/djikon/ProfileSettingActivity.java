@@ -3,6 +3,7 @@ package com.example.djikon;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +35,18 @@ public class ProfileSettingActivity extends AppCompatActivity {
     private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
     private ProgressDialog mProgressDialog;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +56,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
-
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
         rlt_ChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,5 +277,9 @@ public class ProfileSettingActivity extends AppCompatActivity {
         return true;
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
+    }
 }

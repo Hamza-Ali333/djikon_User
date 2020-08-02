@@ -8,14 +8,14 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 
-public class AlertDailogbox extends AppCompatDialogFragment {
+public class AlertDailogBox extends AppCompatDialogFragment {
 
     String Title = null;
     String Msg = null;
     Boolean CloseActivity;
     String TAG = "Alert Dialog Box";
 
-    public AlertDailogbox(String title, String msg, Boolean closeActivity) {
+    public AlertDailogBox(String title, String msg, Boolean closeActivity) {
         Title = title;
         Msg = msg;
         CloseActivity = closeActivity;
