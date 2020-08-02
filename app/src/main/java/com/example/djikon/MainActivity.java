@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle(R.string.RequestedSong);
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new SocialMediaShareFragment()).commit();
+                        new RequestedSongFragment()).commit();
 
                 break;
 

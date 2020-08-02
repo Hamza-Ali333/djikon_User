@@ -27,6 +27,10 @@ public interface JSONApiHolder {
     @GET ("following")
     Call<List<SubscribeArtistModel>> getSubscribeArtist();
 
+    //will return all the requested Song
+    @GET ("requested_songs")
+    Call<List<RequestedSongs_Model>> getRequestedSongs();
+
     //will return detail of a blog
     @GET
     Call<SingleBlog_Model> getSingleBlog(@Url String id);

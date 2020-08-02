@@ -2,11 +2,8 @@ package com.example.djikon;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,28 +14,28 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.LoginStatusCallback;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,12 +53,10 @@ public class RegistrationActivity extends AppCompatActivity {
     private RadioButton radioButton;
     private PreferenceData preferenceData;
 
-    private static boolean isEmailValid(String email) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
+    private SignInButton btn_GoogleSignIn;
+    private GoogleSignInClient mgoogleSignInClient;
+    private static  final Integer RC_SIGN_IN = 736;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +76,7 @@ public class RegistrationActivity extends AppCompatActivity {
         btn_FBSignUp.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // App code
+
                 String id = loginResult.getAccessToken().toString();
 
                 Toast.makeText(RegistrationActivity.this, "id" + id, Toast.LENGTH_SHORT).show();
@@ -103,6 +98,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id, first_name, last_name,email,gender,birthday,location");
                 request.setParameters(parameters);
@@ -149,13 +145,24 @@ public class RegistrationActivity extends AppCompatActivity {
             }//if
         });
 
-    }//onCreate
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+
+        GoogleSignInOptions gso  = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+             //   .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mgoogleSignInClient = GoogleSignIn.getClient(this,gso);
+
+        btn_GoogleSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signInWithGoogle();
+            }
+        });
+
+
+    }//onCreate
 
     private boolean isInfoRight() {
         Log.i("TAG", "checkInfo: Runing");
@@ -202,6 +209,13 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
         return result;
+    }
+
+    private static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     private void sendDataToServer() {
@@ -261,7 +275,58 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+
+    private void signInWithGoogle(){
+
+        Intent signInIntent = mgoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+
+
+    private  void handleSignInResult(Task<GoogleSignInAccount> taskCompete){
+
+        try{
+            GoogleSignInAccount acc = taskCompete.getResult(ApiException.class);
+            Log.i("TAG", "handleSignInResult: Done");
+
+            Toast.makeText(this, "Google sign in success full", Toast.LENGTH_SHORT).show();//should remove
+
+        }catch (ApiException e){
+
+            Log.i("TAG", "handleSignInResult: Failed "+e.getMessage());
+            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private void fetchProfileInformation (GoogleSignInAccount acct ) {
+        if (acct != null) {
+            String personName = acct.getDisplayName();
+            String personGivenName = acct.getGivenName();
+            String personFamilyName = acct.getFamilyName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+           if (requestCode == RC_SIGN_IN) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleSignInResult(task);
+
+            }else {
+                    mCallbackManager.onActivityResult(requestCode, resultCode, data);
+                }
+
+    }
+
     private void createRefrences() {
+
         edt_Name = findViewById(R.id.edt_first_name);
         edt_LastName = findViewById(R.id.edt_last_name);
         edt_Email = findViewById(R.id.edt_email);
@@ -270,6 +335,7 @@ public class RegistrationActivity extends AppCompatActivity {
         edt_Refral_Code = findViewById(R.id.edt_refrel_code);
         btn_SignUp = findViewById(R.id.btn_sign_up);
         btn_FBSignUp = findViewById(R.id.btn_fb_sign_up);
+        btn_GoogleSignIn = findViewById(R.id.btn_google_sign_up);
 
         radioButton = findViewById(R.id.radiobutton_term);
     }

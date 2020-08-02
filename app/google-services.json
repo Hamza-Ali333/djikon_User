@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "750969288865",
+    "firebase_url": "https://ikonuser-1596358731010.firebaseio.com",
+    "project_id": "ikonuser-1596358731010",
+    "storage_bucket": "ikonuser-1596358731010.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750969288865:android:29babeaf03fe11b7a598e0",
+        "android_client_info": {
+          "package_name": "com.example.djikon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750969288865-fg1qg60thmeucouphsqtaptk0qjpp4ld.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.djikon",
+            "certificate_hash": "3e639a9cd4646eb0f46a10657507729b0eb3d494"
+          }
+        },
+        {
+          "client_id": "750969288865-3mickj73d6irvg0ckbf2uo7cgb85sr57.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-pqg9enZZMylkm6gw4X3k55k1WuUHI6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "750969288865-3mickj73d6irvg0ckbf2uo7cgb85sr57.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

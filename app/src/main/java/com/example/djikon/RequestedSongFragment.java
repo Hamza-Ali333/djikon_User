@@ -37,12 +37,12 @@ public class RequestedSongFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v =  inflater.inflate(R.layout.fragment_subscribe_artist,container,false);
+        View v =  inflater.inflate(R.layout.fragment_requested_songs,container,false);
 
        Thread createRefreces = new Thread(new Runnable() {
            @Override
            public void run() {
-               mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
+               mRecyclerView = v.findViewById(R.id.recyclerView_song_request);
                progressBar = v.findViewById(R.id.progressbar);
                mRecyclerView.setVisibility(View.GONE);
                progressBar.setVisibility(View.VISIBLE);
@@ -50,30 +50,30 @@ public class RequestedSongFragment extends Fragment {
        });
        createRefreces.start();
 
-               getSubscribedArtist();
+      getRequestedSong();
 
        return v;
     }
 
 
-    private void getSubscribedArtist () {
-
+    private void getRequestedSong() {
+                //return all the requested song of this user
         Retrofit retrofit= ApiResponse.retrofit(BASE_URL,getContext());
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<List<SubscribeArtistModel>> call = jsonApiHolder.getSubscribeArtist();
+        Call<List<RequestedSongs_Model>> call = jsonApiHolder.getRequestedSongs();
 
-        call.enqueue(new Callback<List<SubscribeArtistModel>>() {
+        call.enqueue(new Callback<List<RequestedSongs_Model>>() {
             @Override
-            public void onResponse(Call<List<SubscribeArtistModel>> call, Response<List<SubscribeArtistModel>> response) {
+            public void onResponse(Call<List<RequestedSongs_Model>> call, Response<List<RequestedSongs_Model>> response) {
 
                 if(response.isSuccessful()){
 
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                            List<SubscribeArtistModel> artistModels = response.body();
+                            List<RequestedSongs_Model> artistModels = response.body();
                             if(artistModels.isEmpty()){
                                 AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
                                         "No Artist Found","it's seems like you din't follow any artist now");
@@ -92,7 +92,7 @@ public class RequestedSongFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<SubscribeArtistModel>> call, Throwable t) {
+            public void onFailure(Call<List<RequestedSongs_Model>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -102,16 +102,14 @@ public class RequestedSongFragment extends Fragment {
 
     }
 
-    private void initializeRecycler (List<SubscribeArtistModel> ArtistList) {
+    private void initializeRecycler (List<RequestedSongs_Model> requestedSongs) {
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
-        mAdapter = new RecyclerSubscribeArtist(ArtistList);
-
+        mAdapter = new RecyclerRequestedSong(requestedSongs);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
 
     }
 
