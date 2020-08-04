@@ -1,5 +1,6 @@
 package com.example.djikon;
 
+import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class LatestFeedFragment extends Fragment {
 
     private SwipeRefreshLayout pullToRefresh;
     private RelativeLayout rlt_progressBar;
+    private AlertDialog alertDialog;
 
     private static final String BASE_URL="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
@@ -70,7 +72,7 @@ public class LatestFeedFragment extends Fragment {
 
     private void downloadBlogs() {
 
-        Retrofit retrofit = ApiResponse.retrofit(BASE_URL,getContext());
+        Retrofit retrofit = ApiClient.retrofit(BASE_URL,getContext());
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
@@ -107,7 +109,7 @@ public class LatestFeedFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Feed_Blog_Model>> call, Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
                 rlt_progressBar.setVisibility(View.INVISIBLE);
             }
         });

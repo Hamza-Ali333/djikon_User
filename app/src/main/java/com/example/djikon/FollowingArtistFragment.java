@@ -32,6 +32,7 @@ public class FollowingArtistFragment extends Fragment {
 
 
     private RelativeLayout progressBar;
+    private AlertDialog alertDialog;
 
     @Nullable
     @Override
@@ -58,7 +59,7 @@ public class FollowingArtistFragment extends Fragment {
 
     private void getSubscribedArtist () {
 
-        Retrofit retrofit= ApiResponse.retrofit(BASE_URL,getContext());
+        Retrofit retrofit= ApiClient.retrofit(BASE_URL,getContext());
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -85,7 +86,8 @@ public class FollowingArtistFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+                    alertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
+
 
                     Log.i("TAG", "onResponse: "+response.code());
                 }

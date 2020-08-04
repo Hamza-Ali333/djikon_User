@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class BookArtistActivity extends AppCompatActivity {
+public class BookArtistOrServiceActivity extends AppCompatActivity {
 
     private static final String TAG = "Book this Artist";
 
@@ -45,6 +46,7 @@ public class BookArtistActivity extends AppCompatActivity {
     private final static String BASE_URL_SERVICE = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/book_service/";
 
     private Button btn_Check_Cost;
+    private RadioButton mRadioButton;
     private EditText edt_Name, edt_Phone, edt_Email, edt_Address;
     private LinearLayout rlt_Start_Date, rlt_End_Date, rlt_Start_Time, rlt_End_Time;
     private TextView txt_Start_Date, txt_End_Date, txt_Start_Time, txt_End_Time;
@@ -101,7 +103,6 @@ public class BookArtistActivity extends AppCompatActivity {
             PriceType = intent.getStringExtra("priceType");
         }
 
-
         if (requestCode == 2 && PriceType.equals("Fix")) {
             rlt_End_Date.setVisibility(View.GONE);
             rlt_End_Time.setVisibility(View.GONE);
@@ -142,6 +143,19 @@ public class BookArtistActivity extends AppCompatActivity {
             }
         });
 
+        mRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mRadioButton.isSelected()) {
+                    mRadioButton.setChecked(true);
+                    mRadioButton.setSelected(true);
+                } else {
+                    mRadioButton.setChecked(false);
+                    mRadioButton.setSelected(false);
+                }
+            }
+        });
+
         btn_Check_Cost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,7 +178,7 @@ public class BookArtistActivity extends AppCompatActivity {
     private void showDatPiker(TextView textView) {
         Calendar c = Calendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialog(BookArtistActivity.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialog(BookArtistOrServiceActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String _year = String.valueOf(year);
@@ -186,12 +200,12 @@ public class BookArtistActivity extends AppCompatActivity {
 
     private void showTimePiker(TextView textView) {
 
-        Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
+        Calendar mCurrentTime = Calendar.getInstance();
+        int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mCurrentTime.get(Calendar.MINUTE);
 
         TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(BookArtistActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(BookArtistOrServiceActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
 
@@ -244,11 +258,15 @@ public class BookArtistActivity extends AppCompatActivity {
             edt_Name.requestFocus();
             result = false;
         } else if (edt_Name.getText().toString().length() < 3) {
-            edt_Name.setError("Name is Not Valid");
+            edt_Name.setError("Name Should Have At Least 3 Digits");
             edt_Name.requestFocus();
             result = false;
         } else if (edt_Phone.getText().toString().isEmpty()) {
             edt_Phone.setError("Phone No Required");
+            edt_Phone.requestFocus();
+            result = false;
+        } else if (edt_Phone.getText().toString().length() < 11) {
+            edt_Phone.setError("Phone No Can't be less then 11 Digits");
             edt_Phone.requestFocus();
             result = false;
         } else if (edt_Email.getText().toString().isEmpty()) {
@@ -264,6 +282,10 @@ public class BookArtistActivity extends AppCompatActivity {
             edt_Address.requestFocus();
             result = false;
         }
+        else if (!mRadioButton.isChecked()) {
+            Toast.makeText(this, "You are not Agree with Terms And Condition", Toast.LENGTH_SHORT).show();
+            result = false;
+        }
 
 
         return result;
@@ -272,6 +294,7 @@ public class BookArtistActivity extends AppCompatActivity {
     private void createRefrences() {
 
         btn_Check_Cost = findViewById(R.id.btn_Check_Cost);
+        mRadioButton = findViewById(R.id.radiobtn_payment);
 
         rlt_Start_Date = findViewById(R.id.rlt_start_Date);
         rlt_End_Date = findViewById(R.id.rlt_end_Date);
@@ -352,7 +375,7 @@ public class BookArtistActivity extends AppCompatActivity {
                         Minutes);
             } else {
                 MsgDialogue = DialogsUtils.showAlertDialog(this, false,
-                        "InValid Time", "Please Select the Time And Date Again With CareFully");
+                        "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
             }
 
         } catch (Exception e) {
@@ -407,15 +430,18 @@ public class BookArtistActivity extends AppCompatActivity {
 
         img_Profile.setImageBitmap(bitmap);
         txt_Name.setText(Name);
-        txt_Service_Name.setText("Book This Dj");
-
+        if (requestCode == 1) {
+            txt_Service_Name.setText("Service Name");
+        }else {
+            txt_Service_Name.setText("Book This Dj");
+        }
         //purchaser Detail
         txt_pName.setText(edt_Name.getText().toString());
         txt_pEmail.setText(edt_Email.getText().toString());
         txt_pContact.setText(edt_Phone.getText().toString());
         txt_pAddress.setText(edt_Address.getText());
 
-        //Service Detail
+        //Service Total Paid Amount
         txt_Service_Amount.setText("$" + new DecimalFormat("##.##").format(TotalCost));
         txt_Servives_prize.setText("$" +  new DecimalFormat("##.##").format(TotalCost));
 
@@ -454,7 +480,7 @@ public class BookArtistActivity extends AppCompatActivity {
 
     private void postBooking(String PaidAmount,String BaseUrl) {
 
-        Retrofit retrofit = ApiResponse.retrofit(BaseUrl, this);
+        Retrofit retrofit = ApiClient.retrofit(BaseUrl, this);
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -476,11 +502,11 @@ public class BookArtistActivity extends AppCompatActivity {
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
-                    Intent i = new Intent(BookArtistActivity.this, BookingPaymentMethodActivity.class);
+                    Intent i = new Intent(BookArtistOrServiceActivity.this, BookingPaymentMethodActivity.class);
                     startActivity(i);
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(BookArtistActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BookArtistOrServiceActivity.this, "Error", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "onResponse: " + response.code());
                 }
             }
@@ -488,7 +514,7 @@ public class BookArtistActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(BookArtistActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                MsgDialogue = DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this,false,"No Internet","Please Check Your Internet Connection");
             }
         });
 

@@ -1,5 +1,6 @@
 package com.example.djikon;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -64,6 +65,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private static final String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/products/";
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onStart() {
@@ -99,7 +101,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Featured_img.buildDrawingCache();
                 Bitmap bitmap = Featured_img.getDrawingCache();
-                Intent i = new Intent(ServiceDetailActivity.this, BookArtistActivity.class);
+                Intent i = new Intent(ServiceDetailActivity.this, BookArtistOrServiceActivity.class);
                 i.putExtra("id",String.valueOf(id));
                 i.putExtra("priceType", price_type);
                 i.putExtra("BitmapImage", bitmap);
@@ -123,7 +125,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     private void downloadServiceData(String id) {
 
-        Retrofit retrofit = ApiResponse.retrofit(BASE_URL, this);
+        Retrofit retrofit = ApiClient.retrofit(BASE_URL, this);
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -141,7 +143,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     price_type = response.body().getPrice_type();
                     description = response.body().getDescription();
 
-                    Toast.makeText(ServiceDetailActivity.this, price_type, Toast.LENGTH_SHORT).show();
                     btn_Proceed_To_Pay.setText("Proceed To Pay " + price + "$");
                     Gallery = response.body().getGallery();
 
@@ -153,19 +154,22 @@ public class ServiceDetailActivity extends AppCompatActivity {
                         Gallery = Gallery.replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
                         String[] GalleryArray = Gallery.split(",");
                         buildServiceGalleryRecycler(GalleryArray);
+
                     } else {
                         mRecyclerView.setVisibility(View.GONE);
                     }
 
 
                 } else {
+
                     Log.i("TAG", "onResponse: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<SingleServiceModle> call, Throwable t) {
-                Toast.makeText(ServiceDetailActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(ServiceDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
+
             }
         });
     }

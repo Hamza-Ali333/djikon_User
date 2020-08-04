@@ -1,10 +1,13 @@
 package com.example.djikon;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -57,6 +60,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private SignInButton btn_GoogleSignIn;
     private GoogleSignInClient mgoogleSignInClient;
     private static  final Integer RC_SIGN_IN = 736;
+
+    private AlertDialog alertDialog;
 
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
@@ -135,11 +140,45 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
+        edt_Password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                edt_Password.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        edt_C_Password.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                edt_C_Password.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
 
         radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(RegistrationActivity.this, "get", Toast.LENGTH_SHORT).show();
                 if (!radioButton.isSelected()) {
                     radioButton.setChecked(true);
                     radioButton.setSelected(true);
@@ -236,7 +275,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void sendDataToServer() {
 
-        Retrofit retrofit = ApiResponse.retrofit(BASEURL_DATA, this);
+        Retrofit retrofit = ApiClient.retrofit(BASEURL_DATA, this);
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
@@ -285,6 +324,7 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDailoge.dismiss();
+                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,"No Internet","Please Check Your Internet Connection");
             }
         });
 
@@ -316,7 +356,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    private void fetchProfileInformation (GoogleSignInAccount acct ) {
+    private void fetchProfileFromGoogle (GoogleSignInAccount acct ) {
         if (acct != null) {
             String personName = acct.getDisplayName();
             String personGivenName = acct.getGivenName();

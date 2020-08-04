@@ -34,6 +34,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
 
     private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
     private ProgressDialog mProgressDialog;
+    private AlertDialog alertDialog;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
@@ -230,7 +231,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
     }
 
     private void changePasswrod(String Old,String New){
-        mRetrofit = ApiResponse.retrofit(BASEURL,this);
+        mRetrofit = ApiClient.retrofit(BASEURL,this);
         mJSONApiHolder = mRetrofit.create(JSONApiHolder.class);
 
         Call<SuccessErrorModel> call = mJSONApiHolder.changepasswrod( Old, New);
@@ -253,6 +254,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                alertDialog = DialogsUtils.showAlertDialog(ProfileSettingActivity.this,false,"No Internet","Please Check Your Internet Connection");
 
             }
         });

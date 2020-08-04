@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -18,7 +19,6 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView UserName;
 
     private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private  void userLogOut () {
 
-      Retrofit retrofit= ApiResponse.retrofit(BASEURL,this);
+      Retrofit retrofit= ApiClient.retrofit(BASEURL,this);
 
       JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -249,6 +250,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: "+t.getMessage());
+                alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"No Internet","Please Check Your Internet Connection");
+
             }
         });
 

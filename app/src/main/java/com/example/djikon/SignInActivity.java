@@ -58,7 +58,6 @@ import retrofit2.Retrofit;
 
 
 
-
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
 
@@ -73,7 +72,7 @@ public class SignInActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
-    private AlertDialog forgetDailoge;
+    private AlertDialog forgetDailoge;//also using for show net error
 
     private static final String BASEURL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
@@ -183,12 +182,28 @@ public class SignInActivity extends AppCompatActivity {
         //AlertDialog alertDialog = DialogsUtils.showAlertDailog(this,false,"Sing In Alert","Please do the right thing");
 
 
-        retrofit = ApiResponse.retrofit(BASEURL, this);
+        retrofit = ApiClient.retrofit(BASEURL, this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
         preferenceData = new PreferenceData();
 
+        edt_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                edt_password.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         txt_Create_new_account.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -506,7 +521,7 @@ public class SignInActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                            Toast.makeText(SignInActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,"No Internet","Please Check Your Internet Connection");
                         }
                     });
                 } else {
@@ -686,14 +701,10 @@ public class SignInActivity extends AppCompatActivity {
 
         boolean result = true;
         if (edt_Email.getText().toString().trim().isEmpty()) {
-            edt_Email.setError("Please Enter Your Last Name");
+            edt_Email.setError("Please Enter Your Email");
             edt_Email.requestFocus();
             result = false;
-        } else if (edt_Email.getText().toString().trim().isEmpty()) {
-            edt_Email.setError("Please Enter Email");
-            edt_Email.requestFocus();
-            result = false;
-        } else if (!isEmailValid(edt_Email.getText().toString().trim())) {
+        }  else if (!isEmailValid(edt_Email.getText().toString().trim())) {
             edt_Email.setError("Not a Valid Email Address");
             edt_Email.requestFocus();
             result = false;
@@ -763,6 +774,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDialog.dismiss();
+                forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,"No Internet","Please Check Your Internet Connection");
             }
         });
 

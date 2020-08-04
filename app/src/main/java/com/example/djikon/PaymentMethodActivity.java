@@ -23,7 +23,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paymentmethod);
-        getSupportActionBar().setTitle("Payment Method");
+        getSupportActionBar().setTitle("Payment Methods");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

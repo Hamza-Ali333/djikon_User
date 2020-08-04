@@ -46,37 +46,37 @@ import retrofit2.Retrofit;
 public class BlogDetailActivity extends AppCompatActivity {
 
 
-   private TextView txt_Title, txt_artist_Name, txt_Description,txt_CreateTime, txt_Total_Likes, txt_Total_Comments;
-   private Button btn_SendComment;
-   private EditText edt_Comment;
-   private FrameLayout frameLayout;
-   private NestedScrollView parentLayout;
-   private ProgressBar progressBar;
-   private TextView loading;
+    private TextView txt_Title, txt_artist_Name, txt_Description, txt_CreateTime, txt_Total_Likes, txt_Total_Comments;
+    private Button btn_SendComment;
+    private EditText edt_Comment;
+    private FrameLayout frameLayout;
+    private NestedScrollView parentLayout;
+    private ProgressBar progressBar;
+    private TextView loading;
 
 
     private SliderView sliderView;
     private ImageView img_Profile;
 
-   private static final String BASEURL_IMAGES="http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
-   private static final String BASEURL_DATA="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
-   private static final String ADD_COMMENT_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/comment_store/";
+    private static final String BASEURL_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
+    private static final String BASEURL_DATA = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+    private static final String ADD_COMMENT_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/comment_store/";
 
-   private int   blogId;
-   private String  Gallery;
-   private String Video;
+    private int blogId;
+    private String Gallery;
+    private String Video;
 
 
-   private List<SliderItem> sliderItems = new ArrayList<>();
-   private List <Comment> mCommentList;
-   private  String Featured_image;
+    private List<SliderItem> sliderItems = new ArrayList<>();
+    private List<Comment> mCommentList;
+    private String Featured_image;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
 
-    private   VideoView videoView;
+    private VideoView videoView;
 
 
     AlertDialog.Builder builder;
@@ -107,7 +107,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
-        Log.i("TAG", "threadm: "+Thread.currentThread().getId());
+        Log.i("TAG", "threadm: " + Thread.currentThread().getId());
 
         showLoadingDialogue(); //show loading Dialogue when it's downloading from server
 
@@ -117,59 +117,56 @@ public class BlogDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String Url = "blog/";
 
-        int id =intent.getIntExtra("url", 0);
+        int id = intent.getIntExtra("url", 0);
         Url += String.valueOf(id);
-       Featured_image = intent.getStringExtra("featured_image");
+        Featured_image = intent.getStringExtra("featured_image");
 
 
-        downloadBlogs(BASEURL_DATA,Url);
+        downloadBlogs(BASEURL_DATA, Url);
 
 
         //setting the controller's on the videoView
-         MediaController mediaController = new MediaController(this);
-         videoView.setMediaController(mediaController);
+        MediaController mediaController = new MediaController(this);
+        videoView.setMediaController(mediaController);
 
 
-         btn_SendComment.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 if (!edt_Comment.getText().toString().trim().isEmpty()){
-                     String comment = edt_Comment.getText().toString().trim();
-                     edt_Comment.getText().clear();
-                     hideKeyboard(BlogDetailActivity.this);
+        btn_SendComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!edt_Comment.getText().toString().trim().isEmpty()) {
+                    String comment = edt_Comment.getText().toString().trim();
+                    edt_Comment.getText().clear();
+                    hideKeyboard(BlogDetailActivity.this);
 
-                     if ( !mCommentList.isEmpty() && mCommentList!=null ) {
-                         mCommentList.add(0,new Comment(comment,"123go","go go go","Current User","no"));
-                         mAdapter.notifyDataSetChanged();
-                     }else {
-                         mCommentList.add(0,new Comment(comment,"123go","go go go","Current User","no"));
-                         mRecyclerView.setVisibility(View.VISIBLE);
-                         initializeCommentRecycler(mCommentList);
-                     }
-
-
-                     new Handler().postDelayed(new Runnable() {
-                         @Override
-                         public void run() {
-                             postComment(comment);
-                         }
-                     },1000);
-
-                 }else {
-                     Toast.makeText(BlogDetailActivity.this, "Please Right Some Comment First", Toast.LENGTH_SHORT).show();
-                 }
-             }
-         });
+                    if (!mCommentList.isEmpty() && mCommentList != null) {
+                        mCommentList.add(0, new Comment(comment, "123go", "go go go", "Current User", "no"));
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        mCommentList.add(0, new Comment(comment, "123go", "go go go", "Current User", "no"));
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        initializeCommentRecycler(mCommentList);
+                    }
 
 
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            postComment(comment);
+                        }
+                    }, 1000);
 
+                } else {
+                    Toast.makeText(BlogDetailActivity.this, "Please Right Some Comment First", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         edt_Comment.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
-                if(!edt_Comment.getText().toString().isEmpty())
-                btn_SendComment.setVisibility(View.VISIBLE);
+                if (!edt_Comment.getText().toString().isEmpty())
+                    btn_SendComment.setVisibility(View.VISIBLE);
                 else
                     btn_SendComment.setVisibility(View.GONE);
 
@@ -188,15 +185,12 @@ public class BlogDetailActivity extends AppCompatActivity {
         });
 
 
-
     }
 
 
+    private void downloadBlogs(String SERVER_Url, String BlogId) {
 
-
-    private void downloadBlogs(String SERVER_Url,String BlogId) {
-
-        Retrofit retrofit= ApiResponse.retrofit(SERVER_Url,this);
+        Retrofit retrofit = ApiClient.retrofit(SERVER_Url, this);
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
 
@@ -207,7 +201,7 @@ public class BlogDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SingleBlog_Model> call, Response<SingleBlog_Model> response) {
                 if (response.isSuccessful()) {
-                    String  Name = response.body().getArtist_name();
+                    String Name = response.body().getArtist_name();
                     Gallery = response.body().getGallery();
                     String CreateTime = response.body().getCreated_at();
                     String Title = response.body().getTitle();
@@ -222,13 +216,13 @@ public class BlogDetailActivity extends AppCompatActivity {
                     alertDialog.dismiss();
                     parentLayout.setVisibility(View.VISIBLE);
 
-                    Thread thread = new Thread(new Runnable(){
+                    Thread thread = new Thread(new Runnable() {
                         @Override
-                        public void run(){
+                        public void run() {
 
                             //if comment is not Zero build recycler view
                             mRecyclerView.setVisibility(View.GONE);
-                            if(Comments != 0){
+                            if (Comments != 0) {
                                 mRecyclerView.setVisibility(View.VISIBLE);
                                 initializeCommentRecycler(response.body().comments);
                             }
@@ -236,27 +230,26 @@ public class BlogDetailActivity extends AppCompatActivity {
                     });
                     thread.start();
 
-                    setDataIntoFields(Name,Profile,Title,Description,Likes,Comments,CreateTime);
+                    setDataIntoFields(Name, Profile, Title, Description, Likes, Comments, CreateTime);
 
                     //WillPass The Data Through this This Work Good
-                   // singleBlog_model = new SingleBlog_Model(Title,CreateTime,Name,Gallery,Likes,Comments,Video,Description,Description);
+                    // singleBlog_model = new SingleBlog_Model(Title,CreateTime,Name,Gallery,Likes,Comments,Video,Description,Description);
 
-                            if (!Gallery.equals("no") || Gallery.isEmpty()) {
+                    if (!Gallery.equals("no") || Gallery.isEmpty()) {
 
-                                sliderView.setVisibility(View.VISIBLE);
-                                Gallery =Gallery.replaceAll("\\[", "").replaceAll("\\]","").replace("\"", "");
-                                String[] GalleryArray = Gallery.split(",");
-                                initializeImageSlider(GalleryArray,true);
-                            }else {
-                                initializeImageSlider(null,false);
-                            }
-
+                        sliderView.setVisibility(View.VISIBLE);
+                        Gallery = Gallery.replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
+                        String[] GalleryArray = Gallery.split(",");
+                        initializeImageSlider(GalleryArray, true);
+                    } else {
+                        initializeImageSlider(null, false);
+                    }
 
 
                     Thread VideoThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.i("TAG", "thread2: "+Thread.currentThread().getId());
+                            Log.i("TAG", "thread2: " + Thread.currentThread().getId());
                             if (!Video.equals("no")) {
                                 frameLayout.setVisibility(View.VISIBLE);
                                 progressBar.setVisibility(View.VISIBLE);
@@ -271,7 +264,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                                     }
                                 });
 
-                            }else {
+                            } else {
                                 frameLayout.setVisibility(View.GONE);
                             }
                         }
@@ -279,62 +272,62 @@ public class BlogDetailActivity extends AppCompatActivity {
                     VideoThread.start();
 
 
-                }else {
-                    Toast.makeText(BlogDetailActivity.this,response.code(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(BlogDetailActivity.this, response.code(), Toast.LENGTH_SHORT).show();
 
                     return;
                 }
 
             }
+
             @Override
             public void onFailure(Call<SingleBlog_Model> call, Throwable t) {
-                Toast.makeText(BlogDetailActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-               // progressBar.setVisibility(View.GONE);
+                alertDialog = DialogsUtils.showAlertDialog(BlogDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                 progressBar.setVisibility(View.GONE);
             }
         });
 
 
     }
 
-    private void postComment(String Comment){
+    private void postComment(String Comment) {
 
-        Retrofit retrofit = ApiResponse.retrofit(ADD_COMMENT_URL,this);
+        Retrofit retrofit = ApiClient.retrofit(ADD_COMMENT_URL, this);
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-        Call<SuccessErrorModel> call = feedJsonApi.postComment(String.valueOf(blogId),Comment);
+        Call<SuccessErrorModel> call = feedJsonApi.postComment(String.valueOf(blogId), Comment);
 
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
-                }else {
-                    Log.i("TAG", "onResponse: "+response.code()+"\n"+response.errorBody()+"\n"+response.body());
+                } else {
+                    Log.i("TAG", "onResponse: " + response.code() + "\n" + response.errorBody() + "\n" + response.body());
                     Toast.makeText(BlogDetailActivity.this, "Post Failed", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                Toast.makeText(BlogDetailActivity.this, "Network Error:"+t.getMessage(), Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(BlogDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
             }
         });
 
     }
 
 
-
-    private void setDataIntoFields (String Name,
-                                    String Profile ,
-                                    String Title,
-                                    String Description,
-                                    int Likes,
-                                    int Comments,
-                                    String Date) {
+    private void setDataIntoFields(String Name,
+                                   String Profile,
+                                   String Title,
+                                   String Description,
+                                   int Likes,
+                                   int Comments,
+                                   String Date) {
 
         txt_Title.setText(Title);
-        txt_artist_Name.setText("By: "+Name);
+        txt_artist_Name.setText("By: " + Name);
         txt_Description.setText(Description);
 
         txt_Total_Likes.setText(Integer.toString(Likes));
@@ -360,12 +353,12 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     }
 
-    private void createRefrences(){
+    private void createRefrences() {
 
         parentLayout = findViewById(R.id.parent);
-        txt_artist_Name= findViewById(R.id.txt_artist_name);
-        txt_Title= findViewById(R.id.txt_title);
-        txt_Description= findViewById(R.id.description);
+        txt_artist_Name = findViewById(R.id.txt_artist_name);
+        txt_Title = findViewById(R.id.txt_title);
+        txt_Description = findViewById(R.id.description);
         txt_Total_Comments = findViewById(R.id.txt_total_comment);
         txt_Total_Likes = findViewById(R.id.txt_total_like);
         txt_CreateTime = findViewById(R.id.date);
@@ -377,11 +370,12 @@ public class BlogDetailActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_circular);
         loading = findViewById(R.id.loading);
 
-        btn_SendComment= findViewById(R.id.btn_sendcomment);
+        btn_SendComment = findViewById(R.id.btn_sendcomment);
         edt_Comment = findViewById(R.id.edt_comment);
 
         mRecyclerView = findViewById(R.id.chat_recycler);
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -389,18 +383,18 @@ public class BlogDetailActivity extends AppCompatActivity {
     }
 
 
-    private void initializeImageSlider(String[] Gallery,Boolean Slider){
+    private void initializeImageSlider(String[] Gallery, Boolean Slider) {
 
-        if(Slider){
-            for(int i=0; i<=Gallery.length-1; i++){
-                sliderItems.add(new SliderItem(BASEURL_IMAGES+Gallery[i]));
+        if (Slider) {
+            for (int i = 0; i <= Gallery.length - 1; i++) {
+                sliderItems.add(new SliderItem(BASEURL_IMAGES + Gallery[i]));
             }
-        }else {
+        } else {
             sliderItems.add(new SliderItem(Featured_image));
         }
 
 
-        SliderAdapterExample adapter = new SliderAdapterExample(sliderItems,this);
+        SliderAdapterExample adapter = new SliderAdapterExample(sliderItems, this);
 
         sliderView.setSliderAdapter(adapter);
 
@@ -418,7 +412,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     }
 
 
-    private void initializeCommentRecycler (List<Comment> commentList) {
+    private void initializeCommentRecycler(List<Comment> commentList) {
 
         mCommentList = commentList;
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
@@ -447,7 +441,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         builder.setView(view);
         builder.setCancelable(false);
-        alertDialog =  builder.show();
+        alertDialog = builder.show();
     }
 
 

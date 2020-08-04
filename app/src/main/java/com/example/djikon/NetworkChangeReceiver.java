@@ -1,24 +1,21 @@
 package com.example.djikon;
 
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-
-
-
-import static android.content.ContentValues.TAG;
 
 
 public class NetworkChangeReceiver extends BroadcastReceiver  {
 
-    private AlertDailogBox mAlertDailogBox;
+
+    AlertDialog alertDialog;
     private Context mContext;
 
     public NetworkChangeReceiver(Context context) {
@@ -34,30 +31,37 @@ public class NetworkChangeReceiver extends BroadcastReceiver  {
             );
 
             if (noConnectivity) {
+                ((Activity) mContext).getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                showDialog();
 
-               showMsgDailog("No Network","This is ",false);
             } else {
-                if(mAlertDailogBox != null)
-                    mAlertDailogBox.dismiss();
-                Toast.makeText(context, "Connected", Toast.LENGTH_SHORT).show();
+                ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                //also checked data net is available of not
+                if(alertDialog != null)
+                    alertDialog.dismiss();
             }
         }
     }//onReceive
 
-    private void showMsgDailog(String Title,String Msg, Boolean CloseActivity){
-        mAlertDailogBox = new AlertDailogBox(Title,
-                Msg,CloseActivity);
-        mAlertDailogBox.setCancelable(false);
-        try {
-            FragmentManager fragmentManager = ((FragmentActivity) mContext).getSupportFragmentManager();
-            mAlertDailogBox.show(fragmentManager,"alert Dailog");
-        } catch (ClassCastException e) {
-            Log.e(TAG, "Can't get fragment manager");
-        }
+    private void showDialog(){
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("No Network")
+                .setMessage("Internet is Required, Please Turn it on")
+                .setIcon(R.drawable.ic_alert)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+        alertDialog = builder.create();
+
+
+        alertDialog.show();
     }
-
-
 
 
 

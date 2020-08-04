@@ -32,6 +32,7 @@ public class RequestedSongFragment extends Fragment {
 
 
     private RelativeLayout progressBar;
+    private AlertDialog mAlertDialog;
 
     @Nullable
     @Override
@@ -58,7 +59,7 @@ public class RequestedSongFragment extends Fragment {
 
     private void getRequestedSong() {
                 //return all the requested song of this user
-        Retrofit retrofit= ApiResponse.retrofit(BASE_URL,getContext());
+        Retrofit retrofit= ApiClient.retrofit(BASE_URL,getContext());
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -75,13 +76,15 @@ public class RequestedSongFragment extends Fragment {
 
                             List<RequestedSongs_Model> artistModels = response.body();
                             if(artistModels.isEmpty()){
+                                //if no data then show dialoge to user
                                 AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
-                                        "No Artist Found","it's seems like you din't follow any artist now");
+                                        "No Artist Found","it's seems like you din't Request any Song yet");
                             }
                            else
                             initializeRecycler(artistModels);
 
                 }else {
+
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
@@ -95,7 +98,7 @@ public class RequestedSongFragment extends Fragment {
             public void onFailure(Call<List<RequestedSongs_Model>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                mAlertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
             }
         });
 

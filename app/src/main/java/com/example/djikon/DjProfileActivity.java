@@ -33,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class DjPrpfileActivity extends AppCompatActivity {
+public class DjProfileActivity extends AppCompatActivity {
 
     private Button btn_Book_Artist,
             btn_Request_A_Song,
@@ -150,7 +150,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 img_DJ_Profile.buildDrawingCache();
                 Bitmap bitmap = img_DJ_Profile.getDrawingCache();
-                Intent i = new Intent(DjPrpfileActivity.this, BookArtistActivity.class);
+                Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
                 i.putExtra("id",String.valueOf(artistID));
                 i.putExtra("BitmapImage", bitmap);
                 i.putExtra("price",DjBookingRatePerHour);//rate per hour
@@ -204,7 +204,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
                         }
                         @Override
                         public void onError(Exception e) {
-                            Toast.makeText(DjPrpfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DjProfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -256,11 +256,11 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
                 if (!edt_Requester_Name.getText().toString().isEmpty() && !edt_Song_Name.getText().toString().isEmpty()) {
 
-                    progressDialog = DialogsUtils.showProgressDialog(DjPrpfileActivity.this,"Posting Request","Please Wait...");
+                    progressDialog = DialogsUtils.showProgressDialog(DjProfileActivity.this,"Posting Request","Please Wait...");
                     postRequestSong(edt_Requester_Name.getText().toString(), edt_Song_Name.getText().toString());
                     alertDialog.dismiss();
                 }else {
-                    Toast.makeText(DjPrpfileActivity.this, "Empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DjProfileActivity.this, "Empty", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -271,7 +271,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     private void getProfileDataFromServer(String blogId) {
 
-         retrofit= ApiResponse.retrofit(BASE_URL,this);
+         retrofit= ApiClient.retrofit(BASE_URL,this);
 
          jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -333,7 +333,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
             public void onFailure(Call<ProfileModel> call, Throwable t) {
 
                 Log.i("TAG", "onFailure: " + t.getMessage());
-                Toast.makeText(DjPrpfileActivity.this, "Response Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
             }
 
         });
@@ -382,7 +382,7 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
     private void postRequestSong (String UserName,String SongName) {
 
-        retrofit= ApiResponse.retrofit(URL_REQUEST_SONG,this);
+        retrofit= ApiClient.retrofit(URL_REQUEST_SONG,this);
 
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
@@ -413,14 +413,14 @@ public class DjPrpfileActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 snackBarText.setText("OPPS Something Happend Wrong Check Network");
                 snackbar.show();
-                Toast.makeText(DjPrpfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
             }
         });
     }
 
 
     private void followUnFollow (String Url, int CurrentStatus) {
-        Retrofit retrofit = ApiResponse.retrofit(Url,DjPrpfileActivity.this);
+        Retrofit retrofit = ApiClient.retrofit(Url, DjProfileActivity.this);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 
@@ -453,7 +453,8 @@ public class DjPrpfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                Toast.makeText(DjPrpfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
             }
         });
     }

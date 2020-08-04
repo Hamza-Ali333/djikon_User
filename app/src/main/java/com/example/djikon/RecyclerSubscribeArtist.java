@@ -64,7 +64,7 @@ public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscr
            @Override
            public void onClick(View view) {
 
-               Intent intent = new Intent(view.getContext(), DjPrpfileActivity.class);
+               Intent intent = new Intent(view.getContext(), DjProfileActivity.class);
                intent.putExtra("id", currentItem.getId());
                view.getContext().startActivity(intent);
            }

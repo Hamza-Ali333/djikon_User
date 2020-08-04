@@ -104,6 +104,8 @@
             android:layout_weight="1"
             android:background="@drawable/edt_shape"
             android:hint="Phone"
+            android:inputType="phone"
+            android:maxLength="11"
             android:textColorHint="#ACACAC"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"

@@ -1,9 +1,7 @@
 package com.example.djikon;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.KeyguardManager;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,13 +11,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.FileUtils;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -39,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -54,20 +46,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import static java.security.AccessController.getContext;
 
 public class UserProfileActivity extends AppCompatActivity  {
 
@@ -94,6 +79,7 @@ public class UserProfileActivity extends AppCompatActivity  {
     private  Retrofit retrofit;
     private  JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
 
 
     private String[] genderArray = {"Select Gender","Male", "Female", "Other"};
@@ -349,7 +335,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
     private void getUserDataFromServer(){
 
-        retrofit = ApiResponse.retrofit(BASEURL,this);
+        retrofit = ApiClient.retrofit(BASEURL,this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         Call<ProfileModel> call = jsonApiHolder.getDjOrUserProfile(PreferenceData.getUserId(this));
@@ -396,7 +382,8 @@ public class UserProfileActivity extends AppCompatActivity  {
 
             @Override
             public void onFailure(Call<ProfileModel> call, Throwable t) {
-                Toast.makeText(UserProfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
+
             }
         });
     }
@@ -405,7 +392,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
     private void updateProfile(String UserId){
 
-        retrofit = ApiResponse.retrofit(BASEURL,this);
+        retrofit = ApiClient.retrofit(BASEURL,this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 //        RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpeg"),
@@ -455,13 +442,14 @@ String img= imageToString();
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                Toast.makeText(UserProfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
+
             }
         });
         }
 
         private void uploadImage(){
-            retrofit = ApiResponse.retrofit(BASEURL,this);
+            retrofit = ApiClient.retrofit(BASEURL,this);
 
            // String path = Image_uri.getPath();
 
@@ -488,7 +476,8 @@ String img= imageToString();
                 @Override
                 public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                     progressDialog.dismiss();
-                    Toast.makeText(UserProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                    alertDialog = DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
+
                     Log.i("TAG", "onFailure: "+t.getMessage());
                 }
             });

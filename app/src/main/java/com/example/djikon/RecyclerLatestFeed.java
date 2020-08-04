@@ -1,5 +1,6 @@
 package com.example.djikon;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     private List<Feed_Blog_Model> mBlogModelArrayList;
 
     private Context context;
+    private AlertDialog alertDialog;
 
     private static final String URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/like_blog/";
     private int total_likes;
@@ -127,7 +129,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 holder.img_uploaderProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(v.getContext(), DjPrpfileActivity.class);
+                        Intent i = new Intent(v.getContext(), DjProfileActivity.class);
                         i.putExtra("id", currentItem.getArtist_profile_id());
                         v.getContext().startActivity(i);
                     }
@@ -193,7 +195,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     }
 
     private void likeAndUnlikeBlog(ImageView view,String BlogID,Integer Status){
-        Retrofit retrofit = ApiResponse.retrofit(URL,context);
+        Retrofit retrofit = ApiClient.retrofit(URL,context);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         Call <SuccessErrorModel> call = jsonApiHolder.LikeUnlike ( BlogID, Status);
@@ -213,6 +215,8 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 Log.i(TAG, "onResponse: "+t.getMessage());
+                alertDialog = DialogsUtils.showAlertDialog(context,false,"No Internet","Please Check Your Internet Connection");
+
             }
         });
 
