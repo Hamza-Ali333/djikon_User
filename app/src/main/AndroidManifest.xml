@@ -24,8 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
+        android:name="com.example.djikon.MyApp"
         android:theme="@style/AppTheme">
-        <activity android:name=".StripPaymentActivity"></activity>
+        <activity android:name=".CheckoutActivity"></activity>
+        <activity android:name=".StripPaymentActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

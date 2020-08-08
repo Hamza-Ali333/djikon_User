@@ -75,6 +75,6 @@ dependencies {
     //braintree
     //implementation 'com.braintreepayments.api:drop-in:3.7.1'
 
-    //strip Android SDK
-    implementation 'com.stripe:stripe-android:15.0.1'
+    // Stripe Android SDK
+     implementation 'com.stripe:stripe-android:15.0.1'
 }

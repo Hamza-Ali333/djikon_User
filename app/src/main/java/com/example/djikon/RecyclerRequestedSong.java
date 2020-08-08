@@ -31,7 +31,7 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
 
             txt_DJ_Name = itemView.findViewById(R.id.txt_requester_name);
             txt_requested_date = itemView.findViewById(R.id.txt_start_date);
-            txt_Cancle = itemView.findViewById(R.id.txt_cancel);
+
 
         }
     }
@@ -74,14 +74,14 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
                     });
         }//if
 
-        holder.txt_Cancle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mRequestedSongs_models.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, mRequestedSongs_models.size());
-            }
-        });
+//        holder.txt_Cancle.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mRequestedSongs_models.remove(position);
+//                notifyItemRemoved(position);
+//                notifyItemRangeChanged(position, mRequestedSongs_models.size());
+//            }
+//        });
 }
 
     @Override

@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +35,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.internal.$Gson$Preconditions;
 
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,9 +67,18 @@ public class RegistrationActivity extends AppCompatActivity {
     private static  final Integer RC_SIGN_IN = 736;
 
     private AlertDialog alertDialog;
+    private ProgressDialog progressDialog;
+
+    private int OTP = 0;
+    private String EmailForOTP;
+
+    private Retrofit retrofit;
+    private JSONApiHolder jsonApiHolder;
 
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
+
+    int seconds;
 
     @Override
     protected void onStart() {
@@ -114,6 +128,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                     textView.setText("Email : " + email + "\n Name" + Name + " ");
                                     Toast.makeText(RegistrationActivity.this, Name, Toast.LENGTH_SHORT).show();
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -275,11 +290,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void sendDataToServer() {
 
-        Retrofit retrofit = ApiClient.retrofit(BASEURL_DATA, this);
+        retrofit = ApiClient.retrofit(BASEURL_DATA, this);
 
-        JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<LoginRegistrationModel> call = feedJsonApi.registerUser(
+        Call<SuccessErrorModel> call = jsonApiHolder.registerUser(
                 edt_Name.getText().toString().trim(),
                 edt_LastName.getText().toString().trim(),
                 edt_Email.getText().toString().trim(),
@@ -288,24 +303,15 @@ public class RegistrationActivity extends AppCompatActivity {
                 edt_Refral_Code.getText().toString().trim(),
                 2);
 
-        call.enqueue(new Callback<LoginRegistrationModel>() {
+        call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
-            public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 progressDailoge.dismiss();
                 if (response.isSuccessful()) {
+                    //store the Email adrress for sending otp on it
+                    EmailForOTP = edt_Email.getText().toString();
 
-
-                    preferenceData.setUserToken(RegistrationActivity.this, response.body().getSuccess());
-
-                    String id = String.valueOf(response.body().getId());
-
-                    preferenceData.setUserId(RegistrationActivity.this, id);
-
-                    preferenceData.setUserName(RegistrationActivity.this, response.body().getFirstname() + " " + response.body().getLastname());
-
-                    preferenceData.setUserLoggedInStatus(RegistrationActivity.this, true);
-
-                    startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
+                   openVerfiyOTPDialogue();
 
                 } else if (response.code() == 409) {
                     Log.i("TAG", "onResponse" + " Email Already Exit \n" + response.code());
@@ -321,7 +327,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDailoge.dismiss();
                 alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,"No Internet","Please Check Your Internet Connection");
@@ -366,6 +372,245 @@ public class RegistrationActivity extends AppCompatActivity {
             Uri personPhoto = acct.getPhotoUrl();
         }
     }
+
+    private void openVerfiyOTPDialogue() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View view = inflater.inflate(R.layout.dailogue_varification_code, null);
+
+        EditText edt_pin1, edt_pin2, edt_pin3, edt_pin4;
+        edt_pin1 = view.findViewById(R.id.pin1);
+        edt_pin2 = view.findViewById(R.id.pin2);
+        edt_pin3 = view.findViewById(R.id.pin3);
+        edt_pin4 = view.findViewById(R.id.pin4);
+
+        TextView error = view.findViewById(R.id.txt_error);
+
+        TextView OTP_Timmer = view.findViewById(R.id.otp_timmer);
+        Button btn_Resend_OTP = view.findViewById(R.id.resend_otp);
+
+        startTimer (OTP_Timmer,btn_Resend_OTP);
+
+        ImageView img_close = view.findViewById(R.id.close);
+
+
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        final AlertDialog alertDialog = builder.show();
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+
+        edt_pin1.setFocusable(true);
+
+        edt_pin1.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (edt_pin1.length() == 1) {
+
+                    edt_pin1.clearFocus();
+                    edt_pin2.requestFocus();
+                    edt_pin2.setCursorVisible(true);
+
+                }
+
+            }
+
+            //textWatcher extra method not in use
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        edt_pin2.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (edt_pin2.length() == 1) {
+                    edt_pin2.clearFocus();
+                    edt_pin3.requestFocus();
+                    edt_pin3.setCursorVisible(true);
+                }
+
+            }
+
+            //textWatcher extra method not in use
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+
+            }
+        });
+
+
+        edt_pin3.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (edt_pin3.length() == 1) {
+
+                    edt_pin3.clearFocus();
+                    edt_pin4.requestFocus();
+                    edt_pin4.setCursorVisible(true);
+                }
+
+            }
+
+            //textWatcher extra method not in use
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+
+            }
+        });
+
+
+        edt_pin4.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (edt_pin4.length() == 1) {
+                    progressDialog = DialogsUtils.showProgressDialog(RegistrationActivity.this, "Checking OTP", "Please Wait");
+
+                    String builder = edt_pin1.getText().toString()
+                            + edt_pin2.getText().toString()
+                            + edt_pin3.getText().toString() +
+                            edt_pin4.getText().toString();
+
+                    edt_pin4.clearFocus();
+
+                    OTP = Integer.parseInt(builder);
+
+
+                    Call<LoginRegistrationModel> call = jsonApiHolder.verifyEmail(EmailForOTP, OTP);
+
+                    call.enqueue(new Callback<LoginRegistrationModel>() {
+                        @Override
+                        public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
+
+                            if (response.isSuccessful()) {
+                                error.setVisibility(View.GONE);
+                                alertDialog.dismiss();
+                                progressDialog.dismiss();
+
+                                preferenceData.setUserToken(RegistrationActivity.this, response.body().getSuccess());
+
+                                String id = String.valueOf(response.body().getId());
+
+                                preferenceData.setUserId(RegistrationActivity.this, id);
+
+                                preferenceData.setUserName(RegistrationActivity.this, response.body().getFirstname() + " " + response.body().getLastname());
+
+                                preferenceData.setUserLoggedInStatus(RegistrationActivity.this, true);
+
+                                startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
+
+                            } else {
+                                error.setVisibility(View.VISIBLE);
+                                progressDialog.dismiss();
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
+                            progressDialog.dismiss();
+                        }
+                    });
+
+
+                }
+
+            }
+
+            //textWatcher extra method not in use
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+
+            }
+        });
+
+
+        btn_Resend_OTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                btn_Resend_OTP.setClickable(false);
+
+                Call<SuccessErrorModel> call = jsonApiHolder.resendOTP(EmailForOTP);
+                call.enqueue(new Callback<SuccessErrorModel>() {
+                    @Override
+                    public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                        if(response.isSuccessful()){
+                            Toast.makeText(RegistrationActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
+                            startTimer(OTP_Timmer,btn_Resend_OTP);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+    }//openVerifyOTPDialoge
+
+    private void startTimer(TextView otp_timmer,Button resentOTP) {
+        seconds = 30;
+        Timer t = new Timer();    //declare the timer
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (seconds == 00) {
+                            otp_timmer.setText( String.format("%02d", seconds));
+
+                            t.cancel();
+                            otp_timmer.setVisibility(View.GONE);
+                            resentOTP.setVisibility(View.VISIBLE);
+                            resentOTP.setClickable(true);
+                        }
+                        seconds --;
+                        otp_timmer.setText("if not get email then try again in "+String.format("%02d", seconds));
+                    }
+                });
+            }
+        }, 0, 1000);
+
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

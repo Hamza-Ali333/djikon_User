@@ -340,9 +340,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             Integer Hour = (int) (long) diffHours;
             Integer Minutes = (int) (long) diffMinutes;
 
-            Log.i(TAG, "getTimeDuration: " + Day + " days, ");
-            Log.i(TAG, "getTimeDuration: " + Hour + " hours, ");
-            Log.i(TAG, "getTimeDuration: " + Minutes + " minutes, ");
+            Log.i(TAG, "getTimeDuration: " + diffDays + " days, ");
+            Log.i(TAG, "getTimeDuration: " + diffHours + " hours, ");
+            Log.i(TAG, "getTimeDuration: " + diffMinutes + " minutes, ");
 
             int TotalHour = 0;
             if (Day != 0) {
@@ -370,9 +370,11 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 //open Dailoge after Calculation and pass the value
                 openCheckCostDialogue(
                         perMint,//total cost
-                        Day,
-                        Hour,
-                        Minutes);
+                        //converting the long into Integer
+                        (int) (long) diffDays, //this is for the days
+                        (int) (long) diffHours, //total Hour
+                        (int) (long) diffMinutes //total minutes
+                );
             } else {
                 MsgDialogue = DialogsUtils.showAlertDialog(this, false,
                         "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
@@ -430,6 +432,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
         img_Profile.setImageBitmap(bitmap);
         txt_Name.setText(Name);
+
         if (requestCode == 1) {
             txt_Service_Name.setText("Service Name");
         }else {

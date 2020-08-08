@@ -47,7 +47,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("register")
-    Call <LoginRegistrationModel> registerUser(
+    Call <SuccessErrorModel> registerUser(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
             @Field("email") String email,
@@ -110,6 +110,20 @@ public interface JSONApiHolder {
     Call <SuccessErrorModel> sendOTP(
             @Field("email") String email
     );
+
+    @FormUrlEncoded
+    @POST("resend_otp")
+    Call <SuccessErrorModel> resendOTP(
+            @Field("email") String email
+    );
+
+    @FormUrlEncoded
+    @POST("verify_email")
+    Call <LoginRegistrationModel> verifyEmail(
+            @Field("email") String email,
+            @Field("otp") Integer otp
+    );
+
 
     @FormUrlEncoded
     @POST("confirm_otp")

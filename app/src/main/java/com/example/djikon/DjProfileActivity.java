@@ -148,7 +148,10 @@ public class DjProfileActivity extends AppCompatActivity {
         btn_Book_Artist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                img_DJ_Profile.buildDrawingCache();
+
+                startActivity(new Intent(DjProfileActivity.this,CheckoutActivity.class));
+
+            /*    img_DJ_Profile.buildDrawingCache();
                 Bitmap bitmap = img_DJ_Profile.getDrawingCache();
                 Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
                 i.putExtra("id",String.valueOf(artistID));
@@ -157,7 +160,7 @@ public class DjProfileActivity extends AppCompatActivity {
                 i.putExtra("name",mDJName);
                 i.putExtra("request_code", 1);//one for dj booking
                 i.putExtra("description",mAbout);
-                startActivity(i);
+                startActivity(i);*/
             }
         });
 

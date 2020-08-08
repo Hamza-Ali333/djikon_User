@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 
 import androidx.biometric.BiometricPrompt;
+
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +43,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,7 +58,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 
 
 @RequiresApi(api = Build.VERSION_CODES.M)
@@ -72,12 +74,13 @@ public class SignInActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
-    private AlertDialog forgetDailoge;//also using for show net error
+    private AlertDialog alert_AND_forgetDailoge;//also using for show net error
 
     private static final String BASEURL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
     private int OTP = 0;
     private String EmailForOTP;
+    private int seconds;//seconds for showing CountDown
 
 
     private FingerprintManager fingerprintManager;
@@ -99,7 +102,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onStart();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-       registerReceiver(mNetworkChangeReceiver, filter);
+        registerReceiver(mNetworkChangeReceiver, filter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -175,8 +178,6 @@ public class SignInActivity extends AppCompatActivity {
 //                        "any biometric credentials with their account.");
 //                break;
 //        }
-
-
 
 
         //AlertDialog alertDialog = DialogsUtils.showAlertDailog(this,false,"Sing In Alert","Please do the right thing");
@@ -282,7 +283,7 @@ public class SignInActivity extends AppCompatActivity {
         builder.setCancelable(true);
 
 
-        forgetDailoge = builder.show();
+        alert_AND_forgetDailoge = builder.show();
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,7 +305,7 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    private void openVerfiyOTPDialogue() {
+    private void openVerfiyOTPDialogue(boolean isRunningForINValidEmail) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -317,7 +318,22 @@ public class SignInActivity extends AppCompatActivity {
         edt_pin3 = view.findViewById(R.id.pin3);
         edt_pin4 = view.findViewById(R.id.pin4);
 
+
         TextView error = view.findViewById(R.id.txt_error);
+
+        TextView Heading = view.findViewById(R.id.heading);
+        TextView Info = view.findViewById(R.id.info);
+
+        if (isRunningForINValidEmail) {
+            Heading.setText("Verify Your Email");
+            Info.setText("Please check your email and enter OTP");
+        }
+
+
+        TextView OTP_Timmer = view.findViewById(R.id.otp_timmer);
+        Button btn_Resend_OTP = view.findViewById(R.id.resend_otp);
+
+        startTimer(OTP_Timmer, btn_Resend_OTP);
 
 
         ImageView img_close = view.findViewById(R.id.close);
@@ -418,6 +434,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (edt_pin4.length() == 1) {
+
                     progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking OTP", "Please Wait");
 
                     String builder = edt_pin1.getText().toString()
@@ -430,31 +447,83 @@ public class SignInActivity extends AppCompatActivity {
                     OTP = Integer.parseInt(builder);
 
 
-                    Call<SuccessErrorModel> call = jsonApiHolder.confirmOTP(EmailForOTP, OTP);
+                    if (isRunningForINValidEmail) {
+                        Call<LoginRegistrationModel> verifyEmailCall = jsonApiHolder.verifyEmail(EmailForOTP,OTP);
+                        verifyEmailCall.enqueue(new Callback<LoginRegistrationModel>() {
+                            @Override
+                            public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
+                                if (response.isSuccessful()) {
 
-                    call.enqueue(new Callback<SuccessErrorModel>() {
-                        @Override
-                        public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                                    Log.i("TAG", "onResponse: " + "token:>>  " + response.body().getSuccess());
 
-                            if (response.isSuccessful()) {
-                                error.setVisibility(View.GONE);
-                                alertDialog.dismiss();
-                                progressDialog.dismiss();
-                                openUpdatePasswrodDialoge();
+                                    preferenceData.setUserToken(SignInActivity.this, response.body().getSuccess());
 
-                            } else {
-                                error.setVisibility(View.VISIBLE);
-                                progressDialog.dismiss();
+                                    String id = String.valueOf(response.body().getId());
+
+                                    preferenceData.setUserId(SignInActivity.this, id);
+
+
+                                    preferenceData.setUserName(SignInActivity.this, response.body().getFirstname() + " " + response.body().getLastname());
+                                    Log.i("TAG", "onResponse: first " + response.body().getFirstname() + " " + response.body().getLastname());
+
+                                    preferenceData.setUserImage(SignInActivity.this, response.body().getProfile_image());
+
+                                    preferenceData.setUserLoggedInStatus(SignInActivity.this, true);
+
+                                    txt_Error.setVisibility(View.GONE);
+                                    img_Error_Sign.setVisibility(View.GONE);
+                                    progressDialog.dismiss();
+
+
+                                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                                    finish();
+
+                                }else {
+                                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,"Not","Some thing happened wrong please verify email again");
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
 
                             }
-                        }
+                        });
 
-                        @Override
-                        public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                            progressDialog.dismiss();
-                        }
-                    });
+                    } else {
 
+                        Call<SuccessErrorModel> call = jsonApiHolder.confirmOTP(EmailForOTP, OTP);
+
+                        call.enqueue(new Callback<SuccessErrorModel>() {
+                            @Override
+                            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+
+                                if (response.isSuccessful()) {
+                                    error.setVisibility(View.GONE);
+                                    alertDialog.dismiss();
+                                    progressDialog.dismiss();
+                                    if (isRunningForINValidEmail) {
+
+                                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
+
+                                    } else {
+                                        openUpdatePasswrodDialoge();
+                                    }
+
+
+                                } else {
+                                    error.setVisibility(View.VISIBLE);
+                                    progressDialog.dismiss();
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                                progressDialog.dismiss();
+                            }
+                        });
+
+                    }
 
                 }
 
@@ -473,7 +542,59 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        btn_Resend_OTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                btn_Resend_OTP.setClickable(false);
+
+                Call<SuccessErrorModel> call = jsonApiHolder.resendOTP(EmailForOTP);
+                call.enqueue(new Callback<SuccessErrorModel>() {
+                    @Override
+                    public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                        if (response.isSuccessful()) {
+
+                            Toast.makeText(SignInActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
+                            startTimer(OTP_Timmer, btn_Resend_OTP);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
     }//openVerifyOTPDialoge
+
+    private void startTimer(TextView otp_timmer, Button resentOTP) {
+        seconds = 30;
+        Timer t = new Timer();    //declare the timer
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (seconds == 00) {
+                            otp_timmer.setText(String.format("%02d", seconds));
+
+                            t.cancel();
+                            otp_timmer.setVisibility(View.GONE);
+                            resentOTP.setVisibility(View.VISIBLE);
+                            resentOTP.setClickable(true);
+                        }
+                        seconds--;
+                        otp_timmer.setText("Resend OTP In " + String.format("%02d", seconds));
+                    }
+                });
+            }
+        }, 0, 1000);
+
+
+    }
 
 
     private void openUpdatePasswrodDialoge() {
@@ -521,7 +642,7 @@ public class SignInActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                            forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                            alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "No Internet", "Please Check Your Internet Connection");
                         }
                     });
                 } else {
@@ -593,7 +714,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
         TextView Msg = view.findViewById(R.id.msg);
-        ImageView img_fingerprint= view.findViewById(R.id.img_finger_print);
+        ImageView img_fingerprint = view.findViewById(R.id.img_finger_print);
         Button btn_cancle_Face_Id = view.findViewById(R.id.cancel_fingerprint);
 
         builder.setView(view);
@@ -606,27 +727,23 @@ public class SignInActivity extends AppCompatActivity {
         //TODO Check 5: Alteast 1 finger print is registered
 
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
             keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
 
             if (!fingerprintManager.isHardwareDetected()) {
                 Msg.setText("Fingerprint Scanner is not Detected");
-            }
-            else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 Msg.setText("Permission is not Granted");
             }
             //if Lock Screen is not secured with atleast 1 type of lock
-            else if(!keyguardManager.isKeyguardSecure()) {
+            else if (!keyguardManager.isKeyguardSecure()) {
 
                 Msg.setText("Please lock your screen with finger print");
-            }
-            else if (!fingerprintManager.hasEnrolledFingerprints()) {
+            } else if (!fingerprintManager.hasEnrolledFingerprints()) {
                 Msg.setText("Please Enroll Atleast on fingerprint to Use this Feature");
-            }
-            else {
+            } else {
 
                 Msg.setText("Can Use Finger Print to Login At Your Own Risk");
 
@@ -648,15 +765,11 @@ public class SignInActivity extends AppCompatActivity {
                 }
 
                 if (cipherInit()) {
-                    FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this,Msg,img_fingerprint);
+                    FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, Msg, img_fingerprint);
                     fingerPrintHandler.startAuth(fingerprintManager, null);
                 }
             }
         }
-
-
-
-
 
 
         final AlertDialog alertDialog = builder.show();
@@ -704,7 +817,7 @@ public class SignInActivity extends AppCompatActivity {
             edt_Email.setError("Please Enter Your Email");
             edt_Email.requestFocus();
             result = false;
-        }  else if (!isEmailValid(edt_Email.getText().toString().trim())) {
+        } else if (!isEmailValid(edt_Email.getText().toString().trim())) {
             edt_Email.setError("Not a Valid Email Address");
             edt_Email.requestFocus();
             result = false;
@@ -724,7 +837,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void isUserExits() {
 
-        Call<LoginRegistrationModel> call = jsonApiHolder.Login(edt_Email.getText().toString().trim(), edt_password.getText().toString().trim(),2);
+        Call<LoginRegistrationModel> call = jsonApiHolder.Login(edt_Email.getText().toString().trim(), edt_password.getText().toString().trim(), 2);
 
         call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
@@ -740,8 +853,8 @@ public class SignInActivity extends AppCompatActivity {
                     preferenceData.setUserId(SignInActivity.this, id);
 
 
-                    preferenceData.setUserName(SignInActivity.this,response.body().getFirstname()+" "+response.body().getLastname());
-                    Log.i("TAG", "onResponse: first "+response.body().getFirstname()+" "+response.body().getLastname());
+                    preferenceData.setUserName(SignInActivity.this, response.body().getFirstname() + " " + response.body().getLastname());
+                    Log.i("TAG", "onResponse: first " + response.body().getFirstname() + " " + response.body().getLastname());
 
                     preferenceData.setUserImage(SignInActivity.this, response.body().getProfile_image());
 
@@ -755,11 +868,36 @@ public class SignInActivity extends AppCompatActivity {
                     startActivity(new Intent(SignInActivity.this, MainActivity.class));
                     finish();
 
-                }else if(response.code()==403){
+                } else if (response.code() == 402) {
+                    EmailForOTP = edt_Email.getText().toString();
+                    Call<SuccessErrorModel> resendOTPCall = jsonApiHolder.resendOTP(EmailForOTP);
+
+                    resendOTPCall.enqueue(new Callback<SuccessErrorModel>() {
+                        @Override
+                        public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                            if (response.isSuccessful()) {
+                                openVerfiyOTPDialogue(true);
+                                progressDialog.dismiss();
+                            } else {
+
+                                alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "Someting happend worng try again");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                            alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "Someting happend worng try again");
+                        }
+                    });
+
+
+                } else if (response.code() == 403) {
+
                     txt_Error.setText("This Email is not Belongs To User App");
                     txt_Error.setVisibility(View.VISIBLE);
                     img_Error_Sign.setVisibility(View.VISIBLE);
                     progressDialog.dismiss();
+
                 } else {
 
                     Log.i("TAG", "onResponse: " + response.code());
@@ -774,7 +912,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDialog.dismiss();
-                forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "No Internet", "Please Check Your Internet Connection");
             }
         });
 
@@ -789,9 +927,9 @@ public class SignInActivity extends AppCompatActivity {
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
 
                 if (response.isSuccessful()) {
-                    forgetDailoge.dismiss();
+                    alert_AND_forgetDailoge.dismiss();
                     progressDialog.dismiss();
-                    openVerfiyOTPDialogue();
+                    openVerfiyOTPDialogue(false);
 
                 } else {
                     progressDialog.dismiss();
@@ -813,7 +951,6 @@ public class SignInActivity extends AppCompatActivity {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -865,7 +1002,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-
     private void createReferencer() {
 
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);
@@ -888,7 +1024,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-     unregisterReceiver(mNetworkChangeReceiver);
+        unregisterReceiver(mNetworkChangeReceiver);
     }
 
 }

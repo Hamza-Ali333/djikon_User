@@ -20,6 +20,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"/>
         <TextView
+            android:id="@+id/heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -27,6 +28,7 @@
             android:text="Check Your Email"
             android:textColor="@color/colorBlack"/>
         <TextView
+            android:id="@+id/info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -122,6 +124,30 @@
             android:text="Wrong Code"
             android:textColor="@color/print_btn_color"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/otp_timmer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:text="Timmer"
+            android:textColor="@color/colorBlue"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/resend_otp"
+            android:layout_width="100dp"
+            android:layout_height="45dp"
+            android:textColor="#fff"
+            android:text="Resend OTP"
+            android:visibility="gone"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/roundshape"
+            android:padding="0dp"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
