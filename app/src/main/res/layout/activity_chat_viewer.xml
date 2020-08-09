@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    tools:context=".ChatViewerActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_viewer_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:layout_marginBottom="55dp"
+        android:layout_alignParentBottom="true"
+       />
+
+
+    <RelativeLayout
+        android:id="@+id/msgbox"
+        android:padding="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="#fff"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edt_sendmsg"
+            android:layout_width="match_parent"
+            android:hint="Type a message"
+            android:textSize="18sp"
+            android:paddingRight="45dp"
+            android:layout_height="40dp"/>
+        <Button
+            android:id="@+id/btn_send_msg"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:paddingBottom="0dp"
+            android:paddingLeft="2dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_send"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

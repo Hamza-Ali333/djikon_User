@@ -15,7 +15,7 @@
 
         <item android:id="@+id/nav_ChatArea"
         android:icon="@drawable/notification"
-        android:title="Chat Area"/>
+        android:title="Chat Room"/>
 
         <item android:id="@+id/nav_SocialMedia"
         android:icon="@drawable/social_media"

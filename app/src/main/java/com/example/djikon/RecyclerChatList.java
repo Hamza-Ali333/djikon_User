@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,9 +13,9 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
 
-public class RecyclerChatArea extends RecyclerView.Adapter<RecyclerChatArea.ViewHolder>{
+public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.ViewHolder>{
 
-    private ArrayList<Chat_Model> mchat_Aera;
+    private ArrayList<ChatListModel> mChat_Aera;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -42,15 +41,15 @@ public class RecyclerChatArea extends RecyclerView.Adapter<RecyclerChatArea.View
     }
 
 //constructor
-    public RecyclerChatArea(ArrayList<Chat_Model> chat_modelArrayList) {
-        this.mchat_Aera = chat_modelArrayList;
+    public RecyclerChatList(ArrayList<ChatListModel> chat_List_modelArrayList) {
+        this.mChat_Aera = chat_List_modelArrayList;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_layout,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_list_item_layout,parent,false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
 
@@ -58,7 +57,7 @@ public class RecyclerChatArea extends RecyclerView.Adapter<RecyclerChatArea.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Chat_Model currentItem = mchat_Aera.get(position);
+       final ChatListModel currentItem = mChat_Aera.get(position);
 
        holder.img_msg_Sender_Profile.setImageResource(currentItem.getImg_msg_sender());
        holder.txt_msg_Sender_Name.setText(currentItem.getMsg_Sender_Name());
@@ -70,7 +69,10 @@ public class RecyclerChatArea extends RecyclerView.Adapter<RecyclerChatArea.View
            @Override
            public void onClick(View view) {
 
-               Toast.makeText(view.getContext(), "This Feature Will Available Soon", Toast.LENGTH_SHORT).show();
+               Intent i = new Intent(view.getContext(),ChatViewerActivity.class);
+               i.putExtra("email",currentItem.getMsg_Sender_Name());
+               view.getContext().startActivity(i);
+
            }
        });
 
@@ -83,6 +85,6 @@ public class RecyclerChatArea extends RecyclerView.Adapter<RecyclerChatArea.View
 
     @Override
     public int getItemCount() {
-        return mchat_Aera.size();
+        return mChat_Aera.size();
     }
 }

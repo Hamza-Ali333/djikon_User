@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <application
+        android:name=".MyApp"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/logo"
@@ -24,9 +25,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:name="com.example.djikon.MyApp"
         android:theme="@style/AppTheme">
-        <activity android:name=".CheckoutActivity"></activity>
+        <activity android:name=".ChatViewerActivity"></activity>
+        <activity android:name=".BrainTree" />
+        <activity android:name=".CheckoutActivity" />
         <activity android:name=".StripPaymentActivity" />
 
         <meta-data

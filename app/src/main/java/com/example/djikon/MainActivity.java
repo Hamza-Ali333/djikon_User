@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 getSupportActionBar().setTitle(R.string.ChatArea);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ChatAreaFragment()).commit();
+                        new ChatListFragment()).commit();
                 break;
 
             case R.id.nav_Following:

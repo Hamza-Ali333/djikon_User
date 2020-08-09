@@ -1,10 +1,10 @@
 package com.example.djikon;
 
-public class Chat_Model {
+public class ChatListModel {
     private int img_msg_sender;
     private  String msg_Sender_Name, msg_Recieved_Time, msg_last_send, msg_UnRead;
 
-    public Chat_Model(int img_msg_sender, String msg_UnRead, String msg_Sender_Name, String msg_last_send,  String msg_Recieved_Time) {
+    public ChatListModel(int img_msg_sender, String msg_UnRead, String msg_Sender_Name, String msg_last_send, String msg_Recieved_Time) {
         this.img_msg_sender = img_msg_sender;
         this.msg_UnRead = msg_UnRead;
         this.msg_Sender_Name = msg_Sender_Name;

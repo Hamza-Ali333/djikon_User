@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:padding="8dp"
-        android:background="@drawable/bg_cmnt_from"
+        android:background="@drawable/bg_left_chat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_commentor"
         app:layout_constraintTop_toTopOf="parent">
