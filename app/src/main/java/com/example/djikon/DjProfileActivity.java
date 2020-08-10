@@ -171,6 +171,17 @@ public class DjProfileActivity extends AppCompatActivity {
             }
         });
 
+        btn_Message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
+                i.putExtra("id",artistID);
+                i.putExtra("djName",mDJName);
+                i.putExtra("imgProfileUrl",mProfile);
+                startActivity(i);
+            }
+        });
+
 
     }
 
@@ -321,7 +332,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
                     setDataInToViews();
 
-                    setOnlineStatus(mOnlineStatus);
+                    //setOnlineStatus(mOnlineStatus);
 
                 } else {
 
@@ -376,11 +387,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
+
 
     private void postRequestSong (String UserName,String SongName) {
 
@@ -478,5 +485,10 @@ public class DjProfileActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mNetworkChangeReceiver);
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

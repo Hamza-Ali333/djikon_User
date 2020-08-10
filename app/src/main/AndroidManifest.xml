@@ -26,7 +26,8 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChatViewerActivity"></activity>
+        <activity android:name=".ChatViewerActivity"
+            android:theme="@style/AppTheme.NoActionBar" ></activity>
         <activity android:name=".BrainTree" />
         <activity android:name=".CheckoutActivity" />
         <activity android:name=".StripPaymentActivity" />

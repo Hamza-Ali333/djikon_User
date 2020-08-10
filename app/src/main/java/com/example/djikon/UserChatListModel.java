@@ -1,34 +1,47 @@
 package com.example.djikon;
 
 public class UserChatListModel {
-    private int img_msg_sender;
-    private  String msg_Sender_Name, msg_Recieved_Time, msg_last_send, msg_UnRead;
 
-    public UserChatListModel(int img_msg_sender, String msg_UnRead, String msg_Sender_Name, String msg_last_send, String msg_Recieved_Time) {
-        this.img_msg_sender = img_msg_sender;
-        this.msg_UnRead = msg_UnRead;
-        this.msg_Sender_Name = msg_Sender_Name;
-        this.msg_Recieved_Time = msg_Recieved_Time;
-        this.msg_last_send = msg_last_send;
+    private  String id, dj_Name,  imageUrl;
+    private  String talkTime,last_send_msg;
+
+
+    public UserChatListModel() {
     }
 
-    public int getImg_msg_sender() {
-        return img_msg_sender;
+    //this constructor only for id , dJName, imageUrl
+    public UserChatListModel(String id, String dj_Name, String imageUrl) {
+        this.id = id;
+        this.dj_Name = dj_Name;
+        this.imageUrl = imageUrl;
     }
 
-    public String getMsg_UnRead() {
-        return msg_UnRead;
+    public String getDj_Name() {
+        return dj_Name;
     }
 
-    public String getMsg_Sender_Name() {
-        return msg_Sender_Name;
+    public String getLast_send_msg() {
+        return last_send_msg;
     }
 
-    public String getMsg_Recieved_Time() {
-        return msg_Recieved_Time;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public String getMsg_last_send() {
-        return msg_last_send;
+    public String getId() {
+        return id;
     }
+
+    public String getTalkTime() {
+        return talkTime;
+    }
+
+    public void setTalkTime(String talkTime) {
+        this.talkTime = talkTime;
+    }
+
+    public void setLast_send_msg(String last_send_msg) {
+        this.last_send_msg = last_send_msg;
+    }
+
 }

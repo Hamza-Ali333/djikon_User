@@ -262,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String imageName = PreferenceData.getUserImage(this);
 
         if (!imageName.equals("No Image") && !imageName.equals("no")){
-            Toast.makeText(this, "findIamge", Toast.LENGTH_SHORT).show();
             IMAGEURL += imageName;
             Picasso.get().load(IMAGEURL)
                     .placeholder(R.drawable.ic_doctor)
@@ -271,13 +270,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .into(currentUserProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
+                            //Navigation DrawerPhoto of User
                             UserProfileHeader.setImageDrawable(currentUserProfile.getDrawable());
-                            // holder.txt_Loading.setVisibility(View.GONE);
+
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            // Toast.makeText(getC, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+
                         }
                     });
 

@@ -10,13 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.ViewHolder>{
 
     private List<ChatModel> mChat_model;
-    public  String currentUserEmail;
+    public  String currentUserId;
 
     public static final int MSG_TYPE_RIGHT = 0;
     public static final int MSG_TYPE_LEFT = 1;
@@ -43,9 +42,9 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     }
 
 //constructor
-    public RecyclerChatViewer(List<ChatModel> chat_modelList,String currentUserEmail) {
+    public RecyclerChatViewer(List<ChatModel> chat_modelList,String currentUserId) {
         this.mChat_model = chat_modelList;
-        this.currentUserEmail = currentUserEmail;
+        this.currentUserId = currentUserId;
     }
 
 
@@ -87,7 +86,7 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     @Override
     public int getItemViewType(int position) {
 
-        if(mChat_model.get(position).getSender().equals(currentUserEmail)){
+        if(mChat_model.get(position).getSender().equals(currentUserId)){
             return MSG_TYPE_RIGHT;
         }else {
             return MSG_TYPE_LEFT;

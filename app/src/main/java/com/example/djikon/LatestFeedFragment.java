@@ -51,6 +51,10 @@ public class LatestFeedFragment extends Fragment {
         downloadBlogs();
        //new background().execute();
 
+        mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -86,23 +90,12 @@ public class LatestFeedFragment extends Fragment {
                     Log.i(TAG, "onResponse: "+response.code());
                     return;
                 }
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+
                         List<FeedBlogModel> blogs = response.body();
-                        mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-                        mLayoutManager = new LinearLayoutManager(getContext());
+
                         mAdapter = new RecyclerLatestFeed(blogs,getContext());
-
-
-                        mRecyclerView.setLayoutManager(mLayoutManager);
                         mRecyclerView.setAdapter(mAdapter);
-
-                    }
-                });
-                thread.start();
-
-                rlt_progressBar.setVisibility(View.GONE);
+                        rlt_progressBar.setVisibility(View.GONE);
 
             }
 
@@ -154,6 +147,7 @@ public class LatestFeedFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<List<FeedBlogModel>> call, Throwable t) {
+
                     Log.i(TAG, "onFailure: "+t.getMessage());
 
                 }

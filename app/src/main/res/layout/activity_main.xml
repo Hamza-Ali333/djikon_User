@@ -27,6 +27,7 @@
                 android:id="@+id/currentUserProfile"
                 android:layout_gravity="right|center_vertical"
                 android:layout_width="40dp"
+                app:civ_border_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="16dp"
                 app:srcCompat="@drawable/ic_doctor"/>

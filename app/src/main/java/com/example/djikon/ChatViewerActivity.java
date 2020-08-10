@@ -2,8 +2,10 @@ package com.example.djikon;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,12 +27,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatViewerActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
+    private CircularImageView currentUserProfile;
+    private TextView toolBarTitle;
+
+    private SwipeRefreshLayout pullToRefresh;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -48,57 +59,67 @@ public class ChatViewerActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private AlertDialog alertDialog;
     private Boolean alreadyHaveChat = false;
+
+    int djId;
+    String djName , imgProfileUrl;
+    String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_viewer);
         createRefrences();
+        setSupportActionBar(toolbar);
+
+        //tool bar UserProfile
+        currentUserProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ChatViewerActivity.this, DjProfileActivity.class);
+                i.putExtra("id",djId);
+                startActivity(i);
+            }
+        });
+
+
 
         myRef = FirebaseDatabase.getInstance().getReference("Chats");
 
 
         //getting email of the Receiver
         Intent i = getIntent();
-        int DJ_Id =i.getIntExtra("id",0);
-
-        chatNodeName = "djId_"+DJ_Id+"_userId_"+PreferenceData.getUserId(this);
-
-        chatNodeName = chatNodeName.replaceAll("\\D+","");
-        
-
-        Toast.makeText(this, chatNodeName, Toast.LENGTH_SHORT).show();
-        mProgressDialog = DialogsUtils.showProgressDialog(this,"Getting Massages","Please Wait");
+        djId =i.getIntExtra("id",0);
+        djName = i.getStringExtra("djName");
+        imgProfileUrl = i.getStringExtra("imgProfileUrl");
+        toolBarTitle.setText(djName);//set DJ Name in tool bar
+        getSupportActionBar().setTitle(" ");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-        //check if User have already chat with this DJ
-        myRef.child("Massages").addListenerForSingleValueEvent(new ValueEventListener() {
+        setDjProfile(imgProfileUrl);
+
+
+        userId = PreferenceData.getUserId(this);
+
+
+        chatNodeName = "djId_"+ djId +"_userId_"+userId;
+        checkHaveChatOrNot();
+
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                //Here check Node of this User Email and DJ Email is exit or not
-                if (snapshot.hasChild(chatNodeName)) {
-
-                    //when find node in db
-                    //extract email of DJ on base of Current User Email
-                    String receiver = chatNodeName.replace("Hamza","");
-                   // Toast.makeText(ChatViewerActivity.this, receiver, Toast.LENGTH_SHORT).show();
-
-                    alreadyHaveChat = true;
-                    readMassages();
-
-                }
-                else {
-                    alreadyHaveChat = false;
-                    mProgressDialog.dismiss();
-
-                    Toast.makeText(ChatViewerActivity.this, "They Do't talk yet", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(ChatViewerActivity.this, "They Do not had any chat", Toast.LENGTH_SHORT).show();
+            public void onRefresh() {
+                checkHaveChatOrNot();
+                pullToRefresh.setRefreshing(false);
             }
         });
+
+        //this function will extract the only ids of user and dJ
+//        String[] str = chatNodeName.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+//        Log.i("TAG", "onCreate: Dj "+str[1]);
+//        Log.i("TAG", "onCreate: User "+str[3]);
+
+        mProgressDialog = DialogsUtils.showProgressDialog(this,"Getting Massages","Please Wait");
 
         btn_SendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,10 +127,11 @@ public class ChatViewerActivity extends AppCompatActivity {
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){
                         //MAke Node for this new User if they are texting first time
-                        String DJEmail = "BilawalJabbar@gmail.com";
-                        myRef.child("chatListOfUser").child("Hamzaregradless333").push().setValue(DJEmail);
+                        UserChatListModel userChatListModel = new UserChatListModel(String.valueOf(djId), djName, imgProfileUrl);
+                        myRef.child("chatListOfUser").child(userId).push().setValue(userChatListModel);
                     }
-                    sendMassage(edt_Massage.getText().toString(),"Bilawal","Hamza");
+
+                    sendMassage(edt_Massage.getText().toString(),userId,String.valueOf(djId));
                 }else{
                     Toast.makeText(ChatViewerActivity.this, "You Can't Send Empty massage", Toast.LENGTH_SHORT).show();
                 }
@@ -147,14 +169,14 @@ public class ChatViewerActivity extends AppCompatActivity {
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
 
                     mLayoutManager = new LinearLayoutManager(ChatViewerActivity.this);
-                    mAdapter = new RecyclerChatViewer(mChatModel,"Bilawal");
+                    mAdapter = new RecyclerChatViewer(mChatModel,userId);
 
 
                     mRecyclerView.setLayoutManager(mLayoutManager);
                     mRecyclerView.setAdapter(mAdapter);
                     //scroll to end item of list
                     mRecyclerView.scrollToPosition(mAdapter.getItemCount()-1);
-
+                    scrollRecyclerToTheBottom();
                     mProgressDialog.dismiss();
 
                 }else {
@@ -176,46 +198,94 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     }
 
+    private void setDjProfile(String imageUrl){
+        if (!imageUrl.equals("No Image") && !imageUrl.equals("no")){
+
+            Picasso.get().load(imageUrl)
+                    .placeholder(R.drawable.ic_doctor)
+                    .fit()
+                    .centerCrop()
+                    .into(currentUserProfile, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            // Toast.makeText(getC, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+        }
+    }
+
+    private void checkHaveChatOrNot(){
+        //check if User have already chat with this DJ
+        myRef.child("Massages").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                //Here check Node of this User Email and DJ Email is exit or not
+                if (snapshot.hasChild(chatNodeName)) {
+
+                    //when find node in db
+                    //extract email of DJ on base of Current User Email
+                    //String receiver = chatNodeName.replace("Hamza","");
+                    //Toast.makeText(ChatViewerActivity.this, receiver, Toast.LENGTH_SHORT).show();
+
+                    alreadyHaveChat = true;
+                    readMassages();
+
+                }
+                else {
+
+                    alreadyHaveChat = false;
+                    mProgressDialog.dismiss();
+                    Toast.makeText(ChatViewerActivity.this, "No Massages", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(ChatViewerActivity.this, "They Do not had any chat", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
     private void createRefrences() {
+
+        toolbar = findViewById(R.id.toolbar);
+        toolBarTitle = findViewById(R.id.toolbar_title);
+        currentUserProfile = findViewById(R.id.currentUserProfile);
+
+        pullToRefresh =findViewById(R.id.pullToRefresh);
+
         edt_Massage = findViewById(R.id.edt_sendmsg);
         btn_SendMsg = findViewById(R.id.btn_send_msg);
         mRecyclerView = findViewById(R.id.chat_viewer_recycler);
     }
 
     private void sendMassage (String Massage, String Sender, String Receiver) {
+
         ChatModel chatModel = new ChatModel(Sender, Receiver, Massage,"10:10");
 
         myRef.child("Massages").child(chatNodeName).push().setValue(chatModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(ChatViewerActivity.this, "Done", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatViewerActivity.this, "Send", Toast.LENGTH_SHORT).show();
+                if(!alreadyHaveChat){
+                    checkHaveChatOrNot();
+                }
+                alreadyHaveChat= true;
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ChatViewerActivity.this, "Do it again", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void AddCurrentUserIntoThisDjChatList (){
-        //if this user is not
-        myRef.child("chatList").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    //if want to check how many user exit
-                   //int i = (int) snapshot.getChildrenCount();
-
-                }
-                else {
-                    mProgressDialog.dismiss();
-                    Toast.makeText(ChatViewerActivity.this, "No Child", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(ChatViewerActivity.this, "They Do not had any chat", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatViewerActivity.this, "Not Send", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -245,9 +315,10 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     }
 
-//    private boolean isCurrentUserAlreadyInThisDjChatList () {
-//
-//
-//    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
 }
