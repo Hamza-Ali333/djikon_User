@@ -1,6 +1,6 @@
 package com.example.djikon;
 
-public class SingleServiceModle {
+public class SingleServiceModel {
 
     private int price;
 

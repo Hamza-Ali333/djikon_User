@@ -15,7 +15,7 @@ import java.util.List;
 
 public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHolder> {
 
-    private List<Dj_Blogs_Model> djBlogsModels;
+    private List<DjProfileBlogsModel> djBlogsModels;
 
 
     //view holder class
@@ -37,7 +37,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
     }
 
     //constructor
-    public RecyclerDjBlogs(List<Dj_Blogs_Model> blogsModels) {
+    public RecyclerDjBlogs(List<DjProfileBlogsModel> blogsModels) {
         this.djBlogsModels = blogsModels;
 
     }
@@ -53,7 +53,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Dj_Blogs_Model currentItem = djBlogsModels.get(position);
+        DjProfileBlogsModel currentItem = djBlogsModels.get(position);
 
         holder.txt_BlogTitle.setText(currentItem.getTitle());
 

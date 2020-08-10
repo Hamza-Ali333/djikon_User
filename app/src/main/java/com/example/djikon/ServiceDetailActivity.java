@@ -129,11 +129,11 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<SingleServiceModle> call = jsonApiHolder.getSingleServieData(id);
+        Call<SingleServiceModel> call = jsonApiHolder.getSingleServieData(id);
 
-        call.enqueue(new Callback<SingleServiceModle>() {
+        call.enqueue(new Callback<SingleServiceModel>() {
             @Override
-            public void onResponse(Call<SingleServiceModle> call, Response<SingleServiceModle> response) {
+            public void onResponse(Call<SingleServiceModel> call, Response<SingleServiceModel> response) {
 
                 if (response.isSuccessful()) {
                     serviceImage = response.body().getFeature_image();
@@ -167,7 +167,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<SingleServiceModle> call, Throwable t) {
+            public void onFailure(Call<SingleServiceModel> call, Throwable t) {
                 alertDialog = DialogsUtils.showAlertDialog(ServiceDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
 
             }

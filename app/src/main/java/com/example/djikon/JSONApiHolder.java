@@ -1,13 +1,8 @@
 package com.example.djikon;
 
-import android.database.Observable;
-
-import java.io.File;
 import java.util.List;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -21,7 +16,7 @@ public interface JSONApiHolder {
 
     //will return all the blogs
     @GET ("blog")
-    Call<List<Feed_Blog_Model>> getBlogs();
+    Call<List<FeedBlogModel>> getBlogs();
 
     //will return All subscribed Aritist
     @GET ("following")
@@ -29,21 +24,21 @@ public interface JSONApiHolder {
 
     //will return all the requested Song
     @GET ("requested_songs")
-    Call<List<RequestedSongs_Model>> getRequestedSongs();
+    Call<List<RequestedSongsModel>> getRequestedSongs();
 
     //will return detail of a blog
     @GET
-    Call<SingleBlog_Model> getSingleBlog(@Url String id);
+    Call<SingleBlogDetailModel> getSingleBlog(@Url String id);
 
     //this will return full detail dj profile
     //same for user current user profile
     @GET
-    Call<ProfileModel> getDjOrUserProfile(@Url String id);
+    Call<DjAndUserProfileModel> getDjOrUserProfile(@Url String id);
 
 
     //this will return full detail of a service
     @GET
-    Call<SingleServiceModle> getSingleServieData(@Url String id);
+    Call<SingleServiceModel> getSingleServieData(@Url String id);
 
     @FormUrlEncoded
     @POST("register")

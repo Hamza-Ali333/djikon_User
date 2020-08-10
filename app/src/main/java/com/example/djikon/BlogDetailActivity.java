@@ -68,7 +68,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
 
     private List<SliderItem> sliderItems = new ArrayList<>();
-    private List<Comment> mCommentList;
+    private List<CommentModel> mCommentModelList;
     private String Featured_image;
 
     private RecyclerView mRecyclerView;
@@ -111,7 +111,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         showLoadingDialogue(); //show loading Dialogue when it's downloading from server
 
-        mCommentList = new ArrayList<>();//for avoid null pointer exeption when there is no comment in data base
+        mCommentModelList = new ArrayList<>();//for avoid null pointer exeption when there is no comment in data base
 
 
         Intent intent = getIntent();
@@ -138,13 +138,13 @@ public class BlogDetailActivity extends AppCompatActivity {
                     edt_Comment.getText().clear();
                     hideKeyboard(BlogDetailActivity.this);
 
-                    if (!mCommentList.isEmpty() && mCommentList != null) {
-                        mCommentList.add(0, new Comment(comment, "123go", "go go go", "Current User", "no"));
+                    if (!mCommentModelList.isEmpty() && mCommentModelList != null) {
+                        mCommentModelList.add(0, new CommentModel(comment, "123go", "go go go", "Current User", "no"));
                         mAdapter.notifyDataSetChanged();
                     } else {
-                        mCommentList.add(0, new Comment(comment, "123go", "go go go", "Current User", "no"));
+                        mCommentModelList.add(0, new CommentModel(comment, "123go", "go go go", "Current User", "no"));
                         mRecyclerView.setVisibility(View.VISIBLE);
-                        initializeCommentRecycler(mCommentList);
+                        initializeCommentRecycler(mCommentModelList);
                     }
 
 
@@ -194,12 +194,12 @@ public class BlogDetailActivity extends AppCompatActivity {
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
 
-        Call<SingleBlog_Model> call = feedJsonApi.getSingleBlog(BlogId);
-        call.enqueue(new Callback<SingleBlog_Model>() {
+        Call<SingleBlogDetailModel> call = feedJsonApi.getSingleBlog(BlogId);
+        call.enqueue(new Callback<SingleBlogDetailModel>() {
 
 
             @Override
-            public void onResponse(Call<SingleBlog_Model> call, Response<SingleBlog_Model> response) {
+            public void onResponse(Call<SingleBlogDetailModel> call, Response<SingleBlogDetailModel> response) {
                 if (response.isSuccessful()) {
                     String Name = response.body().getArtist_name();
                     Gallery = response.body().getGallery();
@@ -224,7 +224,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                             mRecyclerView.setVisibility(View.GONE);
                             if (Comments != 0) {
                                 mRecyclerView.setVisibility(View.VISIBLE);
-                                initializeCommentRecycler(response.body().comments);
+                                initializeCommentRecycler(response.body().mCommentModels);
                             }
                         }
                     });
@@ -281,7 +281,7 @@ public class BlogDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<SingleBlog_Model> call, Throwable t) {
+            public void onFailure(Call<SingleBlogDetailModel> call, Throwable t) {
                 alertDialog = DialogsUtils.showAlertDialog(BlogDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
                  progressBar.setVisibility(View.GONE);
             }
@@ -412,13 +412,13 @@ public class BlogDetailActivity extends AppCompatActivity {
     }
 
 
-    private void initializeCommentRecycler(List<Comment> commentList) {
+    private void initializeCommentRecycler(List<CommentModel> commentModelList) {
 
-        mCommentList = commentList;
+        mCommentModelList = commentModelList;
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mRecyclerView.setNestedScrollingEnabled(false);
         mLayoutManager = new LinearLayoutManager(BlogDetailActivity.this);
-        mAdapter = new RecyclerBlogComment(mCommentList);
+        mAdapter = new RecyclerBlogComment(mCommentModelList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }

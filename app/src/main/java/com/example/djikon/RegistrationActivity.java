@@ -53,7 +53,9 @@ import retrofit2.Retrofit;
 public class RegistrationActivity extends AppCompatActivity {
 
     private static final String EMAIL = "email";
+
     String BASEURL_DATA = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+
     ProgressDialog progressDailoge;
     CallbackManager mCallbackManager;
     private EditText edt_Name, edt_LastName, edt_Email, edt_Password, edt_C_Password, edt_Refral_Code;
@@ -235,6 +237,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }//onCreate
 
     private boolean isInfoRight() {
+
         Log.i("TAG", "checkInfo: Runing");
         boolean result = true;
         if (edt_Name.getText().toString().trim().isEmpty()) {

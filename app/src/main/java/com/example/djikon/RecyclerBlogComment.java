@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class RecyclerBlogComment extends RecyclerView.Adapter<RecyclerBlogComment.ViewHolder>{
 
-    private List<Comment> mchat_Aera;
+    private List<CommentModel> mchat_Aera;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -43,7 +42,7 @@ public class RecyclerBlogComment extends RecyclerView.Adapter<RecyclerBlogCommen
     }
 
 //constructor
-    public RecyclerBlogComment(List<Comment> chat_modelArrayList) {
+    public RecyclerBlogComment(List<CommentModel> chat_modelArrayList) {
         this.mchat_Aera = chat_modelArrayList;
     }
 
@@ -60,7 +59,7 @@ public class RecyclerBlogComment extends RecyclerView.Adapter<RecyclerBlogCommen
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Comment currentItem = mchat_Aera.get(position);
+        final CommentModel currentItem = mchat_Aera.get(position);
 
         if (!currentItem.getUser_image().equals("no")){
             Picasso.get().load(currentItem.getUser_image())

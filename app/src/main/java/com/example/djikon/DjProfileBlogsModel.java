@@ -1,6 +1,6 @@
 package com.example.djikon;
 
-public class Dj_Blogs_Model {
+public class DjProfileBlogsModel {
         private Integer id;
 
         private String title;

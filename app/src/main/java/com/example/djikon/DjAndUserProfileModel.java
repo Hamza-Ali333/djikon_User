@@ -3,7 +3,7 @@ package com.example.djikon;
 
 import java.util.List;
 
-public class ProfileModel {
+public class DjAndUserProfileModel {
 
 
     private Integer id;
@@ -24,7 +24,7 @@ public class ProfileModel {
             follow_status;
 
 
-    private List<Dj_Blogs_Model> blog;
+    private List<DjProfileBlogsModel> blog;
 
     private List<Services_Model> services;
 
@@ -68,7 +68,7 @@ public class ProfileModel {
         return email;
     }
 
-    public List<Dj_Blogs_Model> getBlog() {
+    public List<DjProfileBlogsModel> getBlog() {
         return blog;
     }
 

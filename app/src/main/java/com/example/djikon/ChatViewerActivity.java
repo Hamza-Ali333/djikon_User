@@ -35,9 +35,10 @@ public class ChatViewerActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
 
-    private String ReciverEmail;
+    private String chatNodeName;
 
     private DatabaseReference myRef;
+
 
     private Button btn_SendMsg;
     private EditText edt_Massage;
@@ -46,38 +47,49 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
     private AlertDialog alertDialog;
-
+    private Boolean alreadyHaveChat = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_viewer);
         createRefrences();
 
+        myRef = FirebaseDatabase.getInstance().getReference("Chats");
 
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Chats");
         //getting email of the Receiver
         Intent i = getIntent();
-        ReciverEmail =i.getStringExtra("email");
-        ReciverEmail += "Hamza";
+        int DJ_Id =i.getIntExtra("id",0);
 
+        chatNodeName = "djId_"+DJ_Id+"_userId_"+PreferenceData.getUserId(this);
+
+        chatNodeName = chatNodeName.replaceAll("\\D+","");
+        
+
+        Toast.makeText(this, chatNodeName, Toast.LENGTH_SHORT).show();
         mProgressDialog = DialogsUtils.showProgressDialog(this,"Getting Massages","Please Wait");
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        //check if User have already chat with this DJ
+        myRef.child("Massages").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.hasChild(ReciverEmail)) {
+                //Here check Node of this User Email and DJ Email is exit or not
+                if (snapshot.hasChild(chatNodeName)) {
 
-                    //here we will extract email of receiver
-                    String receiver = ReciverEmail.replace("Hamza","");
-                    Toast.makeText(ChatViewerActivity.this, receiver, Toast.LENGTH_SHORT).show();
+                    //when find node in db
+                    //extract email of DJ on base of Current User Email
+                    String receiver = chatNodeName.replace("Hamza","");
+                   // Toast.makeText(ChatViewerActivity.this, receiver, Toast.LENGTH_SHORT).show();
 
+                    alreadyHaveChat = true;
                     readMassages();
 
                 }
                 else {
+                    alreadyHaveChat = false;
                     mProgressDialog.dismiss();
+
                     Toast.makeText(ChatViewerActivity.this, "They Do't talk yet", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -92,7 +104,12 @@ public class ChatViewerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!edt_Massage.getText().toString().isEmpty()){
-                    sendMassage(edt_Massage.getText().toString(),"Hamza","Bilawal");
+                    if(!alreadyHaveChat){
+                        //MAke Node for this new User if they are texting first time
+                        String DJEmail = "BilawalJabbar@gmail.com";
+                        myRef.child("chatListOfUser").child("Hamzaregradless333").push().setValue(DJEmail);
+                    }
+                    sendMassage(edt_Massage.getText().toString(),"Bilawal","Hamza");
                 }else{
                     Toast.makeText(ChatViewerActivity.this, "You Can't Send Empty massage", Toast.LENGTH_SHORT).show();
                 }
@@ -100,33 +117,12 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
 
-        //it will scroll recycler view to the bottom when keyboard open
-        if (Build.VERSION.SDK_INT >= 11) {
-            mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v,
-                                           int left, int top, int right, int bottom,
-                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    if (bottom < oldBottom) {
-                        mRecyclerView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mRecyclerView.smoothScrollToPosition(
-                                        mRecyclerView.getAdapter().getItemCount());
-                            }
-                        }, 100);
-                    }
-                }
-            });
-        }
-
-
     }
 
     private void readMassages() {
         mChatModel = new ArrayList<>();
 
-        myRef.child(ReciverEmail).addValueEventListener(new ValueEventListener() {
+        myRef.child("Massages").child(chatNodeName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
@@ -145,12 +141,13 @@ public class ChatViewerActivity extends AppCompatActivity {
 
                         //for also getting the key of the node
                         //snapshot.getKey()
+
                     }
 
-                    //mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+                    mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
 
                     mLayoutManager = new LinearLayoutManager(ChatViewerActivity.this);
-                    mAdapter = new RecyclerChatViewer(mChatModel,"Hamza");
+                    mAdapter = new RecyclerChatViewer(mChatModel,"Bilawal");
 
 
                     mRecyclerView.setLayoutManager(mLayoutManager);
@@ -186,10 +183,9 @@ public class ChatViewerActivity extends AppCompatActivity {
     }
 
     private void sendMassage (String Massage, String Sender, String Receiver) {
-
         ChatModel chatModel = new ChatModel(Sender, Receiver, Massage,"10:10");
 
-        myRef.child(ReciverEmail).push().setValue(chatModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+        myRef.child("Massages").child(chatNodeName).push().setValue(chatModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(ChatViewerActivity.this, "Done", Toast.LENGTH_SHORT).show();
@@ -201,4 +197,57 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void AddCurrentUserIntoThisDjChatList (){
+        //if this user is not
+        myRef.child("chatList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    //if want to check how many user exit
+                   //int i = (int) snapshot.getChildrenCount();
+
+                }
+                else {
+                    mProgressDialog.dismiss();
+                    Toast.makeText(ChatViewerActivity.this, "No Child", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(ChatViewerActivity.this, "They Do not had any chat", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void scrollRecyclerToTheBottom () {
+        //it will scroll recycler view to the bottom when keyboard open
+        if (Build.VERSION.SDK_INT >= 11) {
+            mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v,
+                                           int left, int top, int right, int bottom,
+                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    if (bottom < oldBottom) {
+                        mRecyclerView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mRecyclerView.smoothScrollToPosition(
+                                        mRecyclerView.getAdapter().getItemCount());
+                            }
+                        }, 100);
+                    }
+                }
+            });
+        }
+
+    }
+
+//    private boolean isCurrentUserAlreadyInThisDjChatList () {
+//
+//
+//    }
+
 }

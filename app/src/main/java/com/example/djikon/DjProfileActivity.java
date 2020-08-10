@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,7 +79,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
 
     List<Services_Model> services;
-    List<Dj_Blogs_Model> blogs;
+    List<DjProfileBlogsModel> blogs;
 
     private Snackbar snackbar;
     private TextView snackBarText;
@@ -225,7 +224,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
     }
 
-    private void buildBlogRecycler(List<Dj_Blogs_Model> blogslist) {
+    private void buildBlogRecycler(List<DjProfileBlogsModel> blogslist) {
 
         mBlogRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         BlogLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -278,25 +277,25 @@ public class DjProfileActivity extends AppCompatActivity {
 
          jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<ProfileModel> call = jsonApiHolder.getDjOrUserProfile(blogId);
+        Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(blogId);
 
-        call.enqueue(new Callback<ProfileModel>() {
+        call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
-            public void onResponse(Call<ProfileModel> call, Response<ProfileModel> response) {
+            public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
 
                 if (response.isSuccessful()) {
 
                     Log.i("TAG", "onResponse: " + response.code());
 
-                    ProfileModel profileModel = response.body();
-                    artistID = profileModel.getId();
-                    mDJName = profileModel.getFirstname() + " " + response.body().getLastname();
-                    mAddress = profileModel.getLocation();
-                    mProfile = profileModel.getProfile_image();
-                    mFollower_Count = profileModel.getFollowers();
-                    mFollow_Status = profileModel.getFollow_status();
-                    mOnlineStatus = profileModel.getOnline_status();
-                    mAbout = profileModel.getAbout();
+                    DjAndUserProfileModel djAndUserProfileModel = response.body();
+                    artistID = djAndUserProfileModel.getId();
+                    mDJName = djAndUserProfileModel.getFirstname() + " " + response.body().getLastname();
+                    mAddress = djAndUserProfileModel.getLocation();
+                    mProfile = djAndUserProfileModel.getProfile_image();
+                    mFollower_Count = djAndUserProfileModel.getFollowers();
+                    mFollow_Status = djAndUserProfileModel.getFollow_status();
+                    mOnlineStatus = djAndUserProfileModel.getOnline_status();
+                    mAbout = djAndUserProfileModel.getAbout();
 
 
                     services = response.body().getServices();
@@ -333,7 +332,7 @@ public class DjProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
 
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");

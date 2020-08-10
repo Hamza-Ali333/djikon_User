@@ -3,7 +3,7 @@ package com.example.djikon;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Comment {
+public class CommentModel {
 
     @SerializedName("body")
     @Expose
@@ -21,10 +21,10 @@ public class Comment {
     public String user_image;
 
 
-    public Comment() {
+    public CommentModel() {
     }
 
-    public Comment(String body, String createdAtDate, String createdAtTime,String user_name,String user_image) {
+    public CommentModel(String body, String createdAtDate, String createdAtTime, String user_name, String user_image) {
         super();
         this.body = body;
         this.createdAtDate = createdAtDate;

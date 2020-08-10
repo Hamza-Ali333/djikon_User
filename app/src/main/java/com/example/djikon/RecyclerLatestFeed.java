@@ -27,7 +27,7 @@ import static android.content.ContentValues.TAG;
 
 public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.ViewHolder> {
 
-    private List<Feed_Blog_Model> mBlogModelArrayList;
+    private List<FeedBlogModel> mBlogModelArrayList;
 
     private Context context;
     private AlertDialog alertDialog;
@@ -60,7 +60,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     }
 
     //constructor
-    public RecyclerLatestFeed(List<Feed_Blog_Model> blogModelArrayList, Context context) {
+    public RecyclerLatestFeed(List<FeedBlogModel> blogModelArrayList, Context context) {
         this.mBlogModelArrayList = blogModelArrayList;
         this.context = context;
     }
@@ -76,7 +76,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Feed_Blog_Model currentItem = mBlogModelArrayList.get(position);
+        FeedBlogModel currentItem = mBlogModelArrayList.get(position);
 
         if (!currentItem.getArtist_image().equals("no")) {
 

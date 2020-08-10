@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -76,12 +75,12 @@ public class LatestFeedFragment extends Fragment {
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-        Call<List<Feed_Blog_Model>> call = feedJsonApi.getBlogs();
+        Call<List<FeedBlogModel>> call = feedJsonApi.getBlogs();
 
 
-        call.enqueue(new Callback<List<Feed_Blog_Model>>() {
+        call.enqueue(new Callback<List<FeedBlogModel>>() {
             @Override
-            public void onResponse(Call<List<Feed_Blog_Model>> call, Response<List<Feed_Blog_Model>> response) {
+            public void onResponse(Call<List<FeedBlogModel>> call, Response<List<FeedBlogModel>> response) {
 
                 if (!response.isSuccessful()) {
                     Log.i(TAG, "onResponse: "+response.code());
@@ -90,7 +89,7 @@ public class LatestFeedFragment extends Fragment {
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        List<Feed_Blog_Model> blogs = response.body();
+                        List<FeedBlogModel> blogs = response.body();
                         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
                         mLayoutManager = new LinearLayoutManager(getContext());
                         mAdapter = new RecyclerLatestFeed(blogs,getContext());
@@ -108,7 +107,7 @@ public class LatestFeedFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Feed_Blog_Model>> call, Throwable t) {
+            public void onFailure(Call<List<FeedBlogModel>> call, Throwable t) {
                 alertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
                 rlt_progressBar.setVisibility(View.INVISIBLE);
             }
@@ -131,18 +130,18 @@ public class LatestFeedFragment extends Fragment {
                     .build();
             JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-            Call<List<Feed_Blog_Model>> call = feedJsonApi.getBlogs();
+            Call<List<FeedBlogModel>> call = feedJsonApi.getBlogs();
 
 
-            call.enqueue(new Callback<List<Feed_Blog_Model>>() {
+            call.enqueue(new Callback<List<FeedBlogModel>>() {
                 @Override
-                public void onResponse(Call<List<Feed_Blog_Model>> call, Response<List<Feed_Blog_Model>> response) {
+                public void onResponse(Call<List<FeedBlogModel>> call, Response<List<FeedBlogModel>> response) {
                     if (!response.isSuccessful()) {
                         Log.i(TAG, "onResponse: "+response.code());
                         return;
                     }
 
-                    List<Feed_Blog_Model> blogs = response.body();
+                    List<FeedBlogModel> blogs = response.body();
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
                     mLayoutManager = new LinearLayoutManager(getContext());
                     mAdapter = new RecyclerLatestFeed(blogs,getContext());
@@ -154,7 +153,7 @@ public class LatestFeedFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<List<Feed_Blog_Model>> call, Throwable t) {
+                public void onFailure(Call<List<FeedBlogModel>> call, Throwable t) {
                     Log.i(TAG, "onFailure: "+t.getMessage());
 
                 }

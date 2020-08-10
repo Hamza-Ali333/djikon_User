@@ -1,6 +1,7 @@
 package com.example.djikon;
 
 public class LoginRegistrationModel {
+
     private String success,
     firstname,
     lastname,
@@ -28,4 +29,5 @@ public class LoginRegistrationModel {
     public String getLastname() {
         return lastname;
     }
+
 }

@@ -10,7 +10,8 @@ public class PreferenceData
     static final String PREF_LOGGEDIN_USER_TOKEN = "logged_token_is";
     static final String PREF_LOGGEDIN_USER_ID = "logged_id_is";
     static final String PREF_USER_LOGGEDIN_STATUS = "logged_in_status";
-    static final String PREF_USER_IAMAGE = "Current_User_Image";
+    static final String PREF_USER_IMAGE = "Current_User_Image";
+
 
     static final String PREF_LOGGEDIN_USER_FullName = "USER_FULL_NAME";
 
@@ -66,14 +67,14 @@ public class PreferenceData
     public static void setUserImage(Context ctx, String imageName)
     {
         Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(PREF_USER_IAMAGE, imageName);
+        editor.putString(PREF_USER_IMAGE, imageName);
         editor.apply();
         editor.commit();
     }
 
     public static String getUserImage(Context ctx)
     {
-        return getSharedPreferences(ctx).getString(PREF_USER_IAMAGE, "No Image");
+        return getSharedPreferences(ctx).getString(PREF_USER_IMAGE, "No Image");
     }
 
 
@@ -96,7 +97,7 @@ public class PreferenceData
         editor.remove(PREF_LOGGEDIN_USER_TOKEN);
         editor.remove(PREF_LOGGEDIN_USER_ID);
         editor.remove(PREF_USER_LOGGEDIN_STATUS);
-        editor.remove(PREF_USER_IAMAGE);
+        editor.remove(PREF_USER_IMAGE);
         editor.remove(PREF_LOGGEDIN_USER_FullName);
         editor.commit();
     }

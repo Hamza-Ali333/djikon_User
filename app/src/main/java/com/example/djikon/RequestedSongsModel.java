@@ -1,6 +1,6 @@
 package com.example.djikon;
 
-public class RequestedSongs_Model {
+public class RequestedSongsModel {
     private int id;
     private String firstname,
     lastname,

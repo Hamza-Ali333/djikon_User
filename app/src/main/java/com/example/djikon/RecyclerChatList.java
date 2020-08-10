@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.ViewHolder>{
 
-    private ArrayList<ChatListModel> mChat_Aera;
+    private ArrayList<UserChatListModel> mChat_Aera;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -41,7 +41,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
     }
 
 //constructor
-    public RecyclerChatList(ArrayList<ChatListModel> chat_List_modelArrayList) {
+    public RecyclerChatList(ArrayList<UserChatListModel> chat_List_modelArrayList) {
         this.mChat_Aera = chat_List_modelArrayList;
     }
 
@@ -57,7 +57,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-       final ChatListModel currentItem = mChat_Aera.get(position);
+       final UserChatListModel currentItem = mChat_Aera.get(position);
 
        holder.img_msg_Sender_Profile.setImageResource(currentItem.getImg_msg_sender());
        holder.txt_msg_Sender_Name.setText(currentItem.getMsg_Sender_Name());
@@ -70,7 +70,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
            public void onClick(View view) {
 
                Intent i = new Intent(view.getContext(),ChatViewerActivity.class);
-               i.putExtra("email",currentItem.getMsg_Sender_Name());
+               i.putExtra("id",1);
                view.getContext().startActivity(i);
 
            }

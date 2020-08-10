@@ -338,11 +338,11 @@ public class UserProfileActivity extends AppCompatActivity  {
         retrofit = ApiClient.retrofit(BASEURL,this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<ProfileModel> call = jsonApiHolder.getDjOrUserProfile(PreferenceData.getUserId(this));
+        Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(PreferenceData.getUserId(this));
 
-        call.enqueue(new Callback<ProfileModel>() {
+        call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
-            public void onResponse(Call<ProfileModel> call, Response<ProfileModel> response) {
+            public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
                 if(response.isSuccessful()){
 
 
@@ -381,7 +381,7 @@ public class UserProfileActivity extends AppCompatActivity  {
             }
 
             @Override
-            public void onFailure(Call<ProfileModel> call, Throwable t) {
+            public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
                 alertDialog = DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
 
             }

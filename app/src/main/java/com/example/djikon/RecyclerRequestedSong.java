@@ -14,7 +14,7 @@ import java.util.List;
 
 public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequestedSong.ViewHolder>{
 
-    private List<RequestedSongs_Model> mRequestedSongs_models;
+    private List<RequestedSongsModel> mRequestedSongs_models;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -37,7 +37,7 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
     }
 
     //constructor
-    public RecyclerRequestedSong(List<RequestedSongs_Model> requestedSongsmodels) {
+    public RecyclerRequestedSong(List<RequestedSongsModel> requestedSongsmodels) {
         this.mRequestedSongs_models = requestedSongsmodels;
     }
 
@@ -53,7 +53,7 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-         RequestedSongs_Model currentItem = mRequestedSongs_models.get(position);
+         RequestedSongsModel currentItem = mRequestedSongs_models.get(position);
 
         holder.txt_DJ_Name.setText(currentItem.getFirstname()+""+ currentItem.getLastname());
        // holder.txt_requested_date.setText(currentItem.getDate());

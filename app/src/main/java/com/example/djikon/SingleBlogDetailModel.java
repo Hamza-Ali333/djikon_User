@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class SingleBlog_Model {
+public class SingleBlogDetailModel {
 
     //Galler is also an array oh no
 
@@ -24,12 +24,12 @@ public class SingleBlog_Model {
 
     @SerializedName("comments")
     @Expose
-    public List<Comment> comments = null;
+    public List<CommentModel> mCommentModels = null;
 
 
-    public SingleBlog_Model(String title, String created_at, String gallery ,
-                            String description, String video, String artist_name, String artist_profile_image,
-                            int likes_count, int comments_count , int id, List<Comment> comments) {
+    public SingleBlogDetailModel(String title, String created_at, String gallery ,
+                                 String description, String video, String artist_name, String artist_profile_image,
+                                 int likes_count, int comments_count , int id, List<CommentModel> commentModels) {
         this.title = title;
         this.created_at = created_at;
         this.description = description;
@@ -40,7 +40,7 @@ public class SingleBlog_Model {
         this.likes_count = likes_count;
         this.comments_count = comments_count;
         this.id = id;
-        this.comments = comments;
+        this.mCommentModels = commentModels;
     }
 
     public int getId() {

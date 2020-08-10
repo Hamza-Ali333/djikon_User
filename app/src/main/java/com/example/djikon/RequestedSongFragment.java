@@ -38,7 +38,7 @@ public class RequestedSongFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v =  inflater.inflate(R.layout.fragment_requested_songs,container,false);
+       View v =  inflater.inflate(R.layout.fragment_requested_songs,container,false);
 
        Thread createRefreces = new Thread(new Runnable() {
            @Override
@@ -63,18 +63,18 @@ public class RequestedSongFragment extends Fragment {
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<List<RequestedSongs_Model>> call = jsonApiHolder.getRequestedSongs();
+        Call<List<RequestedSongsModel>> call = jsonApiHolder.getRequestedSongs();
 
-        call.enqueue(new Callback<List<RequestedSongs_Model>>() {
+        call.enqueue(new Callback<List<RequestedSongsModel>>() {
             @Override
-            public void onResponse(Call<List<RequestedSongs_Model>> call, Response<List<RequestedSongs_Model>> response) {
+            public void onResponse(Call<List<RequestedSongsModel>> call, Response<List<RequestedSongsModel>> response) {
 
                 if(response.isSuccessful()){
 
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                            List<RequestedSongs_Model> artistModels = response.body();
+                            List<RequestedSongsModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
                                 //if no data then show dialoge to user
                                 AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
@@ -95,7 +95,7 @@ public class RequestedSongFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<RequestedSongs_Model>> call, Throwable t) {
+            public void onFailure(Call<List<RequestedSongsModel>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mAlertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
@@ -105,7 +105,7 @@ public class RequestedSongFragment extends Fragment {
 
     }
 
-    private void initializeRecycler (List<RequestedSongs_Model> requestedSongs) {
+    private void initializeRecycler (List<RequestedSongsModel> requestedSongs) {
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
