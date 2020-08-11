@@ -24,16 +24,16 @@
         <TextView
             android:id="@+id/txt_msg_sender_name"
             android:layout_toRightOf="@+id/img_msg_sender"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Jhon Ibrahim"
             android:textColor="@color/colorBlue"
-            android:textSize="16sp"
+            android:textSize="20sp"
             />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/txt_last_send_msg"
             android:layout_toRightOf="@+id/img_msg_sender"
             android:layout_below="@+id/txt_msg_sender_name"
@@ -70,7 +70,7 @@
             android:text="0"
             android:inputType="number"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/txt_recieve_time"/>
+            android:layout_below="@+id/txt_recieve_time"/>-->
 
 
         <View

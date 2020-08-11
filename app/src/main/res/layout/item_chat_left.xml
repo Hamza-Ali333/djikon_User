@@ -11,16 +11,34 @@
         app:srcCompat="@drawable/ic_doctor"
         />
 
-    <TextView
-        android:id="@+id/msg"
+    <RelativeLayout
+        android:id="@+id/rlt_chatitem"
+        android:layout_toRightOf="@+id/profile_image"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:padding="8dp"
-        android:layout_toRightOf="@+id/profile_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_left_chat">
+    <TextView
+        android:id="@+id/msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello"
-        android:background="@drawable/bg_left_chat"
+        android:textColor="@color/colorBlack"
         android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@+id/msg"
+            android:layout_width="wrap_content"
+            android:text="12:09 28/23/2020"
+            android:textSize="14sp"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -79,8 +79,6 @@ public class ChatListFragment extends Fragment {
             }
         });
 
-
-
         return v;
     }
 
@@ -88,12 +86,10 @@ public class ChatListFragment extends Fragment {
     private void getChatList(){
         //if get some data or not get the default value(No Email) form preferences
         if (!currentUserId.isEmpty() && !currentUserId.equals("No Id")) {
-
             myRef.child("chatListOfUser").child(currentUserId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()) {
-
                         mUserChatList.clear();
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -122,11 +118,11 @@ public class ChatListFragment extends Fragment {
     }
 
     private void createReferences(View v) {
+
         mProgressBar = v.findViewById(R.id.progress_circular);
         txt_progressMsg = v.findViewById(R.id.progress_msg);
         mRecyclerView = v.findViewById(R.id.recyclerView_Chat);
         pullToRefresh =v.findViewById(R.id.pullToRefresh);
-
     }
 
     private void showHideProgressBar(){
@@ -138,7 +134,6 @@ public class ChatListFragment extends Fragment {
             mProgressBar.setVisibility(View.VISIBLE);
             txt_progressMsg.setVisibility(View.VISIBLE);
         }
-
     }
 
 

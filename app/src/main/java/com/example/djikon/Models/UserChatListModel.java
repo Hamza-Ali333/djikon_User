@@ -20,28 +20,12 @@ public class UserChatListModel {
         return dj_Name;
     }
 
-    public String getLast_send_msg() {
-        return last_send_msg;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getTalkTime() {
-        return talkTime;
-    }
-
-    public void setTalkTime(String talkTime) {
-        this.talkTime = talkTime;
-    }
-
-    public void setLast_send_msg(String last_send_msg) {
-        this.last_send_msg = last_send_msg;
     }
 
 }

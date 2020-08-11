@@ -1,14 +1,24 @@
 package com.example.djikon.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,8 +40,8 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 
         public CircularImageView img_msg_DJ_Profile;
         public TextView txt_msg_Sender_Name;
-        public TextView  txt_Last_msg;
-        public TextView txt_Recive_Time, txt_UnRead;
+       // public TextView  txt_Last_msg,txt_Recive_Time;
+        public TextView  txt_UnRead;
         public RelativeLayout rlt_ChatItem;
 
         public ViewHolder(View itemView){
@@ -39,9 +49,9 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
             img_msg_DJ_Profile = itemView.findViewById(R.id.img_msg_sender);
 
             txt_msg_Sender_Name = itemView.findViewById(R.id.txt_msg_sender_name);
-            txt_Last_msg = itemView.findViewById(R.id.txt_last_send_msg);
-            txt_Recive_Time = itemView.findViewById(R.id.txt_recieve_time);
-            txt_UnRead = itemView.findViewById(R.id.txt_unRead_msgs);
+//            txt_Last_msg = itemView.findViewById(R.id.txt_last_send_msg);
+//            txt_Recive_Time = itemView.findViewById(R.id.txt_recieve_time);
+//            txt_UnRead = itemView.findViewById(R.id.txt_unRead_msgs);
 
             rlt_ChatItem = itemView.findViewById(R.id.rlt_chatitem);
 
@@ -93,7 +103,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
         }
 
 //       holder.txt_Last_msg.setText(currentItem.getMsg_last_send());
-       holder.txt_UnRead.setText(currentItem.getId());
+//       holder.txt_UnRead.setText(currentItem.getId());
 //       holder.txt_Recive_Time.setText(currentItem.getMsg_Recieved_Time());
 
 
@@ -110,20 +120,40 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
            }
        });
 
+        //long clicked
        holder.rlt_ChatItem.setOnLongClickListener(new View.OnLongClickListener() {
+           @RequiresApi(api = Build.VERSION_CODES.M)
            @Override
            public boolean onLongClick(View view) {
-               final CharSequence[] items = {"Delete Chat"};
-
-               AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-
-               builder.setTitle("Select The Action");
-               builder.setItems(items, new DialogInterface.OnClickListener() {
+              // final CharSequence[] items = {"Delete Chat"};
+//               AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+//
+//               builder.setTitle("Select The Action");
+//               builder.setItems(items, new DialogInterface.OnClickListener() {
+//                   @Override
+//                   public void onClick(DialogInterface dialog, int item) {
+//                   }
+//               });
+//               builder.show();
+               PopupMenu popupMenu = new PopupMenu(view.getContext(), holder.rlt_ChatItem);
+               popupMenu.inflate(R.menu.chat_option);
+               popupMenu.setGravity(Gravity.END);
+               popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                    @Override
-                   public void onClick(DialogInterface dialog, int item) {
+                   public boolean onMenuItemClick(MenuItem item) {
+                       switch (item.getItemId()) {
+                           case R.id.delete:
+                               mChat_Aera.remove(position);
+                               notifyItemRemoved(position);
+                               notifyItemRangeChanged(position, mChat_Aera.size());
+                               break;
+                           default:
+                               break;
+                       }
+                       return true;
                    }
                });
-               builder.show();
+               popupMenu.show();
                return true;
            }
        });

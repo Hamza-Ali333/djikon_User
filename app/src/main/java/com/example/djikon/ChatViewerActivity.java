@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,12 +31,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
 
 public class ChatViewerActivity extends AppCompatActivity {
 
@@ -74,7 +81,8 @@ public class ChatViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_viewer);
         createRefrences();
         setSupportActionBar(toolbar);
-
+        //give the Current Time and Date
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm aa", Locale.getDefault());
         //tool bar UserProfile
         currentUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +111,6 @@ public class ChatViewerActivity extends AppCompatActivity {
 
         setDjProfile(imgProfileUrl);
 
-
         userId = PreferenceData.getUserId(this);
 
 
@@ -128,6 +135,8 @@ public class ChatViewerActivity extends AppCompatActivity {
         btn_SendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                String currentDateandTime = sdf.format(new Date());
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){
                         //MAke Node for this new User if they are texting first time
@@ -135,7 +144,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                         myRef.child("chatListOfUser").child(userId).push().setValue(userChatListModel);
                     }
 
-                    sendMassage(edt_Massage.getText().toString(),userId,String.valueOf(djId));
+                    sendMassage(edt_Massage.getText().toString(),userId,String.valueOf(djId),currentDateandTime);
                 }else{
                     Toast.makeText(ChatViewerActivity.this, "You Can't Send Empty massage", Toast.LENGTH_SHORT).show();
                 }
@@ -162,14 +171,14 @@ public class ChatViewerActivity extends AppCompatActivity {
                                 snapshot.child("sender").getValue(String.class),
                                 snapshot.child("receiver").getValue(String.class),
                                 snapshot.child("message").getValue(String.class),
-                                snapshot.child("time").getValue(String.class)
+                                snapshot.child("time_stemp").getValue(String.class)
                                 ));
+
 
                         //for also getting the key of the node
                         //snapshot.getKey()
 
                     }
-
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
 
                     mLayoutManager = new LinearLayoutManager(ChatViewerActivity.this);
@@ -273,9 +282,9 @@ public class ChatViewerActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.chat_viewer_recycler);
     }
 
-    private void sendMassage (String Massage, String Sender, String Receiver) {
+    private void sendMassage (String Massage, String Sender, String Receiver,String sendTime) {
 
-        ChatModel chatModel = new ChatModel(Sender, Receiver, Massage,"10:10");
+        ChatModel chatModel = new ChatModel(Sender, Receiver, Massage,sendTime);
 
         myRef.child("Massages").child(chatNodeName).push().setValue(chatModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

@@ -1,11 +1,17 @@
 package com.example.djikon.RecyclerView;
 
+import android.os.Build;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.Models.ChatModel;
@@ -26,20 +32,17 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
         public CircularImageView img_Profile;
-        public TextView txt_msg;
-
-        public TextView txt_Recive_Time;
+        public TextView txt_msg, txt_Time;
         public RelativeLayout rlt_ChatItem;
 
         public ViewHolder(View itemView){
             super(itemView);
             img_Profile = itemView.findViewById(R.id.profile_image);
-
-
+            txt_Time = itemView.findViewById(R.id.time);
             txt_msg = itemView.findViewById(R.id.msg);
 
 
-            //rlt_ChatItem = itemView.findViewById(R.id.rlt_chatitem);
+            rlt_ChatItem = itemView.findViewById(R.id.rlt_chatitem);
         }
     }
 
@@ -69,8 +72,10 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
        final ChatModel currentItem = mChat_model.get(position);
 
        holder.txt_msg.setText(currentItem.getMessage());
+       holder.txt_Time.setText(currentItem.getTime_stemp());
 
        //image setting remaining
+
 
 /*       holder.rlt_ChatItem.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -82,6 +87,36 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
 
            }
        });*/
+
+holder.rlt_ChatItem.setOnLongClickListener(new View.OnLongClickListener() {
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public boolean onLongClick(View view) {
+        PopupMenu popupMenu = new PopupMenu(view.getContext(), holder.rlt_ChatItem);
+        popupMenu.inflate(R.menu.chat_option);
+        popupMenu.setGravity(Gravity.END);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.delete:
+                        mChat_model.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, mChat_model.size());
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+        popupMenu.show();
+        return true;
+
+
+    }
+});
+
 
 }
 
