@@ -32,6 +32,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.GlobelClasses.PreferenceData;
+import com.example.djikon.Models.LoginRegistrationModel;
+import com.example.djikon.Models.SuccessErrorModel;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import java.io.IOException;
@@ -310,7 +317,7 @@ public class SignInActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dailogue_varification_code, null);
+        final View view = inflater.inflate(R.layout.dailoge_varification_code, null);
 
         EditText edt_pin1, edt_pin2, edt_pin3, edt_pin4;
         edt_pin1 = view.findViewById(R.id.pin1);
@@ -788,7 +795,7 @@ public class SignInActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dailogue_pin_code, null);
+        final View view = inflater.inflate(R.layout.dailoge_pin_code, null);
 
 
         EditText edt_Pin_Code = view.findViewById(R.id.pincode);

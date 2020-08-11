@@ -17,6 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.Models.SingleServiceModel;
+import com.example.djikon.Models.SliderModel;
+import com.example.djikon.RecyclerView.RecyclerServiceGallery;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -60,7 +67,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private static final String BASEURL_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
     private static final String FEATURED_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/";
 
-    private List<SliderItem> singleServiceModleArrayList;
+    private List<SliderModel> singleServiceModleArrayList;
 
     private static final String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/products/";
 
@@ -205,7 +212,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private void buildServiceGalleryRecycler(String[] gallery) {
 
         for (int i = 0; i <= gallery.length - 1; i++) {
-            singleServiceModleArrayList.add(new SliderItem(BASEURL_IMAGES + gallery[i]));
+            singleServiceModleArrayList.add(new SliderModel(BASEURL_IMAGES + gallery[i]));
         }
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

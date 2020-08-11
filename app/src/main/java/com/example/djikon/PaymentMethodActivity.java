@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+
 public class PaymentMethodActivity extends AppCompatActivity {
 
     private NetworkChangeReceiver mNetworkChangeReceiver;

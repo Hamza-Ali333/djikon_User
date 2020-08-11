@@ -4,13 +4,14 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 
 public class PurchaseServiceActivity extends AppCompatActivity {
 
@@ -53,7 +54,7 @@ public class PurchaseServiceActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.payment_successfull_dialoge, null);
+        final View view = inflater.inflate(R.layout.dialoge_payment_successfull, null);
 
 
         TextView txt_OK = view.findViewById(R.id.txt_ok);

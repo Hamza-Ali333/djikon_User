@@ -26,6 +26,11 @@ import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.Models.SuccessErrorModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 
@@ -391,7 +396,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.booking_cost_dialogue, null);
+        final View view = inflater.inflate(R.layout.dailoge_booking_cost, null);
 
 
         CircularImageView img_Profile;

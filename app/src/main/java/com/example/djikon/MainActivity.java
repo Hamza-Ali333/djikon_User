@@ -20,6 +20,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.GlobelClasses.PreferenceData;
+import com.example.djikon.Models.LoginRegistrationModel;
+import com.example.djikon.NavDrawerFragments.ArtistFragment;
+import com.example.djikon.NavDrawerFragments.ChatListFragment;
+import com.example.djikon.NavDrawerFragments.FollowingArtistFragment;
+import com.example.djikon.NavDrawerFragments.LatestFeedFragment;
+import com.example.djikon.NavDrawerFragments.LiveToArtistFragment;
+import com.example.djikon.NavDrawerFragments.RequestedSongFragment;
+import com.example.djikon.NavDrawerFragments.SocialMediaShareFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -40,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
     private static String IMAGEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/";
-    private  PreferenceData preferenceData;
+    private PreferenceData preferenceData;
 
     private CircularImageView currentUserProfile;
     private ImageView UserProfileHeader;

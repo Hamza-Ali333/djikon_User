@@ -1,13 +1,14 @@
 package com.example.djikon;
 
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.RecyclerView.RecyclerBookingHistory;
 
 import java.util.ArrayList;
 

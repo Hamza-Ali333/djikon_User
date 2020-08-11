@@ -37,6 +37,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.CountriesList;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.GlobelClasses.PreferenceData;
+import com.example.djikon.Models.DjAndUserProfileModel;
+import com.example.djikon.Models.SuccessErrorModel;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -77,7 +85,7 @@ public class UserProfileActivity extends AppCompatActivity  {
     private PreferenceData preferenceData;
 
     private  Retrofit retrofit;
-    private  JSONApiHolder jsonApiHolder;
+    private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
 
@@ -175,7 +183,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         });
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.spinner_item, R.id.genders, genderArray);
+                R.layout.item_gender_spinner, R.id.genders, genderArray);
 
         mSpinner.setAdapter(adapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -279,7 +287,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialogue_about_app, null);
+        View view = inflater.inflate(R.layout.dialoge_about_app, null);
 
         ImageView img_close = view.findViewById(R.id.close);
 
@@ -305,7 +313,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialogue_disclusore, null);
+        View view = inflater.inflate(R.layout.dialoge_disclusore, null);
 
         ImageView img_close = view.findViewById(R.id.close);
 

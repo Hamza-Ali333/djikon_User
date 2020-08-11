@@ -20,6 +20,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.GlobelClasses.PreferenceData;
+import com.example.djikon.Models.LoginRegistrationModel;
+import com.example.djikon.Models.SuccessErrorModel;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -35,7 +42,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.gson.internal.$Gson$Preconditions;
 
 import org.json.JSONObject;
 
@@ -381,7 +387,7 @@ public class RegistrationActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dailogue_varification_code, null);
+        final View view = inflater.inflate(R.layout.dailoge_varification_code, null);
 
         EditText edt_pin1, edt_pin2, edt_pin3, edt_pin4;
         edt_pin1 = view.findViewById(R.id.pin1);

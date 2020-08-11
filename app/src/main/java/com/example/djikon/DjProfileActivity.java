@@ -20,6 +20,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.Models.DjAndUserProfileModel;
+import com.example.djikon.Models.DjProfileBlogsModel;
+import com.example.djikon.Models.ServicesModel;
+import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.RecyclerView.RecyclerDjBlogs;
+import com.example.djikon.RecyclerView.RecyclerServices;
 import com.google.android.material.snackbar.Snackbar;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -78,7 +88,7 @@ public class DjProfileActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
 
 
-    List<Services_Model> services;
+    List<ServicesModel> services;
     List<DjProfileBlogsModel> blogs;
 
     private Snackbar snackbar;
@@ -121,7 +131,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
         showLoadingDialogue();//show lodaing dailoge while data is dowloading from the server
 
-        services = new ArrayList<Services_Model>();
+        services = new ArrayList<ServicesModel>();
         Intent i = getIntent();
         int blogId = i.getIntExtra("id", 0);
 
@@ -224,7 +234,7 @@ public class DjProfileActivity extends AppCompatActivity {
     }
 
 
-    private void buildServiceRecycler(List<Services_Model> serviceList) {
+    private void buildServiceRecycler(List<ServicesModel> serviceList) {
 
         mServicesRecycler.setHasFixedSize(true);//if the recycler view not increase run time
         serviceLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -250,7 +260,7 @@ public class DjProfileActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dailogue_request_song, null);
+        final View view = inflater.inflate(R.layout.dailoge_request_song, null);
 
 
         EditText edt_Song_Name = view.findViewById(R.id.edt_Song_Name);
@@ -473,7 +483,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialogue_loading, null);
+        final View view = inflater.inflate(R.layout.dialoge_loading, null);
 
         builder.setView(view);
         builder.setCancelable(false);

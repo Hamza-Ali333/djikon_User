@@ -11,14 +11,9 @@ import android.widget.Toast;
 import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
-import com.braintreepayments.api.models.ClientToken;
+import com.example.djikon.GlobelClasses.PreferenceData;
 import com.google.android.material.textfield.TextInputLayout;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
-import com.nimbusds.jose.Header;
-
-import static com.example.djikon.PreferenceData.getUserToken;
-import static java.lang.System.err;
 
 public class BrainTree extends AppCompatActivity {
 

@@ -2,14 +2,11 @@ package com.example.djikon;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+
+import com.example.djikon.GlobelClasses.PreferenceData;
 
 
 public class SplashScreenActivity extends AppCompatActivity {

@@ -29,6 +29,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.Models.CommentModel;
+import com.example.djikon.Models.SingleBlogDetailModel;
+import com.example.djikon.Models.SliderModel;
+import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.RecyclerView.RecyclerBlogComment;
+import com.example.djikon.RecyclerView.RecyclerSliderAdapter;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
@@ -67,7 +77,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     private String Video;
 
 
-    private List<SliderItem> sliderItems = new ArrayList<>();
+    private List<SliderModel> mSliderModels = new ArrayList<>();
     private List<CommentModel> mCommentModelList;
     private String Featured_image;
 
@@ -387,14 +397,14 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         if (Slider) {
             for (int i = 0; i <= Gallery.length - 1; i++) {
-                sliderItems.add(new SliderItem(BASEURL_IMAGES + Gallery[i]));
+                mSliderModels.add(new SliderModel(BASEURL_IMAGES + Gallery[i]));
             }
         } else {
-            sliderItems.add(new SliderItem(Featured_image));
+            mSliderModels.add(new SliderModel(Featured_image));
         }
 
 
-        SliderAdapterExample adapter = new SliderAdapterExample(sliderItems, this);
+        RecyclerSliderAdapter adapter = new RecyclerSliderAdapter(mSliderModels, this);
 
         sliderView.setSliderAdapter(adapter);
 
@@ -437,7 +447,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     private void showLoadingDialogue() {
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialogue_loading, null);
+        final View view = inflater.inflate(R.layout.dialoge_loading, null);
 
         builder.setView(view);
         builder.setCancelable(false);

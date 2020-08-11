@@ -16,6 +16,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.Models.SuccessErrorModel;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,7 +109,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.change_password_dailoge, null);
+        View view = inflater.inflate(R.layout.dailoge_change_password, null);
 
         EditText edt_oldPassword, edt_newPassword, edt_confirmPassword;
         Button btnResetPassword;
@@ -153,7 +159,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.change_pin_dailoge, null);
+        View view = inflater.inflate(R.layout.dailoge_change_pin, null);
 
         EditText edt_oldPin, edt_newPin, edt_pin;
         Button btnResetPin;
@@ -205,7 +211,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.live_streaming_option_dialogue, null);
+        View view = inflater.inflate(R.layout.dailoge_live_streaming_option, null);
 
         RelativeLayout rlt_wifiOnly, rlt_CellTower, rlt_Both;
 
