@@ -96,11 +96,12 @@ public class ChatListFragment extends Fragment {
                             mUserChatList.add(new UserChatListModel(
                                     snapshot.child("id").getValue(String.class),
                                     snapshot.child("dj_Name").getValue(String.class),
-                                    snapshot.child("imageUrl").getValue(String.class)
+                                    snapshot.child("imageUrl").getValue(String.class),
+                                    snapshot.getKey()
                             ));
                         }
 
-                        mAdapter = new RecyclerChatList(mUserChatList);
+                        mAdapter = new RecyclerChatList(mUserChatList,currentUserId);
                         mRecyclerView.setAdapter(mAdapter);
                         showHideProgressBar();
 

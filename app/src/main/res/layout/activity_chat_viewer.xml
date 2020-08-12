@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/pullToRefresh"
-    android:background="@color/colorBlack"
+    android:background="#01050E"
     tools:context=".ChatViewerActivity">
 
     <RelativeLayout
@@ -15,7 +15,7 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#000"
+        android:background="@color/colorBlack"
         android:id="@+id/toolbar"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -38,13 +38,14 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="15dp"
             android:textColor="#fff"
             android:textSize="20dp"
             android:text="Hamza Ali"/>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@+id/toolbar"
         android:id="@+id/chat_viewer_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

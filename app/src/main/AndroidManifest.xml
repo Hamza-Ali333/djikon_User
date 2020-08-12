@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ChatViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" ></activity>
-        <activity android:name=".BrainTree" />
+        <activity android:name=".BrainTree.BrainTree" />
         <activity android:name=".CheckoutActivity" />
         <activity android:name=".StripPaymentActivity" />
 

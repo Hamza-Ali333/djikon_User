@@ -4,18 +4,28 @@ public class ChatModel {
     public String sender,
     receiver,
     message,
-            time_stemp;
+            time_stemp,
+    key;
 
 
     public ChatModel() {
         //required for firebase
     }
 
-    public ChatModel(String sender, String receiver, String message, String time_stemp) {
+    public ChatModel(String sender, String receiver, String message, String time_stemp, String key) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
         this.time_stemp = time_stemp;
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getSender() {

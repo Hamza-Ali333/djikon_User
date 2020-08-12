@@ -58,7 +58,6 @@ public class ChatViewerActivity extends AppCompatActivity {
 
 
     private String chatNodeName;
-
     private DatabaseReference myRef;
 
 
@@ -92,7 +91,6 @@ public class ChatViewerActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
 
 
         myRef = FirebaseDatabase.getInstance().getReference("Chats");
@@ -140,7 +138,11 @@ public class ChatViewerActivity extends AppCompatActivity {
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){
                         //MAke Node for this new User if they are texting first time
-                        UserChatListModel userChatListModel = new UserChatListModel(String.valueOf(djId), djName, imgProfileUrl);
+                       // UserChatListModel userChatListModel = new UserChatListModel(String.valueOf(djId), djName, imgProfileUrl);
+                        UserChatListModel userChatListModel = new UserChatListModel();
+                        userChatListModel.setId(String.valueOf(djId));
+                        userChatListModel.setDj_Name(djName);
+                        userChatListModel.setImageUrl(imgProfileUrl);
                         myRef.child("chatListOfUser").child(userId).push().setValue(userChatListModel);
                     }
 
@@ -171,18 +173,15 @@ public class ChatViewerActivity extends AppCompatActivity {
                                 snapshot.child("sender").getValue(String.class),
                                 snapshot.child("receiver").getValue(String.class),
                                 snapshot.child("message").getValue(String.class),
-                                snapshot.child("time_stemp").getValue(String.class)
+                                snapshot.child("time_stemp").getValue(String.class),
+                                snapshot.getKey()
                                 ));
-
-
-                        //for also getting the key of the node
-                        //snapshot.getKey()
 
                     }
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
 
                     mLayoutManager = new LinearLayoutManager(ChatViewerActivity.this);
-                    mAdapter = new RecyclerChatViewer(mChatModel,userId);
+                    mAdapter = new RecyclerChatViewer(mChatModel,userId,chatNodeName);
 
 
                     mRecyclerView.setLayoutManager(mLayoutManager);
@@ -284,8 +283,12 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     private void sendMassage (String Massage, String Sender, String Receiver,String sendTime) {
 
-        ChatModel chatModel = new ChatModel(Sender, Receiver, Massage,sendTime);
-
+        //ChatModel chatModel = new ChatModel(Sender, Receiver, Massage,sendTime);
+        ChatModel chatModel = new ChatModel();
+        chatModel.setSender(Sender);
+        chatModel.setReceiver(Receiver);
+        chatModel.setMessage(Massage);
+        chatModel.setTime_stemp(sendTime);
         myRef.child("Massages").child(chatNodeName).push().setValue(chatModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

@@ -339,11 +339,15 @@ public class SignInActivity extends AppCompatActivity {
 
         TextView OTP_Timmer = view.findViewById(R.id.otp_timmer);
         Button btn_Resend_OTP = view.findViewById(R.id.resend_otp);
-
-        startTimer(OTP_Timmer, btn_Resend_OTP);
-
-
         ImageView img_close = view.findViewById(R.id.close);
+
+        img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
+
+        //this show a time to get email again if first one is not recieved unfortunetly
+        startTimer(OTP_Timmer, btn_Resend_OTP,img_close);
+
+
+
 
 
         builder.setView(view);
@@ -354,6 +358,7 @@ public class SignInActivity extends AppCompatActivity {
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 alertDialog.dismiss();
             }
         });
@@ -453,15 +458,13 @@ public class SignInActivity extends AppCompatActivity {
 
                     OTP = Integer.parseInt(builder);
 
-
+                    //check Running For new Email Verification or for Forget Password
                     if (isRunningForINValidEmail) {
                         Call<LoginRegistrationModel> verifyEmailCall = jsonApiHolder.verifyEmail(EmailForOTP,OTP);
                         verifyEmailCall.enqueue(new Callback<LoginRegistrationModel>() {
                             @Override
                             public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                                 if (response.isSuccessful()) {
-
-                                    Log.i("TAG", "onResponse: " + "token:>>  " + response.body().getSuccess());
 
                                     preferenceData.setUserToken(SignInActivity.this, response.body().getSuccess());
 
@@ -562,7 +565,8 @@ public class SignInActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
 
                             Toast.makeText(SignInActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
-                            startTimer(OTP_Timmer, btn_Resend_OTP);
+                            img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
+                            startTimer(OTP_Timmer, btn_Resend_OTP,img_close);
                         }
                     }
 
@@ -573,10 +577,9 @@ public class SignInActivity extends AppCompatActivity {
                 });
             }
         });
-
     }//openVerifyOTPDialoge
 
-    private void startTimer(TextView otp_timmer, Button resentOTP) {
+    private void startTimer(TextView otp_timmer, Button resentOTP,ImageView closeDailoge) {
         seconds = 30;
         Timer t = new Timer();    //declare the timer
         t.scheduleAtFixedRate(new TimerTask() {
@@ -592,6 +595,7 @@ public class SignInActivity extends AppCompatActivity {
                             otp_timmer.setVisibility(View.GONE);
                             resentOTP.setVisibility(View.VISIBLE);
                             resentOTP.setClickable(true);
+                            closeDailoge.setClickable(true);
                         }
                         seconds--;
                         otp_timmer.setText("Resend OTP In " + String.format("%02d", seconds));

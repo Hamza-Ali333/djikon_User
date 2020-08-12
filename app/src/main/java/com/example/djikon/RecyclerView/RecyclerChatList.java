@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +26,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.djikon.ChatViewerActivity;
 import com.example.djikon.Models.UserChatListModel;
 import com.example.djikon.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -34,6 +40,7 @@ import java.util.List;
 public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.ViewHolder>{
 
     private List<UserChatListModel> mChat_Aera;
+    private DatabaseReference myRef;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -61,8 +68,9 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
     }
 
 //constructor
-    public RecyclerChatList(List<UserChatListModel> chat_List_modelArrayList) {
+    public RecyclerChatList(List<UserChatListModel> chat_List_modelArrayList,String currentUserId) {
         this.mChat_Aera = chat_List_modelArrayList;
+        myRef = FirebaseDatabase.getInstance().getReference("Chats").child("chatListOfUser").child(currentUserId);
     }
 
 
@@ -143,9 +151,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
                    public boolean onMenuItemClick(MenuItem item) {
                        switch (item.getItemId()) {
                            case R.id.delete:
-                               mChat_Aera.remove(position);
-                               notifyItemRemoved(position);
-                               notifyItemRangeChanged(position, mChat_Aera.size());
+                              deleteNode(currentItem.getKey(),position);
                                break;
                            default:
                                break;
@@ -163,5 +169,24 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
     @Override
     public int getItemCount() {
         return mChat_Aera.size();
+    }
+
+    private void deleteNode(String Key,int position) {
+        mChat_Aera.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mChat_Aera.size());
+
+        myRef.child(Key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dataSnapshot.getRef().removeValue();
+                Log.i("TAG", "onDataChange: Done ");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.i("TAG", "onDataChange: Cancle ");
+            }
+        });
     }
 }

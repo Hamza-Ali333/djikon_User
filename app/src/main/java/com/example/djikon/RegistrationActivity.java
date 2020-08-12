@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.djikon.ApiHadlers.ApiClient;
@@ -41,7 +42,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import org.json.JSONObject;
 
@@ -83,6 +88,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
 
+    //FireBase Authentication
+    FirebaseAuth mFirebaseAuth;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
@@ -95,7 +102,7 @@ public class RegistrationActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-
+        mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -317,10 +324,7 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 progressDailoge.dismiss();
                 if (response.isSuccessful()) {
-                    //store the Email adrress for sending otp on it
-                    EmailForOTP = edt_Email.getText().toString();
-
-                   openVerfiyOTPDialogue();
+                  creatingUserOnFirebase();
 
                 } else if (response.code() == 409) {
                     Log.i("TAG", "onResponse" + " Email Already Exit \n" + response.code());
@@ -399,10 +403,12 @@ public class RegistrationActivity extends AppCompatActivity {
 
         TextView OTP_Timmer = view.findViewById(R.id.otp_timmer);
         Button btn_Resend_OTP = view.findViewById(R.id.resend_otp);
-
-        startTimer (OTP_Timmer,btn_Resend_OTP);
-
         ImageView img_close = view.findViewById(R.id.close);
+
+        img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
+
+        //this show a time to get email again if first one is not recieved unfortunetly
+        startTimer(OTP_Timmer, btn_Resend_OTP,img_close);
 
 
         builder.setView(view);
@@ -579,7 +585,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                         if(response.isSuccessful()){
                             Toast.makeText(RegistrationActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
-                            startTimer(OTP_Timmer,btn_Resend_OTP);
+                            img_close.setClickable(false);
+                            startTimer(OTP_Timmer,btn_Resend_OTP,img_close);
                         }
                     }
 
@@ -593,7 +600,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }//openVerifyOTPDialoge
 
-    private void startTimer(TextView otp_timmer,Button resentOTP) {
+    private void startTimer(TextView otp_timmer, Button resentOTP, ImageView closeDailoge) {
         seconds = 30;
         Timer t = new Timer();    //declare the timer
         t.scheduleAtFixedRate(new TimerTask() {
@@ -608,7 +615,9 @@ public class RegistrationActivity extends AppCompatActivity {
                             t.cancel();
                             otp_timmer.setVisibility(View.GONE);
                             resentOTP.setVisibility(View.VISIBLE);
-                            resentOTP.setClickable(true);
+
+                            resentOTP.setClickable(true);//make User to click an request for new OTP
+                            closeDailoge.setClickable(true);//make user able to close the Dialoge
                         }
                         seconds --;
                         otp_timmer.setText("if not get email then try again in "+String.format("%02d", seconds));
@@ -633,6 +642,31 @@ public class RegistrationActivity extends AppCompatActivity {
                     mCallbackManager.onActivityResult(requestCode, resultCode, data);
                 }
 
+    }
+
+    private void creatingUserOnFirebase(){
+        //Creating User
+        mFirebaseAuth.createUserWithEmailAndPassword
+                (edt_Email.getText().toString().trim(),edt_Password.getText().toString().trim())
+                .addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+
+                            //store the Email adrress for sending otp on it
+                            EmailForOTP = edt_Email.getText().toString();
+
+                            openVerfiyOTPDialogue();
+                            Toast.makeText(RegistrationActivity.this, "User Successfully SignUp On Firebase", Toast.LENGTH_SHORT).show();
+                        }
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            Toast.makeText(RegistrationActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(RegistrationActivity.this, "SignUp UnSuccessful, Please Try Again", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void createRefrences() {

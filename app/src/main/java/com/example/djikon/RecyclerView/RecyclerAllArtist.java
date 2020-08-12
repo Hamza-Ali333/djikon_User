@@ -12,14 +12,15 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.DjProfileActivity;
+import com.example.djikon.Models.AllArtistModel;
 import com.example.djikon.Models.SubscribeArtistModel;
 import com.example.djikon.R;
 
 import java.util.List;
 
-public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscribeArtist.ViewHolder>{
+public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.ViewHolder>{
 
-    private List<SubscribeArtistModel> mSubscribeToArtistArrayList;
+    private List<AllArtistModel> mAllArtistModel;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -42,8 +43,8 @@ public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscr
     }
 
 //constructor
-    public RecyclerSubscribeArtist(List<SubscribeArtistModel> subscribeToArtistArrayList) {
-        this.mSubscribeToArtistArrayList = subscribeToArtistArrayList;
+    public RecyclerAllArtist(List<AllArtistModel> allArtistModelList) {
+        this.mAllArtistModel = allArtistModelList;
     }
 
 
@@ -58,7 +59,7 @@ public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscr
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final SubscribeArtistModel currentItem = mSubscribeToArtistArrayList.get(position);
+        final AllArtistModel currentItem = mAllArtistModel.get(position);
 
       // holder.img_Subscribe_Artist_Profile.setImageResource(currentItem.getImg_Subscribe_Artist());
        holder.txt_Subscribe_Artist_Name.setText(currentItem.getFirstname()+" "+ currentItem.getLastname());
@@ -89,6 +90,6 @@ public class RecyclerSubscribeArtist extends RecyclerView.Adapter<RecyclerSubscr
 
     @Override
     public int getItemCount() {
-        return mSubscribeToArtistArrayList.size();
+        return mAllArtistModel.size();
     }
 }

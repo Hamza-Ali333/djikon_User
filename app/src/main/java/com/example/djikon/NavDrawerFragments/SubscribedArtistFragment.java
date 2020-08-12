@@ -20,7 +20,7 @@ import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.Models.SubscribeArtistModel;
 import com.example.djikon.R;
-import com.example.djikon.RecyclerView.RecyclerSubscribeArtist;
+import com.example.djikon.RecyclerView.RecyclerSubscribedArtist;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 
-public class FollowingArtistFragment extends Fragment {
+public class SubscribedArtistFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -115,7 +115,7 @@ public class FollowingArtistFragment extends Fragment {
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
-        mAdapter = new RecyclerSubscribeArtist(ArtistList);
+        mAdapter = new RecyclerSubscribedArtist(ArtistList);
 
 
         mRecyclerView.setLayoutManager(mLayoutManager);

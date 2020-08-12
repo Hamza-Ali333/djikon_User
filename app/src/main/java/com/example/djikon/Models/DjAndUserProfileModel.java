@@ -23,7 +23,6 @@ public class DjAndUserProfileModel {
     private Integer followers,
             follow_status;
 
-
     private List<DjProfileBlogsModel> blog;
 
     private List<ServicesModel> services;

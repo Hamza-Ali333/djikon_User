@@ -18,9 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.Models.SubscribeArtistModel;
+import com.example.djikon.Models.AllArtistModel;
 import com.example.djikon.R;
-import com.example.djikon.RecyclerView.RecyclerSubscribeArtist;
+import com.example.djikon.RecyclerView.RecyclerAllArtist;
+import com.example.djikon.RecyclerView.RecyclerSubscribedArtist;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 
-public class ArtistFragment extends Fragment {
+public class AllArtistFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -70,18 +71,18 @@ public class ArtistFragment extends Fragment {
 
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-        Call<List<SubscribeArtistModel>> call = jsonApiHolder.getSubscribeArtist();
+        Call<List<AllArtistModel>> call = jsonApiHolder.getAllArtist();
 
-        call.enqueue(new Callback<List<SubscribeArtistModel>>() {
+        call.enqueue(new Callback<List<AllArtistModel>>() {
             @Override
-            public void onResponse(Call<List<SubscribeArtistModel>> call, Response<List<SubscribeArtistModel>> response) {
+            public void onResponse(Call<List<AllArtistModel>> call, Response<List<AllArtistModel>> response) {
 
                 if(response.isSuccessful()){
 
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                            List<SubscribeArtistModel> artistModels = response.body();
+                            List<AllArtistModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
                                 AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
                                         "No Artist Found","it's seems like you din't follow any artist now");
@@ -100,7 +101,7 @@ public class ArtistFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<SubscribeArtistModel>> call, Throwable t) {
+            public void onFailure(Call<List<AllArtistModel>> call, Throwable t) {
                 mAlertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
@@ -111,17 +112,14 @@ public class ArtistFragment extends Fragment {
 
     }
 
-    private void initializeRecycler (List<SubscribeArtistModel> ArtistList) {
+    private void initializeRecycler (List<AllArtistModel> ArtistList) {
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
-        mAdapter = new RecyclerSubscribeArtist(ArtistList);
-
+        mAdapter = new RecyclerAllArtist(ArtistList);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-
     }
 
 

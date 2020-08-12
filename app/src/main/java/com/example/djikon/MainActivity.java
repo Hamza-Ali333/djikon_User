@@ -26,9 +26,9 @@ import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.Models.LoginRegistrationModel;
-import com.example.djikon.NavDrawerFragments.ArtistFragment;
+import com.example.djikon.NavDrawerFragments.AllArtistFragment;
 import com.example.djikon.NavDrawerFragments.ChatListFragment;
-import com.example.djikon.NavDrawerFragments.FollowingArtistFragment;
+import com.example.djikon.NavDrawerFragments.SubscribedArtistFragment;
 import com.example.djikon.NavDrawerFragments.LatestFeedFragment;
 import com.example.djikon.NavDrawerFragments.LiveToArtistFragment;
 import com.example.djikon.NavDrawerFragments.RequestedSongFragment;
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle(R.string.SubscribedArtist);
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new FollowingArtistFragment()).commit();
+                        new SubscribedArtistFragment()).commit();
 
                 break;
 
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 getSupportActionBar().setTitle(R.string.Artist);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ArtistFragment()).commit();
+                        new AllArtistFragment()).commit();
                 break;
 
             case R.id.nav_Logout:

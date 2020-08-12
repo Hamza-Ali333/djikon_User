@@ -31,6 +31,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
 
         public ViewHolder(View itemView) {
             super(itemView);
+
             img_featured = itemView.findViewById(R.id.img_servic_image);
             txt_ServiceName = itemView.findViewById(R.id.txt_servic_name);
             txt_ServiceDetail = itemView.findViewById(R.id.txt_servic_description);
@@ -72,7 +73,6 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                     .into(holder.img_featured, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
 
                         }
                         @Override

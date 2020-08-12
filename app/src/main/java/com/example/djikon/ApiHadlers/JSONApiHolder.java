@@ -1,5 +1,6 @@
 package com.example.djikon.ApiHadlers;
 
+import com.example.djikon.Models.AllArtistModel;
 import com.example.djikon.Models.DjAndUserProfileModel;
 import com.example.djikon.Models.FeedBlogModel;
 import com.example.djikon.Models.LoginRegistrationModel;
@@ -27,9 +28,13 @@ public interface JSONApiHolder {
     @GET ("blog")
     Call<List<FeedBlogModel>> getBlogs();
 
-    //will return All subscribed Aritist
+    //will return All subscribed Artist  by current User
     @GET ("following")
     Call<List<SubscribeArtistModel>> getSubscribeArtist();
+
+    //will return All subscribed Artist  by current User
+    @GET ("artistAll")
+    Call<List<AllArtistModel>> getAllArtist();
 
     //will return all the requested Song
     @GET ("requested_songs")
@@ -40,7 +45,7 @@ public interface JSONApiHolder {
     Call<SingleBlogDetailModel> getSingleBlog(@Url String id);
 
     //this will return full detail dj profile
-    //same for user current user profile
+    //same for  current user profile
     @GET
     Call<DjAndUserProfileModel> getDjOrUserProfile(@Url String id);
 
@@ -109,11 +114,7 @@ public interface JSONApiHolder {
             @Field("role") Integer role
     );
 
-    @FormUrlEncoded
-    @POST("send_otp")
-    Call <SuccessErrorModel> sendOTP(
-            @Field("email") String email
-    );
+
 
     @FormUrlEncoded
     @POST("resend_otp")
@@ -128,6 +129,12 @@ public interface JSONApiHolder {
             @Field("otp") Integer otp
     );
 
+    
+    @FormUrlEncoded
+    @POST("send_otp")
+    Call <SuccessErrorModel> sendOTP(
+            @Field("email") String email
+    );
 
     @FormUrlEncoded
     @POST("confirm_otp")

@@ -1,6 +1,7 @@
 package com.example.djikon.RecyclerView;
 
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -11,11 +12,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.Models.ChatModel;
 import com.example.djikon.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.List;
@@ -24,6 +31,8 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
 
     private List<ChatModel> mChat_model;
     public  String currentUserId;
+
+    DatabaseReference myRef;
 
     public static final int MSG_TYPE_RIGHT = 0;
     public static final int MSG_TYPE_LEFT = 1;
@@ -47,9 +56,10 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     }
 
 //constructor
-    public RecyclerChatViewer(List<ChatModel> chat_modelList,String currentUserId) {
+    public RecyclerChatViewer(List<ChatModel> chat_modelList,String currentUserId, String chatMainNode) {
         this.mChat_model = chat_modelList;
         this.currentUserId = currentUserId;
+        myRef = FirebaseDatabase.getInstance().getReference("Chats").child("Massages").child(chatMainNode);
     }
 
 
@@ -100,9 +110,8 @@ holder.rlt_ChatItem.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.delete:
-                        mChat_model.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, mChat_model.size());
+                        deleteNode(currentItem.getKey(),position);
+
                         break;
                     default:
                         break;
@@ -133,5 +142,25 @@ holder.rlt_ChatItem.setOnLongClickListener(new View.OnLongClickListener() {
     @Override
     public int getItemCount() {
         return mChat_model.size();
+    }
+
+
+    private void deleteNode(String Key,int position) {
+        mChat_model.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mChat_model.size());
+
+        myRef.child(Key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dataSnapshot.getRef().removeValue();
+                Log.i("TAG", "onDataChange: Done ");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.i("TAG", "onDataChange: Cancle ");
+            }
+        });
     }
 }

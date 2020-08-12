@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -145,10 +146,13 @@ public class DjProfileActivity extends AppCompatActivity {
                 btn_Follow.setClickable(false);
                 btn_Follow.setEnabled(false);
                 if(mFollow_Status== 0){
+                    mFollower_Count--;
                     followUnFollow(URL_FOLLOW_ARTIST,0);
                 }else {
+                    mFollower_Count++;
                     followUnFollow(URL_UN_FOLLOW_ARTIST,1);
                 }
+                txt_Total_Follower.setText(String.valueOf(mFollower_Count));
 
             }
         });
@@ -158,9 +162,9 @@ public class DjProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(DjProfileActivity.this,CheckoutActivity.class));
+                //startActivity(new Intent(DjProfileActivity.this,CheckoutActivity.class));
 
-            /*    img_DJ_Profile.buildDrawingCache();
+                img_DJ_Profile.buildDrawingCache();
                 Bitmap bitmap = img_DJ_Profile.getDrawingCache();
                 Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
                 i.putExtra("id",String.valueOf(artistID));
@@ -169,7 +173,7 @@ public class DjProfileActivity extends AppCompatActivity {
                 i.putExtra("name",mDJName);
                 i.putExtra("request_code", 1);//one for dj booking
                 i.putExtra("description",mAbout);
-                startActivity(i);*/
+                startActivity(i);
             }
         });
 
@@ -342,7 +346,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
                     setDataInToViews();
 
-                    //setOnlineStatus(mOnlineStatus);
+                    setOnlineStatus(mOnlineStatus);
 
                 } else {
 
@@ -364,14 +368,16 @@ public class DjProfileActivity extends AppCompatActivity {
     }
 
     private void setOnlineStatus(String onlineStatus) {
-    if(onlineStatus.equals("0")){
-        this.onlineStatus.setText("Offline");
-        this.onlineStatus.setTextColor(getResources().getColor(R.color.colorRed));
-        this.onlineStatus.setBackgroundResource(R.drawable.redround_stroke);
-    }else {
-        this.onlineStatus.setText("Online ");
-        this.onlineStatus.setTextColor(getResources().getColor(R.color.colorBlue));
-        this.onlineStatus.setBackgroundResource(R.drawable.blueround_stroke);
+    if(onlineStatus != null) {
+        if (onlineStatus.equals("0")) {
+            this.onlineStatus.setText("Offline");
+            this.onlineStatus.setTextColor(getResources().getColor(R.color.colorRed));
+            this.onlineStatus.setBackgroundResource(R.drawable.redround_stroke);
+        } else {
+            this.onlineStatus.setText("Online ");
+            this.onlineStatus.setTextColor(getResources().getColor(R.color.colorBlue));
+            this.onlineStatus.setBackgroundResource(R.drawable.blueround_stroke);
+        }
     }
     }
 
