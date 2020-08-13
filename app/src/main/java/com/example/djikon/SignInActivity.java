@@ -11,12 +11,14 @@ import android.content.pm.PackageManager;
 import androidx.biometric.BiometricPrompt;
 
 import android.hardware.fingerprint.FingerprintManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.text.Editable;
+import android.text.PrecomputedText;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.PrecomputedTextCompat;
 
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
@@ -39,6 +42,10 @@ import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.Models.LoginRegistrationModel;
 import com.example.djikon.Models.SuccessErrorModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import java.io.IOException;
@@ -94,10 +101,14 @@ public class SignInActivity extends AppCompatActivity {
     private KeyguardManager keyguardManager;
 
 
+    //finger print
     private KeyStore keyStore;
     private Cipher cipher;
     private String KEY_NAME = "AndroidKey";
 
+    //FireBase Authentication
+    FirebaseAuth mFirebaseAuth;
+    //Google Biometric Promot
     private Executor executor;
     public BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
@@ -110,6 +121,8 @@ public class SignInActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
+        //firebase Auth i
+        mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -233,6 +246,8 @@ public class SignInActivity extends AppCompatActivity {
                 if (isInfoRight()) {
                     progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Cheking...");
                     isUserExits();
+
+
                 }
 
             }
@@ -875,9 +890,7 @@ public class SignInActivity extends AppCompatActivity {
                     img_Error_Sign.setVisibility(View.GONE);
                     progressDialog.dismiss();
 
-
-                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                    finish();
+                    signInUserOnFirebase(edt_Email.getText().toString().trim(),edt_password.getText().toString().trim());
 
                 } else if (response.code() == 402) {
                     EmailForOTP = edt_Email.getText().toString();
@@ -1013,6 +1026,28 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
+    private void signInUserOnFirebase(String Email, String Password){
+        //Creating User
+
+        mFirebaseAuth.signInWithEmailAndPassword(Email,
+                Password).addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                }  else {
+                    //progressBar.dismiss();
+                    Toast.makeText(SignInActivity.this, "FireBase User Name or Password Incorrect", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+
     private void createReferencer() {
 
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);
@@ -1037,5 +1072,29 @@ public class SignInActivity extends AppCompatActivity {
         super.onStop();
         unregisterReceiver(mNetworkChangeReceiver);
     }
+
+
+    public class NetworkTask extends AsyncTask<Void, Void, Boolean> {
+
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+           isUserExits();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
+
 
 }

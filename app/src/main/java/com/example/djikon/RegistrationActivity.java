@@ -406,6 +406,7 @@ public class RegistrationActivity extends AppCompatActivity {
         ImageView img_close = view.findViewById(R.id.close);
 
         img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
+        img_close.setEnabled(false);
 
         //this show a time to get email again if first one is not recieved unfortunetly
         startTimer(OTP_Timmer, btn_Resend_OTP,img_close);
@@ -618,6 +619,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             resentOTP.setClickable(true);//make User to click an request for new OTP
                             closeDailoge.setClickable(true);//make user able to close the Dialoge
+                            closeDailoge.setEnabled(true);
                         }
                         seconds --;
                         otp_timmer.setText("if not get email then try again in "+String.format("%02d", seconds));
