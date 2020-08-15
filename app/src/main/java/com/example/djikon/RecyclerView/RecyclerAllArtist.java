@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.DjProfileActivity;
 import com.example.djikon.Models.AllArtistModel;
-import com.example.djikon.Models.SubscribeArtistModel;
 import com.example.djikon.R;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
         public ImageView img_Subscribe_Artist_Profile;
         public TextView txt_Subscribe_Artist_Name;
         public TextView txt_Subscribe_Artist_Location;
-        public TextView  txt_UnFollow;
+        public TextView txt_Follow;
         public RelativeLayout rlt_SubscribeArtist;
 
         public ViewHolder(View itemView){
@@ -37,7 +36,7 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
 
             txt_Subscribe_Artist_Name = itemView.findViewById(R.id.txt_msg_sender_name);
             txt_Subscribe_Artist_Location = itemView.findViewById(R.id.txt_SubscribeArtistStatus);
-            txt_UnFollow = itemView.findViewById(R.id.txt_UnFollow);
+            txt_Follow = itemView.findViewById(R.id.txt_UnFollow);
             rlt_SubscribeArtist = itemView.findViewById(R.id.subscribe_artist_layout);
         }
     }
@@ -52,7 +51,7 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subscribe_artist,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist,parent,false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
@@ -65,6 +64,8 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
        holder.txt_Subscribe_Artist_Name.setText(currentItem.getFirstname()+" "+ currentItem.getLastname());
        holder.txt_Subscribe_Artist_Location.setText(currentItem.getLocation());
 
+       holder.txt_Follow.setText("Follow");
+
        holder.rlt_SubscribeArtist.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
@@ -75,16 +76,14 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
            }
        });
 
-        holder.txt_UnFollow.setOnClickListener(new View.OnClickListener() {
+        holder.txt_Follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                holder.txt_Follow.setText("Unfollow");
                 Toast.makeText(view.getContext(), "This Featured will Available Soon", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
 
 }
 

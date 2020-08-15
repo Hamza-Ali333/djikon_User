@@ -51,7 +51,7 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subscribe_artist,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist,parent,false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }

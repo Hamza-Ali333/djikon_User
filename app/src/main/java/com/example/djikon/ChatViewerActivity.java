@@ -339,7 +339,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                //nead to check this line what is the propose of this line
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
-                    sendNotification(Receiver,"CurrentUserName",Massage);
+                    sendNotification(Receiver,"CurrentUserName",msg);
                 }
                 notify = false;
             }
