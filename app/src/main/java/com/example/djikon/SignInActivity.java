@@ -359,10 +359,7 @@ public class SignInActivity extends AppCompatActivity {
         img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
 
         //this show a time to get email again if first one is not recieved unfortunetly
-        startTimer(OTP_Timmer, btn_Resend_OTP,img_close);
-
-
-
+        startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
 
 
         builder.setView(view);
@@ -475,7 +472,7 @@ public class SignInActivity extends AppCompatActivity {
 
                     //check Running For new Email Verification or for Forget Password
                     if (isRunningForINValidEmail) {
-                        Call<LoginRegistrationModel> verifyEmailCall = jsonApiHolder.verifyEmail(EmailForOTP,OTP);
+                        Call<LoginRegistrationModel> verifyEmailCall = jsonApiHolder.verifyEmail(EmailForOTP, OTP);
                         verifyEmailCall.enqueue(new Callback<LoginRegistrationModel>() {
                             @Override
                             public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
@@ -503,8 +500,8 @@ public class SignInActivity extends AppCompatActivity {
                                     startActivity(new Intent(SignInActivity.this, MainActivity.class));
                                     finish();
 
-                                }else {
-                                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,"Not","Some thing happened wrong please verify email again");
+                                } else {
+                                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Not", "Some thing happened wrong please verify email again");
                                 }
                             }
 
@@ -581,7 +578,7 @@ public class SignInActivity extends AppCompatActivity {
 
                             Toast.makeText(SignInActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
                             img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
-                            startTimer(OTP_Timmer, btn_Resend_OTP,img_close);
+                            startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
                         }
                     }
 
@@ -594,7 +591,7 @@ public class SignInActivity extends AppCompatActivity {
         });
     }//openVerifyOTPDialoge
 
-    private void startTimer(TextView otp_timmer, Button resentOTP,ImageView closeDailoge) {
+    private void startTimer(TextView otp_timmer, Button resentOTP, ImageView closeDailoge) {
         seconds = 30;
         Timer t = new Timer();    //declare the timer
         t.scheduleAtFixedRate(new TimerTask() {
@@ -873,17 +870,10 @@ public class SignInActivity extends AppCompatActivity {
                     Log.i("TAG", "onResponse: " + "token:>>  " + response.body().getSuccess());
 
                     preferenceData.setUserToken(SignInActivity.this, response.body().getSuccess());
-
                     String id = String.valueOf(response.body().getId());
-
                     preferenceData.setUserId(SignInActivity.this, id);
-
-
                     preferenceData.setUserName(SignInActivity.this, response.body().getFirstname() + " " + response.body().getLastname());
-                    Log.i("TAG", "onResponse: first " + response.body().getFirstname() + " " + response.body().getLastname());
-
                     preferenceData.setUserImage(SignInActivity.this, response.body().getProfile_image());
-
                     preferenceData.setUserLoggedInStatus(SignInActivity.this, true);
 
                     txt_Error.setVisibility(View.GONE);
@@ -903,7 +893,6 @@ public class SignInActivity extends AppCompatActivity {
                                 openVerfiyOTPDialogue(true);
                                 progressDialog.dismiss();
                             } else {
-
                                 alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "Someting happend worng try again");
                             }
                         }
@@ -917,14 +906,13 @@ public class SignInActivity extends AppCompatActivity {
 
                 } else if (response.code() == 403) {
 
-                    txt_Error.setText("This Email is not Belongs To User App");
+                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "This email is register as Subscriber can't use it here in User App");
                     txt_Error.setVisibility(View.VISIBLE);
                     img_Error_Sign.setVisibility(View.VISIBLE);
                     progressDialog.dismiss();
 
                 } else {
 
-                    Log.i("TAG", "onResponse: " + response.code());
                     txt_Error.setVisibility(View.VISIBLE);
                     img_Error_Sign.setVisibility(View.VISIBLE);
                     txt_Error.setText("Email or Password is in Correct");
@@ -1028,7 +1016,6 @@ public class SignInActivity extends AppCompatActivity {
 
     private void signInUserOnFirebase(String Email, String Password){
         //Creating User
-
         mFirebaseAuth.signInWithEmailAndPassword(Email,
                 Password).addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -1037,15 +1024,13 @@ public class SignInActivity extends AppCompatActivity {
                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-
                 }  else {
-                    //progressBar.dismiss();
+                    progressDialog.dismiss();
                     Toast.makeText(SignInActivity.this, "FireBase User Name or Password Incorrect", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
 
 
     private void createReferencer() {
@@ -1073,28 +1058,6 @@ public class SignInActivity extends AppCompatActivity {
         unregisterReceiver(mNetworkChangeReceiver);
     }
 
-
-    public class NetworkTask extends AsyncTask<Void, Void, Boolean> {
-
-
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-           isUserExits();
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-        }
-    }
 
 
 }

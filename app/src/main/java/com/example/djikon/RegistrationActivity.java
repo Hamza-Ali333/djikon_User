@@ -77,7 +77,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private SignInButton btn_GoogleSignIn;
     private GoogleSignInClient mgoogleSignInClient;
-    private static  final Integer RC_SIGN_IN = 736;
+    private static final Integer RC_SIGN_IN = 736;
 
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
@@ -231,13 +231,12 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
 
-
-        GoogleSignInOptions gso  = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-             //   .requestIdToken(getString(R.string.default_web_client_id))
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                //   .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
-        mgoogleSignInClient = GoogleSignIn.getClient(this,gso);
+        mgoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         btn_GoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,7 +323,8 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 progressDailoge.dismiss();
                 if (response.isSuccessful()) {
-                  creatingUserOnFirebase();
+
+                    creatingUserOnFirebase();
 
                 } else if (response.code() == 409) {
                     Log.i("TAG", "onResponse" + " Email Already Exit \n" + response.code());
@@ -343,7 +343,7 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDailoge.dismiss();
-                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this, false, "No Internet", "Please Check Your Internet Connection");
             }
         });
 
@@ -351,31 +351,30 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-    private void signInWithGoogle(){
+    private void signInWithGoogle() {
 
         Intent signInIntent = mgoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
 
+    private void handleSignInResult(Task<GoogleSignInAccount> taskCompete) {
 
-    private  void handleSignInResult(Task<GoogleSignInAccount> taskCompete){
-
-        try{
+        try {
             GoogleSignInAccount acc = taskCompete.getResult(ApiException.class);
             Log.i("TAG", "handleSignInResult: Done");
 
             Toast.makeText(this, "Google sign in success full", Toast.LENGTH_SHORT).show();//should remove
 
-        }catch (ApiException e){
+        } catch (ApiException e) {
 
-            Log.i("TAG", "handleSignInResult: Failed "+e.getMessage());
+            Log.i("TAG", "handleSignInResult: Failed " + e.getMessage());
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
 
         }
     }
 
-    private void fetchProfileFromGoogle (GoogleSignInAccount acct ) {
+    private void fetchProfileFromGoogle(GoogleSignInAccount acct) {
         if (acct != null) {
             String personName = acct.getDisplayName();
             String personGivenName = acct.getGivenName();
@@ -409,7 +408,7 @@ public class RegistrationActivity extends AppCompatActivity {
         img_close.setEnabled(false);
 
         //this show a time to get email again if first one is not recieved unfortunetly
-        startTimer(OTP_Timmer, btn_Resend_OTP,img_close);
+        startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
 
 
         builder.setView(view);
@@ -584,10 +583,10 @@ public class RegistrationActivity extends AppCompatActivity {
                 call.enqueue(new Callback<SuccessErrorModel>() {
                     @Override
                     public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             Toast.makeText(RegistrationActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
                             img_close.setClickable(false);
-                            startTimer(OTP_Timmer,btn_Resend_OTP,img_close);
+                            startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
                         }
                     }
 
@@ -611,7 +610,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (seconds == 00) {
-                            otp_timmer.setText( String.format("%02d", seconds));
+                            otp_timmer.setText(String.format("%02d", seconds));
 
                             t.cancel();
                             otp_timmer.setVisibility(View.GONE);
@@ -621,8 +620,8 @@ public class RegistrationActivity extends AppCompatActivity {
                             closeDailoge.setClickable(true);//make user able to close the Dialoge
                             closeDailoge.setEnabled(true);
                         }
-                        seconds --;
-                        otp_timmer.setText("if not get email then try again in "+String.format("%02d", seconds));
+                        seconds--;
+                        otp_timmer.setText("if not get email then try again in " + String.format("%02d", seconds));
                     }
                 });
             }
@@ -636,24 +635,24 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-           if (requestCode == RC_SIGN_IN) {
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                handleSignInResult(task);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
 
-            }else {
-                    mCallbackManager.onActivityResult(requestCode, resultCode, data);
-                }
+        } else {
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
 
     }
 
-    private void creatingUserOnFirebase(){
+    private void creatingUserOnFirebase() {
         //Creating User
         mFirebaseAuth.createUserWithEmailAndPassword
-                (edt_Email.getText().toString().trim(),edt_Password.getText().toString().trim())
+                (edt_Email.getText().toString().trim(), edt_Password.getText().toString().trim())
                 .addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
 
                             //store the Email adrress for sending otp on it
                             EmailForOTP = edt_Email.getText().toString();
@@ -663,8 +662,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
                         if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                             Toast.makeText(RegistrationActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        } else {
                             Toast.makeText(RegistrationActivity.this, "SignUp UnSuccessful, Please Try Again", Toast.LENGTH_SHORT).show();
                         }
                     }
