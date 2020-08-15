@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.Models.BookingHistory;
 import com.example.djikon.RecyclerView.RecyclerBookingHistory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BookingHistoryActivity extends AppCompatActivity {
 
@@ -45,29 +47,10 @@ public class BookingHistoryActivity extends AppCompatActivity {
 
         ArrayList<BookingHistory> bookingHistoryArrayList = new ArrayList<>();
 
-        bookingHistoryArrayList.add(new BookingHistory(R.drawable.woman,
-                "Fransic Briggs",
-                "30-09-2020","Take A Romantic Break In A Boutique Hotel","You love having a second home but the mortgage putting a crater in your wallet",
-                "900$"));
 
 
-        bookingHistoryArrayList.add(new BookingHistory(R.drawable.woman,
-                "Billawal",
-                "01-08-2020","Take A Romantic Break In A Boutique Hotel","You love having a second home but the mortgage putting a crater in your wallet",
-                "500$"));
-
-        bookingHistoryArrayList.add(new BookingHistory(R.drawable.ic_doctor,
-                "Usama Ali",
-                "35-07-2020","Take A Romantic Break In A Boutique Hotel","You love having a second home but the mortgage putting a crater in your wallet",
-                "800$"));
 
 
-        mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new RecyclerBookingHistory(bookingHistoryArrayList);
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
 
     }
 
@@ -75,6 +58,16 @@ public class BookingHistoryActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    private void initailizeRecyclerView (List<BookingHistory> bookingHistory) {
+
+        mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new RecyclerBookingHistory(bookingHistory);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 }

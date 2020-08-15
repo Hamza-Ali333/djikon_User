@@ -1,6 +1,7 @@
 package com.example.djikon.ApiHadlers;
 
 import com.example.djikon.Models.AllArtistModel;
+import com.example.djikon.Models.BookingHistory;
 import com.example.djikon.Models.DjAndUserProfileModel;
 import com.example.djikon.Models.FeedBlogModel;
 import com.example.djikon.Models.LoginRegistrationModel;
@@ -53,6 +54,10 @@ public interface JSONApiHolder {
     //this will return full detail of a service
     @GET
     Call<SingleServiceModel> getSingleServieData(@Url String id);
+
+    //this will return current UserAll the booking
+    @GET
+    Call<List<BookingHistory>> getBookingHistory();
 
     @FormUrlEncoded
     @POST("register")

@@ -8,14 +8,15 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.djikon.BookingHistory;
+import com.example.djikon.Models.BookingHistory;
 import com.example.djikon.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBookingHistory.ViewHolder>{
 
-    private ArrayList<BookingHistory> mbookingHistoryArrayList;
+    private List<BookingHistory> mbookingHistoryArrayList;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -40,7 +41,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
     }
 
 //constructor
-    public RecyclerBookingHistory(ArrayList<BookingHistory> bookingHistoryArrayList) {
+    public RecyclerBookingHistory(List<BookingHistory> bookingHistoryArrayList) {
         this.mbookingHistoryArrayList = bookingHistoryArrayList;
     }
 
@@ -59,13 +60,13 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
     public void onBindViewHolder(ViewHolder holder, int position) {
        BookingHistory currentItem = mbookingHistoryArrayList.get(position);
 
-        holder.img_booker_image.setImageResource(currentItem.getImg_booker_image());
+        //holder.img_booker_image.setImageResource(currentItem.getImg_booker_image());
 
-        holder.txt_Name.setText(currentItem.getTxt_booker_Name());
-        holder.txt_Date.setText(currentItem.getTxt_booked_date());
-        holder.txt_EventTitle.setText(currentItem.getTxt_Booked_Event_Tilte());
-        holder.txt_Description.setText(currentItem.getTxt_booked_event_discription());
-        holder.txt_Charges.setText(currentItem.getTxt_booking_charges());
+        holder.txt_Name.setText(currentItem.getFirstname()+" "+currentItem.getLastname());
+        holder.txt_Date.setText(currentItem.getStart_date()+" to "+currentItem.getEnd_date());
+        holder.txt_EventTitle.setText(currentItem.getName());
+        holder.txt_Description.setText("No Description getttin From APi");
+        holder.txt_Charges.setText(currentItem.getPrice());
 
 }
 
