@@ -1,18 +1,32 @@
 package com.example.djikon;
 
+import android.app.AlertDialog;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.Models.BookingHistory;
+import com.example.djikon.Models.RequestedSongsModel;
 import com.example.djikon.RecyclerView.RecyclerBookingHistory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class BookingHistoryActivity extends AppCompatActivity {
 
@@ -22,6 +36,10 @@ public class BookingHistoryActivity extends AppCompatActivity {
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
+    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+
+    private  AlertDialog alertDialog;
+    private RelativeLayout rlt_progressBar;
 
     @Override
     protected void onStart() {
@@ -31,6 +49,8 @@ public class BookingHistoryActivity extends AppCompatActivity {
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
 
+        mRecyclerView = findViewById(R.id.recyclerViewBookingHistory);
+        rlt_progressBar = findViewById(R.id.progressbar);
     }
 
     @Override
@@ -43,24 +63,47 @@ public class BookingHistoryActivity extends AppCompatActivity {
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
-        mRecyclerView = findViewById(R.id.recyclerViewBookingHistory);
 
-        ArrayList<BookingHistory> bookingHistoryArrayList = new ArrayList<>();
+        Retrofit retrofit= ApiClient.retrofit(BASE_URL,this);
+        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        Call<List<BookingHistory>> call = jsonApiHolder.getBookingHistory();
 
+        call.enqueue(new Callback<List<BookingHistory>>() {
+            @Override
+            public void onResponse(Call<List<BookingHistory>> call, Response<List<BookingHistory>> response) {
+                if(response.isSuccessful()){
+                    List<BookingHistory> bookingHistoryList = response.body();
+                    rlt_progressBar.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
 
+                    if(bookingHistoryList.isEmpty()){
+                        //if no data then show dialoge to user
+                       alertDialog = DialogsUtils.showAlertDialog(BookingHistoryActivity.this,false,
+                                "No Booking Found","it's seems like you din't done any booking yet");
+                    }
+                    else
+                        initializeRecycler(bookingHistoryList);
 
+                }else {
 
+                    rlt_progressBar.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
 
+                    Toast.makeText(BookingHistoryActivity.this, "Some thing happened wrong try Again", Toast.LENGTH_SHORT).show();
+
+                    Log.i("TAG", "onResponse: "+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BookingHistory>> call, Throwable t) {
+
+            }
+        });
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    private void initailizeRecyclerView (List<BookingHistory> bookingHistory) {
+    private void initializeRecycler (List<BookingHistory> bookingHistory) {
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this);
@@ -68,6 +111,12 @@ public class BookingHistoryActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 }

@@ -56,7 +56,7 @@ public interface JSONApiHolder {
     Call<SingleServiceModel> getSingleServieData(@Url String id);
 
     //this will return current UserAll the booking
-    @GET
+    @GET("bookingHistory")
     Call<List<BookingHistory>> getBookingHistory();
 
     @FormUrlEncoded

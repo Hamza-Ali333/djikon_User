@@ -47,7 +47,6 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
 
 
 
-
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 
