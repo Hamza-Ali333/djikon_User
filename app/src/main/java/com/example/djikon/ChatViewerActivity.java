@@ -23,10 +23,18 @@ import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.Models.ChatModel;
 import com.example.djikon.Models.UserChatListModel;
+import com.example.djikon.Notification.APIService;
+import com.example.djikon.Notification.Client;
+import com.example.djikon.Notification.Data;
+import com.example.djikon.Notification.MyResponse;
+import com.example.djikon.Notification.Sender;
+import com.example.djikon.Notification.Token;
 import com.example.djikon.RecyclerView.RecyclerChatViewer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,6 +49,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
 
@@ -74,12 +87,25 @@ public class ChatViewerActivity extends AppCompatActivity {
     String djName , imgProfileUrl;
     String userId;
 
+    private APIService apiService;
+    private FirebaseUser fuser;
+    private Boolean notify = false;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_viewer);
         createRefrences();
         setSupportActionBar(toolbar);
+
+        apiService = Client.getClient("https://fcm.googleapis.com").create(APIService.class);
+
         //give the Current Time and Date
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm aa", Locale.getDefault());
         //tool bar UserProfile
@@ -133,7 +159,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         btn_SendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                notify = true;
                 String currentDateandTime = sdf.format(new Date());
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){
@@ -305,6 +331,63 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
 
+        final String msg = Massage;
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               //nead to check this line what is the propose of this line
+                // String user= dataSnapshot.getValue(String.class);
+                if(notify){
+                    sendNotification(Receiver,"CurrentUserName",Massage);
+                }
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void sendNotification(String receiver,final String userName,final String messaage) {
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(fuser.getUid(),R.mipmap.ic_launcher,userName+": "+messaage,"New Message",
+                            userId);
+
+                    Sender sender = new Sender(data,token.getToken());
+
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if(! response.isSuccessful()){
+                                        Toast.makeText(ChatViewerActivity.this, "Faild to send Notification", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void scrollRecyclerToTheBottom () {

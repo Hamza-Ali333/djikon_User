@@ -1034,7 +1034,6 @@ public class SignInActivity extends AppCompatActivity {
 
 
     private void createReferencer() {
-
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);
         txt_Forgot_Password = findViewById(R.id.txt_Forgot_Password);
         txt_signwith_Finger = findViewById(R.id.txt_finger_print);

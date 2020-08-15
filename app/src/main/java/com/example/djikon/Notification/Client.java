@@ -1,4 +1,4 @@
-package com.example.djikon.ApiHadlers;
+package com.example.djikon.Notification;
 
 import android.content.Context;
 
@@ -13,12 +13,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiClient {
+public class Client {
 
-    public static Retrofit retrofit (String BASEURL, Context context){
-
-        PreferenceData preferenceData = new PreferenceData();
-        String Token = preferenceData.getUserToken(context);
+    public static Retrofit getClient (String BASEURL){
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -28,8 +25,8 @@ public class ApiClient {
                     public okhttp3.Response intercept(Chain chain) throws IOException {
                         Request originalRequest = chain.request();
                         Request newRequest = originalRequest.newBuilder()
-                                .header( "Accept:", "application/json")
-                                .header("Authorization","Bearer "+Token)
+                                .header( "Content-Type:", "application/json")
+                                .header("Authorization:","key=AAAArtlB-KE:APA91bFVLEUan-vwsJjo_3U-Ajt32d--asVQV2RWg8b2Yz0OoMxjGLLozM94nA-XMkXQZtqRLEJvtfCXEzQH4DXHqTEx-yt-MIIElnKS6Arq4F5J1PkOZQ5jZAZHgxjHeuTqaxxoJBHE")
                                 .build();
                         return chain.proceed(newRequest);
                     }
@@ -44,6 +41,4 @@ public class ApiClient {
                 .build();
         return retrofit;
     }
-
-
 }
