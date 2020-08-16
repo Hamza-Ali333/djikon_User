@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -33,7 +34,13 @@ import com.example.djikon.NavDrawerFragments.LatestFeedFragment;
 import com.example.djikon.NavDrawerFragments.LiveToArtistFragment;
 import com.example.djikon.NavDrawerFragments.RequestedSongFragment;
 import com.example.djikon.NavDrawerFragments.SocialMediaShareFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -64,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
+    String currentUserEmail;
+    String currentUserPassword;
+    Boolean isComeFromRegistrationActivity;
+
+    private FirebaseAuth mFirebaseAuth;
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -71,6 +85,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        Intent i = getIntent();
+        isComeFromRegistrationActivity = i.getBooleanExtra("come_from_registration",false);
+        currentUserEmail = i.getStringExtra("email");
+        currentUserPassword = i.getStringExtra("password");
+        new RegisteringUserAlsoOnFirebase().execute(isComeFromRegistrationActivity);
 
     }
 
@@ -79,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createRefrences();
+
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         preferenceData = new PreferenceData();
@@ -246,8 +268,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                 if(response.isSuccessful()){
-                    Log.i("TAG", "onResponse: "+response.code()+response.body().getSuccess());
                     PreferenceData.clearPrefrences(MainActivity.this);
+                    mFirebaseAuth.getInstance().signOut();
                     progressDialog.dismiss();
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
                     finish();
@@ -297,6 +319,75 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
+
+    private void creatingUserOnFirebase(String Email, String Password) {
+        //Creating DJ also on Firebase for Chat System
+        mFirebaseAuth.createUserWithEmailAndPassword
+                (Email,Password)
+                .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (task.isSuccessful()) {
+                                    //store the Email adrress for sending otp on it
+                                    Toast.makeText(MainActivity.this, "User Successfully SignUp On Firebase", Toast.LENGTH_SHORT).show();
+                                }
+                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                    alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"Firebase","Email or Password in not correct");
+                                } else {
+                                    alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"Firebase Creating User","UnSuccessfull Registration");
+                                }
+                            }
+                        });
+
+                    }
+                });
+    }
+
+    private void signInUserOnFirebase(String Email, String Password){
+        //SignIn DJ Also on FireBase For ChatSystem
+        mFirebaseAuth.signInWithEmailAndPassword(Email,
+                Password).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (task.isSuccessful()) {
+
+                            Toast.makeText(MainActivity.this, "Yes Firebase Login", Toast.LENGTH_SHORT).show();
+
+                        }  else {
+
+                            alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"Firebase Sign In","Email or Password in not correct");
+                        }
+                    }
+                });
+
+            }
+        });
+    }
+
+    private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean,Void,Void> {
+
+        @Override
+        protected Void doInBackground(Boolean... booleans) {
+
+            if(booleans[0]){
+                //isUserComeFromRegistrationActivity
+                creatingUserOnFirebase(currentUserEmail, currentUserPassword);
+            }else {
+                //isUserComeFromSignIn
+                signInUserOnFirebase(currentUserEmail, currentUserPassword);
+            }
+
+            return null;
+        }
+
+    }
+
 
 
     @Override

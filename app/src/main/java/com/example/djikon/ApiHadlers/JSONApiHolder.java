@@ -77,7 +77,7 @@ public interface JSONApiHolder {
     @POST()
     Call <SuccessErrorModel> UpdateUserProfile(
             @Url String userid,
-            @Field("image") String image,
+            @Field("profile_image") String image,
             @Field("firstname") String  firstname,
             @Field("lastname") String  lastname,
             @Field("contact") String  contact,
@@ -96,6 +96,7 @@ public interface JSONApiHolder {
 
 
 
+
     @FormUrlEncoded
     @POST()
     Call<SuccessErrorModel> postComment(@Url String blogId,
@@ -105,7 +106,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("change_password")
-    Call <SuccessErrorModel> changepasswrod(
+    Call <SuccessErrorModel> changePasswrod(
             @Field("oldpass") String oldpassword,
             @Field("password") String newpassword
     );

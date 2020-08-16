@@ -32,16 +32,16 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="16dp" />
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:layout_constraintDimensionRatio="w,1:1"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@null"
-        app:srcCompat="@drawable/logo" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@null"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo" />
 
     <TextView
         android:id="@+id/activity_name"
@@ -70,7 +70,7 @@
             android:paddingRight="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/txt_error" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_name" />
 
     <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
         android:id="@+id/edt_Password"
@@ -244,29 +244,6 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
             app:layout_constraintTop_toBottomOf="@+id/img_face_id" />
-
-        <TextView
-            android:id="@+id/txt_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="This User is not belongs"
-            android:textColor="#fff"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@+id/guideline5"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/activity_name" />
-
-        <ImageView
-            android:id="@+id/img_error_sign"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_error"
-            app:layout_constraintStart_toEndOf="@+id/txt_error"
-            app:layout_constraintTop_toTopOf="@+id/txt_error"
-            app:srcCompat="@drawable/ic_error"
-            android:contentDescription="@null"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -240,7 +240,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
         mRetrofit = ApiClient.retrofit(BASEURL,this);
         mJSONApiHolder = mRetrofit.create(JSONApiHolder.class);
 
-        Call<SuccessErrorModel> call = mJSONApiHolder.changepasswrod( Old, New);
+        Call<SuccessErrorModel> call = mJSONApiHolder.changePasswrod( Old, New);
 
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override

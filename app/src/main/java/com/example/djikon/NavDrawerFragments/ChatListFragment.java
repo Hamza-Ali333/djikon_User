@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.djikon.GlobelClasses.DialogsUtils;
-import com.example.djikon.Models.UserChatListModel;
 import com.example.djikon.GlobelClasses.PreferenceData;
+import com.example.djikon.Models.UserChatListModel;
 import com.example.djikon.Notification.Token;
 import com.example.djikon.R;
 import com.example.djikon.RecyclerView.RecyclerChatList;
@@ -56,7 +56,7 @@ public class ChatListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
+
     }
 
     @Nullable
@@ -73,6 +73,8 @@ public class ChatListFragment extends Fragment {
         ((LinearLayoutManager) mLayoutManager).setReverseLayout(true);//will make layout reverse
         ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);//always at new entry at the top
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
 
         //this will contain the currentUser id
         currentUserId = PreferenceData.getUserId(getContext());

@@ -100,7 +100,6 @@ public class UserProfileActivity extends AppCompatActivity  {
     private String[] serverData;
     private String[] newData;
 
-
     private static final int CAMERA_REQUEST_CODE = 300;
     private static final int STORAFGE_REQUEST_CODE = 400;
     private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
@@ -110,8 +109,6 @@ public class UserProfileActivity extends AppCompatActivity  {
     String storagePermission[];
     private Bitmap bitmap;
     private Uri Image_uri;
-
-    private File finalFile;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
@@ -234,7 +231,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         btn_Update_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isInfoRight()){
+                /*if(isInfoRight()){
                     if(isDataChange()){
 
                         progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,"Uploading","Please Wait...");
@@ -250,8 +247,10 @@ public class UserProfileActivity extends AppCompatActivity  {
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
                     }
-            }
-
+            }*/
+              progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,"Uploading","Please Wait...");
+           //updateProfile(preferenceData.getUserId(UserProfileActivity.this));
+               uploadImage();
             }
         });
 
@@ -416,10 +415,10 @@ public class UserProfileActivity extends AppCompatActivity  {
 //        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"),
 //               SelectedGender);
 
-String img= imageToString();
+        String img = imageToString();
         Call<SuccessErrorModel> call = jsonApiHolder.UpdateUserProfile(
                 UserId,
-                     img ,
+                     img,
                 edt_FirstName.getText().toString(),
                 edt_LastName.getText().toString(),
                 edt_Phone_No.getText().toString(),
@@ -460,12 +459,14 @@ String img= imageToString();
             retrofit = ApiClient.retrofit(BASEURL,this);
 
            // String path = Image_uri.getPath();
-
-            MultipartBody.Part filePart = MultipartBody.Part.createFormData("image","imageName",RequestBody.create(MediaType.parse("multipart/form-data"), finalFile));
+            File file = new File(Image_uri.getPath());
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("image","imageName",RequestBody.create(MediaType.parse("multipart/form-data"), file));
             jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
-            File file = new File(Image_uri.getPath());
-            Call<SuccessErrorModel> uploadCall = jsonApiHolder.uploadImage(preferenceData.getUserId(UserProfileActivity.this),filePart);
+
+            String userId= preferenceData.getUserId(UserProfileActivity.this);
+
+            Call<SuccessErrorModel> uploadCall = jsonApiHolder.uploadImage(userId,filePart);
             uploadCall.enqueue(new Callback<SuccessErrorModel>() {
                 @Override
                 public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
@@ -695,14 +696,7 @@ String img= imageToString();
                     Log.i("TAG", "onActivityResult: "+e.getMessage());
                 }
 
-
-                // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-                Uri tempUri = getImageUri(getApplicationContext(), bitmap);
-
-                // CALL THIS METHOD TO GET THE ACTUAL PATH
-                finalFile = new File(getRealPathFromURI(tempUri));
-
-                img_Profile.setImageURI(tempUri);
+                img_Profile.setImageURI(Image_uri);
 
             }
 
@@ -714,22 +708,6 @@ String img= imageToString();
 
 
     }//onActivity Result
-
-
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
-    }
-
 
 
 
