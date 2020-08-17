@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         isComeFromRegistrationActivity = i.getBooleanExtra("come_from_registration",false);
         currentUserEmail = i.getStringExtra("email");
         currentUserPassword = i.getStringExtra("password");
-        new RegisteringUserAlsoOnFirebase().execute(isComeFromRegistrationActivity);
+       // new RegisteringUserAlsoOnFirebase().execute(isComeFromRegistrationActivity);
 
     }
 

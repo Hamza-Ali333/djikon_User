@@ -39,9 +39,6 @@ import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.Models.LoginRegistrationModel;
 import com.example.djikon.Models.SuccessErrorModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
@@ -74,8 +71,7 @@ import retrofit2.Retrofit;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
 
-    private TextView txt_Create_new_account, txt_Forgot_Password, txt_signwith_face, txt_signwith_Finger, txt_signwith_PIN;
-
+    private TextView txt_Create_new_account, txt_Forgot_Password, txt_signWith_face, txt_signWith_Finger, txt_signWith_PIN;
 
     private Button btn_SignIn;
 
@@ -250,7 +246,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        txt_signwith_face.setOnClickListener(new View.OnClickListener() {
+        txt_signWith_face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openLoginWithFaceId();
@@ -264,7 +260,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        txt_signwith_Finger.setOnClickListener(new View.OnClickListener() {
+        txt_signWith_Finger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openLoginWithFingerPrint();
@@ -278,7 +274,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        txt_signwith_PIN.setOnClickListener(new View.OnClickListener() {
+        txt_signWith_PIN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSignInWithPIN();
@@ -963,7 +959,6 @@ public class SignInActivity extends AppCompatActivity {
             throw new RuntimeException("Failed to get Cipher", e);
         }
 
-
         try {
 
             keyStore.load(null);
@@ -986,13 +981,12 @@ public class SignInActivity extends AppCompatActivity {
 
 
 
-
     private void createReferencer() {
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);
         txt_Forgot_Password = findViewById(R.id.txt_Forgot_Password);
-        txt_signwith_Finger = findViewById(R.id.txt_finger_print);
-        txt_signwith_face = findViewById(R.id.txt_face_id);
-        txt_signwith_PIN = findViewById(R.id.txt_signInWithPIN);
+        txt_signWith_Finger = findViewById(R.id.txt_finger_print);
+        txt_signWith_face = findViewById(R.id.txt_face_id);
+        txt_signWith_PIN = findViewById(R.id.txt_signInWithPIN);
 
 
         edt_Email = findViewById(R.id.edt_Email);
@@ -1020,7 +1014,6 @@ public class SignInActivity extends AppCompatActivity {
         preferenceData.setUserImage(SignInActivity.this, profileImage);
         preferenceData.setUserLoggedInStatus(SignInActivity.this, true);
     }
-
 
     @Override
     protected void onStop() {

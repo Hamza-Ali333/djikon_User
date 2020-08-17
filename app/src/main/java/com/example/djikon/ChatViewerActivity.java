@@ -69,10 +69,8 @@ public class ChatViewerActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-
     private String chatNodeName;
     private DatabaseReference myRef;
-
 
     private Button btn_SendMsg;
     private EditText edt_Massage;

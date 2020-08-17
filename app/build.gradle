@@ -83,6 +83,4 @@ dependencies {
     //Async
     implementation 'com.loopj.android:android-async-http:1.4.9'
 
-    // Stripe Android SDK
-    implementation 'com.stripe:stripe-android:15.0.1'
 }

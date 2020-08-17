@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.braintreegateway.BraintreeGateway;
@@ -19,17 +20,15 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import cz.msebera.android.httpclient.Header;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.Route;
 
-public class BrainTree extends AppCompatActivity {
+public class BrainTreeActivity extends AppCompatActivity {
 
-    private TextInputLayout mTextInputLayout;
+    private EditText mTextInputLayout;
     private Button pay;
-    String clientToken;
+    String Token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,34 +38,31 @@ public class BrainTree extends AppCompatActivity {
         mTextInputLayout = findViewById(R.id.edt_amount);
 
         AsyncHttpClient client = new AsyncHttpClient();
-        PreferenceData preferenceData = new PreferenceData();
-
-       clientToken = preferenceData.getUserToken(this);
-
-//        client.get("https://your-server/client_token", new TextHttpResponseHandler() {
-//            private String clientToken;
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String clientToken) {
-//                this.clientToken = clientToken;
-//            }
-//        });
+        client.get("http://ec2-54-161-107-128.compute-1.amazonaws.com/api/getStart", new TextHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String clientToken) {
+                Token = clientToken;
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(BrainTreeActivity.this, "Failed to get", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBraintreeSubmit(view);
+                onBraintreeSubmit();
             }
         });
 
     }
 
-    public void onBraintreeSubmit(View v) {
+    public void onBraintreeSubmit() {
         DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(clientToken);
+                .clientToken(Token);
         startActivityForResult(dropInRequest.getIntent(this), 777);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -99,12 +95,12 @@ public class BrainTree extends AppCompatActivity {
                 new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        Toast.makeText(BrainTree.this, "Done From" , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BrainTreeActivity.this, "Done From" , Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        Toast.makeText(BrainTree.this, "Cancel From", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BrainTreeActivity.this, "Cancel From", Toast.LENGTH_SHORT).show();
                     }
                     //Your implementation here
                 }
@@ -114,6 +110,7 @@ public class BrainTree extends AppCompatActivity {
 
     private static BraintreeGateway gateway = new BraintreeGateway(
             Environment.SANDBOX,
+
             "5xrr5fzzm2j9wpt5",
             "pbh8534wdgvfwvx2",
             "90beaf12a6ed65f8708e44154203611e"

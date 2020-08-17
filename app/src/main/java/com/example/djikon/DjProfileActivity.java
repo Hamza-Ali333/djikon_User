@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.BrainTree.BrainTreeActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.Models.DjAndUserProfileModel;
@@ -162,18 +163,18 @@ public class DjProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //startActivity(new Intent(DjProfileActivity.this,CheckoutActivity.class));
+                startActivity(new Intent(DjProfileActivity.this, BrainTreeActivity.class));
 
-                img_DJ_Profile.buildDrawingCache();
-                Bitmap bitmap = img_DJ_Profile.getDrawingCache();
-                Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
-                i.putExtra("id",String.valueOf(artistID));
-                i.putExtra("BitmapImage", bitmap);
-                i.putExtra("price",DjBookingRatePerHour);//rate per hour
-                i.putExtra("name",mDJName);
-                i.putExtra("request_code", 1);//one for dj booking
-                i.putExtra("description",mAbout);
-                startActivity(i);
+//                img_DJ_Profile.buildDrawingCache();
+//                Bitmap bitmap = img_DJ_Profile.getDrawingCache();
+//                Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
+//                i.putExtra("id",String.valueOf(artistID));
+//                i.putExtra("BitmapImage", bitmap);
+//                i.putExtra("price",DjBookingRatePerHour);//rate per hour
+//                i.putExtra("name",mDJName);
+//                i.putExtra("request_code", 1);//one for dj booking
+//                i.putExtra("description",mAbout);
+//                startActivity(i);
             }
         });
 
