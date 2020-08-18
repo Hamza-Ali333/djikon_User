@@ -37,8 +37,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
     private Retrofit mRetrofit;
     private JSONApiHolder mJSONApiHolder;
 
-
-    private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
     private ProgressDialog mProgressDialog;
     private AlertDialog alertDialog;
 
@@ -237,9 +235,8 @@ public class ProfileSettingActivity extends AppCompatActivity {
     }
 
     private void changePasswrod(String Old,String New){
-        mRetrofit = ApiClient.retrofit(BASEURL,this);
+        mRetrofit = ApiClient.retrofit(this);
         mJSONApiHolder = mRetrofit.create(JSONApiHolder.class);
-
         Call<SuccessErrorModel> call = mJSONApiHolder.changePasswrod( Old, New);
 
         call.enqueue(new Callback<SuccessErrorModel>() {

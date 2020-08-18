@@ -36,8 +36,6 @@ public class BookingHistoryActivity extends AppCompatActivity {
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
-    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
-
     private  AlertDialog alertDialog;
     private RelativeLayout rlt_progressBar;
 
@@ -64,7 +62,7 @@ public class BookingHistoryActivity extends AppCompatActivity {
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
 
-        Retrofit retrofit= ApiClient.retrofit(BASE_URL,this);
+        Retrofit retrofit= ApiClient.retrofit(this);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
         Call<List<BookingHistory>> call = jsonApiHolder.getBookingHistory();
 

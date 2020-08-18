@@ -79,7 +79,6 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
 
-    private static final String BASEURL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
     private static final String UPDATEPROFILE = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/update_profile/";
 
     private PreferenceData preferenceData;
@@ -342,10 +341,10 @@ public class UserProfileActivity extends AppCompatActivity  {
 
     private void getUserDataFromServer(){
 
-        retrofit = ApiClient.retrofit(BASEURL,this);
+        retrofit = ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-        Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(PreferenceData.getUserId(this));
+        String relativeURL = "api/user/"+PreferenceData.getUserId(this);
+        Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
 
         call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
@@ -399,7 +398,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
     private void updateProfile(String UserId){
 
-        retrofit = ApiClient.retrofit(BASEURL,this);
+        retrofit = ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
 //        RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpeg"),
@@ -456,7 +455,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         }
 
         private void uploadImage(){
-            retrofit = ApiClient.retrofit(BASEURL,this);
+            retrofit = ApiClient.retrofit(this);
 
            // String path = Image_uri.getPath();
             File file = new File(Image_uri.getPath());
@@ -466,7 +465,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
             String userId= preferenceData.getUserId(UserProfileActivity.this);
 
-            Call<SuccessErrorModel> uploadCall = jsonApiHolder.uploadImage(userId,filePart);
+            Call<SuccessErrorModel> uploadCall = jsonApiHolder.uploadImage("api/update_profile/"+userId,filePart);
             uploadCall.enqueue(new Callback<SuccessErrorModel>() {
                 @Override
                 public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {

@@ -476,9 +476,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 progressDialog = DialogsUtils.showProgressDialog(v.getContext(), "Posting Request", "Please Wait");
                 if(requestCode==1){
-                    postBooking(String.valueOf(TotalCost),BASE_URL);
+                    postBooking(String.valueOf(TotalCost));
                 }else {
-                    postBooking(String.valueOf(TotalCost),BASE_URL_SERVICE);
+                    postBooking(String.valueOf(TotalCost));
                 }
 
             }
@@ -486,15 +486,13 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
     }//openCheckCostDialogue
 
-    private void postBooking(String PaidAmount,String BaseUrl) {
+    private void postBooking(String PaidAmount) {
 
-        Retrofit retrofit = ApiClient.retrofit(BaseUrl, this);
-
+        Retrofit retrofit = ApiClient.retrofit( this);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-
+        String relativeUrl = "api/book_artist/"+id;
         Call<SuccessErrorModel> call = jsonApiHolder.postBooking(
-                id,
+                relativeUrl,
                 edt_Name.getText().toString(),
                 edt_Email.getText().toString(),
                 edt_Phone.getText().toString(),

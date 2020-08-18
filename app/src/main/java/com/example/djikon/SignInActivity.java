@@ -83,8 +83,6 @@ public class SignInActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private AlertDialog alert_AND_forgetDailoge;//also using for show net error
 
-    private static final String BASEURL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
-
     private int OTP = 0;
     private String EmailForOTP;
     private int seconds;//seconds for showing CountDown
@@ -196,9 +194,8 @@ public class SignInActivity extends AppCompatActivity {
         //AlertDialog alertDialog = DialogsUtils.showAlertDailog(this,false,"Sing In Alert","Please do the right thing");
 
 
-        retrofit = ApiClient.retrofit(BASEURL, this);
+        retrofit = ApiClient.retrofit( this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
 
         preferenceData = new PreferenceData();
 
@@ -239,8 +236,6 @@ public class SignInActivity extends AppCompatActivity {
                 if (isInfoRight()) {
                     progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Cheking...");
                     isUserExits();
-
-
                 }
 
             }
@@ -977,8 +972,6 @@ public class SignInActivity extends AppCompatActivity {
         }
 
     }
-
-
 
 
     private void createReferencer() {

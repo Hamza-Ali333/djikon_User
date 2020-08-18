@@ -15,8 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static Retrofit retrofit (String BASEURL, Context context){
+    public static Retrofit retrofit (Context context){
 
+        final String Base_Url = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
         PreferenceData preferenceData = new PreferenceData();
         String Token = preferenceData.getUserToken(context);
 
@@ -38,12 +39,11 @@ public class ApiClient {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASEURL)
+                .baseUrl(Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
         return retrofit;
     }
-
 
 }

@@ -69,8 +69,6 @@ public class BlogDetailActivity extends AppCompatActivity {
     private ImageView img_Profile;
 
     private static final String BASEURL_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
-    private static final String BASEURL_DATA = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
-    private static final String ADD_COMMENT_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/comment_store/";
 
     private int blogId;
     private String Gallery;
@@ -112,7 +110,7 @@ public class BlogDetailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Blog Detail");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        createRefrences();
+        createReferences();
         parentLayout.setVisibility(View.GONE);
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
@@ -132,7 +130,7 @@ public class BlogDetailActivity extends AppCompatActivity {
         Featured_image = intent.getStringExtra("featured_image");
 
 
-        downloadBlogs(BASEURL_DATA, Url);
+        downloadBlogs(Url);
 
 
         //setting the controller's on the videoView
@@ -198,16 +196,13 @@ public class BlogDetailActivity extends AppCompatActivity {
     }
 
 
-    private void downloadBlogs(String SERVER_Url, String BlogId) {
+    private void downloadBlogs(String BlogId) {
 
-        Retrofit retrofit = ApiClient.retrofit(SERVER_Url, this);
+        Retrofit retrofit = ApiClient.retrofit(this);
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
+        Call<SingleBlogDetailModel> call = feedJsonApi.getSingleBlog("api/"+BlogId);
 
-
-        Call<SingleBlogDetailModel> call = feedJsonApi.getSingleBlog(BlogId);
         call.enqueue(new Callback<SingleBlogDetailModel>() {
-
-
             @Override
             public void onResponse(Call<SingleBlogDetailModel> call, Response<SingleBlogDetailModel> response) {
                 if (response.isSuccessful()) {
@@ -302,11 +297,11 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     private void postComment(String Comment) {
 
-        Retrofit retrofit = ApiClient.retrofit(ADD_COMMENT_URL, this);
+        Retrofit retrofit = ApiClient.retrofit( this);
 
         JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
 
-        Call<SuccessErrorModel> call = feedJsonApi.postComment(String.valueOf(blogId), Comment);
+        Call<SuccessErrorModel> call = feedJsonApi.postComment("api/comment_store/"+String.valueOf(blogId), Comment);
 
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
@@ -363,8 +358,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     }
 
-    private void createRefrences() {
-
+    private void createReferences() {
         parentLayout = findViewById(R.id.parent);
         txt_artist_Name = findViewById(R.id.txt_artist_name);
         txt_Title = findViewById(R.id.txt_title);

@@ -35,7 +35,6 @@ public class RequestedSongFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
 
 
     private RelativeLayout progressBar;
@@ -66,10 +65,8 @@ public class RequestedSongFragment extends Fragment {
 
     private void getRequestedSong() {
                 //return all the requested song of this user
-        Retrofit retrofit= ApiClient.retrofit(BASE_URL,getContext());
-
+        Retrofit retrofit= ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
         Call<List<RequestedSongsModel>> call = jsonApiHolder.getRequestedSongs();
 
         call.enqueue(new Callback<List<RequestedSongsModel>>() {

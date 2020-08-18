@@ -28,7 +28,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
         public TextView txt_BlogTitle;
         public ImageView img_blog;
 
-        public static final String IMAGERELATIVELAYOUT="http://ec2-54-161-107-128.compute-1.amazonaws.com/" ;
+        public static final String IMAGERELATIVELAYOUT="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
         public ViewHolder(View itemView) {
             super(itemView);

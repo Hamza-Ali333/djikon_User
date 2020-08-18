@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -96,11 +95,6 @@ public class DjProfileActivity extends AppCompatActivity {
     private Snackbar snackbar;
     private TextView snackBarText;
 
-    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/user/";
-    private final static String URL_REQUEST_SONG = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/request_song/";
-    private final static String URL_FOLLOW_ARTIST = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/follow_artist/";
-    private final static String URL_UN_FOLLOW_ARTIST = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/unfollow_artist/";
-
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
 
@@ -148,13 +142,12 @@ public class DjProfileActivity extends AppCompatActivity {
                 btn_Follow.setEnabled(false);
                 if(mFollow_Status== 0){
                     mFollower_Count--;
-                    followUnFollow(URL_FOLLOW_ARTIST,0);
+                    followUnFollow(0);
                 }else {
                     mFollower_Count++;
-                    followUnFollow(URL_UN_FOLLOW_ARTIST,1);
+                    followUnFollow(1);
                 }
                 txt_Total_Follower.setText(String.valueOf(mFollower_Count));
-
             }
         });
 
@@ -298,12 +291,10 @@ public class DjProfileActivity extends AppCompatActivity {
 
 
     private void getProfileDataFromServer(String blogId) {
-
-         retrofit= ApiClient.retrofit(BASE_URL,this);
-
+         retrofit= ApiClient.retrofit(this);
          jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-        Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(blogId);
+         String relativeURL = "api/user/"+blogId;
+         Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
 
         call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
@@ -408,11 +399,10 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private void postRequestSong (String UserName,String SongName) {
 
-        retrofit= ApiClient.retrofit(URL_REQUEST_SONG,this);
-
+        retrofit= ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-        Call<SuccessErrorModel> call = jsonApiHolder.postSongRequest("1",
+        String relativeUrl = "api/request_song/"+String.valueOf(artistID);
+        Call<SuccessErrorModel> call = jsonApiHolder.postSongRequest(relativeUrl,
                 UserName,
                 SongName
                 );
@@ -445,12 +435,20 @@ public class DjProfileActivity extends AppCompatActivity {
     }
 
 
-    private void followUnFollow (String Url, int CurrentStatus) {
-        Retrofit retrofit = ApiClient.retrofit(Url, DjProfileActivity.this);
+    private void followUnFollow (int CurrentStatus) {
+        Retrofit retrofit = ApiClient.retrofit( DjProfileActivity.this);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
+        String relativeUrl = "";
+        //0 means not following yet
+        if(CurrentStatus == 0){
+            relativeUrl = "api/follow_artist/"+String.valueOf(artistID);
 
-        Call <SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(String.valueOf(artistID));
+        }else {
+            relativeUrl = "api/unfollow_artist/"+String.valueOf(artistID);
+        }
+
+        Call <SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(relativeUrl);
 
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override

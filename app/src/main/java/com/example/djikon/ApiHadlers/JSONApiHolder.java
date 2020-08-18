@@ -26,19 +26,19 @@ import retrofit2.http.Url;
 public interface JSONApiHolder {
 
     //will return all the blogs
-    @GET ("blog")
+    @GET ("api/blog")
     Call<List<FeedBlogModel>> getBlogs();
 
     //will return All subscribed Artist  by current User
-    @GET ("following")
+    @GET ("api/following")
     Call<List<SubscribeArtistModel>> getSubscribeArtist();
 
     //will return All subscribed Artist  by current User
-    @GET ("artistAll")
+    @GET ("api/artistAll")
     Call<List<AllArtistModel>> getAllArtist();
 
     //will return all the requested Song
-    @GET ("requested_songs")
+    @GET ("api/requested_songs")
     Call<List<RequestedSongsModel>> getRequestedSongs();
 
     //will return detail of a blog
@@ -56,11 +56,11 @@ public interface JSONApiHolder {
     Call<SingleServiceModel> getSingleServieData(@Url String id);
 
     //this will return current UserAll the booking
-    @GET("bookingHistory")
+    @GET("api/bookingHistory")
     Call<List<BookingHistory>> getBookingHistory();
 
     @FormUrlEncoded
-    @POST("register")
+    @POST("api/register")
     Call <SuccessErrorModel> registerUser(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
@@ -89,23 +89,20 @@ public interface JSONApiHolder {
         @Multipart
         @POST()
         Call<SuccessErrorModel> uploadImage(
-                @Url String userid,
+                @Url String relativeUrl,
                 @Part MultipartBody.Part image
         );
 
 
-
-
-
     @FormUrlEncoded
     @POST()
-    Call<SuccessErrorModel> postComment(@Url String blogId,
+    Call<SuccessErrorModel> postComment(@Url String relativeUrl,
                                              @Field("body") String body
     );
 
 
     @FormUrlEncoded
-    @POST("change_password")
+    @POST("api/change_password")
     Call <SuccessErrorModel> changePasswrod(
             @Field("oldpass") String oldpassword,
             @Field("password") String newpassword
@@ -113,7 +110,7 @@ public interface JSONApiHolder {
 
 
     @FormUrlEncoded
-    @POST("login")
+    @POST("api/login")
     Call <LoginRegistrationModel> Login(
             @Field("email") String email,
             @Field("password") String password,
@@ -123,13 +120,13 @@ public interface JSONApiHolder {
 
 
     @FormUrlEncoded
-    @POST("resend_otp")
+    @POST("api/resend_otp")
     Call <SuccessErrorModel> resendOTP(
             @Field("email") String email
     );
 
     @FormUrlEncoded
-    @POST("verify_email")
+    @POST("api/verify_email")
     Call <LoginRegistrationModel> verifyEmail(
             @Field("email") String email,
             @Field("otp") Integer otp
@@ -137,13 +134,13 @@ public interface JSONApiHolder {
 
     
     @FormUrlEncoded
-    @POST("send_otp")
+    @POST("api/send_otp")
     Call <SuccessErrorModel> sendOTP(
             @Field("email") String email
     );
 
     @FormUrlEncoded
-    @POST("confirm_otp")
+    @POST("api/confirm_otp")
     Call <SuccessErrorModel>  confirmOTP(
             @Field("email") String email,
             @Field("otp") Integer otp
@@ -151,7 +148,7 @@ public interface JSONApiHolder {
     );
 
     @FormUrlEncoded
-    @POST("update_password")
+    @POST("api/update_password")
     Call <SuccessErrorModel> Updatepassword(
             @Field("email") String email,
             @Field("password") String newpassord
@@ -160,24 +157,23 @@ public interface JSONApiHolder {
     @FormUrlEncoded
     @POST()
     Call <SuccessErrorModel>  LikeUnlike(
-            @Url String blogid,
+            @Url String relativeUrl,
             @Field("status") Integer likeStatus
-
     );
 
 
     @POST()
     Call <SuccessErrorModel>  followUnFollowArtist(
-            @Url String artistId
+            @Url String relativeUrl
     );
 
-    @POST("logout")
+    @POST("api/logout")
     Call <LoginRegistrationModel> logout();
 
     @FormUrlEncoded
     @POST()
     Call<SuccessErrorModel> postBooking(
-            @Url String id,
+            @Url String relativeUrl,
             @Field("name") String Name,
             @Field("email") String Email,
             @Field("phone") String Phone,
@@ -192,7 +188,7 @@ public interface JSONApiHolder {
     @FormUrlEncoded
     @POST()
     Call<SuccessErrorModel> postSongRequest(
-            @Url String id,
+            @Url String relativeUrl,
             @Field("name") String your_Name,
             @Field("song_name") String Song_Name
     );

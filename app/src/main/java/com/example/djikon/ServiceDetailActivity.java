@@ -69,7 +69,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     private List<SliderModel> singleServiceModleArrayList;
 
-    private static final String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/products/";
+
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
     private AlertDialog alertDialog;
@@ -132,11 +132,9 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     private void downloadServiceData(String id) {
 
-        Retrofit retrofit = ApiClient.retrofit(BASE_URL, this);
-
+        Retrofit retrofit = ApiClient.retrofit( this);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-        Call<SingleServiceModel> call = jsonApiHolder.getSingleServieData(id);
+        Call<SingleServiceModel> call = jsonApiHolder.getSingleServieData("api/products/"+id);
 
         call.enqueue(new Callback<SingleServiceModel>() {
             @Override

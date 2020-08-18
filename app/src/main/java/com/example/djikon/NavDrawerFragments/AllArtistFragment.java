@@ -36,8 +36,6 @@ public class AllArtistFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
-
 
     private RelativeLayout progressBar;
     private AlertDialog mAlertDialog;
@@ -67,10 +65,8 @@ public class AllArtistFragment extends Fragment {
 
     private void getSubscribedArtist () {
 
-        Retrofit retrofit= ApiClient.retrofit(BASE_URL,getContext());
-
+        Retrofit retrofit= ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
         Call<List<AllArtistModel>> call = jsonApiHolder.getAllArtist();
 
         call.enqueue(new Callback<List<AllArtistModel>>() {

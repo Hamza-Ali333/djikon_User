@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private View navHeaderView;
 
     private Toolbar toolbar;
-    private static final String BASEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/api/";
+
     private static String IMAGEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/";
     private PreferenceData preferenceData;
 
@@ -257,12 +257,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private  void userLogOut () {
 
-      Retrofit retrofit= ApiClient.retrofit(BASEURL,this);
-
+      Retrofit retrofit= ApiClient.retrofit(this);
       JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-
-        Call<LoginRegistrationModel> call = jsonApiHolder.logout();
+      Call<LoginRegistrationModel> call = jsonApiHolder.logout();
 
         call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
@@ -273,7 +270,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     progressDialog.dismiss();
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
                     finish();
-
                 }
                 else {
                     progressDialog.dismiss();
@@ -293,7 +289,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getCurrentUserImage() {
-
         String imageName = PreferenceData.getUserImage(this);
 
         if (!imageName.equals("No Image") && !imageName.equals("no")){

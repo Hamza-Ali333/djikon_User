@@ -40,7 +40,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     private Context context;
     private AlertDialog alertDialog;
 
-    private static final String URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/like_blog/";
     private int total_likes;
 
     //view holder class
@@ -202,10 +201,9 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     }
 
     private void likeAndUnlikeBlog(ImageView view,String BlogID,Integer Status){
-        Retrofit retrofit = ApiClient.retrofit(URL,context);
+        Retrofit retrofit = ApiClient.retrofit(context);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-        Call <SuccessErrorModel> call = jsonApiHolder.LikeUnlike ( BlogID, Status);
+        Call <SuccessErrorModel> call = jsonApiHolder.LikeUnlike ( "api/like_blog/"+BlogID, Status);
 
         call.enqueue(new retrofit2.Callback<SuccessErrorModel>() {
             @Override
