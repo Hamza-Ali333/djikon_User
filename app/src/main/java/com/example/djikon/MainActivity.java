@@ -41,8 +41,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Boolean isComeFromRegistrationActivity;
 
     private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+    private DatabaseReference myRef;
 
 
     @Override
@@ -87,12 +94,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         registerReceiver(mNetworkChangeReceiver, filter);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        Intent i = getIntent();
-        isComeFromRegistrationActivity = i.getBooleanExtra("come_from_registration",false);
-        currentUserEmail = i.getStringExtra("email");
-        currentUserPassword = i.getStringExtra("password");
-       // new RegisteringUserAlsoOnFirebase().execute(isComeFromRegistrationActivity);
+        //if User in not Register on FireBase then Register him
+        try {
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
+            if (mFirebaseUser == null) {
+                Intent i = getIntent();
+                isComeFromRegistrationActivity = i.getBooleanExtra("come_from_registration", false);
+                currentUserEmail = i.getStringExtra("email");
+                currentUserPassword = i.getStringExtra("password");
+                if (currentUserEmail != null && currentUserEmail != null)
+                    new RegisteringUserAlsoOnFirebase().execute(isComeFromRegistrationActivity);
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -318,69 +335,78 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void creatingUserOnFirebase(String Email, String Password) {
         //Creating DJ also on Firebase for Chat System
         mFirebaseAuth.createUserWithEmailAndPassword
-                (Email,Password)
+                (Email, Password)
                 .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (task.isSuccessful()) {
+                        if (task.isSuccessful()) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
                                     //store the Email adrress for sending otp on it
-                                    Toast.makeText(MainActivity.this, "User Successfully SignUp On Firebase", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "Successfully SignUp", Toast.LENGTH_SHORT).show();
                                 }
-                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                    alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"Firebase","Email or Password in not correct");
-                                } else {
-                                    alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"Firebase Creating User","UnSuccessfull Registration");
-                                }
-                            }
-                        });
-
+                            });
+                        }else {
+                            saveUserIDAndUIDonFirebase();
+                        }
                     }
                 });
     }
 
-    private void signInUserOnFirebase(String Email, String Password){
+    private void signInUserOnFirebase(String Email, String Password) {
         //SignIn DJ Also on FireBase For ChatSystem
         mFirebaseAuth.signInWithEmailAndPassword(Email,
                 Password).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (task.isSuccessful()) {
-
-                            Toast.makeText(MainActivity.this, "Yes Firebase Login", Toast.LENGTH_SHORT).show();
-
-                        }  else {
-
-                            alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"Firebase Sign In","Email or Password in not correct");
-                        }
-                    }
-                });
-
+                if (!task.isSuccessful()) {
+                    //if user is not exit in data base but successfully Sign in ON server then should create also on firebase
+                    creatingUserOnFirebase(Email, Password);
+                    Log.i("TAG", "onComplete: SignIn Done");
+                }else {
+                    saveUserIDAndUIDonFirebase();
+                }
             }
         });
     }
 
-    private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean,Void,Void> {
+    private void saveUserIDAndUIDonFirebase() {
 
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        myRef = FirebaseDatabase.getInstance().getReference("All_Users");
+
+        if (mFirebaseUser != null) {
+            Log.i("TAG", "saveUserIDAndUIDonFirebase: user found");
+            Map<String, String> userData = new HashMap<>();
+            userData.put("uid", mFirebaseUser.getUid());
+            userData.put("server_id", preferenceData.getUserId(this));
+
+            myRef.child("DJs").child(preferenceData.getUserId(this)).setValue(userData);
+        } else {
+            Log.i("TAG", "saveUserIDAndUIDonFirebase: no user found");
+        }
+
+
+    }
+
+
+    private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected Void doInBackground(Boolean... booleans) {
-
-            if(booleans[0]){
+            if (booleans[0]) {
                 //isUserComeFromRegistrationActivity
                 creatingUserOnFirebase(currentUserEmail, currentUserPassword);
-            }else {
+            } else {
                 //isUserComeFromSignIn
                 signInUserOnFirebase(currentUserEmail, currentUserPassword);
             }
 
             return null;
         }
-
     }
 
 
