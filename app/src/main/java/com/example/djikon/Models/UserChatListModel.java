@@ -2,22 +2,31 @@ package com.example.djikon.Models;
 
 public class UserChatListModel {
 
-    private  String id, dj_Name,  imageUrl,key;
+    private  String dj_Id, dj_Name, dj_Uid, imageUrl, key;
     private  String talkTime,last_send_msg;
 
     public UserChatListModel() {
     }
 
     //this constructor only for id , dJName, imageUrl
-    public UserChatListModel(String id, String dj_Name, String imageUrl,String key) {
-        this.id = id;
+    public UserChatListModel(String dj_Id, String dj_Uid, String dj_Name, String imageUrl, String key) {
+        this.dj_Id = dj_Id;
+        this.dj_Uid = dj_Uid;
         this.dj_Name = dj_Name;
         this.imageUrl = imageUrl;
         this.key = key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getDj_Uid() {
+        return dj_Uid;
+    }
+
+    public void setDj_Uid(String dj_Uid) {
+        this.dj_Uid = dj_Uid;
+    }
+
+    public void setDj_Id(String dj_Id) {
+        this.dj_Id = dj_Id;
     }
 
     public void setDj_Name(String dj_Name) {
@@ -60,8 +69,8 @@ public class UserChatListModel {
         return imageUrl;
     }
 
-    public String getId() {
-        return id;
+    public String getDj_Id() {
+        return dj_Id;
     }
 
 }

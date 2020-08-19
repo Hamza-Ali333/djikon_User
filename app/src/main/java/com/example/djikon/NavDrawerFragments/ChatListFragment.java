@@ -117,7 +117,8 @@ public class ChatListFragment extends Fragment {
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             mUserChatList.add(new UserChatListModel(
-                                    snapshot.child("id").getValue(String.class),
+                                    snapshot.child("dj_Id").getValue(String.class),
+                                    snapshot.child("dj_Uid").getValue(String.class),
                                     snapshot.child("dj_Name").getValue(String.class),
                                     snapshot.child("imageUrl").getValue(String.class),
                                     snapshot.getKey()

@@ -1,5 +1,6 @@
 package com.example.djikon.ApiHadlers;
 
+import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.example.djikon.Models.AllArtistModel;
 import com.example.djikon.Models.BookingHistory;
 import com.example.djikon.Models.DjAndUserProfileModel;
@@ -28,6 +29,9 @@ public interface JSONApiHolder {
     //will return all the blogs
     @GET ("api/blog")
     Call<List<FeedBlogModel>> getBlogs();
+
+    @GET("api/getStart")
+    Call<SuccessErrorModel> getBrainTreeToken();
 
     //will return All subscribed Artist  by current User
     @GET ("api/following")

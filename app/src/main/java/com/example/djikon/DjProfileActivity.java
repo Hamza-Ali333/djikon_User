@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +34,11 @@ import com.example.djikon.Models.SuccessErrorModel;
 import com.example.djikon.RecyclerView.RecyclerDjBlogs;
 import com.example.djikon.RecyclerView.RecyclerServices;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -56,7 +63,7 @@ public class DjProfileActivity extends AppCompatActivity {
             txt_Total_Follower,
             txt_about,
             txt_Progress_Msg,
-    onlineStatus;
+            onlineStatus;
 
     private ScrollView parenLayout;
     private RelativeLayout rlt_About;
@@ -88,6 +95,8 @@ public class DjProfileActivity extends AppCompatActivity {
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
 
+    private String artist_UID;
+
 
     List<ServicesModel> services;
     List<DjProfileBlogsModel> blogs;
@@ -96,7 +105,8 @@ public class DjProfileActivity extends AppCompatActivity {
     private TextView snackBarText;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
-
+    private DatabaseReference myRef;
+    private ValueEventListener listener;
 
     @Override
     protected void onStart() {
@@ -182,14 +192,29 @@ public class DjProfileActivity extends AppCompatActivity {
         btn_Message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
-                i.putExtra("id",artistID);
-                i.putExtra("djName",mDJName);
-                i.putExtra("imgProfileUrl",mProfile);
-                startActivity(i);
+                if(artist_UID != null){
+                    lunchMessageActivity();
+                }else {
+                    new GetDjUidFromFirebase().execute();
+                }
             }
         });
+    }
 
+    private void getDjUid() {
+        myRef= FirebaseDatabase.getInstance().getReference("All_Users");
+        myRef.child("DJs").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
+            @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                    artist_UID = dataSnapshot.child("uid").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -202,7 +227,6 @@ public class DjProfileActivity extends AppCompatActivity {
         } else {
             btn_Follow.setText("UnFollow");
         }
-
 
             txt_address.setText(mAddress);
 
@@ -288,8 +312,6 @@ public class DjProfileActivity extends AppCompatActivity {
 
     }
 
-
-
     private void getProfileDataFromServer(String blogId) {
          retrofit= ApiClient.retrofit(this);
          jsonApiHolder = retrofit.create(JSONApiHolder.class);
@@ -301,9 +323,6 @@ public class DjProfileActivity extends AppCompatActivity {
             public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
 
                 if (response.isSuccessful()) {
-
-                    Log.i("TAG", "onResponse: " + response.code());
-
                     DjAndUserProfileModel djAndUserProfileModel = response.body();
                     artistID = djAndUserProfileModel.getId();
                     mDJName = djAndUserProfileModel.getFirstname() + " " + response.body().getLastname();
@@ -336,10 +355,11 @@ public class DjProfileActivity extends AppCompatActivity {
                         }
                     }).start();
 
-                    setDataInToViews();
+                    setDataInToViews();//set User Data in to Views
 
-                    setOnlineStatus(mOnlineStatus);
+                    setOnlineStatus(mOnlineStatus);//checkUser is Online or Not
 
+                    new GetDjUidFromFirebase().execute();//getUid of this user from firebase for massageing Use
                 } else {
 
                     Log.i("TAG", "onResponse: " + response.code());
@@ -395,10 +415,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
     }
 
-
-
     private void postRequestSong (String UserName,String SongName) {
-
         retrofit= ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
         String relativeUrl = "api/request_song/"+String.valueOf(artistID);
@@ -485,7 +502,6 @@ public class DjProfileActivity extends AppCompatActivity {
 
 
     private void showLoadingDialogue() {
-
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialoge_loading, null);
@@ -493,7 +509,6 @@ public class DjProfileActivity extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
         alertDialog = builder.show();
-
     }
 
     @Override
@@ -501,9 +516,35 @@ public class DjProfileActivity extends AppCompatActivity {
         super.onStop();
         unregisterReceiver(mNetworkChangeReceiver);
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    private class GetDjUidFromFirebase extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            getDjUid();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(artist_UID != null){
+                lunchMessageActivity();
+            }
+        }
+    }
+
+    private void lunchMessageActivity() {
+        Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
+        i.putExtra("id",artistID);
+        i.putExtra("uid",artist_UID);
+        i.putExtra("djName",mDJName);
+        i.putExtra("imgProfileUrl",mProfile);
+        startActivity(i);
     }
 }

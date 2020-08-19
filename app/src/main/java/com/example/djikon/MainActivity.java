@@ -117,9 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createRefrences();
-
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
-
         preferenceData = new PreferenceData();
 
         UserName.setText(PreferenceData.getUserName(MainActivity.this));
@@ -153,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                   R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -273,7 +270,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private  void userLogOut () {
-
       Retrofit retrofit= ApiClient.retrofit(this);
       JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
       Call<LoginRegistrationModel> call = jsonApiHolder.logout();
@@ -302,7 +298,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-
     }
 
     private void getCurrentUserImage() {
@@ -340,14 +335,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //store the Email adrress for sending otp on it
-                                    Toast.makeText(MainActivity.this, "Successfully SignUp", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }else {
                             saveUserIDAndUIDonFirebase();
                         }
                     }
@@ -372,27 +359,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void saveUserIDAndUIDonFirebase() {
-
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
-        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference("All_Users");
 
         if (mFirebaseUser != null) {
-            Log.i("TAG", "saveUserIDAndUIDonFirebase: user found");
+            String userUId = mFirebaseUser.getUid();
             Map<String, String> userData = new HashMap<>();
-            userData.put("uid", mFirebaseUser.getUid());
+            userData.put("uid", userUId);
             userData.put("server_id", preferenceData.getUserId(this));
 
-            myRef.child("DJs").child(preferenceData.getUserId(this)).setValue(userData);
+            myRef.child("Users").child(preferenceData.getUserId(this)).setValue(userData);
         } else {
             Log.i("TAG", "saveUserIDAndUIDonFirebase: no user found");
         }
-
-
     }
-
 
     private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean, Void, Void> {
         @Override
@@ -404,12 +385,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //isUserComeFromSignIn
                 signInUserOnFirebase(currentUserEmail, currentUserPassword);
             }
-
             return null;
         }
     }
-
-
 
     @Override
     protected void onStop() {

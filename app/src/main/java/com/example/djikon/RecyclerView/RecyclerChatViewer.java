@@ -56,9 +56,9 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     }
 
 //constructor
-    public RecyclerChatViewer(List<ChatModel> chat_modelList,String currentUserId, String chatMainNode) {
+    public RecyclerChatViewer(List<ChatModel> chat_modelList,String currentUserUid, String chatMainNode) {
         this.mChat_model = chat_modelList;
-        this.currentUserId = currentUserId;
+        this.currentUserId = currentUserUid;
         myRef = FirebaseDatabase.getInstance().getReference("Chats").child("Massages").child(chatMainNode);
     }
 

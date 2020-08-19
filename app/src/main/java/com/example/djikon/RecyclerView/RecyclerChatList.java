@@ -1,9 +1,6 @@
 package com.example.djikon.RecyclerView;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,16 +8,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.ChatViewerActivity;
@@ -120,7 +113,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
            @Override
            public void onClick(View view) {
                Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
-               i.putExtra("id",Integer.parseInt(currentItem.getId()));
+               i.putExtra("id",Integer.parseInt(currentItem.getDj_Id()));
                i.putExtra("djName",currentItem.getDj_Name());
                i.putExtra("imgProfileUrl",currentItem.getImageUrl());
                view.getContext().startActivity(i);

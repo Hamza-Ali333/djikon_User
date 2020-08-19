@@ -11,6 +11,7 @@ public class PreferenceData
     static final String PREF_LOGGEDIN_USER_ID = "logged_id_is";
     static final String PREF_USER_LOGGEDIN_STATUS = "logged_in_status";
     static final String PREF_USER_IMAGE = "Current_User_Image";
+    static final String PREF_USER_UID = "Current_User_Image";
 
 
     static final String PREF_LOGGEDIN_USER_FullName = "USER_FULL_NAME";
@@ -61,6 +62,18 @@ public class PreferenceData
         return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_ID, "No Id");
     }
 
+    public static void setUserUId(Context ctx, String uid)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_USER_UID, uid);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getUserUId(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_USER_UID, "No uid");
+    }
 
 
 
