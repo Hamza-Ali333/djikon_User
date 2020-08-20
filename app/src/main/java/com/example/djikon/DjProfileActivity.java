@@ -125,7 +125,7 @@ public class DjProfileActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Dj Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        createRefrences();
+        createReferences();
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
@@ -139,10 +139,10 @@ public class DjProfileActivity extends AppCompatActivity {
 
         services = new ArrayList<ServicesModel>();
         Intent i = getIntent();
-        int blogId = i.getIntExtra("id", 0);
+        int djId = i.getIntExtra("id", 0);
 
 
-        getProfileDataFromServer(String.valueOf(blogId));
+        getProfileDataFromServer(String.valueOf(djId));
 
 
         btn_Follow.setOnClickListener(new View.OnClickListener() {
@@ -278,12 +278,10 @@ public class DjProfileActivity extends AppCompatActivity {
     }
 
     private void openRequestASongDialogue() {
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dailoge_request_song, null);
-
 
         EditText edt_Song_Name = view.findViewById(R.id.edt_Song_Name);
         EditText edt_Requester_Name = view.findViewById(R.id.edt_requester_Name);
@@ -291,7 +289,6 @@ public class DjProfileActivity extends AppCompatActivity {
 
         builder.setView(view);
         builder.setCancelable(true);
-
 
         final AlertDialog alertDialog = builder.show();
 
@@ -312,10 +309,10 @@ public class DjProfileActivity extends AppCompatActivity {
 
     }
 
-    private void getProfileDataFromServer(String blogId) {
+    private void getProfileDataFromServer(String djId) {
          retrofit= ApiClient.retrofit(this);
          jsonApiHolder = retrofit.create(JSONApiHolder.class);
-         String relativeURL = "api/user/"+blogId;
+         String relativeURL = "api/user/"+djId;
          Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
 
         call.enqueue(new Callback<DjAndUserProfileModel>() {
@@ -372,7 +369,8 @@ public class DjProfileActivity extends AppCompatActivity {
             public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
 
                 Log.i("TAG", "onFailure: " + t.getMessage());
-                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,
+                        "Server connecting failed","Please Check Your Internet Connection");
             }
 
         });
@@ -393,8 +391,7 @@ public class DjProfileActivity extends AppCompatActivity {
     }
     }
 
-    private void createRefrences() {
-
+    private void createReferences() {
         parenLayout = findViewById(R.id.scrollable);
         rlt_About = findViewById(R.id.rlt_about);
         btn_Book_Artist = findViewById(R.id.btn_book_artist);
@@ -541,9 +538,9 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private void lunchMessageActivity() {
         Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
-        i.putExtra("id",artistID);
-        i.putExtra("uid",artist_UID);
-        i.putExtra("djName",mDJName);
+        i.putExtra("dj_Id",artistID);
+        i.putExtra("dj_Uid",artist_UID);
+        i.putExtra("dj_Name",mDJName);
         i.putExtra("imgProfileUrl",mProfile);
         startActivity(i);
     }

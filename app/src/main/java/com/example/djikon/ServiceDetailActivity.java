@@ -4,11 +4,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,9 +22,11 @@ import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.Models.SingleServiceReviews;
 import com.example.djikon.Models.SingleServiceModel;
 import com.example.djikon.Models.SliderModel;
 import com.example.djikon.RecyclerView.RecyclerServiceGallery;
+import com.example.djikon.RecyclerView.RecyclerServiceReviews;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,9 +40,16 @@ import retrofit2.Retrofit;
 public class ServiceDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "ServiceDetailActivity";
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    //Service Recycler View
+    private RecyclerView mGalleryRecyclerView;
+    private RecyclerView.Adapter mGalleryAdapter;
+    private RecyclerView.LayoutManager mGalleryLayoutManager;
+
+    //Reviews Recycler View
+    private RecyclerView mReviewsRecyclerView;
+    private RecyclerView.Adapter mReviewsAdapter;
+    private RecyclerView.LayoutManager mReviewsLayoutManager;
+
 
     private Button btn_Proceed_To_Pay;
 
@@ -53,7 +63,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     private ImageView Featured_img;
 
-
     private String
             serviceImage,
             serviceName,
@@ -62,17 +71,25 @@ public class ServiceDetailActivity extends AppCompatActivity {
             price_type,
             description,
             Gallery;
+    private float totalRating;
+
     private int id;
 
-    private static final String BASEURL_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
-    private static final String FEATURED_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/";
+
+
+    private static final String BASEURL_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
+    private static final String FEATURED_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     private List<SliderModel> singleServiceModleArrayList;
-
+    private List<SingleServiceModel> singleServiceModels;
+    private List<SingleServiceReviews> reviewsModels;
 
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
     private AlertDialog alertDialog;
+
+    private Retrofit retrofit;
+    private JSONApiHolder jsonApiHolder;
 
     @Override
     protected void onStart() {
@@ -91,17 +108,16 @@ public class ServiceDetailActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Service Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        createRefrences();
+        createReferences();
+        retrofit = ApiClient.retrofit( this);
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
 
-        downloadServiceData(String.valueOf(id));
+        new GetServiceDataAndReviews().execute(String.valueOf(id));
 
         singleServiceModleArrayList = new ArrayList<>();
-
 
         btn_Proceed_To_Pay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,57 +146,14 @@ public class ServiceDetailActivity extends AppCompatActivity {
     }
 
 
-    private void downloadServiceData(String id) {
+    private void setDataInToView() {
 
-        Retrofit retrofit = ApiClient.retrofit( this);
-        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        Call<SingleServiceModel> call = jsonApiHolder.getSingleServieData("api/products/"+id);
-
-        call.enqueue(new Callback<SingleServiceModel>() {
-            @Override
-            public void onResponse(Call<SingleServiceModel> call, Response<SingleServiceModel> response) {
-
-                if (response.isSuccessful()) {
-                    serviceImage = response.body().getFeature_image();
-                    serviceName = response.body().getName();
-                    dj_Name = response.body().getArtist_name();
-                    price = String.valueOf(response.body().getPrice());
-                    price_type = response.body().getPrice_type();
-                    description = response.body().getDescription();
-
-                    btn_Proceed_To_Pay.setText("Proceed To Pay " + price + "$");
-                    Gallery = response.body().getGallery();
-
-                    setDataintoView();
-
-                    if (!Gallery.equals("no") || Gallery.isEmpty()) {
-
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                        Gallery = Gallery.replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
-                        String[] GalleryArray = Gallery.split(",");
-                        buildServiceGalleryRecycler(GalleryArray);
-
-                    } else {
-                        mRecyclerView.setVisibility(View.GONE);
-                    }
-
-
-                } else {
-
-                    Log.i("TAG", "onResponse: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SingleServiceModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showAlertDialog(ServiceDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
-
-            }
-        });
-    }
-
-
-    private void setDataintoView() {
+        ratingBar.setRating(totalRating);
+        txt_Service_Name.setText(serviceName);
+        txt_Dj_Name.setText(dj_Name);
+        txt_Price.setText(" $" + price + " ");
+        txt_Price_Type.setText(price_type);
+        txt_Description.setText(description);
 
         //should see the response of the server here note
         Picasso.get().load(FEATURED_IMAGES + serviceImage)
@@ -197,13 +170,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
                         Toast.makeText(ServiceDetailActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        txt_Service_Name.setText(serviceName);
-        txt_Dj_Name.setText(dj_Name);
-        txt_Price.setText(" $" + price + " ");
-        txt_Price_Type.setText(price_type);
-        txt_Description.setText(description);
-
     }
 
 
@@ -212,16 +178,25 @@ public class ServiceDetailActivity extends AppCompatActivity {
         for (int i = 0; i <= gallery.length - 1; i++) {
             singleServiceModleArrayList.add(new SliderModel(BASEURL_IMAGES + gallery[i]));
         }
-        mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mAdapter = new RecyclerServiceGallery(singleServiceModleArrayList);
+        mGalleryRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+        mGalleryLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mGalleryAdapter = new RecyclerServiceGallery(singleServiceModleArrayList);
 
 
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        mGalleryRecyclerView.setLayoutManager(mGalleryLayoutManager);
+        mGalleryRecyclerView.setAdapter(mGalleryAdapter);
     }
 
-    private void createRefrences() {
+    private void buildReviewsRecyclerView(List<SingleServiceReviews> reviewsModels) {
+        mReviewsRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+        mReviewsLayoutManager = new LinearLayoutManager(this);
+        mReviewsAdapter = new RecyclerServiceReviews(reviewsModels);
+
+        mReviewsRecyclerView.setLayoutManager(mReviewsLayoutManager);
+        mReviewsRecyclerView.setAdapter(mReviewsAdapter);
+    }
+
+    private void createReferences() {
 
         Featured_img = findViewById(R.id.img_seervice_image);
         txt_Service_Name = findViewById(R.id.txt_Servic_Name);
@@ -231,10 +206,98 @@ public class ServiceDetailActivity extends AppCompatActivity {
         txt_Description = findViewById(R.id.txt_service_discription);
         ratingBar = findViewById(R.id.ratingBar);
 
-        mRecyclerView = findViewById(R.id.recyclerview_service_gallery);
+        mGalleryRecyclerView = findViewById(R.id.recyclerview_service_gallery);
+        mReviewsRecyclerView = findViewById(R.id.reviews_recycler);
         btn_Proceed_To_Pay = findViewById(R.id.btn_proceed_to_pay);
 
     }
+
+    private class GetServiceDataAndReviews extends AsyncTask<String,Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            singleServiceModels = new ArrayList<>();
+            reviewsModels = new ArrayList<>();
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+
+            jsonApiHolder = retrofit.create(JSONApiHolder.class);
+            Call<SingleServiceModel> call = jsonApiHolder.getSingleServieData("api/products/"+strings[0]);
+
+            call.enqueue(new Callback<SingleServiceModel>() {
+                @Override
+                public void onResponse(Call<SingleServiceModel> call, Response<SingleServiceModel> response) {
+
+                    if (response.isSuccessful()) {
+                       // singleServiceModels = (List<SingleServiceModel>) response.body();
+
+                        serviceImage = response.body().getFeatureImage();
+                        serviceName = response.body().getName();
+                        dj_Name = response.body().getArtist_name();
+                        price = String.valueOf(response.body().getPrice());
+                        price_type = response.body().getPrice_type();
+                        totalRating = response.body().getRating();
+                        description = response.body().getDescription();
+
+                        btn_Proceed_To_Pay.setText("Proceed To Pay " + price + "$");
+                        Gallery = response.body().getGallery();
+
+                        reviewsModels = response.body().getSingleServiceReviews();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                setDataInToView();
+
+                                if (!Gallery.equals("no") || Gallery.isEmpty()) {
+
+                                    mGalleryRecyclerView.setVisibility(View.VISIBLE);
+                                    Gallery = Gallery.replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
+                                    String[] GalleryArray = Gallery.split(",");
+                                    buildServiceGalleryRecycler(GalleryArray);
+
+                                } else {
+                                    mGalleryRecyclerView.setVisibility(View.GONE);
+                                }
+
+                                //Reviews RecyclerView
+                                if (!reviewsModels.isEmpty()) {
+                                    buildReviewsRecyclerView(reviewsModels);
+                                }else {
+                                    mReviewsRecyclerView.setVisibility(View.GONE);
+                                }
+
+                            }
+                        });
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<SingleServiceModel> call, Throwable t) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            alertDialog = DialogsUtils.showAlertDialog(ServiceDetailActivity.this,
+                                    false,"Failed to connect with server",t.getMessage());
+                        }
+                    });
+                }
+            });
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
     @Override
     protected void onStop() {
         super.onStop();

@@ -178,6 +178,7 @@ public interface JSONApiHolder {
     @POST()
     Call<SuccessErrorModel> postBooking(
             @Url String relativeUrl,
+            @Field("service_id") int ServiceId,
             @Field("name") String Name,
             @Field("email") String Email,
             @Field("phone") String Phone,

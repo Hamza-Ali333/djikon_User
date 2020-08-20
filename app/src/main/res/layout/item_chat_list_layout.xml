@@ -58,8 +58,6 @@
             android:layout_alignBaseline="@+id/txt_msg_sender_name"
             android:layout_alignParentRight="true"/>
 
-
-
         <TextView
             android:id="@+id/txt_unRead_msgs"
             android:layout_width="wrap_content"
@@ -71,7 +69,6 @@
             android:inputType="number"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txt_recieve_time"/>-->
-
 
         <View
             android:id="@+id/divider10"

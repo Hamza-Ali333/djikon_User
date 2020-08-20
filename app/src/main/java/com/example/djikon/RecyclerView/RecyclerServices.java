@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +28,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
 
 
         public TextView txt_ServiceName, txt_ServiceDetail, txt_Price,txt_ChargesType;
+        public RatingBar ratingBar;
         public ImageView img_featured;
 
         public ViewHolder(View itemView) {
@@ -38,14 +40,13 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
             txt_Price = itemView.findViewById(R.id.txt_service_prize);
             txt_ChargesType = itemView.findViewById(R.id.pricetype);
 
-
+            ratingBar = itemView.findViewById(R.id.ratbar);
         }
     }
 
     //constructor
     public RecyclerServices(List<ServicesModel> services) {
         this.mServices = services;
-
     }
 
 
@@ -66,6 +67,8 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                 holder.txt_ChargesType.setText(currentItem.getPrice_type());
                 holder.txt_Price.setText("$"+String.valueOf(currentItem.getPrice())+" ");
 
+                holder.ratingBar.setRating(currentItem.getRating());
+
         if (!currentItem.getFeature_image().equals("no")) {
             Picasso.get().load(currentItem.getFeature_image())
                     .fit()
@@ -83,7 +86,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
         }
 
 
-        holder.img_featured.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

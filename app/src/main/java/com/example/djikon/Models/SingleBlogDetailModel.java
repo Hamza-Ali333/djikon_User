@@ -18,8 +18,6 @@ public class SingleBlogDetailModel {
     artist_profile_image,
     gallery;
 
-
-
     private int  id, likes_count,
             comments_count;
 

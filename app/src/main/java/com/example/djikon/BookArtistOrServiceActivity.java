@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,11 +28,18 @@ import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.braintreepayments.api.dropin.DropInActivity;
+import com.braintreepayments.api.dropin.DropInRequest;
+import com.braintreepayments.api.dropin.DropInResult;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.Models.SuccessErrorModel;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 
@@ -38,6 +47,7 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cz.msebera.android.httpclient.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,15 +65,24 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
     private EditText edt_Name, edt_Phone, edt_Email, edt_Address;
     private LinearLayout rlt_Start_Date, rlt_End_Date, rlt_Start_Time, rlt_End_Time;
     private TextView txt_Start_Date, txt_End_Date, txt_Start_Time, txt_End_Time;
-    private String Id;
     private String RPH;//Rate Per Hour
     private String Name;
     private String PriceType;
     private String id;
+    private String TotalAmount;
     private Bitmap bitmap;
-    private int requestCode ;
+    private int requestCode;
+
     private ProgressDialog progressDialog;
-    private AlertDialog MsgDialogue;
+    private AlertDialog alertDialog;
+    private AlertDialog checkBookingCoastDialog;
+
+    private Retrofit retrofit;
+    private JSONApiHolder jsonApiHolder;
+    private String BrainTreeToken;
+    private static final int DROP_IN_REQUEST_CODE = 777;
+
+    private Context context;//context for asynkTask
 
     private static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
@@ -82,7 +101,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-
     }
 
     @Override
@@ -92,7 +110,10 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Booking Form");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        createRefrences();
+        createReferences();//Front End View to Back End
+
+        retrofit = ApiClient.retrofit(this);
+        context = this;
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
@@ -100,11 +121,11 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         requestCode = intent.getIntExtra("request_code", 0);
         id = intent.getStringExtra("id");
 
-        if (requestCode == 1) {//1 for subscriber
+        if (requestCode == 1) {//1 for subscriber booking
             RPH = intent.getStringExtra("rph");
             rlt_End_Date.setVisibility(View.VISIBLE);
             rlt_End_Time.setVisibility(View.VISIBLE);
-        } else if (requestCode == 2) {
+        } else if (requestCode == 2) {//For Service Booking
             PriceType = intent.getStringExtra("priceType");
         }
 
@@ -286,8 +307,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             edt_Address.setError("Address Required");
             edt_Address.requestFocus();
             result = false;
-        }
-        else if (!mRadioButton.isChecked()) {
+        } else if (!mRadioButton.isChecked()) {
             Toast.makeText(this, "You are not Agree with Terms And Condition", Toast.LENGTH_SHORT).show();
             result = false;
         }
@@ -296,7 +316,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         return result;
     }
 
-    private void createRefrences() {
+    private void createReferences() {
 
         btn_Check_Cost = findViewById(R.id.btn_Check_Cost);
         mRadioButton = findViewById(R.id.radiobtn_payment);
@@ -381,7 +401,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         (int) (long) diffMinutes //total minutes
                 );
             } else {
-                MsgDialogue = DialogsUtils.showAlertDialog(this, false,
+                alertDialog = DialogsUtils.showAlertDialog(this, false,
                         "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
             }
 
@@ -397,7 +417,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dailoge_booking_cost, null);
-
 
         CircularImageView img_Profile;
         TextView txt_Name, txt_Service_Name, txt_Servives_prize,
@@ -440,7 +459,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             txt_Service_Name.setText("Service Name");
-        }else {
+        } else {
             txt_Service_Name.setText("Book This Dj");
         }
         //purchaser Detail
@@ -451,7 +470,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
         //Service Total Paid Amount
         txt_Service_Amount.setText("$" + new DecimalFormat("##.##").format(TotalCost));
-        txt_Servives_prize.setText("$" +  new DecimalFormat("##.##").format(TotalCost));
+        txt_Servives_prize.setText("$" + new DecimalFormat("##.##").format(TotalCost));
 
         //Calculated Time
         txt_Days.setText(String.valueOf(Days));
@@ -460,26 +479,25 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         txt_RPH.setText("$" + RPH);
 
         builder.setView(view);
-        builder.setCancelable(true);
+        builder.setCancelable(false);
 
-        final AlertDialog alertDialog = builder.show();
+        final AlertDialog alertDialog1 = builder.create();
+        alertDialog1.show();
 
         btn_Cancle_Booking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialog.dismiss();
+                    alertDialog1.dismiss();
             }
         });
 
         btn_Book_Now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = DialogsUtils.showProgressDialog(v.getContext(), "Posting Request", "Please Wait");
-                if(requestCode==1){
-                    postBooking(String.valueOf(TotalCost));
-                }else {
-                    postBooking(String.valueOf(TotalCost));
-                }
+                alertDialog1.dismiss();
+                alertDialog1.cancel();
+                TotalAmount = String.valueOf(TotalCost);//for sending amount with nonce to server
+                new GetBrainTreeToken().execute();
 
             }
         });
@@ -487,12 +505,17 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
     }//openCheckCostDialogue
 
     private void postBooking(String PaidAmount) {
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        String relativeUrl = "api/book_artist/" + id;
 
-        Retrofit retrofit = ApiClient.retrofit( this);
-        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        String relativeUrl = "api/book_artist/"+id;
+        Integer serviceId = null;
+        if (requestCode == 2) {
+            serviceId = Integer.parseInt(id);
+        }
+
         Call<SuccessErrorModel> call = jsonApiHolder.postBooking(
                 relativeUrl,
+                serviceId,
                 edt_Name.getText().toString(),
                 edt_Email.getText().toString(),
                 edt_Phone.getText().toString(),
@@ -506,25 +529,166 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                if (response.isSuccessful()) {
-                    progressDialog.dismiss();
-                    Intent i = new Intent(BookArtistOrServiceActivity.this, BookingPaymentMethodActivity.class);
-                    startActivity(i);
-                } else {
-                    progressDialog.dismiss();
-                    Toast.makeText(BookArtistOrServiceActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    Log.i(TAG, "onResponse: " + response.code());
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response.isSuccessful()) {
+                            progressDialog.dismiss();
+                            alertDialog = DialogsUtils.showAlertDialog(context, false, "Booking is Done",
+                                    "You Will be informed when Dj Accept or Reject Booking\nAnd payment will detect after Confirming Booking");
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(BookArtistOrServiceActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            Log.i(TAG, "onResponse: " + response.code());
+                        }
+                    }
+                });
+
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                progressDialog.dismiss();
-                MsgDialogue = DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.dismiss();
+                        alertDialog = DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this, false, "No Internet", "Please Check Your Internet Connection");
+                    }
+                });
             }
         });
 
 
+    }
+
+
+    public void onBrainTreeSubmit(String braintreetoken) {
+        DropInRequest dropInRequest = new DropInRequest()
+                .clientToken(braintreetoken);
+
+        startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == DROP_IN_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+                // use the result to update your UI and send the payment method nonce to your server
+                String paymentMethodNonce = result.getPaymentMethodNonce().getNonce();
+                new PostNonceToServer().execute(paymentMethodNonce);
+
+            } else if (resultCode == RESULT_CANCELED) {
+                //the user canceled
+                Toast.makeText(this, "Payment Cancle", Toast.LENGTH_SHORT).show();
+            } else {
+                // handle errors here, an exception may be available in
+                Toast.makeText(this, "Payment Failed", Toast.LENGTH_SHORT).show();
+                Exception error = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
+            }
+        } else {
+            Toast.makeText(this, "Result is not correct", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private class GetBrainTreeToken extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = DialogsUtils.showProgressDialog(context, "Posting Request", "Please Wait");
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            jsonApiHolder = retrofit.create(JSONApiHolder.class);
+            Call<SuccessErrorModel> call = jsonApiHolder.getBrainTreeToken();
+
+            call.enqueue(new Callback<SuccessErrorModel>() {
+                @Override
+                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                    if (response.isSuccessful()) {
+                        SuccessErrorModel successErrorModel = response.body();
+                        BrainTreeToken = successErrorModel.getSuccess();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressDialog.dismiss();
+                                checkBookingCoastDialog.dismiss();
+                                onBrainTreeSubmit(BrainTreeToken);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            alertDialog = DialogsUtils.showAlertDialog(context, false,
+                                    "Network Error", "Failed to connect with server\nPlease Check Your Network!");
+                        }
+                    });
+                }
+            });
+            return null;
+        }
+    }
+
+    private class PostNonceToServer extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = DialogsUtils.showProgressDialog(context, "Post Amount", "Please wait while confirming collecting amount of service");
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            RequestParams params = new RequestParams();
+            params.put("payment_method_nonce", strings[0]);//nonce Get from Server
+//            params.put("sender_id", PreferenceData.getUserId(context));
+//            params.put("receiver_id", "DjId");
+            params.put("amount", TotalAmount);
+            //ifbooking Against Service Then also need service id
+//            if (requestCode == 2)
+//                params.put("service_id", "service");
+//            else
+//                params.put("service_id", " ");
+
+            client.post("http://ec2-52-91-44-156.compute-1.amazonaws.com/api/chekout", params,
+                    new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressDialog.dismiss();
+                                    progressDialog = DialogsUtils.showProgressDialog(context, "Post Booking", "Please wait while booking is posting on server");
+                                }
+                            });
+                            postBooking(TotalAmount);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alertDialog = DialogsUtils.showAlertDialog(context, false, "Note", "Please check your internet and try again");
+                                }
+                            });
+                        }
+                    }
+            );
+            return null;
+        }
     }
 
     @Override

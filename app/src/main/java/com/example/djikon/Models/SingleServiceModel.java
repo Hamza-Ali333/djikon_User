@@ -1,29 +1,41 @@
 package com.example.djikon.Models;
 
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class SingleServiceModel {
 
-    private int price;
+    private Integer id;
+    private String name;
+    private String description;
+    private String price_type;
+    private Integer price;
+    private String featureImage;
+    private String gallery;
+    private String artist_name;
+    private float rating;
 
-    private String id,
-            name,
-            description,
-            price_type,
-            feature_image,
-            gallery,
-            artist_name,
-            rating;
+    @SerializedName("reviews")
+    @Expose
+    private List<SingleServiceReviews> singleServiceReviews = null;
 
 
-    public int getPrice() {
-        return price;
+
+    public Integer getId() {
+        return id;
     }
 
-    public String getId() {
-        return id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -34,8 +46,12 @@ public class SingleServiceModel {
         return price_type;
     }
 
-    public String getFeature_image() {
-        return feature_image;
+    public Integer getPrice() {
+        return price;
+    }
+
+    public String getFeatureImage() {
+        return featureImage;
     }
 
     public String getGallery() {
@@ -46,7 +62,12 @@ public class SingleServiceModel {
         return artist_name;
     }
 
-    public String getRating() {
+    public float getRating() {
         return rating;
     }
+
+    public List<SingleServiceReviews> getSingleServiceReviews() {
+        return singleServiceReviews;
+    }
+
 }

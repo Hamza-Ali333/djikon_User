@@ -108,16 +108,15 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 //       holder.txt_Recive_Time.setText(currentItem.getMsg_Recieved_Time());
 
 
-
        holder.rlt_ChatItem.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
-               i.putExtra("id",Integer.parseInt(currentItem.getDj_Id()));
-               i.putExtra("djName",currentItem.getDj_Name());
-               i.putExtra("imgProfileUrl",currentItem.getImageUrl());
+               i.putExtra("dj_Id", Integer.parseInt(currentItem.getDj_Id()));
+               i.putExtra("dj_Uid", currentItem.getDj_Uid());
+               i.putExtra("dj_Name", currentItem.getDj_Name());
+               i.putExtra("imgProfileUrl", currentItem.getImageUrl());
                view.getContext().startActivity(i);
-               Log.i("Recycler", "onClick: id "+currentItem.getDj_Name());
            }
        });
 

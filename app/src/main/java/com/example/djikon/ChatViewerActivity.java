@@ -83,7 +83,7 @@ public class ChatViewerActivity extends AppCompatActivity {
     int djId;
     String djUid;
     String djName , imgProfileUrl;
-    String userId;
+    String CurrentUserId;
     private String userName;
 
     private APIService apiService;
@@ -98,9 +98,9 @@ public class ChatViewerActivity extends AppCompatActivity {
 
         //getting data of the Receiver
         Intent i = getIntent();
-        djId =i.getIntExtra("id",0);
-        djUid = i.getStringExtra("uid");
-        djName = i.getStringExtra("djName");
+        djId =i.getIntExtra("dj_Id",0);
+        djUid = i.getStringExtra("dj_Uid");
+        djName = i.getStringExtra("dj_Name");
         imgProfileUrl = i.getStringExtra("imgProfileUrl");
         setDjProfile(imgProfileUrl);
     }
@@ -134,9 +134,9 @@ public class ChatViewerActivity extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance().getReference("Chats");
 
 
-        userId = PreferenceData.getUserId(this);
+        CurrentUserId = PreferenceData.getUserId(this);
 
-        chatNodeName = "djId_"+ djId +"_userId_"+userId;
+        chatNodeName = "djId_"+ djId +"_userId_"+ CurrentUserId;
         checkHaveChatOrNot();
 
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -353,7 +353,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
                     Data data = new Data(fuser.getUid(),R.mipmap.ic_launcher,userName+": "+messaage,"New Message",
-                            userId);
+                            djUid);
 
                     Sender sender = new Sender(data,token.getToken());
 
@@ -421,10 +421,10 @@ public class ChatViewerActivity extends AppCompatActivity {
             userChatListModel.setDj_Uid(djUid);
             userChatListModel.setDj_Name(djName);
             userChatListModel.setImageUrl(imgProfileUrl);
-            myRef.child("chatListOfUser").child(userId).push().setValue(userChatListModel);
+            myRef.child("chatListOfUser").child(CurrentUserId).push().setValue(userChatListModel);
 
             Map<String, String> userData = new HashMap<>();
-            userData.put("user_Id", userId);
+            userData.put("user_Id", CurrentUserId);
             userData.put("user_Name",userName);
             userData.put("user_Uid", fuser.getUid());
             userData.put("imageUrl",imgProfileUrl);
