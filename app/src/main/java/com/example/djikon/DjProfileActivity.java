@@ -27,6 +27,7 @@ import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.BrainTree.BrainTreeActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.GlobelClasses.ProgressButton;
 import com.example.djikon.Models.DjAndUserProfileModel;
 import com.example.djikon.Models.DjProfileBlogsModel;
 import com.example.djikon.Models.ServicesModel;
@@ -54,8 +55,8 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private Button btn_Book_Artist,
             btn_Request_A_Song,
-            btn_Message,
             btn_Follow;
+    private View btn_Message;
 
     private TextView
             txt_DJ_Name,
@@ -73,7 +74,6 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
-
 
     private String mDJName,
             mAddress,
@@ -108,6 +108,8 @@ public class DjProfileActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     private ValueEventListener listener;
 
+    private ProgressButton progressButton;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -115,7 +117,6 @@ public class DjProfileActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-
     }
 
     @Override
@@ -139,11 +140,9 @@ public class DjProfileActivity extends AppCompatActivity {
 
         services = new ArrayList<ServicesModel>();
         Intent i = getIntent();
-        int djId = i.getIntExtra("id", 0);
+        artistID = i.getIntExtra("id", 0);
 
-
-        getProfileDataFromServer(String.valueOf(djId));
-
+        getProfileDataFromServer(String.valueOf(artistID));//getAll the data of this user
 
         btn_Follow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,30 +191,15 @@ public class DjProfileActivity extends AppCompatActivity {
         btn_Message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(artist_UID != null){
-                    lunchMessageActivity();
-                }else {
-                    new GetDjUidFromFirebase().execute();
-                }
-            }
-        });
-    }
+                btn_Message.setClickable(false);
+                btn_Message.setEnabled(false);
+                progressButton = new ProgressButton(DjProfileActivity.this,view);
+                progressButton.buttonActivated();
 
-    private void getDjUid() {
-        myRef= FirebaseDatabase.getInstance().getReference("All_Users");
-        myRef.child("DJs").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
-            @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists())
-                    artist_UID = dataSnapshot.child("uid").getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                new GetDjUidFromFirebase().execute();
 
             }
         });
-
     }
 
     private void setDataInToViews() {
@@ -321,7 +305,6 @@ public class DjProfileActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     DjAndUserProfileModel djAndUserProfileModel = response.body();
-                    artistID = djAndUserProfileModel.getId();
                     mDJName = djAndUserProfileModel.getFirstname() + " " + response.body().getLastname();
                     mAddress = djAndUserProfileModel.getLocation();
                     mProfile = djAndUserProfileModel.getProfile_image();
@@ -356,7 +339,6 @@ public class DjProfileActivity extends AppCompatActivity {
 
                     setOnlineStatus(mOnlineStatus);//checkUser is Online or Not
 
-                    new GetDjUidFromFirebase().execute();//getUid of this user from firebase for massageing Use
                 } else {
 
                     Log.i("TAG", "onResponse: " + response.code());
@@ -522,8 +504,40 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private class GetDjUidFromFirebase extends AsyncTask<Void,Void,Void>{
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            btn_Message.setBackground(getResources().getDrawable(R.drawable.btn_disable));
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
-            getDjUid();
+            myRef= FirebaseDatabase.getInstance().getReference("All_Users");
+
+            Log.i("TAG", "onDataChange: running");
+            myRef.child("DJs").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    artist_UID = dataSnapshot.child("uid").getValue(String.class);
+                    Log.i("TAG", "onDataChange: dJ Uid ==" + artist_UID);
+                    if(artist_UID != null){
+                        btn_Message.setClickable(true);
+                        btn_Message.setEnabled(true);
+                        progressButton.buttonFinished();
+                        lunchMessageActivity();
+                    }
+
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(DjProfileActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                        }
+                     });
+                }
+            });
             return null;
         }
 

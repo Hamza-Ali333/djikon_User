@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.example.djikon.ChatViewerActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +31,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         if(firebaseUser != null  && sented.equals(firebaseUser.getUid())){
             sendNotification(remoteMessage);
-            Toast.makeText(this, "Sending Notification", Toast.LENGTH_SHORT).show();
+            Log.i("TAG", "onMessageReceived: message send FirebaseMessaging");
         }
     }
 
@@ -51,21 +53,21 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this,J,intent,PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(Integer.parseInt(icon))
-                .setContentTitle(title)
-                .setContentText(body)
-                .setAutoCancel(true)
-                .setSound(defaultSound)
-                .setContentIntent(pendingIntent);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(Integer.parseInt(icon))
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setAutoCancel(true)
+                        .setSound(defaultSound)
+                        .setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager noti = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
         int i = 0;
         if(J > 0){
             i = J;
         }
 
-        notificationManager.notify(i,builder.build());
+        noti.notify(i,builder.build());
     }
 }

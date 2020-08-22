@@ -77,9 +77,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_address" />
 
-            <Button
+            <include
                 android:id="@+id/message_dj"
-                android:layout_width="wrap_content"
+                layout="@layout/progressbutton_layout"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/fullroundshape"
@@ -87,23 +88,23 @@
                 android:paddingRight="30dp"
                 android:text="Message"
                 android:textColor="#fff"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline10"
+                app:layout_constraintEnd_toEndOf="@+id/Follow_Dj"
+                app:layout_constraintStart_toStartOf="@+id/Follow_Dj"
                 app:layout_constraintTop_toBottomOf="@+id/txt_address" />
 
             <Button
                 android:id="@+id/Follow_Dj"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:minWidth="128dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/lighblue_roundshap"
+                android:minWidth="128dp"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
                 android:text="UnFollow"
                 android:textColor="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/message_dj"
-                app:layout_constraintStart_toStartOf="@+id/message_dj"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline10"
                 app:layout_constraintTop_toBottomOf="@+id/message_dj" />
 
             <TextView

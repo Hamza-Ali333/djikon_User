@@ -56,32 +56,47 @@
         android:layout_alignParentBottom="true"
        />
 
-
-    <RelativeLayout
-        android:id="@+id/msgbox"
-        android:padding="8dp"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:background="#fff"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/edt_sendmsg"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:hint="Type a message"
-            android:textSize="18sp"
-            android:paddingRight="45dp"
-            android:layout_height="40dp"/>
-        <Button
-            android:id="@+id/btn_send_msg"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:paddingBottom="0dp"
-            android:paddingLeft="2dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_send"
-            />
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:background="#fff"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <EditText
+                android:id="@+id/edt_sendmsg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Add Your Comment"
+                android:minHeight="50dp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorBlack"
+                android:textSize="16sp"
+                android:paddingRight="50dp"
+                app:backgroundTint="@color/colorBlue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.7" />
+
+            <Button
+                android:id="@+id/send_msg"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/ic_send"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:layout_marginBottom="5dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_comment"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

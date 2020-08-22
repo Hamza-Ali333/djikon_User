@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -174,6 +176,28 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
 
+        edt_Massage.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                if (!edt_Massage.getText().toString().isEmpty())
+                    btn_SendMsg.setVisibility(View.VISIBLE);
+                else
+                    btn_SendMsg.setVisibility(View.GONE);
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+                btn_SendMsg.setVisibility(View.GONE);
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+
+            }
+        });
+
     }
 
     private void readMassages() {
@@ -294,7 +318,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         pullToRefresh =findViewById(R.id.pullToRefresh);
 
         edt_Massage = findViewById(R.id.edt_sendmsg);
-        btn_SendMsg = findViewById(R.id.btn_send_msg);
+        btn_SendMsg = findViewById(R.id.send_msg);
         mRecyclerView = findViewById(R.id.chat_viewer_recycler);
     }
 
@@ -330,7 +354,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                //nead to check this line what is the propose of this line
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
-                    sendNotification(djUid,"Hamza",msg);
+                    sendNotification(djUid,fuser.getUid(),msg);
                 }
                 notify = false;
             }
@@ -361,7 +385,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if(! response.isSuccessful()){
-                                        Toast.makeText(ChatViewerActivity.this, "Faild to send Notification", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ChatViewerActivity.this, "Failed to send Notification", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 

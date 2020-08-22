@@ -82,7 +82,6 @@ public class ChatListFragment extends Fragment {
         mUserChatList = new ArrayList<>();
         getChatList();
 
-
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

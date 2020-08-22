@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -87,10 +88,12 @@ public class BlogDetailActivity extends AppCompatActivity {
     private VideoView videoView;
 
 
-    AlertDialog.Builder builder;
-    AlertDialog alertDialog;
-
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
     private NetworkChangeReceiver mNetworkChangeReceiver;
+
+    Retrofit retrofit;
+    private JSONApiHolder  JsonApiHolder;
 
 
     @Override
@@ -114,17 +117,14 @@ public class BlogDetailActivity extends AppCompatActivity {
         parentLayout.setVisibility(View.GONE);
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
-
-        Log.i("TAG", "threadm: " + Thread.currentThread().getId());
-
         showLoadingDialogue(); //show loading Dialogue when it's downloading from server
-
         mCommentModelList = new ArrayList<>();//for avoid null pointer exeption when there is no comment in data base
 
+        retrofit = ApiClient.retrofit(this);
 
         Intent intent = getIntent();
-        String Url = "blog/";
 
+        String Url = "blog/";
         int id = intent.getIntExtra("url", 0);
         Url += String.valueOf(id);
         Featured_image = intent.getStringExtra("featured_image");
@@ -146,22 +146,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                     edt_Comment.getText().clear();
                     hideKeyboard(BlogDetailActivity.this);
 
-                    if (!mCommentModelList.isEmpty() && mCommentModelList != null) {
-                        mCommentModelList.add(0, new CommentModel(comment, "123go", "go go go", "Current User", "no"));
-                        mAdapter.notifyDataSetChanged();
-                    } else {
-                        mCommentModelList.add(0, new CommentModel(comment, "123go", "go go go", "Current User", "no"));
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                        initializeCommentRecycler(mCommentModelList);
-                    }
-
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            postComment(comment);
-                        }
-                    }, 1000);
+                    new postComment().execute(comment);
 
                 } else {
                     Toast.makeText(BlogDetailActivity.this, "Please Right Some Comment First", Toast.LENGTH_SHORT).show();
@@ -197,25 +182,25 @@ public class BlogDetailActivity extends AppCompatActivity {
 
 
     private void downloadBlogs(String BlogId) {
-
-        Retrofit retrofit = ApiClient.retrofit(this);
-        JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
-        Call<SingleBlogDetailModel> call = feedJsonApi.getSingleBlog("api/"+BlogId);
+        JsonApiHolder = retrofit.create(JSONApiHolder.class);
+        Call<SingleBlogDetailModel> call = JsonApiHolder.getSingleBlog("api/"+BlogId);
 
         call.enqueue(new Callback<SingleBlogDetailModel>() {
             @Override
             public void onResponse(Call<SingleBlogDetailModel> call, Response<SingleBlogDetailModel> response) {
                 if (response.isSuccessful()) {
-                    String Name = response.body().getArtist_name();
-                    Gallery = response.body().getGallery();
-                    String CreateTime = response.body().getCreated_at();
-                    String Title = response.body().getTitle();
-                    String Description = response.body().getDescription();
-                    int Likes = response.body().getLikes_count();
-                    int Comments = response.body().getComments_count();
-                    Video = response.body().getVideo();
-                    String Profile = response.body().getArtist_profile_image();
-                    blogId = response.body().getId();
+                    SingleBlogDetailModel detailModel = response.body();
+
+                    String Name = detailModel.getArtist_name();
+                    Gallery = detailModel.getGallery();
+                    String CreateTime = detailModel.getCreated_at();
+                    String Title = detailModel.getTitle();
+                    String Description = detailModel.getDescription();
+                    int Likes = detailModel.getLikes_count();
+                    int Comments = detailModel.getComments_count();
+                    Video = detailModel.getVideo();
+                    String Profile = detailModel.getArtist_profile_image();
+                    blogId = detailModel.getId();
 
 
                     alertDialog.dismiss();
@@ -229,7 +214,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                             mRecyclerView.setVisibility(View.GONE);
                             if (Comments != 0) {
                                 mRecyclerView.setVisibility(View.VISIBLE);
-                                initializeCommentRecycler(response.body().mCommentModels);
+                                initializeCommentRecycler(detailModel.mCommentModels);
                             }
                         }
                     });
@@ -294,34 +279,6 @@ public class BlogDetailActivity extends AppCompatActivity {
 
 
     }
-
-    private void postComment(String Comment) {
-
-        Retrofit retrofit = ApiClient.retrofit( this);
-
-        JSONApiHolder feedJsonApi = retrofit.create(JSONApiHolder.class);
-
-        Call<SuccessErrorModel> call = feedJsonApi.postComment("api/comment_store/"+String.valueOf(blogId), Comment);
-
-        call.enqueue(new Callback<SuccessErrorModel>() {
-            @Override
-            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                if (response.isSuccessful()) {
-
-                } else {
-                    Log.i("TAG", "onResponse: " + response.code() + "\n" + response.errorBody() + "\n" + response.body());
-                    Toast.makeText(BlogDetailActivity.this, "Post Failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showAlertDialog(BlogDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
-            }
-        });
-
-    }
-
 
     private void setDataIntoFields(String Name,
                                    String Profile,
@@ -397,9 +354,7 @@ public class BlogDetailActivity extends AppCompatActivity {
             mSliderModels.add(new SliderModel(Featured_image));
         }
 
-
         RecyclerSliderAdapter adapter = new RecyclerSliderAdapter(mSliderModels, this);
-
         sliderView.setSliderAdapter(adapter);
 
         //tutorial should watch
@@ -417,7 +372,6 @@ public class BlogDetailActivity extends AppCompatActivity {
 
 
     private void initializeCommentRecycler(List<CommentModel> commentModelList) {
-
         mCommentModelList = commentModelList;
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mRecyclerView.setNestedScrollingEnabled(false);
@@ -446,6 +400,44 @@ public class BlogDetailActivity extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
         alertDialog = builder.show();
+    }
+
+    private class postComment extends AsyncTask<String,Void,Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            JsonApiHolder = retrofit.create(JSONApiHolder.class);
+            Call<SuccessErrorModel> call = JsonApiHolder.postComment("api/comment_store/"+String.valueOf(blogId), strings[0]);
+            call.enqueue(new Callback<SuccessErrorModel>() {
+                @Override
+                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                    if (response.isSuccessful()) {
+                        Intent intent = getIntent();
+                        finish();
+                        startActivity(intent);
+                    }
+                }
+                @Override
+                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            alertDialog = DialogsUtils.showAlertDialog(BlogDetailActivity.this,
+                                    false,
+                                    "No Internet",
+                                    "Please Check Your Internet Connection");
+                        }
+                    });
+                }
+            });
+            return null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
     }
 
 

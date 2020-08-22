@@ -218,7 +218,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textView14"
             app:layout_constraintVertical_bias="0.0" />
 
-
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
@@ -231,44 +230,43 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorBlue"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:paddingRight="16dp"
-        android:paddingLeft="16dp"
+        android:background="#fff"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="4dp">
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/edt_comment"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:hint="Add Your Comment"
-            android:textColor="#ffff"
-            android:textColorHint="#fff"
+            android:minHeight="50dp"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorBlack"
             android:textSize="16sp"
-            app:backgroundTint="#fff"
+            android:paddingRight="50dp"
+            app:backgroundTint="@color/colorBlue"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_sendcomment"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.7" />
 
         <Button
             android:id="@+id/btn_sendcomment"
-            android:layout_width="wrap_content"
+            android:layout_width="45dp"
             android:layout_height="35dp"
             android:layout_weight="0.5"
-            android:background="@drawable/roundshape"
+            android:background="@drawable/ic_send"
             android:gravity="center"
-            android:text="Send"
-            android:visibility="gone"
             android:textAllCaps="false"
             android:textColor="#fff"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginBottom="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/edt_comment"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
