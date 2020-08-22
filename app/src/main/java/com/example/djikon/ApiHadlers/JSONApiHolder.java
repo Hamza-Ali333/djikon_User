@@ -198,6 +198,12 @@ public interface JSONApiHolder {
             @Field("song_name") String Song_Name
     );
 
+    @FormUrlEncoded
+    @POST("api/updateToken")
+    Call<SuccessErrorModel> postFCMTokenForWeb(
+            @Field("token") String Token
+    );
+
 }
 
 

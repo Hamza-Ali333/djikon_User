@@ -744,7 +744,6 @@ public class SignInActivity extends AppCompatActivity {
 
                 Msg.setText("Can Use Finger Print to Login At Your Own Risk");
 
-
                 try {
                     generateKey();
                 } catch (KeyStoreException e) {

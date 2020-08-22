@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,7 +19,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.djikon.ApiHadlers.ApiClient;
@@ -42,17 +42,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,9 +65,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private static final String EMAIL = "email";
 
-    ProgressDialog progressDailoge;
-    CallbackManager mCallbackManager;
-    private EditText edt_Name, edt_LastName, edt_Email, edt_Password, edt_C_Password, edt_Refral_Code;
+    private CallbackManager mCallbackManager;
+    private EditText edt_Name, edt_LastName, edt_Email, edt_Password, edt_C_Password, edt_Referal_Code;
     private Button btn_SignUp;
     private LoginButton btn_FBSignUp;
     private RadioButton radioButton;
@@ -106,7 +105,7 @@ public class RegistrationActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_registration);
         getSupportActionBar().hide();
-        createRefrences();
+        createReferences();
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
         preferenceData = new PreferenceData();
@@ -216,7 +215,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isInfoRight()) {
-                    progressDailoge = DialogsUtils.showProgressDialog(RegistrationActivity.this, "Checking Credentials", "Please Wait...");
+                    progressDialog = DialogsUtils.showProgressDialog(RegistrationActivity.this, "Checking Credentials", "Please Wait...");
                     signUpNewUser();
                 }
             }//if
@@ -275,9 +274,9 @@ public class RegistrationActivity extends AppCompatActivity {
             edt_Password.setError("Password Not Matched");
             edt_Password.requestFocus();
             result = false;
-        } else if (edt_Refral_Code.getText().toString().trim().isEmpty()) {
-            edt_Refral_Code.setError("Please Enter Referal Code");
-            edt_Refral_Code.requestFocus();
+        } else if (edt_Referal_Code.getText().toString().trim().isEmpty()) {
+            edt_Referal_Code.setError("Please Enter Referal Code");
+            edt_Referal_Code.requestFocus();
             result = false;
         } else if (!radioButton.isChecked()) {
             Toast.makeText(this, "You are not Agree with Terms And Condition", Toast.LENGTH_SHORT).show();
@@ -303,13 +302,13 @@ public class RegistrationActivity extends AppCompatActivity {
                 edt_Email.getText().toString().trim(),
                 edt_Password.getText().toString().trim(),
                 edt_C_Password.getText().toString().trim(),
-                edt_Refral_Code.getText().toString().trim(),
+                edt_Referal_Code.getText().toString().trim(),
                 2);
 
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                progressDailoge.dismiss();
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     //store the Email adrress for sending otp on it
                     EmailForOTP = edt_Email.getText().toString();
@@ -321,8 +320,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     edt_Email.setError("Email Already Exit");
                 } else if (response.code() == 400) {
                     //reffral
-                    edt_Refral_Code.requestFocus();
-                    edt_Refral_Code.setError("Refferal not found");
+                    edt_Referal_Code.requestFocus();
+                    edt_Referal_Code.setError("Refferal not found");
                 } else {
                     Toast.makeText(RegistrationActivity.this, "Somthing Happend Wrong", Toast.LENGTH_SHORT).show();
                 }
@@ -331,7 +330,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
-                progressDailoge.dismiss();
+                progressDialog.dismiss();
                 alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this, false, "No Internet", "Please Check Your Internet Connection");
             }
         });
@@ -561,31 +560,61 @@ public class RegistrationActivity extends AppCompatActivity {
         btn_Resend_OTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 btn_Resend_OTP.setClickable(false);
-
-                Call<SuccessErrorModel> call = jsonApiHolder.resendOTP(EmailForOTP);
-                call.enqueue(new Callback<SuccessErrorModel>() {
-                    @Override
-                    public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(RegistrationActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
-                            img_close.setClickable(false);
-                            startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-
-                    }
-                });
+                //this class will send new email with new otp on EmailForOTP
+                new ResendOTPToEmail(btn_Resend_OTP,img_close,OTP_Timmer).execute(EmailForOTP);
             }
         });
 
     }//openVerifyOTPDialoge
 
-    private void startTimer(TextView otp_timmer, Button resentOTP, ImageView closeDailoge) {
+    private class  ResendOTPToEmail extends  AsyncTask<String,Void,Void> {
+        Button btn_Resend_OTP;
+        ImageView img_close;
+        TextView OTP_Timmer;
+
+        public ResendOTPToEmail(Button btn_Resend_OTP, ImageView img_close, TextView OTP_Timmer) {
+            this.btn_Resend_OTP = btn_Resend_OTP;
+            this.img_close = img_close;
+            this.OTP_Timmer = OTP_Timmer;
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            Call<SuccessErrorModel> call = jsonApiHolder.resendOTP(strings[0]);
+            call.enqueue(new Callback<SuccessErrorModel>() {
+                @Override
+                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                    if (response.isSuccessful()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(RegistrationActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
+                                img_close.setClickable(false);
+                                OTP_Timmer.setVisibility(View.VISIBLE);
+                                startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
+                            }
+                        });
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(RegistrationActivity.this, "Failed To Send Email Try Again", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+            return null;
+        }
+    }
+
+    private void startTimer(TextView otp_timmer, Button resentOTP, ImageView closeDailog) {
+        resentOTP.setVisibility(View.GONE);
         seconds = 30;
         Timer t = new Timer();    //declare the timer
         t.scheduleAtFixedRate(new TimerTask() {
@@ -602,8 +631,8 @@ public class RegistrationActivity extends AppCompatActivity {
                             resentOTP.setVisibility(View.VISIBLE);
 
                             resentOTP.setClickable(true);//make User to click an request for new OTP
-                            closeDailoge.setClickable(true);//make user able to close the Dialoge
-                            closeDailoge.setEnabled(true);
+                            closeDailog.setClickable(true);//make user able to close the Dialoge
+                            closeDailog.setEnabled(true);
                         }
                         seconds--;
                         otp_timmer.setText("if not get email then try again in " + String.format("%02d", seconds));
@@ -631,14 +660,13 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-    private void createRefrences() {
-
+    private void createReferences() {
         edt_Name = findViewById(R.id.edt_first_name);
         edt_LastName = findViewById(R.id.edt_last_name);
         edt_Email = findViewById(R.id.edt_email);
         edt_Password = findViewById(R.id.edt_password);
         edt_C_Password = findViewById(R.id.edt_c_password);
-        edt_Refral_Code = findViewById(R.id.edt_refrel_code);
+        edt_Referal_Code = findViewById(R.id.edt_refrel_code);
         btn_SignUp = findViewById(R.id.btn_sign_up);
         btn_FBSignUp = findViewById(R.id.btn_fb_sign_up);
         btn_GoogleSignIn = findViewById(R.id.btn_google_sign_up);
@@ -662,7 +690,6 @@ public class RegistrationActivity extends AppCompatActivity {
         preferenceData.setUserImage(RegistrationActivity.this, profileImage);
         preferenceData.setUserLoggedInStatus(RegistrationActivity.this, true);
     }
-
     @Override
     protected void onStop() {
         super.onStop();

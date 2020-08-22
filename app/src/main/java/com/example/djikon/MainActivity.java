@@ -27,6 +27,7 @@ import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.Models.LoginRegistrationModel;
+import com.example.djikon.Models.SuccessErrorModel;
 import com.example.djikon.NavDrawerFragments.AllArtistFragment;
 import com.example.djikon.NavDrawerFragments.ChatListFragment;
 import com.example.djikon.NavDrawerFragments.SubscribedArtistFragment;
@@ -35,14 +36,16 @@ import com.example.djikon.NavDrawerFragments.LiveToArtistFragment;
 import com.example.djikon.NavDrawerFragments.RequestedSongFragment;
 import com.example.djikon.NavDrawerFragments.SocialMediaShareFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar toolbar;
 
-    private static String IMAGEURL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/";
+    private static String IMAGE_URL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/";
     private PreferenceData preferenceData;
 
     private CircularImageView currentUserProfile;
@@ -83,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private DatabaseReference myRef;
+
+    private Retrofit retrofit;
+    private JSONApiHolder jsonApiHolder;
 
 
     @Override
@@ -110,13 +116,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
+        retrofit = ApiClient.retrofit(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createRefrences();
+        createReferences();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
         preferenceData = new PreferenceData();
 
@@ -174,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void createRefrences(){
+    private void createReferences(){
 
         toolbar = findViewById(R.id.toolbar);
         currentUserProfile = findViewById(R.id.currentUserProfile);
@@ -270,8 +278,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private  void userLogOut () {
-      Retrofit retrofit= ApiClient.retrofit(this);
-      JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
+      jsonApiHolder = retrofit.create(JSONApiHolder.class);
       Call<LoginRegistrationModel> call = jsonApiHolder.logout();
 
         call.enqueue(new Callback<LoginRegistrationModel>() {
@@ -304,8 +311,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String imageName = PreferenceData.getUserImage(this);
 
         if (!imageName.equals("No Image") && !imageName.equals("no")){
-            IMAGEURL += imageName;
-            Picasso.get().load(IMAGEURL)
+            IMAGE_URL += imageName;
+            Picasso.get().load(IMAGE_URL)
                     .placeholder(R.drawable.ic_doctor)
                     .fit()
                     .centerCrop()
@@ -314,7 +321,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onSuccess() {
                             //Navigation DrawerPhoto of User
                             UserProfileHeader.setImageDrawable(currentUserProfile.getDrawable());
-
                         }
 
                         @Override
@@ -335,7 +341,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            saveUserIDAndUIDonFirebase();
+                            saveUserIDAndUIDOnFirebase();
+                            sendFCMToken();
                         }
                     }
                 });
@@ -352,13 +359,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     creatingUserOnFirebase(Email, Password);
                     Log.i("TAG", "onComplete: SignIn Done");
                 }else {
-                    saveUserIDAndUIDonFirebase();
+                    saveUserIDAndUIDOnFirebase();
+                    sendFCMToken();
                 }
             }
         });
     }
 
-    private void saveUserIDAndUIDonFirebase() {
+    private void saveUserIDAndUIDOnFirebase() {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference("All_Users");
@@ -374,6 +382,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("TAG", "saveUserIDAndUIDonFirebase: no user found");
         }
     }
+
+    //send fcm Token to the Server for sending notification form server to application
+    private void sendFCMToken() {
+        //Get Firebase FCM token
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                jsonApiHolder = retrofit.create(JSONApiHolder.class);
+                Call<SuccessErrorModel> call = jsonApiHolder.postFCMTokenForWeb(instanceIdResult.getToken());
+
+                call.enqueue(new Callback<SuccessErrorModel>() {
+                    @Override
+                    public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                       if(!response.isSuccessful()){
+                           //if failed to send token on server then run Again
+                           sendFCMToken();
+                       }
+                    }
+                    @Override
+                    public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                        //if failed to send token on server then run Again
+                        sendFCMToken();
+                    }
+                });
+
+            }
+        });
+
+    }
+
 
     private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean, Void, Void> {
         @Override

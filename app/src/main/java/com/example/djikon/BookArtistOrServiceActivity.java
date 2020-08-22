@@ -101,6 +101,8 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
+
+        openCheckCostDialogue(12.9,12,23,0);
     }
 
     @Override
@@ -481,8 +483,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
 
-        final AlertDialog alertDialog1 = builder.create();
-        alertDialog1.show();
+        final AlertDialog alertDialog1 = builder.show();
 
         btn_Cancle_Booking.setOnClickListener(new View.OnClickListener() {
             @Override
