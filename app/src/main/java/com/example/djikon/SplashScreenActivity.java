@@ -28,10 +28,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         PreferenceData preferenceData = new PreferenceData();
 
-
         //preferenceData.clearPrefrences(this);
         //preferenceData.clearPrefrences(this);
-        //mFirebaseAuth.getInstance().signOut();
+       // mFirebaseAuth.getInstance().signOut();
 
         getSupportActionBar().hide();
         new Handler().postDelayed(new Runnable() {

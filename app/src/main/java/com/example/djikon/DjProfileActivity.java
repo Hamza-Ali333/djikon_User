@@ -538,7 +538,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private void lunchMessageActivity() {
         Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
-        i.putExtra("dj_Id",artistID);
+        i.putExtra("dj_Id", String.valueOf(artistID));
         i.putExtra("dj_Uid",artist_UID);
         i.putExtra("dj_Name",mDJName);
         i.putExtra("imgProfileUrl",mProfile);

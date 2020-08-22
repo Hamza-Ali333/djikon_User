@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -26,8 +27,9 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(firebaseUser != null){
+        if(firebaseUser != null  && sented.equals(firebaseUser.getUid())){
             sendNotification(remoteMessage);
+            Toast.makeText(this, "Sending Notification", Toast.LENGTH_SHORT).show();
         }
     }
 

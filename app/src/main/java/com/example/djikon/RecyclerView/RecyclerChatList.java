@@ -83,9 +83,9 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 
        holder.txt_msg_Sender_Name.setText(currentItem.getDj_Name());
 
-        if (!currentItem.getImageUrl().equals("no")) {
+        if (!currentItem.getImgProfileUrl().equals("no")) {
 
-            Picasso.get().load(currentItem.getImageUrl())
+            Picasso.get().load(currentItem.getImgProfileUrl())
                     .fit()
                     .centerCrop()
                     .placeholder(R.drawable.ic_doctor)
@@ -112,10 +112,10 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
            @Override
            public void onClick(View view) {
                Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
-               i.putExtra("dj_Id", Integer.parseInt(currentItem.getDj_Id()));
+               i.putExtra("dj_Id", currentItem.getDj_Id());
                i.putExtra("dj_Uid", currentItem.getDj_Uid());
                i.putExtra("dj_Name", currentItem.getDj_Name());
-               i.putExtra("imgProfileUrl", currentItem.getImageUrl());
+               i.putExtra("imgProfileUrl", currentItem.getImgProfileUrl());
                view.getContext().startActivity(i);
            }
        });

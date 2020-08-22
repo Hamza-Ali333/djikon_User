@@ -56,7 +56,6 @@ public class ChatListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Nullable

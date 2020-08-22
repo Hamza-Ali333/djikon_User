@@ -80,11 +80,11 @@ public class ChatViewerActivity extends AppCompatActivity {
     private AlertDialog alertDialog;
     private Boolean alreadyHaveChat = false;
 
-    int djId;
-    String djUid;
-    String djName , imgProfileUrl;
-    String CurrentUserId;
+    private String djId;
+    private String djUid;
+    private String djName , imgProfileUrl;
     private String userName;
+    private String CurrentUserId;
 
     private APIService apiService;
     private FirebaseUser fuser;
@@ -96,13 +96,6 @@ public class ChatViewerActivity extends AppCompatActivity {
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         userName = PreferenceData.getUserName(this);
 
-        //getting data of the Receiver
-        Intent i = getIntent();
-        djId =i.getIntExtra("dj_Id",0);
-        djUid = i.getStringExtra("dj_Uid");
-        djName = i.getStringExtra("dj_Name");
-        imgProfileUrl = i.getStringExtra("imgProfileUrl");
-        setDjProfile(imgProfileUrl);
     }
 
     @Override
@@ -115,7 +108,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         apiService = Client.getClient("https://fcm.googleapis.com").create(APIService.class);
 
         //give the Current Time and Date
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm aa", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
         //tool bar UserProfile
         currentUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,12 +124,19 @@ public class ChatViewerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        myRef = FirebaseDatabase.getInstance().getReference("Chats");
+        //getting data of the Receiver
+        Intent i = getIntent();
+        djId =i.getStringExtra("dj_Id");
+        djUid = i.getStringExtra("dj_Uid");
+        djName = i.getStringExtra("dj_Name");
+        imgProfileUrl = i.getStringExtra("imgProfileUrl");
+        setDjProfile(imgProfileUrl);
 
+        myRef = FirebaseDatabase.getInstance().getReference("Chats");
 
         CurrentUserId = PreferenceData.getUserId(this);
 
-        chatNodeName = "djId_"+ djId +"_userId_"+ CurrentUserId;
+        chatNodeName = "djId_" + djId + "_userId_" + CurrentUserId;
         checkHaveChatOrNot();
 
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -158,7 +158,7 @@ public class ChatViewerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 notify = true;
-                String currentDateandTime = sdf.format(new Date());
+                String currentDateAndTime = sdf.format(new Date());
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){
                        //MAke Node for this new User if they are texting first time
@@ -166,7 +166,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                        new CreateChatListOfUserAndDJ().execute();
                     }
 
-                    sendMassage(edt_Massage.getText().toString(),fuser.getUid(),djUid,currentDateandTime);
+                    sendMassage(edt_Massage.getText().toString(), fuser.getUid(), djUid, currentDateAndTime);
                 }else{
                     Toast.makeText(ChatViewerActivity.this, "You Can't Send Empty massage", Toast.LENGTH_SHORT).show();
                 }
@@ -341,10 +341,9 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
-    private void sendNotification(String receiver,final String userName,final String messaage) {
+    private void sendNotification(String receiver,final String userName,final String message) {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addValueEventListener(new ValueEventListener() {
@@ -352,7 +351,7 @@ public class ChatViewerActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(fuser.getUid(),R.mipmap.ic_launcher,userName+": "+messaage,"New Message",
+                    Data data = new Data(fuser.getUid(),R.mipmap.ic_launcher,userName+": "+message,"New Message",
                             djUid);
 
                     Sender sender = new Sender(data,token.getToken());
@@ -417,17 +416,17 @@ public class ChatViewerActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             UserChatListModel userChatListModel = new UserChatListModel();
-            userChatListModel.setDj_Id(String.valueOf(djId));
-            userChatListModel.setDj_Uid(djUid);
-            userChatListModel.setDj_Name(djName);
-            userChatListModel.setImageUrl(imgProfileUrl);
+            userChatListModel.setdj_Id(String.valueOf(djId));
+            userChatListModel.setdj_Uid(djUid);
+            userChatListModel.setdj_Name(djName);
+            userChatListModel.setimgProfileUrl(imgProfileUrl);
             myRef.child("chatListOfUser").child(CurrentUserId).push().setValue(userChatListModel);
 
             Map<String, String> userData = new HashMap<>();
             userData.put("user_Id", CurrentUserId);
             userData.put("user_Name",userName);
             userData.put("user_Uid", fuser.getUid());
-            userData.put("imageUrl",imgProfileUrl);
+            userData.put("imgProfileUrl",imgProfileUrl);
             myRef.child("chatListOfDj").child(String.valueOf(djId)).push().setValue(userData);
 
             return null;
