@@ -12,7 +12,7 @@
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
-        android:src="@drawable/logo"/>
+        android:src="@mipmap/logo"/>
 
     <ImageView
         android:id="@+id/close"

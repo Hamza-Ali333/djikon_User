@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -161,18 +162,18 @@ public class DjProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(DjProfileActivity.this, BrainTreeActivity.class));
+               // startActivity(new Intent(DjProfileActivity.this, BrainTreeActivity.class));
 
-//                img_DJ_Profile.buildDrawingCache();
-//                Bitmap bitmap = img_DJ_Profile.getDrawingCache();
-//                Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
-//                i.putExtra("id",String.valueOf(artistID));
-//                i.putExtra("BitmapImage", bitmap);
-//                i.putExtra("price",DjBookingRatePerHour);//rate per hour
-//                i.putExtra("name",mDJName);
-//                i.putExtra("request_code", 1);//one for dj booking
-//                i.putExtra("description",mAbout);
-//                startActivity(i);
+                img_DJ_Profile.buildDrawingCache();
+                Bitmap bitmap = img_DJ_Profile.getDrawingCache();
+                Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
+                i.putExtra("id",String.valueOf(artistID));
+                i.putExtra("BitmapImage", bitmap);
+                i.putExtra("price",DjBookingRatePerHour);//rate per hour
+                i.putExtra("name",mDJName);
+                i.putExtra("request_code", 1);//one for dj booking
+                i.putExtra("description",mAbout);
+                startActivity(i);
             }
         });
 
@@ -409,8 +410,6 @@ public class DjProfileActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     snackBarText.setText("OPPS Request Failed To Posted Try Again");
                     snackbar.show();
-
-                    Log.i("TAG", "onResponse: "+response.code());
                 }
             }
 
@@ -467,7 +466,10 @@ public class DjProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
 
-                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                        false,
+                        "No Internet",
+                        "Please Check Your Internet Connection");
             }
         });
     }
@@ -510,20 +512,23 @@ public class DjProfileActivity extends AppCompatActivity {
             myRef.child("DJs").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    artist_UID = dataSnapshot.child("uid").getValue(String.class);
-                    if(artist_UID != null){
-                        lunchMessageActivity();
-                    }else {
+                    if(dataSnapshot.exists()){
+                        artist_UID = dataSnapshot.child("uid").getValue(String.class);
+                        progressDialog.dismiss();
+                            lunchMessageActivity();
+                        }else {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 btn_Message.setClickable(true);
                                 btn_Message.setEnabled(true);
+                                progressDialog.dismiss();
                                 alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
-                                        false,"Error","Something happened wrong\nplease try again!");
+                                        false, "Not Connected", "May currently this DJ is not able to get massage.\nor try again!");
                             }
                         });
                     }
+
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {

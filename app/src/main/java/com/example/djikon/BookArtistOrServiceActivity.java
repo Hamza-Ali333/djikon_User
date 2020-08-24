@@ -191,7 +191,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 if (isInfoRight()) {
                     String startDate = txt_Start_Date.getText().toString() + " " + txt_Start_Time.getText().toString();
                     String endTime = txt_End_Date.getText().toString() + " " + txt_End_Time.getText().toString();
-                    getTimeDuration(startDate, endTime);
                     if (requestCode == 2 && !PriceType.equals("Fix")) {
                         getTimeDuration(startDate, endTime);
                     } else if (requestCode == 1) {

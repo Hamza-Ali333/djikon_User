@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,11 +47,14 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView img_uploaderProfile, img_feedImage, img_Chat, img_Likes;
-        public TextView txt_uploaderName, txt_uploadTime, txt_Description, txt_ReadMore, txt_LikesNo, txt_ChatNo, txt_Loading;
+        public TextView txt_uploaderName, txt_uploadTime, txt_Description, txt_ReadMore, txt_LikesNo, txt_ChatNo;
+        public ProgressBar progressBarProfile, progressBarFeed;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
+            progressBarFeed = itemView.findViewById(R.id.progressBarFead);
+            progressBarProfile = itemView.findViewById(R.id.progressBarProfile);
             img_uploaderProfile = itemView.findViewById(R.id.img_uploaderImage);
             img_feedImage = itemView.findViewById(R.id.img_feedImage);
             img_Likes = itemView.findViewById(R.id.img_likes);
@@ -61,7 +65,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
             txt_Description = itemView.findViewById(R.id.txt_imgDescription);
             txt_LikesNo = itemView.findViewById(R.id.txt_LikesNo);
             txt_ChatNo = itemView.findViewById(R.id.txt_chatNo);
-            txt_Loading = itemView.findViewById(R.id.loading);
+
         }
     }
 
@@ -84,7 +88,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
         FeedBlogModel currentItem = mBlogModelArrayList.get(position);
 
         if (!currentItem.getArtist_image().equals("no")) {
-
+            holder.progressBarProfile.setVisibility(View.VISIBLE);
             Picasso.get().load(currentItem.getArtist_image())
                     .placeholder(R.drawable.progressbar)
                     .fit()
@@ -93,20 +97,19 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                     .into(holder.img_uploaderProfile, new Callback() {
                         @Override
                         public void onSuccess() {
-
-
+                            holder.progressBarProfile.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            Toast.makeText(context, "Something Happend Wrong Uploader Image", Toast.LENGTH_LONG).show();
+                            holder.progressBarProfile.setVisibility(View.GONE);
                         }
                     });
         }
 
 
             if (!currentItem.getPhoto().equals("no")) {
-                holder.txt_Loading.setVisibility(View.VISIBLE);
+                holder.progressBarFeed.setVisibility(View.VISIBLE);
                 Picasso.get().load(currentItem.getPhoto())
                         .placeholder(R.drawable.progressbar)
                         .fit()
@@ -115,12 +118,12 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                             @Override
                             public void onSuccess() {
 
-                                holder.txt_Loading.setVisibility(View.GONE);
+                                holder.progressBarFeed.setVisibility(View.GONE);
                             }
 
                             @Override
                             public void onError(Exception e) {
-                                Toast.makeText(context, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+                                holder.progressBarFeed.setVisibility(View.GONE);
                             }
                         });
             }

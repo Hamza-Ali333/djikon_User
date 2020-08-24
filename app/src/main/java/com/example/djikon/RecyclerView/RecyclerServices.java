@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -30,9 +31,11 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
         public TextView txt_ServiceName, txt_ServiceDetail, txt_Price,txt_ChargesType;
         public RatingBar ratingBar;
         public ImageView img_featured;
+        public ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            progressBar = itemView.findViewById(R.id.progressBar);
 
             img_featured = itemView.findViewById(R.id.img_servic_image);
             txt_ServiceName = itemView.findViewById(R.id.txt_servic_name);
@@ -70,17 +73,18 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                 holder.ratingBar.setRating(currentItem.getRating());
 
         if (!currentItem.getFeature_image().equals("no")) {
+            holder.progressBar.setVisibility(View.VISIBLE);
             Picasso.get().load(currentItem.getFeature_image())
                     .fit()
                     .centerCrop()
                     .into(holder.img_featured, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
+                            holder.progressBar.setVisibility(View.GONE);
                         }
                         @Override
                         public void onError(Exception e) {
-                          // Toast.makeText(g, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                            holder.progressBar.setVisibility(View.GONE);
                         }
                     });
         }

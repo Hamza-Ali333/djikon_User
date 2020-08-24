@@ -21,7 +21,6 @@ import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.Models.AllArtistModel;
 import com.example.djikon.R;
 import com.example.djikon.RecyclerView.RecyclerAllArtist;
-import com.example.djikon.RecyclerView.RecyclerSubscribedArtist;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class AllArtistFragment extends Fragment {
 
         View v =  inflater.inflate(R.layout.fragment_subscribe_artist,container,false);
 
-       Thread createRefreces = new Thread(new Runnable() {
+       Thread createRefereces = new Thread(new Runnable() {
            @Override
            public void run() {
                mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
@@ -55,15 +54,15 @@ public class AllArtistFragment extends Fragment {
                progressBar.setVisibility(View.VISIBLE);
            }
        });
-       createRefreces.start();
+       createRefereces.start();
 
-               getSubscribedArtist();
+               getAllArtist();
 
        return v;
     }
 
 
-    private void getSubscribedArtist () {
+    private void getAllArtist() {
 
         Retrofit retrofit= ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
@@ -91,8 +90,6 @@ public class AllArtistFragment extends Fragment {
                     mRecyclerView.setVisibility(View.VISIBLE);
 
                     Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-
-                    Log.i("TAG", "onResponse: "+response.code());
                 }
             }
 
@@ -104,7 +101,6 @@ public class AllArtistFragment extends Fragment {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
 
     }
 

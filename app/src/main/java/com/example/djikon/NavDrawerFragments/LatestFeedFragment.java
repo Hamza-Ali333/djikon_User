@@ -54,7 +54,6 @@ public class LatestFeedFragment extends Fragment {
         createRefrences(v);
 
         downloadBlogs();
-       //new background().execute();
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -63,7 +62,6 @@ public class LatestFeedFragment extends Fragment {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                rlt_progressBar.setVisibility(View.VISIBLE);
                 downloadBlogs();
                 pullToRefresh.setRefreshing(false);
             }

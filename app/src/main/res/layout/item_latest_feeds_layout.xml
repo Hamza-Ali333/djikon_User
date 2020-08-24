@@ -139,17 +139,27 @@
             app:srcCompat="@drawable/ic_unlike"
             tools:ignore="VectorDrawableCompat" />
 
-        <TextView
-            android:id="@+id/loading"
+        <ProgressBar
+            android:id="@+id/progressBarFead"
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading..."
-            android:textColor="#fff"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/txt_imgDescription"
+            app:layout_constraintBottom_toBottomOf="@+id/img_feedImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/img_feedImage" />
+            app:layout_constraintTop_toTopOf="@+id/img_feedImage"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/progressBarProfile"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/img_uploaderImage"
+            app:layout_constraintEnd_toEndOf="@+id/img_uploaderImage"
+            app:layout_constraintStart_toStartOf="@+id/img_uploaderImage"
+            app:layout_constraintTop_toTopOf="@+id/img_uploaderImage" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

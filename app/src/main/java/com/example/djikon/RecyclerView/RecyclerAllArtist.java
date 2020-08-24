@@ -1,6 +1,10 @@
 package com.example.djikon.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +15,26 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.DjProfileActivity;
+import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.Models.AllArtistModel;
+import com.example.djikon.Models.SuccessErrorModel;
 import com.example.djikon.R;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.ViewHolder>{
 
     private List<AllArtistModel> mAllArtistModel;
+    private AlertDialog alertDialog;
+    private Context context;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -87,8 +102,74 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
 
 }
 
+    private void followUnFollow (int CurrentStatus, String artistID, Context context) {
+
+    }
+
     @Override
     public int getItemCount() {
         return mAllArtistModel.size();
+    }
+
+
+    private class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
+        int CurrentStatus;
+        String artistID;
+
+        public FollowUnFollowArtist(int CurrentStatus,String artistID) {
+            this.CurrentStatus = CurrentStatus;
+            this.artistID = artistID;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Retrofit retrofit = ApiClient.retrofit(context);
+            JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
+
+            String relativeUrl = "";
+            //0 means not following yet
+            if(CurrentStatus == 0){
+                relativeUrl = "api/follow_artist/"+artistID;
+            }else {
+                relativeUrl = "api/unfollow_artist/"+artistID;
+            }
+
+            Call<SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(relativeUrl);
+
+            call.enqueue(new Callback<SuccessErrorModel>() {
+                @Override
+                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                    if(response.isSuccessful()){
+                        if (CurrentStatus == 0){
+//                        snackBarText.setText(" Follow Successfully");
+//                        mFollow_Status = 1;
+//                        mFollower_Count++;
+//                        btn_Follow.setText("UnFollow");
+                        }
+                        else {
+//                        mFollow_Status = 0;
+//                        mFollower_Count--;
+//                        snackBarText.setText(" UnFollow Successfully");
+//                        btn_Follow.setText("Follow");
+                        }
+
+//                    snackbar.show();
+//                    btn_Follow.setClickable(false);
+//                    btn_Follow.setEnabled(false);
+                    }else {
+                        alertDialog = DialogsUtils.showAlertDialog(context,
+                                false,
+                                "Error",
+                                "Something happened wrong try again");
+                    }
+                }
+                @Override
+                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+
+                    alertDialog = DialogsUtils.showAlertDialog(context,false,"No Internet","Please Check Your Internet Connection");
+                }
+            });
+            return null;
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.djikon.BlogDetailActivity;
 import com.example.djikon.Models.DjProfileBlogsModel;
 import com.example.djikon.R;
+import com.google.gson.internal.$Gson$Preconditions;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -27,6 +29,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
         public TextView txt_BlogTitle;
         public ImageView img_blog;
+        public ProgressBar progressBar;
 
         public static final String IMAGERELATIVELAYOUT="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
@@ -34,6 +37,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
             super(itemView);
             img_blog = itemView.findViewById(R.id.blog_image);
             txt_BlogTitle = itemView.findViewById(R.id.blog_title);
+            progressBar = itemView.findViewById(R.id.progressBarBlog);
         }
     }
 
@@ -59,22 +63,23 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
         holder.txt_BlogTitle.setText(currentItem.getTitle());
 
         if (!currentItem.getPhoto().equals("no")) {
+            holder.progressBar.setVisibility(View.VISIBLE);
             Picasso.get().load(ViewHolder.IMAGERELATIVELAYOUT+currentItem.getPhoto())
                     .fit()
                     .centerCrop()
                     .into(holder.img_blog, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
+                            holder.progressBar.setVisibility(View.GONE);
                         }
                         @Override
                         public void onError(Exception e) {
-                          // Toast.makeText(g, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                            holder.progressBar.setVisibility(View.GONE);
                         }
                     });
         }
 
-        holder.img_blog.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
@@ -82,7 +87,6 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
                 v.getContext().startActivity(i);
             }
         });
-
 
             }
 
