@@ -34,8 +34,6 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
             super(itemView);
             img_blog = itemView.findViewById(R.id.blog_image);
             txt_BlogTitle = itemView.findViewById(R.id.blog_title);
-
-
         }
     }
 

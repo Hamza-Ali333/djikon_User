@@ -71,7 +71,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
         this.context = context;
     }
 
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -87,6 +86,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
         if (!currentItem.getArtist_image().equals("no")) {
 
             Picasso.get().load(currentItem.getArtist_image())
+                    .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()
                     .placeholder(R.drawable.ic_doctor)
@@ -108,6 +108,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
             if (!currentItem.getPhoto().equals("no")) {
                 holder.txt_Loading.setVisibility(View.VISIBLE);
                 Picasso.get().load(currentItem.getPhoto())
+                        .placeholder(R.drawable.progressbar)
                         .fit()
                         .centerCrop()
                         .into(holder.img_feedImage, new Callback() {

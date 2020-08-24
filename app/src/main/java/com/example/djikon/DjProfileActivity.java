@@ -55,8 +55,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private Button btn_Book_Artist,
             btn_Request_A_Song,
-            btn_Follow;
-    private View btn_Message;
+            btn_Follow, btn_Message;
 
     private TextView
             txt_DJ_Name,
@@ -97,7 +96,6 @@ public class DjProfileActivity extends AppCompatActivity {
 
     private String artist_UID;
 
-
     List<ServicesModel> services;
     List<DjProfileBlogsModel> blogs;
 
@@ -107,8 +105,6 @@ public class DjProfileActivity extends AppCompatActivity {
     private NetworkChangeReceiver mNetworkChangeReceiver;
     private DatabaseReference myRef;
     private ValueEventListener listener;
-
-    private ProgressButton progressButton;
 
     @Override
     protected void onStart() {
@@ -193,8 +189,6 @@ public class DjProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 btn_Message.setClickable(false);
                 btn_Message.setEnabled(false);
-                progressButton = new ProgressButton(DjProfileActivity.this,view);
-                progressButton.buttonActivated();
 
                 new GetDjUidFromFirebase().execute();
 
@@ -224,6 +218,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
         if (!mProfile.equals("no")) {
             Picasso.get().load(mProfile)
+                    .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()
                     .into(img_DJ_Profile, new com.squareup.picasso.Callback() {
@@ -439,7 +434,6 @@ public class DjProfileActivity extends AppCompatActivity {
         //0 means not following yet
         if(CurrentStatus == 0){
             relativeUrl = "api/follow_artist/"+String.valueOf(artistID);
-
         }else {
             relativeUrl = "api/unfollow_artist/"+String.valueOf(artistID);
         }
@@ -470,7 +464,6 @@ public class DjProfileActivity extends AppCompatActivity {
                     Log.i("TAG", "onResponse: "+response.code());
                 }
             }
-
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
 
@@ -506,34 +499,41 @@ public class DjProfileActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            btn_Message.setBackground(getResources().getDrawable(R.drawable.btn_disable));
+            progressDialog = DialogsUtils.showProgressDialog(DjProfileActivity.this,
+                    "Getting Ready","Please Wait...");
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             myRef= FirebaseDatabase.getInstance().getReference("All_Users");
 
-            Log.i("TAG", "onDataChange: running");
             myRef.child("DJs").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                     artist_UID = dataSnapshot.child("uid").getValue(String.class);
-                    Log.i("TAG", "onDataChange: dJ Uid ==" + artist_UID);
                     if(artist_UID != null){
-                        btn_Message.setClickable(true);
-                        btn_Message.setEnabled(true);
-                        progressButton.buttonFinished();
                         lunchMessageActivity();
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                btn_Message.setClickable(true);
+                                btn_Message.setEnabled(true);
+                                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                                        false,"Error","Something happened wrong\nplease try again!");
+                            }
+                        });
                     }
-
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(DjProfileActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                            btn_Message.setClickable(true);
+                            btn_Message.setEnabled(true);
+                            alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                                    false,"Error","Something happened wrong\nplease try again!");
                         }
                      });
                 }

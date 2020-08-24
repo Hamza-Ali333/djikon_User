@@ -31,7 +31,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         if(firebaseUser != null  && sented.equals(firebaseUser.getUid())){
             sendNotification(remoteMessage);
-            Log.i("TAG", "onMessageReceived: message send FirebaseMessaging");
+            Log.i("TAG", "onMessageReceived: message received FirebaseMessaging");
         }
     }
 
@@ -41,6 +41,8 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
+
+        Log.i("TAG", "sendNotification: "+remoteMessage.getData());
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
 

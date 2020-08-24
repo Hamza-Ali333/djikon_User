@@ -9,7 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
         import android.os.Handler;
         import android.widget.Toast;
 
-        import com.example.djikon.GlobelClasses.PreferenceData;
+import com.example.djikon.GlobelClasses.App;
+import com.example.djikon.GlobelClasses.PreferenceData;
         import com.example.djikon.LiveStreaming.LiveVideoStreaming;
         import com.google.firebase.auth.FirebaseAuth;
 
@@ -27,6 +28,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         PreferenceData preferenceData = new PreferenceData();
+
+        startService(new Intent(getBaseContext(), App.class));
 
         //preferenceData.clearPrefrences(this);
         //preferenceData.clearPrefrences(this);
