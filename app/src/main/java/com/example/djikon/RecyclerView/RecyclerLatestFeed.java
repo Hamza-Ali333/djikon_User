@@ -42,6 +42,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     private AlertDialog alertDialog;
 
     private int total_likes;
+    private static final String Image_Base_Url ="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -49,7 +50,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
         public ImageView img_uploaderProfile, img_feedImage, img_Chat, img_Likes;
         public TextView txt_uploaderName, txt_uploadTime, txt_Description, txt_ReadMore, txt_LikesNo, txt_ChatNo;
         public ProgressBar progressBarProfile, progressBarFeed;
-
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -107,11 +107,9 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                     });
         }
 
-
             if (!currentItem.getPhoto().equals("no")) {
                 holder.progressBarFeed.setVisibility(View.VISIBLE);
-                Picasso.get().load(currentItem.getPhoto())
-                        .placeholder(R.drawable.progressbar)
+                Picasso.get().load(Image_Base_Url+currentItem.getPhoto())
                         .fit()
                         .centerCrop()
                         .into(holder.img_feedImage, new Callback() {
@@ -127,7 +125,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                             }
                         });
             }
-
 
                 holder.txt_uploaderName.setText(currentItem.getTitle());
                 holder.txt_uploadTime.setText(currentItem.getCreated_at());

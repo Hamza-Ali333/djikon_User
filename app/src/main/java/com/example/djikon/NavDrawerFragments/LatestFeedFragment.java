@@ -91,7 +91,6 @@ public class LatestFeedFragment extends Fragment {
                     Log.i(TAG, "onResponse: "+response.code());
                     return;
                 }
-
                         List<FeedBlogModel> blogs = response.body();
 
                         mAdapter = new RecyclerLatestFeed(blogs,getContext());

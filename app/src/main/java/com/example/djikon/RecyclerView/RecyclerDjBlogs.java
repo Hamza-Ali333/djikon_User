@@ -22,10 +22,8 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
     private List<DjProfileBlogsModel> djBlogsModels;
 
-
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
 
         public TextView txt_BlogTitle;
         public ImageView img_blog;

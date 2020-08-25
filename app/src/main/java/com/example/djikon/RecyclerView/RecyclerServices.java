@@ -89,11 +89,9 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                     });
         }
 
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //sending Featured Image only
                 holder.img_featured.buildDrawingCache();
                 Bitmap bitmap = holder.img_featured.getDrawingCache();
@@ -105,8 +103,6 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
             }
         });
             }
-
-
 
     @Override
     public int getItemCount() {

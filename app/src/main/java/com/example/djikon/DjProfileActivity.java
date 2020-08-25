@@ -192,7 +192,6 @@ public class DjProfileActivity extends AppCompatActivity {
                 btn_Message.setEnabled(false);
 
                 new GetDjUidFromFirebase().execute();
-
             }
         });
     }
@@ -430,7 +429,7 @@ public class DjProfileActivity extends AppCompatActivity {
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         String relativeUrl = "";
-        //0 means not following yet
+        //means not following yet
         if(CurrentStatus == 0){
             relativeUrl = "api/follow_artist/"+String.valueOf(artistID);
         }else {

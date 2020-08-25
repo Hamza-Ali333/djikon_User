@@ -101,8 +101,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-
-        openCheckCostDialogue(12.9,12,23,0);
     }
 
     @Override
@@ -196,7 +194,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     } else if (requestCode == 1) {
                         getTimeDuration(startDate, endTime);
                     }
-
                 }
             }
         });
@@ -215,14 +212,12 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
                 textView.setText(_pickedDate);
                 textView.setVisibility(View.VISIBLE);
-                Log.e("PickedDate: ", "Date: " + _pickedDate); //2019-02-12
+
             }
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.MONTH));
 
         dialog.getDatePicker().setMinDate(c.getTimeInMillis());
-
         dialog.show();
-
     }
 
     private void showTimePiker(TextView textView) {
@@ -336,12 +331,10 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         txt_End_Date = findViewById(R.id.txt_date_end);
         txt_Start_Time = findViewById(R.id.txt_start_time);
         txt_End_Time = findViewById(R.id.txt_time_end);
-
     }
 
     //return time of the
     private void getTimeDuration(String Start, String End) {
-
         //HH converts hour in 24 hours format (0-23), day calculation
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
@@ -352,23 +345,16 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             d1 = format.parse(Start);
             d2 = format.parse(End);
 
-
             //in milliseconds
             long diff = d2.getTime() - d1.getTime();
-
 
             long diffMinutes = diff / (60 * 1000) % 60;
             long diffHours = diff / (60 * 60 * 1000) % 24;
             long diffDays = diff / (24 * 60 * 60 * 1000);
 
-
             Integer Day = (int) (long) diffDays;
             Integer Hour = (int) (long) diffHours;
             Integer Minutes = (int) (long) diffMinutes;
-
-            Log.i(TAG, "getTimeDuration: " + diffDays + " days, ");
-            Log.i(TAG, "getTimeDuration: " + diffHours + " hours, ");
-            Log.i(TAG, "getTimeDuration: " + diffMinutes + " minutes, ");
 
             int TotalHour = 0;
             if (Day != 0) {
@@ -382,6 +368,69 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 Hour = 0;
             }
 
+            //getting total minuts
+            int TotalMinutes = Day + TotalHour + Minutes;
+
+            Integer ratePerHour = Integer.parseInt(RPH);
+
+            Double perMint = Double.valueOf((double) ratePerHour / 60);
+
+            perMint = perMint * TotalMinutes;
+
+            if (perMint > 0) {
+                //open Dailoge after Calculation and pass the value
+                openCheckCostDialogue(
+                        perMint,//total cost
+                        //converting the long into Integer
+                        (int) (long) diffDays, //this is for the days
+                        (int) (long) diffHours, //total Hour
+                        (int) (long) diffMinutes //total minutes
+                );
+            } else {
+                alertDialog = DialogsUtils.showAlertDialog(this, false,
+                        "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "getTimeDuration: " + e.getMessage());
+        }
+    }
+
+
+    private void getTimeDurationForFix(String Start, String End){
+        //HH converts hour in 24 hours format (0-23), day calculation
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+        Date d1 = null;
+        Date d2 = null;
+
+        try {
+            d1 = format.parse(Start);
+            d2 = format.parse(End);
+
+            //in milliseconds
+            long diff = d2.getTime() - d1.getTime();
+
+            long diffMinutes = diff / (60 * 1000) % 60;
+            long diffHours = diff / (60 * 60 * 1000) % 24;
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+
+            Integer Day = (int) (long) diffDays;
+            Integer Hour = (int) (long) diffHours;
+            Integer Minutes = (int) (long) diffMinutes;
+
+            int TotalHour = 0;
+            if (Day != 0) {
+                Day = (Day * 24) * 60;
+            } else {
+                Day = 0;
+            }
+            if (Hour != 0) {
+                TotalHour = Hour * 60;
+            } else {
+                Hour = 0;
+            }
 
             //getting total minuts
             int TotalMinutes = Day + TotalHour + Minutes;
@@ -543,7 +592,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         }
                     }
                 });
-
             }
 
             @Override
@@ -557,8 +605,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 });
             }
         });
-
-
     }
 
 

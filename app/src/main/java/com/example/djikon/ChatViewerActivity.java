@@ -346,8 +346,6 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
 
-
-
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
