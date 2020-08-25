@@ -351,7 +351,6 @@ public class UserProfileActivity extends AppCompatActivity  {
             public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
                 if(response.isSuccessful()){
 
-
                     FirstName=response.body().getFirstname();
                     LastName=response.body().getLastname();
 
@@ -698,8 +697,6 @@ public class UserProfileActivity extends AppCompatActivity  {
                 img_Profile.setImageURI(Image_uri);
 
             }
-
-
 
         }else {
             Toast.makeText(this, "Image is not Selected try Again", Toast.LENGTH_SHORT).show();

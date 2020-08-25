@@ -346,7 +346,7 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
 
-        final String msg = Massage;
+
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -354,7 +354,8 @@ public class ChatViewerActivity extends AppCompatActivity {
                //nead to check this line what is the propose of this line
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
-                    sendNotification(djUid,fuser.getUid(),msg);
+                    Toast.makeText(ChatViewerActivity.this, Massage, Toast.LENGTH_SHORT).show();
+                    sendNotification(djUid,fuser.getUid(),Massage);//1=Reciever,2=Sender,Massage
                 }
                 notify = false;
             }

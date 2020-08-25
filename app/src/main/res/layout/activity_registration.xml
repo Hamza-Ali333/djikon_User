@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:srcCompat="@mipmap/logo" />
+        app:srcCompat="@mipmap/ic_logo" />
 
     <TextView
         android:id="@+id/registeration_txt"

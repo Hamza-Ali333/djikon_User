@@ -26,14 +26,14 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         String sented = remoteMessage.getData().get("sented");
-        Log.i("TAG", "onMessageReceived: message send FirebaseMessaging");
+        Log.i("TAG", "onMessageReceived: message send FirebaseMessaging\n");
         Log.i("TAG", "onMessageReceived: "+remoteMessage.getData());
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        Log.i("TAG", "onMessageReceived: message received FirebaseMessaging");
+        Log.i("TAG", "onMessageReceived: message received FirebaseMessaging\n");
         if(firebaseUser != null  && sented.equals(firebaseUser.getUid())){
             sendNotification(remoteMessage);
-            Log.i("TAG", "onMessageReceived: message received FirebaseMessaging");
-            Log.i("TAG", "onMessageReceived: "+remoteMessage.getData());
+            Log.i("TAG", "onMessageReceived: true message received FirebaseMessaging");
+            Log.i("TAG", "onMessageReceived: true "+remoteMessage.getData());
         }
     }
 
