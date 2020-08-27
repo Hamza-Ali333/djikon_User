@@ -11,9 +11,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.BlogDetailActivity;
-import com.example.djikon.Models.DjProfileBlogsModel;
+import com.example.djikon.ResponseModels.DjProfileBlogsModel;
 import com.example.djikon.R;
-import com.google.gson.internal.$Gson$Preconditions;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

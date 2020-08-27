@@ -1,4 +1,4 @@
-package com.example.djikon.Models;
+package com.example.djikon.ResponseModels;
 
 public class DjProfileBlogsModel {
         private Integer id;

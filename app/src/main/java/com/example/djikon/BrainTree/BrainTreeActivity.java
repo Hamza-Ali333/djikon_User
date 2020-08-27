@@ -16,7 +16,7 @@ import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.example.djikon.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;

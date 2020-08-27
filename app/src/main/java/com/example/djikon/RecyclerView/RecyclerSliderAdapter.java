@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.djikon.R;
-import com.example.djikon.Models.SliderModel;
+import com.example.djikon.ResponseModels.SliderModel;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

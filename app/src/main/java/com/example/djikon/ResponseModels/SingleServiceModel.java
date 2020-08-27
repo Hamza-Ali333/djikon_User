@@ -1,4 +1,4 @@
-package com.example.djikon.Models;
+package com.example.djikon.ResponseModels;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

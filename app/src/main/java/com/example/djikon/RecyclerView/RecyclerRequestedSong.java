@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.djikon.Models.RequestedSongsModel;
+import com.example.djikon.ResponseModels.RequestedSongsModel;
 import com.example.djikon.R;
 import com.squareup.picasso.Picasso;
 

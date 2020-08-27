@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
-import com.example.djikon.Models.AllArtistModel;
-import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.ResponseModels.AllArtistModel;
+import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.example.djikon.R;
 
 import java.util.List;

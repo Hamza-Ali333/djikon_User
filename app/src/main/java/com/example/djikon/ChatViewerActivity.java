@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.PreferenceData;
-import com.example.djikon.Models.ChatModel;
-import com.example.djikon.Models.UserChatListModel;
+import com.example.djikon.ResponseModels.ChatModel;
+import com.example.djikon.ResponseModels.UserChatListModel;
 import com.example.djikon.Notification.APIService;
 import com.example.djikon.Notification.Client;
 import com.example.djikon.Notification.Data;

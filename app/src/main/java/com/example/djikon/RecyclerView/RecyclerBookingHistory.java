@@ -8,10 +8,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.djikon.Models.BookingHistory;
+import com.example.djikon.ResponseModels.BookingHistory;
 import com.example.djikon.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBookingHistory.ViewHolder>{

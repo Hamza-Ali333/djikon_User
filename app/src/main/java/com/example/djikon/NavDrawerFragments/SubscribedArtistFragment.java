@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.Models.SubscribeArtistModel;
+import com.example.djikon.ResponseModels.SubscribeArtistModel;
 import com.example.djikon.R;
 import com.example.djikon.RecyclerView.RecyclerSubscribedArtist;
 

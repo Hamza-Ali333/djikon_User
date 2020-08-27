@@ -16,11 +16,9 @@ import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
-import com.example.djikon.Models.BookingHistory;
-import com.example.djikon.Models.RequestedSongsModel;
+import com.example.djikon.ResponseModels.BookingHistory;
 import com.example.djikon.RecyclerView.RecyclerBookingHistory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;

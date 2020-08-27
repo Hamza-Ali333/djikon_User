@@ -1,7 +1,6 @@
 package com.example.djikon.NavDrawerFragments;
 
 import android.app.AlertDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.Models.FeedBlogModel;
+import com.example.djikon.ResponseModels.FeedBlogModel;
 import com.example.djikon.R;
 import com.example.djikon.RecyclerView.RecyclerLatestFeed;
 
@@ -29,7 +28,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.ContentValues.TAG;
 

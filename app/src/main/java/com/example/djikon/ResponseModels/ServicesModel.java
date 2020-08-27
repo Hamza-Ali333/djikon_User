@@ -1,9 +1,4 @@
-package com.example.djikon.Models;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
+package com.example.djikon.ResponseModels;
 
 public class ServicesModel {
     private int id;

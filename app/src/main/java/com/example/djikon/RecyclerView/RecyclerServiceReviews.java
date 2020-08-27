@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.djikon.Models.SingleServiceReviews;
+import com.example.djikon.ResponseModels.SingleServiceReviews;
 import com.example.djikon.R;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Callback;

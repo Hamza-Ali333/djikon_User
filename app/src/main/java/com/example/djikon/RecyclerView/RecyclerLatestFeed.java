@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,8 +19,8 @@ import com.example.djikon.BlogDetailActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.DjProfileActivity;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.Models.FeedBlogModel;
-import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.ResponseModels.FeedBlogModel;
+import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.example.djikon.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

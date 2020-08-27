@@ -5,14 +5,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,18 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.GlobelClasses.App;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
-import com.example.djikon.Models.LoginRegistrationModel;
-import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.ResponseModels.LoginRegistrationModel;
+import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.example.djikon.NavDrawerFragments.AllArtistFragment;
 import com.example.djikon.NavDrawerFragments.ChatListFragment;
 import com.example.djikon.NavDrawerFragments.SubscribedArtistFragment;

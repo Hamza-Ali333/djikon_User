@@ -37,8 +37,8 @@ import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
-import com.example.djikon.Models.LoginRegistrationModel;
-import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.ResponseModels.LoginRegistrationModel;
+import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 

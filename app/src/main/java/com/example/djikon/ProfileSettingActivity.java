@@ -20,7 +20,7 @@ import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
-import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.ResponseModels.SuccessErrorModel;
 
 import retrofit2.Call;
 import retrofit2.Callback;

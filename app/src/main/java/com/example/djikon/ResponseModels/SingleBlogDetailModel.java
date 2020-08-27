@@ -1,6 +1,5 @@
-package com.example.djikon.Models;
+package com.example.djikon.ResponseModels;
 
-import com.example.djikon.Models.CommentModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

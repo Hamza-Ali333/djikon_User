@@ -14,12 +14,11 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.BookArtistOrServiceActivity;
-import com.example.djikon.Models.ServicesModel;
+import com.example.djikon.ResponseModels.ServicesModel;
 import com.example.djikon.R;
 import com.example.djikon.ServiceDetailActivity;
 import com.squareup.picasso.Picasso;
 
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.ViewHolder> {

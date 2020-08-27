@@ -1,19 +1,17 @@
 package com.example.djikon.ApiHadlers;
 
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.example.djikon.Models.AllArtistModel;
-import com.example.djikon.Models.BookingHistory;
-import com.example.djikon.Models.DjAndUserProfileModel;
-import com.example.djikon.Models.FeedBlogModel;
-import com.example.djikon.Models.LoginRegistrationModel;
-import com.example.djikon.Models.RequestedSongsModel;
-import com.example.djikon.Models.SingleBlogDetailModel;
-import com.example.djikon.Models.SingleServiceModel;
-import com.example.djikon.Models.SubscribeArtistModel;
-import com.example.djikon.Models.SuccessErrorModel;
+import com.example.djikon.ResponseModels.AllArtistModel;
+import com.example.djikon.ResponseModels.BookingHistory;
+import com.example.djikon.ResponseModels.DjAndUserProfileModel;
+import com.example.djikon.ResponseModels.FeedBlogModel;
+import com.example.djikon.ResponseModels.LoginRegistrationModel;
+import com.example.djikon.ResponseModels.RequestedSongsModel;
+import com.example.djikon.ResponseModels.SingleBlogDetailModel;
+import com.example.djikon.ResponseModels.SingleServiceModel;
+import com.example.djikon.ResponseModels.SubscribeArtistModel;
+import com.example.djikon.ResponseModels.SuccessErrorModel;
 
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

@@ -10,13 +10,12 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.djikon.Models.ChatModel;
+import com.example.djikon.ResponseModels.ChatModel;
 import com.example.djikon.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.DjProfileActivity;
-import com.example.djikon.Models.SubscribeArtistModel;
+import com.example.djikon.ResponseModels.SubscribeArtistModel;
 import com.example.djikon.R;
 
 import java.util.List;

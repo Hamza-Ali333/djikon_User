@@ -18,11 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.Models.AllArtistModel;
+import com.example.djikon.ResponseModels.AllArtistModel;
 import com.example.djikon.R;
 import com.example.djikon.RecyclerView.RecyclerAllArtist;
 
-import java.nio.charset.MalformedInputException;
 import java.util.List;
 
 import retrofit2.Call;

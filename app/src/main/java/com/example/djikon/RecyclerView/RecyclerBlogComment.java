@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.djikon.Models.CommentModel;
+import com.example.djikon.ResponseModels.CommentModel;
 import com.example.djikon.R;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Callback;

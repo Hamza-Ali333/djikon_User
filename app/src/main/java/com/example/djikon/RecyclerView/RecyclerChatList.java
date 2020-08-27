@@ -17,7 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.ChatViewerActivity;
-import com.example.djikon.Models.UserChatListModel;
+import com.example.djikon.ResponseModels.UserChatListModel;
 import com.example.djikon.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.R;
-import com.example.djikon.Models.SliderModel;
+import com.example.djikon.ResponseModels.SliderModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 

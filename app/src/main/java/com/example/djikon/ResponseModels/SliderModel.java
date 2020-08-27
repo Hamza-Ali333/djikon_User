@@ -1,6 +1,4 @@
-package com.example.djikon.Models;
-
-import android.content.Intent;
+package com.example.djikon.ResponseModels;
 
 public class SliderModel {
     private String image;
