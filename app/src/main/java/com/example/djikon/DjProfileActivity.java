@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -25,10 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.BrainTree.BrainTreeActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
-import com.example.djikon.GlobelClasses.ProgressButton;
 import com.example.djikon.Models.DjAndUserProfileModel;
 import com.example.djikon.Models.DjProfileBlogsModel;
 import com.example.djikon.Models.ServicesModel;
@@ -162,18 +161,16 @@ public class DjProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               // startActivity(new Intent(DjProfileActivity.this, BrainTreeActivity.class));
-
-                img_DJ_Profile.buildDrawingCache();
-                Bitmap bitmap = img_DJ_Profile.getDrawingCache();
-                Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
-                i.putExtra("id",String.valueOf(artistID));
-                i.putExtra("BitmapImage", bitmap);
-                i.putExtra("price",DjBookingRatePerHour);//rate per hour
-                i.putExtra("name",mDJName);
-                i.putExtra("request_code", 1);//one for dj booking
-                i.putExtra("description",mAbout);
-                startActivity(i);
+                addExtraToIntentAndLunchActivity(img_DJ_Profile,
+                        artistID,
+                        true,
+                        false,
+                        0,
+                        "rate_per_hour",
+                        DjBookingRatePerHour,
+                        mDJName,
+                        mAbout
+                        );
             }
         });
 
@@ -239,7 +236,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
         mServicesRecycler.setHasFixedSize(true);//if the recycler view not increase run time
         serviceLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        serviceAdapter = new RecyclerServices(serviceList);
+        serviceAdapter = new RecyclerServices(serviceList,artistID,this);
 
         mServicesRecycler.setLayoutManager(serviceLayoutManager);
         mServicesRecycler.setAdapter(serviceAdapter);
@@ -560,6 +557,31 @@ public class DjProfileActivity extends AppCompatActivity {
         i.putExtra("dj_Uid",artist_UID);
         i.putExtra("dj_Name",mDJName);
         i.putExtra("imgProfileUrl",mProfile);
+        startActivity(i);
+    }
+
+    private void addExtraToIntentAndLunchActivity (ImageView img,
+                                                   int artistId,
+                                                   Boolean bookingForArtist,
+                                                   Boolean bookingForService,
+                                                   int serviceId,
+                                                   String priceType,
+                                                   String price,
+                                                   String serviceNameOrDjName,
+                                                   String description) {
+
+        img.buildDrawingCache();
+        Bitmap bitmap = img.getDrawingCache();
+        Intent i = new Intent(DjProfileActivity.this, BookArtistOrServiceActivity.class);
+        i.putExtra("artistId",artistId);
+        i.putExtra("bookingForArtist", bookingForArtist);//booking Artist true
+        i.putExtra("bookingForService", bookingForService);//booking Service true
+        i.putExtra("serviceId",serviceId);
+        i.putExtra("priceType", priceType);
+        i.putExtra("BitmapImage", bitmap);
+        i.putExtra("price", price);//rate per hour
+        i.putExtra("serviceOrDjName", serviceNameOrDjName);//Name of Artist if booking him or Name of Service if Booking Artist Service
+        i.putExtra("description", description);
         startActivity(i);
     }
 }

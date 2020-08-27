@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,11 +70,11 @@ public class ServiceDetailActivity extends AppCompatActivity {
             price_type,
             description,
             Gallery;
+    private int serviceId;
     private float totalRating;
 
-    private int id;
-
-
+    private int artistId;
+    private Bitmap BitmapImage;
 
     private static final String BASEURL_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
     private static final String FEATURED_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
@@ -113,29 +112,57 @@ public class ServiceDetailActivity extends AppCompatActivity {
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         Intent intent = getIntent();
-        id = intent.getIntExtra("id", 0);
+        serviceId = intent.getIntExtra("serviceId", 0);
+        artistId = intent.getIntExtra("artistId", 0);
+        BitmapImage = (Bitmap) intent.getParcelableExtra("BitmapImage");
 
-        new GetServiceDataAndReviews().execute(String.valueOf(id));
+
+        new GetServiceDataAndReviews().execute(String.valueOf(serviceId));
 
         singleServiceModleArrayList = new ArrayList<>();
 
         btn_Proceed_To_Pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Featured_img.buildDrawingCache();
-                Bitmap bitmap = Featured_img.getDrawingCache();
-                Intent i = new Intent(ServiceDetailActivity.this, BookArtistOrServiceActivity.class);
-                i.putExtra("id",String.valueOf(id));
-                i.putExtra("priceType", price_type);
-                i.putExtra("BitmapImage", bitmap);
-                i.putExtra("price", price);//rate per hour
-                i.putExtra("name", serviceName);
-                i.putExtra("request_code", 2);//2 for Service booking
-                i.putExtra("description", description);
-                startActivity(i);
+
+                addExtraToIntentAndLunchActivity(
+                        Featured_img,
+                        artistId,
+                        false,
+                        true,
+                        serviceId,
+                        price_type, //if find rate per hour then it will true or if not then it will be false
+                        price,
+                        serviceName,
+                        description
+                );
             }
         });
+    }
 
+    private void addExtraToIntentAndLunchActivity (ImageView img,
+                                                   int artistId,
+                                                   Boolean bookingForArtist,
+                                                   Boolean bookingForService,
+                                                   int serviceId,
+                                                   String priceType,
+                                                   String price,
+                                                   String serviceNameOrDjName,
+                                                   String description) {
+
+        img.buildDrawingCache();
+        Bitmap bitmap = img.getDrawingCache();
+        Intent i = new Intent(ServiceDetailActivity.this, BookArtistOrServiceActivity.class);
+        i.putExtra("artistId",artistId);
+        i.putExtra("bookingForArtist", bookingForArtist);//booking Artist true
+        i.putExtra("bookingForService", bookingForService);//booking Service true
+        i.putExtra("serviceId",serviceId);
+        i.putExtra("priceType", priceType);
+        i.putExtra("BitmapImage", bitmap);
+        i.putExtra("price", price);//rate per hour
+        i.putExtra("serviceOrDjName", serviceNameOrDjName);//Name of Artist if booking him or Name of Service if Booking Artist Service
+        i.putExtra("description", description);
+        startActivity(i);
     }
 
 
@@ -233,7 +260,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
                        // singleServiceModels = (List<SingleServiceModel>) response.body();
-
+                        serviceId = response.body().getId();
                         serviceImage = response.body().getFeatureImage();
                         serviceName = response.body().getName();
                         dj_Name = response.body().getArtist_name();

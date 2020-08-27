@@ -22,6 +22,7 @@ import com.example.djikon.Models.AllArtistModel;
 import com.example.djikon.R;
 import com.example.djikon.RecyclerView.RecyclerAllArtist;
 
+import java.nio.charset.MalformedInputException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -78,13 +79,7 @@ public class AllArtistFragment extends Fragment {
                     mRecyclerView.setVisibility(View.VISIBLE);
 
                             List<AllArtistModel> artistModels = response.body();
-                            if(artistModels.isEmpty()){
-                                AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
-                                        "No Artist Found","it's seems like you din't follow any artist now");
-                            }
-                           else
-                            initializeRecycler(artistModels);
-
+                            removeArtistWhichHaveStatusOne(artistModels);//will remove all artist which this user already followed
                 }else {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
@@ -104,16 +99,40 @@ public class AllArtistFragment extends Fragment {
 
     }
 
-    private void initializeRecycler (List<AllArtistModel> ArtistList) {
+    private void removeArtistWhichHaveStatusOne (List<AllArtistModel> ArtistList){
 
-        mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-        mLayoutManager = new LinearLayoutManager(this.getContext());
-        mAdapter = new RecyclerAllArtist(ArtistList);
+        if(!ArtistList.isEmpty()) {
 
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+            for (int i = 0; i < ArtistList.size(); i++) {
+
+                if(ArtistList.get(i).getFollow_status() == 1){
+                    try {
+                        ArtistList.remove(i);
+                    }catch (Exception e){
+                        Log.i("TAG", "removeArtistWhichHaveStatusOne: "+e.getMessage());
+                    }
+                }
+            }
+        }
+        if(ArtistList.isEmpty()) {
+            AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
+                    "No Artist Found","it's seems like you din't follow any artist now");
+        }
+        else{
+            Toast.makeText(getContext(), "Have Data", Toast.LENGTH_SHORT).show();
+            initializeRecycler(ArtistList);
+        }
     }
 
+    private void initializeRecycler (List<AllArtistModel> ArtistList) {
+            mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
+            mLayoutManager = new LinearLayoutManager(this.getContext());
+            mAdapter = new RecyclerAllArtist(ArtistList,getContext());
+
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mRecyclerView.setAdapter(mAdapter);
+
+    }
 
 
 }

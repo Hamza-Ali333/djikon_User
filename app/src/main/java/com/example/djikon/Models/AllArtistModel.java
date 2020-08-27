@@ -2,9 +2,10 @@ package com.example.djikon.Models;
 
 public class AllArtistModel {
     private int id;
-    private String profile_image, firstname, lastname, location, online_status, follow_status;
+    private String profile_image, firstname, lastname, location, online_status;
+    private int follow_status;
 
-    public AllArtistModel(int id, String profile_image, String firstname, String lastname, String location, String online_status, String follow_status) {
+    public AllArtistModel(int id, String profile_image, String firstname, String lastname, String location, String online_status, int follow_status) {
         this.id = id;
         this.profile_image = profile_image;
         this.firstname = firstname;
@@ -38,7 +39,7 @@ public class AllArtistModel {
         return online_status;
     }
 
-    public String getFollow_status() {
+    public int getFollow_status() {
         return follow_status;
     }
 }

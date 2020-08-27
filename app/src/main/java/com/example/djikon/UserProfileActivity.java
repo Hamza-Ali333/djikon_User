@@ -4,12 +4,10 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -77,10 +75,6 @@ public class UserProfileActivity extends AppCompatActivity  {
     private ProgressBar mProgressBar;
     private TextView msg;
 
-
-
-    private static final String UPDATEPROFILE = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/update_profile/";
-
     private PreferenceData preferenceData;
 
     private  Retrofit retrofit;
@@ -95,6 +89,7 @@ public class UserProfileActivity extends AppCompatActivity  {
     private String SelectedGender ="Select Gender";
     private String PhoneNo= "no";
     private String  Address = "no";
+    private static  final String ImageUrl = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     private String[] serverData;
     private String[] newData;
@@ -136,7 +131,6 @@ public class UserProfileActivity extends AppCompatActivity  {
         preferenceData= new PreferenceData();
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
-
 
 
         Thread downloadData = new Thread(new Runnable() {
@@ -249,7 +243,7 @@ public class UserProfileActivity extends AppCompatActivity  {
             }*/
               progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,"Uploading","Please Wait...");
            //updateProfile(preferenceData.getUserId(UserProfileActivity.this));
-               uploadImage();
+               updateProfile();
             }
         });
 
@@ -369,12 +363,10 @@ public class UserProfileActivity extends AppCompatActivity  {
                     runOnUiThread(new Thread(new Runnable() {
                         @Override
                         public void run() {
-
                             rlt_Parent.setVisibility(View.VISIBLE);
                             mProgressBar.setVisibility(View.GONE);
                             msg.setVisibility(View.GONE);
                             setDataInToFields();
-
                         }
                     }));
 
@@ -393,78 +385,35 @@ public class UserProfileActivity extends AppCompatActivity  {
         });
     }
 
-
-
-    private void updateProfile(String UserId){
-
-        retrofit = ApiClient.retrofit(this);
-        jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-//        RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpeg"),
-//                finalFile);
-//        RequestBody firstname = RequestBody.create(MediaType.parse("text/plain"),
-//                edt_FirstName.getText().toString());
-//        RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"),
-//                edt_LastName.getText().toString());
-//        RequestBody phone = RequestBody.create(MediaType.parse("text/plain"),
-//                edt_Phone_No.getText().toString());
-//        RequestBody location = RequestBody.create(MediaType.parse("text/plain"),
-//                edt_Location.getText().toString());
-//        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"),
-//               SelectedGender);
-
-        String img = imageToString();
-        Call<SuccessErrorModel> call = jsonApiHolder.UpdateUserProfile(
-                UserId,
-                     img,
-                edt_FirstName.getText().toString(),
-                edt_LastName.getText().toString(),
-                edt_Phone_No.getText().toString(),
-                SelectedGender,
-                edt_Location.getText().toString()
-               );
-
-        call.enqueue(new Callback<SuccessErrorModel>() {
-            @Override
-            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                if(response.isSuccessful()){
-                    runOnUiThread(new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialog.dismiss();
-                            finish();
-                            startActivity(getIntent());
-                        }
-                    }));
-
-
-                    Log.i("TAG", "onResponse: "+response.code());
-                }else {
-                    progressDialog.dismiss();
-                    Log.i("TAG", "onResponse: "+response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
-
-            }
-        });
-        }
-
-        private void uploadImage(){
+        private void updateProfile(){
+            String userId= preferenceData.getUserId(UserProfileActivity.this);
             retrofit = ApiClient.retrofit(this);
 
            // String path = Image_uri.getPath();
             File file = new File(Image_uri.getPath());
             MultipartBody.Part filePart = MultipartBody.Part.createFormData("image","imageName",RequestBody.create(MediaType.parse("multipart/form-data"), file));
+
+        RequestBody firstname = RequestBody.create(MediaType.parse("text/plain"),
+                edt_FirstName.getText().toString());
+        RequestBody lastName = RequestBody.create(MediaType.parse("text/plain"),
+                edt_LastName.getText().toString());
+        RequestBody phone = RequestBody.create(MediaType.parse("text/plain"),
+                edt_Phone_No.getText().toString());
+        RequestBody location = RequestBody.create(MediaType.parse("text/plain"),
+                edt_Location.getText().toString());
+        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"),
+               SelectedGender);
+
             jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-
-            String userId= preferenceData.getUserId(UserProfileActivity.this);
-
-            Call<SuccessErrorModel> uploadCall = jsonApiHolder.uploadImage("api/update_profile/"+userId,filePart);
+            Call<SuccessErrorModel> uploadCall = jsonApiHolder.UpdateUserProfile(
+                    "api/update_profile/"+userId,
+                    filePart,
+                    firstname,
+                    lastName,
+                    phone,
+                    gender,
+                    location
+                    );
             uploadCall.enqueue(new Callback<SuccessErrorModel>() {
                 @Override
                 public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
@@ -704,26 +653,6 @@ public class UserProfileActivity extends AppCompatActivity  {
 
 
     }//onActivity Result
-
-
-
-
-    //compress the image and decode it
-    private  String imageToString () {
-        //this veriable will contain all the bytes
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        //compress the bitmap into jpg formate
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);
-        //convert the byte array output stream into array of byte
-        byte[] imageByte = byteArrayOutputStream.toByteArray();
-
-        //now encode the byte array
-     return Base64.encodeToString(imageByte,Base64.DEFAULT);
-    }
-
-
-
 
     public void createRefrences(){
 

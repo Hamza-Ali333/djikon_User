@@ -1,23 +1,19 @@
 package com.example.djikon.RecyclerView;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
-import com.example.djikon.DjProfileActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.Models.AllArtistModel;
 import com.example.djikon.Models.SuccessErrorModel;
@@ -35,6 +31,8 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
     private List<AllArtistModel> mAllArtistModel;
     private AlertDialog alertDialog;
     private Context context;
+    private Boolean doingWorking;
+    private int itemIdWorkingFor;
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -43,7 +41,6 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
         public TextView txt_Subscribe_Artist_Name;
         public TextView txt_Subscribe_Artist_Location;
         public TextView txt_Follow;
-        public RelativeLayout rlt_SubscribeArtist;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -52,13 +49,14 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
             txt_Subscribe_Artist_Name = itemView.findViewById(R.id.txt_msg_sender_name);
             txt_Subscribe_Artist_Location = itemView.findViewById(R.id.txt_SubscribeArtistStatus);
             txt_Follow = itemView.findViewById(R.id.txt_UnFollow);
-            rlt_SubscribeArtist = itemView.findViewById(R.id.subscribe_artist_layout);
+
         }
     }
 
 //constructor
-    public RecyclerAllArtist(List<AllArtistModel> allArtistModelList) {
+    public RecyclerAllArtist(List<AllArtistModel> allArtistModelList,Context context) {
         this.mAllArtistModel = allArtistModelList;
+        this.context = context;
     }
 
 
@@ -81,30 +79,27 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
 
        holder.txt_Follow.setText("Follow");
 
-       holder.rlt_SubscribeArtist.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-
-               Intent intent = new Intent(view.getContext(), DjProfileActivity.class);
-               intent.putExtra("id", currentItem.getId());
-               view.getContext().startActivity(intent);
-           }
-       });
-
-        holder.txt_Follow.setOnClickListener(new View.OnClickListener() {
+           holder.txt_Follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder.txt_Follow.setText("Followed");
+                new FollowArtist(currentItem.getFollow_status(),
+                        String.valueOf(currentItem.getId())).execute();
 
-                holder.txt_Follow.setText("Unfollow");
-                Toast.makeText(view.getContext(), "This Featured will Available Soon", Toast.LENGTH_SHORT).show();
+                int newPosition = holder.getAdapterPosition();
+                mAllArtistModel.remove(newPosition);
+                notifyItemRemoved(newPosition);
+                notifyItemRangeChanged(newPosition, mAllArtistModel.size());
             }
         });
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 }
-
-    private void followUnFollow (int CurrentStatus, String artistID, Context context) {
-
-    }
 
     @Override
     public int getItemCount() {
@@ -112,13 +107,15 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
     }
 
 
-    private class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
+    private class FollowArtist extends AsyncTask<Void,Void,Void> {
         int CurrentStatus;
         String artistID;
 
-        public FollowUnFollowArtist(int CurrentStatus,String artistID) {
+
+        public FollowArtist(int CurrentStatus, String artistID) {
             this.CurrentStatus = CurrentStatus;
             this.artistID = artistID;
+
         }
 
         @Override
@@ -140,36 +137,35 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
                 @Override
                 public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                     if(response.isSuccessful()){
-                        if (CurrentStatus == 0){
-//                        snackBarText.setText(" Follow Successfully");
-//                        mFollow_Status = 1;
-//                        mFollower_Count++;
-//                        btn_Follow.setText("UnFollow");
-                        }
-                        else {
-//                        mFollow_Status = 0;
-//                        mFollower_Count--;
-//                        snackBarText.setText(" UnFollow Successfully");
-//                        btn_Follow.setText("Follow");
-                        }
 
-//                    snackbar.show();
-//                    btn_Follow.setClickable(false);
-//                    btn_Follow.setEnabled(false);
                     }else {
-                        alertDialog = DialogsUtils.showAlertDialog(context,
-                                false,
-                                "Error",
-                                "Something happened wrong try again");
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                alertDialog = DialogsUtils.showAlertDialog(context,
+                                        false,
+                                        "Error",
+                                        "Something happened wrong try again");
+                            }
+                        });
                     }
                 }
                 @Override
                 public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                    ((Activity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            alertDialog = DialogsUtils.showAlertDialog(context,
+                                    false,
+                                    "Server Not Connected",
+                                    "Please Check Your Internet Connection and Try Again!");
+                        }
+                    });
 
-                    alertDialog = DialogsUtils.showAlertDialog(context,false,"No Internet","Please Check Your Internet Connection");
                 }
             });
             return null;
         }
+
     }
 }

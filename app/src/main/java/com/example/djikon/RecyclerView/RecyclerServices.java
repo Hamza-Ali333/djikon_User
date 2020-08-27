@@ -1,5 +1,6 @@
 package com.example.djikon.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -12,16 +13,20 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.djikon.BookArtistOrServiceActivity;
 import com.example.djikon.Models.ServicesModel;
 import com.example.djikon.R;
 import com.example.djikon.ServiceDetailActivity;
 import com.squareup.picasso.Picasso;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.ViewHolder> {
 
     private List<ServicesModel> mServices;
+    private int artistId;
+    private Context context;
 
 
     //view holder class
@@ -48,8 +53,10 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
     }
 
     //constructor
-    public RecyclerServices(List<ServicesModel> services) {
+    public RecyclerServices(List<ServicesModel> services, int artistId, Context context) {
         this.mServices = services;
+        this.artistId = artistId;
+        this.context = context;
     }
 
 
@@ -97,7 +104,8 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                 Bitmap bitmap = holder.img_featured.getDrawingCache();
 
                 Intent i = new Intent(v.getContext(), ServiceDetailActivity.class);
-                i.putExtra("id",currentItem.getId());
+                i.putExtra("serviceId",currentItem.getId());
+                i.putExtra("artistId",artistId);
                 i.putExtra("BitmapImage", bitmap);
                 v.getContext().startActivity(i);
             }
@@ -107,6 +115,31 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
     @Override
     public int getItemCount() {
         return mServices.size();
+    }
+
+    private void addExtraToIntentAndLunchActivity (ImageView img,
+                                                   int artistId,
+                                                   Boolean bookingForArtist,
+                                                   Boolean bookingForService,
+                                                   int serviceId,
+                                                   String priceType,
+                                                   String price,
+                                                   String serviceNameOrDjName,
+                                                   String description) {
+
+        img.buildDrawingCache();
+        Bitmap bitmap = img.getDrawingCache();
+        Intent i = new Intent(context, BookArtistOrServiceActivity.class);
+        i.putExtra("artistId",artistId);
+        i.putExtra("bookingForArtist", bookingForArtist);//booking Artist true
+        i.putExtra("bookingForService", bookingForService);//booking Service true
+        i.putExtra("serviceId",serviceId);
+        i.putExtra("priceType", priceType);
+        i.putExtra("BitmapImage", bitmap);
+        i.putExtra("price", price);//rate per hour
+        i.putExtra("serviceOrDjName", serviceNameOrDjName);//Name of Artist if booking him or Name of Service if Booking Artist Service
+        i.putExtra("description", description);
+        context.startActivity(i);
     }
 }
 

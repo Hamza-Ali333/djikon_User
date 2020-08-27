@@ -13,8 +13,10 @@ import com.example.djikon.Models.SubscribeArtistModel;
 import com.example.djikon.Models.SuccessErrorModel;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -76,25 +78,16 @@ public interface JSONApiHolder {
             );
 
 
-
-    @FormUrlEncoded
-    @POST()
-    Call <SuccessErrorModel> UpdateUserProfile(
-            @Url String userid,
-            @Field("profile_image") String image,
-            @Field("firstname") String  firstname,
-            @Field("lastname") String  lastname,
-            @Field("contact") String  contact,
-            @Field("gender") String  gender,
-            @Field("location") String  location
-    );
-
-
         @Multipart
         @POST()
-        Call<SuccessErrorModel> uploadImage(
+        Call<SuccessErrorModel> UpdateUserProfile(
                 @Url String relativeUrl,
-                @Part MultipartBody.Part image
+                @Part MultipartBody.Part image,
+                @Part("firstname") RequestBody firstName,
+                @Part("lastname")  RequestBody lastName,
+                @Part("contact")   RequestBody contact,
+                @Part("gender")    RequestBody gender,
+                @Part("location")  RequestBody location
         );
 
 
@@ -175,9 +168,9 @@ public interface JSONApiHolder {
     Call <LoginRegistrationModel> logout();
 
     @FormUrlEncoded
-    @POST()
+    @POST("api/bookings")
     Call<SuccessErrorModel> postBooking(
-            @Url String relativeUrl,
+            @Field("sub_id") int artistId,
             @Field("service_id") int ServiceId,
             @Field("name") String Name,
             @Field("email") String Email,
@@ -202,6 +195,16 @@ public interface JSONApiHolder {
     @POST("api/updateToken")
     Call<SuccessErrorModel> postFCMTokenForWeb(
             @Field("token") String Token
+    );
+
+    @FormUrlEncoded
+    @POST("api/chekout")
+    Call<SuccessErrorModel> postNonceToServer(
+            @Field("amount") int amount,
+            @Field("payment_method_nonce") String paymentMethodNonce,
+            @Field("receiver_id") int receiverId,
+            @Field("sender_id") int senderId,
+            @Field("service_id") int serviceId
     );
 
 }

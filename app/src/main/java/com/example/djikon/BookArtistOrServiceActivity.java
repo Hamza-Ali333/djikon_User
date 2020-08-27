@@ -65,13 +65,18 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
     private EditText edt_Name, edt_Phone, edt_Email, edt_Address;
     private LinearLayout rlt_Start_Date, rlt_End_Date, rlt_Start_Time, rlt_End_Time;
     private TextView txt_Start_Date, txt_End_Date, txt_Start_Time, txt_End_Time;
+
+    //intent extra data will stored in these veriables
+    private Boolean bookingForArtist;
+    private Boolean bookingForService;
     private String RPH;//Rate Per Hour
-    private String Name;
-    private String PriceType;
-    private String id;
+    private String serviceOrDjName;
+    private String priceType;
+    private int artistId;//artist id
+    private int serviceId;
     private String TotalAmount;
     private Bitmap bitmap;
-    private int requestCode;
+    private String description;
 
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
@@ -97,7 +102,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
@@ -118,26 +122,38 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         Intent intent = getIntent();
-        requestCode = intent.getIntExtra("request_code", 0);
-        id = intent.getStringExtra("id");
 
-        if (requestCode == 1) {//1 for subscriber booking
-            RPH = intent.getStringExtra("rph");
+        artistId = intent.getIntExtra("artistId",0);
+        bookingForArtist = intent.getBooleanExtra("bookingForArtist",false);
+        serviceId = intent.getIntExtra("serviceId",0);
+        bookingForArtist = intent.getBooleanExtra("bookingForArtist",false);
+        bookingForService = intent.getBooleanExtra("bookingForService",false);
+        priceType = intent.getStringExtra("priceType");
+        bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
+        RPH = intent.getStringExtra("price");
+        serviceOrDjName = intent.getStringExtra("serviceOrDjName");
+        description = intent.getStringExtra("description");
+
+
+        Log.i(TAG, "onCreate: artistId "+artistId);
+        Log.i(TAG, "onCreate: bookingForArtist "+bookingForArtist);
+        Log.i(TAG, "onCreate: bookingForService "+bookingForService);
+        Log.i(TAG, "onCreate: serviceId "+serviceId);
+        Log.i(TAG, "onCreate: priceType "+priceType);
+        Log.i(TAG, "onCreate: price "+RPH);
+        Log.i(TAG, "onCreate: ServiceOrDjName "+serviceOrDjName);
+        Log.i(TAG, "onCreate: description "+description);
+
+        if (bookingForArtist == true && bookingForService == false) {//if ture
             rlt_End_Date.setVisibility(View.VISIBLE);
             rlt_End_Time.setVisibility(View.VISIBLE);
-        } else if (requestCode == 2) {//For Service Booking
-            PriceType = intent.getStringExtra("priceType");
         }
 
-        if (requestCode == 2 && PriceType.equals("Fix")) {
+        //if booking for service and price type is Fix then hide extra views
+        if (bookingForArtist == false && bookingForService == true &&priceType.equals("Fix")) {
             rlt_End_Date.setVisibility(View.GONE);
             rlt_End_Time.setVisibility(View.GONE);
         }
-
-        RPH = intent.getStringExtra("price");
-        Name = intent.getStringExtra("name");
-        bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
-
 
         rlt_Start_Date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +161,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 showDatPiker(txt_Start_Date);
             }
         });
-
 
         rlt_End_Date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,11 +204,12 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 if (isInfoRight()) {
                     String startDate = txt_Start_Date.getText().toString() + " " + txt_Start_Time.getText().toString();
                     String endTime = txt_End_Date.getText().toString() + " " + txt_End_Time.getText().toString();
-                    if (requestCode == 2 && !PriceType.equals("Fix")) {
-                        getTimeDuration(startDate, endTime);
-                    } else if (requestCode == 1) {
-                        getTimeDuration(startDate, endTime);
-                    }
+                    getTimeDuration(startDate, endTime);
+//                    if (!bookingForArtist && !priceType.equals("Fix")) {
+//                        getTimeDuration(startDate, endTime);
+//                    } else if (bookingForArtist) {
+//                        getTimeDuration(startDate, endTime);
+//                    }
                 }
             }
         });
@@ -251,7 +267,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             txt_Start_Date.setError("Start Date Required");
             txt_Start_Date.requestFocus();
             result = false;
-        } else if (requestCode == 2 && !PriceType.equals("Fix") && txt_End_Date.getText().toString().isEmpty()) {
+        } else if (bookingForArtist && !priceType.equals("Fix") && txt_End_Date.getText().toString().isEmpty()) {
             txt_Start_Date.setVisibility(View.VISIBLE);
             txt_Start_Date.setError("End Date Required");
             txt_Start_Date.requestFocus();
@@ -261,7 +277,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             txt_Start_Time.setError("Start Time Required");
             txt_Start_Time.requestFocus();
             result = false;
-        } else if (requestCode == 2 && !PriceType.equals("Fix") && txt_End_Time.getText().toString().isEmpty()) {
+        } else if (bookingForArtist && !priceType.equals("Fix") && txt_End_Time.getText().toString().isEmpty()) {
             txt_End_Time.setVisibility(View.VISIBLE);
             txt_End_Time.setError("End Time Required");
             txt_End_Time.requestFocus();
@@ -307,7 +323,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             Toast.makeText(this, "You are not Agree with Terms And Condition", Toast.LENGTH_SHORT).show();
             result = false;
         }
-
 
         return result;
     }
@@ -397,69 +412,69 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         }
     }
 
-
-    private void getTimeDurationForFix(String Start, String End){
-        //HH converts hour in 24 hours format (0-23), day calculation
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-
-        Date d1 = null;
-        Date d2 = null;
-
-        try {
-            d1 = format.parse(Start);
-            d2 = format.parse(End);
-
-            //in milliseconds
-            long diff = d2.getTime() - d1.getTime();
-
-            long diffMinutes = diff / (60 * 1000) % 60;
-            long diffHours = diff / (60 * 60 * 1000) % 24;
-            long diffDays = diff / (24 * 60 * 60 * 1000);
-
-            Integer Day = (int) (long) diffDays;
-            Integer Hour = (int) (long) diffHours;
-            Integer Minutes = (int) (long) diffMinutes;
-
-            int TotalHour = 0;
-            if (Day != 0) {
-                Day = (Day * 24) * 60;
-            } else {
-                Day = 0;
-            }
-            if (Hour != 0) {
-                TotalHour = Hour * 60;
-            } else {
-                Hour = 0;
-            }
-
-            //getting total minuts
-            int TotalMinutes = Day + TotalHour + Minutes;
-
-            Integer ratePerHour = Integer.parseInt(RPH);
-
-            Double perMint = Double.valueOf((double) ratePerHour / 60);
-
-            perMint = perMint * TotalMinutes;
-
-            if (perMint > 0) {
-                //open Dailoge after Calculation and pass the value
-                openCheckCostDialogue(
-                        perMint,//total cost
-                        //converting the long into Integer
-                        (int) (long) diffDays, //this is for the days
-                        (int) (long) diffHours, //total Hour
-                        (int) (long) diffMinutes //total minutes
-                );
-            } else {
-                alertDialog = DialogsUtils.showAlertDialog(this, false,
-                        "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
-            }
-
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "getTimeDuration: " + e.getMessage());
-        }
-    }
+//For Fix
+//    private void getTimeDurationForFix(String Start, String End){
+//        //HH converts hour in 24 hours format (0-23), day calculation
+//        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+//
+//        Date d1 = null;
+//        Date d2 = null;
+//
+//        try {
+//            d1 = format.parse(Start);
+//            d2 = format.parse(End);
+//
+//            //in milliseconds
+//            long diff = d2.getTime() - d1.getTime();
+//
+//            long diffMinutes = diff / (60 * 1000) % 60;
+//            long diffHours = diff / (60 * 60 * 1000) % 24;
+//            long diffDays = diff / (24 * 60 * 60 * 1000);
+//
+//            Integer Day = (int) (long) diffDays;
+//            Integer Hour = (int) (long) diffHours;
+//            Integer Minutes = (int) (long) diffMinutes;
+//
+//            int TotalHour = 0;
+//            if (Day != 0) {
+//                Day = (Day * 24) * 60;
+//            } else {
+//                Day = 0;
+//            }
+//            if (Hour != 0) {
+//                TotalHour = Hour * 60;
+//            } else {
+//                Hour = 0;
+//            }
+//
+//            //getting total minuts
+//            int TotalMinutes = Day + TotalHour + Minutes;
+//
+//            Integer ratePerHour = Integer.parseInt(RPH);
+//
+//            Double perMint = Double.valueOf((double) ratePerHour / 60);
+//
+//            perMint = perMint * TotalMinutes;
+//
+//            if (perMint > 0) {
+//                //open Dailoge after Calculation and pass the value
+//                openCheckCostDialogue(
+//                        perMint,//total cost
+//                        //converting the long into Integer
+//                        (int) (long) diffDays, //this is for the days
+//                        (int) (long) diffHours, //total Hour
+//                        (int) (long) diffMinutes //total minutes
+//                );
+//            } else {
+//                alertDialog = DialogsUtils.showAlertDialog(this, false,
+//                        "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
+//            }
+//
+//        } catch (Exception e) {
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            Log.i(TAG, "getTimeDuration: " + e.getMessage());
+//        }
+//    }
 
     private void openCheckCostDialogue(Double TotalCost, int Days, int Hour, int Minutes) {
 
@@ -505,13 +520,14 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
 
         img_Profile.setImageBitmap(bitmap);
-        txt_Name.setText(Name);
+        txt_Name.setText(serviceOrDjName);
 
-        if (requestCode == 1) {
-            txt_Service_Name.setText("Service Name");
-        } else {
-            txt_Service_Name.setText("Book This Dj");
-        }
+//        if (!bookingForArtist) {
+//            txt_Service_Name.setText("Service Name");
+//        } else {
+//            txt_Service_Name.setText("Book This Dj");
+//        }
+        txt_Service_Name.setText(serviceOrDjName);
         //purchaser Detail
         txt_pName.setText(edt_Name.getText().toString());
         txt_pEmail.setText(edt_Email.getText().toString());
@@ -531,20 +547,19 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
 
-        final AlertDialog alertDialog1 = builder.show();
+       checkBookingCoastDialog = builder.show();
 
         btn_Cancle_Booking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    alertDialog1.dismiss();
+                checkBookingCoastDialog.dismiss();
             }
         });
 
         btn_Book_Now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialog1.dismiss();
-                alertDialog1.cancel();
+                checkBookingCoastDialog.dismiss();
                 TotalAmount = String.valueOf(TotalCost);//for sending amount with nonce to server
                 new GetBrainTreeToken().execute();
 
@@ -555,15 +570,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
     private void postBooking(String PaidAmount) {
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        String relativeUrl = "api/book_artist/" + id;
-
-        Integer serviceId = null;
-        if (requestCode == 2) {
-            serviceId = Integer.parseInt(id);
-        }
 
         Call<SuccessErrorModel> call = jsonApiHolder.postBooking(
-                relativeUrl,
+                artistId,
                 serviceId,
                 edt_Name.getText().toString(),
                 edt_Email.getText().toString(),
@@ -584,7 +593,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             progressDialog.dismiss();
                             alertDialog = DialogsUtils.showAlertDialog(context, false, "Booking is Done",
-                                    "You Will be informed when Dj Accept or Reject Booking\nAnd payment will detect after Confirming Booking");
+                                    "You Will be informed when Dj Accept or Reject  Booking");
                         } else {
                             progressDialog.dismiss();
                             Toast.makeText(BookArtistOrServiceActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -600,7 +609,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         progressDialog.dismiss();
-                        alertDialog = DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this, false, "No Internet", "Please Check Your Internet Connection");
+                        alertDialog = DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this, false, "No Internet", t.getMessage());
                     }
                 });
             }
@@ -623,7 +632,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 // use the result to update your UI and send the payment method nonce to your server
                 String paymentMethodNonce = result.getPaymentMethodNonce().getNonce();
-                new PostNonceToServer().execute(paymentMethodNonce);
+                progressDialog = DialogsUtils.showProgressDialog(context, "Post Amount", "Please wait while confirming collecting amount of service");
+
+                PostNonceToServer(paymentMethodNonce);
 
             } else if (resultCode == RESULT_CANCELED) {
                 //the user canceled
@@ -685,56 +696,37 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         }
     }
 
-    private class PostNonceToServer extends AsyncTask<String, Void, Void> {
+    private void PostNonceToServer (String Nonce){
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("payment_method_nonce", Nonce);
+        params.put("amount", TotalAmount);
+        params.put("receiver_id", artistId);
+        params.put("sender_id", Integer.parseInt(PreferenceData.getUserId(this)));
+        params.put("service_id", serviceId);
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = DialogsUtils.showProgressDialog(context, "Post Amount", "Please wait while confirming collecting amount of service");
-        }
+        client.post("http://ec2-52-91-44-156.compute-1.amazonaws.com/api/chekout", params,
+                new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
-        @Override
-        protected Void doInBackground(String... strings) {
+                                progressDialog.dismiss();
+                                progressDialog = DialogsUtils.showProgressDialog(context,
+                                        "Post Booking",
+                                        "Please wait while booking is posting on server");
 
-            AsyncHttpClient client = new AsyncHttpClient();
-            RequestParams params = new RequestParams();
-            params.put("payment_method_nonce", strings[0]);//nonce Get from Server
-//            params.put("sender_id", PreferenceData.getUserId(context));
-//            params.put("receiver_id", "DjId");
-            params.put("amount", TotalAmount);
-            //ifbooking Against Service Then also need service id
-//            if (requestCode == 2)
-//                params.put("service_id", "service");
-//            else
-//                params.put("service_id", " ");
-
-            client.post("http://ec2-52-91-44-156.compute-1.amazonaws.com/api/chekout", params,
-                    new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressDialog.dismiss();
-                                    progressDialog = DialogsUtils.showProgressDialog(context, "Post Booking", "Please wait while booking is posting on server");
-                                }
-                            });
-                            postBooking(TotalAmount);
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    alertDialog = DialogsUtils.showAlertDialog(context, false, "Note", "Please check your internet and try again");
-                                }
-                            });
-                        }
+                        postBooking(TotalAmount);
                     }
-            );
-            return null;
-        }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        alertDialog = DialogsUtils.showAlertDialog(context,
+                                false,
+                                "Note",
+                                "Please check your internet and try again");
+                    }
+                }
+        );
     }
 
     @Override
