@@ -1,4 +1,4 @@
-package com.example.djikon;
+package com.example.djikon.GlobelClasses;
 
 import android.annotation.SuppressLint;
 
@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 
 import androidx.annotation.RequiresApi;
+
+import com.example.djikon.MainActivity;
+import com.example.djikon.R;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class FingerPrintHandler extends FingerprintManager.AuthenticationCallback {
@@ -69,7 +72,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mContext.startActivity(new Intent(mContext,MainActivity.class));
+                    mContext.startActivity(new Intent(mContext, MainActivity.class));
                 }
             },1000);
 

@@ -14,7 +14,7 @@
     <ImageView
 
         android:layout_gravity="center_horizontal"
-        android:id="@+id/img_finger_print"
+        android:id="@+id/img_biometric"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="centerCrop"

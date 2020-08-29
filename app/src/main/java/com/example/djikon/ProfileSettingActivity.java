@@ -20,6 +20,7 @@ import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
+import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
 
 import retrofit2.Call;
@@ -62,6 +63,12 @@ public class ProfileSettingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createRefrences();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+
+        if(PreferenceData.getBiometricLoginState(ProfileSettingActivity.this)){
+            swt_Biometric_State.setChecked(true);
+        }else {
+            swt_Biometric_State.setChecked(false);
+        }
         rlt_ChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +103,23 @@ public class ProfileSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openSocialMedia();
+            }
+        });
+
+        swt_Biometric_State.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(swt_Biometric_State.isChecked()) {
+                    alertDialog = DialogsUtils.showAlertDialog(ProfileSettingActivity.this,
+                            false,
+                            "Note","Biometric is Enable Now");
+                    PreferenceData.setBiometricLoginState(ProfileSettingActivity.this,true);
+                }else {
+                    alertDialog = DialogsUtils.showAlertDialog(ProfileSettingActivity.this,
+                            false,
+                            "Note","Biometric is Disable Now");
+                    PreferenceData.setBiometricLoginState(ProfileSettingActivity.this,false);
+                }
             }
         });
 
@@ -263,9 +287,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
         });
     }
 
-
-
-
     private void createRefrences(){
           rlt_ChangePassword = findViewById(R.id.rlt_ChangePassowrd);
           rlt_ChangePin = findViewById(R.id.rlt_ChangePin);
@@ -274,6 +295,8 @@ public class ProfileSettingActivity extends AppCompatActivity {
           rlt_FaceId = findViewById(R.id.rlt_faceId);
           rlt_ConnectSocial = findViewById(R.id.rlt_socialmedia);
           rlt_LiveStreaming = findViewById(R.id.rlt_liveStreaming);
+
+         swt_Biometric_State = findViewById(R.id.swt_biometric_state);
     }
 
     @Override

@@ -54,7 +54,6 @@ public interface JSONApiHolder {
     @GET
     Call<DjAndUserProfileModel> getDjOrUserProfile(@Url String id);
 
-
     //this will return full detail of a service
     @GET
     Call<SingleServiceModel> getSingleServieData(@Url String id);
@@ -65,16 +64,24 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("api/register")
-    Call <SuccessErrorModel> registerUser(
+    Call <LoginRegistrationModel> registerUser(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
             @Field("email") String email,
             @Field("password") String password,
-            @Field("c_password") String c_password,
             @Field("refferal") String refferal,
             @Field("role") int role
             );
 
+    @FormUrlEncoded
+    @POST("api/register")
+    Call <LoginRegistrationModel> registerUserFromSocialMedia(
+            @Field("firstname") String firstname,
+            @Field("lastname") String lastname,
+            @Field("email") String email,
+            @Field("social") int social,
+            @Field("role") int role
+    );
 
         @Multipart
         @POST()
@@ -155,7 +162,6 @@ public interface JSONApiHolder {
             @Url String relativeUrl,
             @Field("status") Integer likeStatus
     );
-
 
     @POST()
     Call <SuccessErrorModel>  followUnFollowArtist(

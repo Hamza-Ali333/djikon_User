@@ -36,12 +36,16 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
@@ -63,13 +67,16 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private CallbackManager mCallbackManager;
     private EditText edt_Name, edt_LastName, edt_Email, edt_Password, edt_C_Password, edt_Referal_Code;
+
     private Button btn_SignUp;
     private LoginButton btn_FBSignUp;
+    private SignInButton btn_GoogleSignIn;
+
     private RadioButton radioButton;
     private PreferenceData preferenceData;
 
-    private SignInButton btn_GoogleSignIn;
-    private GoogleSignInClient mgoogleSignInClient;
+    private GoogleSignInClient mGoogleSignInClient;
+    private GoogleApiClient mGoogleApiClient;
     private static final Integer RC_SIGN_IN = 736;
 
     private AlertDialog alertDialog;
@@ -77,6 +84,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private int OTP = 0;
     private String EmailForOTP;
+    private String Password;
 
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
@@ -105,8 +113,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
         preferenceData = new PreferenceData();
-        TextView textView = findViewById(R.id.term_info);
-
 
         btn_FBSignUp.setReadPermissions(Arrays.asList(EMAIL));
         mCallbackManager = CallbackManager.Factory.create();
@@ -115,9 +121,6 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
-                String id = loginResult.getAccessToken().toString();
-
-                Toast.makeText(RegistrationActivity.this, "id" + id, Toast.LENGTH_SHORT).show();
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -127,19 +130,24 @@ public class RegistrationActivity extends AppCompatActivity {
                                 try {
                                     // Application code
                                     String email = response.getJSONObject().getString("email");
-                                    String Name = object.getString("first_name");
+                                    String firstName = object.getString("first_name");
+                                    firstName = firstName+" "+object.get("middle_name");
+                                    String lastName = object.getString("last_name");
 
-                                    textView.setText("Email : " + email + "\n Name" + Name + " ");
-                                    Toast.makeText(RegistrationActivity.this, Name, Toast.LENGTH_SHORT).show();
+                                    signUpNewUser(true,
+                                            firstName,
+                                            lastName,
+                                            email);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,"Note","Something happened wrong please try again or SingUp with Formally");
                                 }
                             }
                         });
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id, first_name, last_name,email,gender,birthday,location");
+                parameters.putString("fields", "first_name, middle_name, last_name, email");
                 request.setParameters(parameters);
                 request.executeAsync();
 
@@ -148,15 +156,21 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 // App code
-                Toast.makeText(RegistrationActivity.this, "FaceBook Login is Cancled", Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,
+                        "Note",
+                        "FaceBook Login is Cancled");
             }
 
             @Override
             public void onError(FacebookException exception) {
                 // App code
-                Toast.makeText(RegistrationActivity.this, "Something Happend Wrong: try Again", Toast.LENGTH_SHORT).show();
+                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,
+                        "Note",
+                        "Something happened wrong please try again or SingUp with Formally");
+                Log.i("TAG", "onError: "+exception);
             }
         });
+
 
         edt_Password.addTextChangedListener(new TextWatcher() {
             @Override
@@ -211,8 +225,11 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isInfoRight()) {
-                    progressDialog = DialogsUtils.showProgressDialog(RegistrationActivity.this, "Checking Credentials", "Please Wait...");
-                    signUpNewUser();
+                    EmailForOTP = edt_Email.getText().toString().trim();
+                    Password = edt_Password.getText().toString().trim();
+                    signUpNewUser(false, edt_Name.getText().toString().trim(),
+                            edt_LastName.getText().toString().trim(),
+                            EmailForOTP);
                 }
             }//if
         });
@@ -223,7 +240,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-        mgoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         btn_GoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,69 +306,103 @@ public class RegistrationActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-    private void signUpNewUser() {
+    private void signUpNewUser(Boolean isSignUpWithSocialMedia,String firstName,String lastName,String email) {
+        progressDialog = DialogsUtils.showProgressDialog(RegistrationActivity.this, "Checking Credentials", "Please Wait...");
         retrofit = ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        Call<SuccessErrorModel> call = jsonApiHolder.registerUser(
-                edt_Name.getText().toString().trim(),
-                edt_LastName.getText().toString().trim(),
-                edt_Email.getText().toString().trim(),
-                edt_Password.getText().toString().trim(),
-                edt_C_Password.getText().toString().trim(),
-                edt_Referal_Code.getText().toString().trim(),
-                2);
+        Call<LoginRegistrationModel> call;
+        if(isSignUpWithSocialMedia){
+          call = jsonApiHolder.registerUserFromSocialMedia(
+                    firstName,
+                    lastName,
+                    email,
+                    1,
+                    2);
+        }else {
+            call = jsonApiHolder.registerUser(
+                    firstName,
+                    lastName,
+                    email,
+                    Password,
+                    edt_Referal_Code.getText().toString().trim(),
+                    2);
+        }
 
-        call.enqueue(new Callback<SuccessErrorModel>() {
+        call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
-            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                progressDialog.dismiss();
+            public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
+                Log.i("TAG", "onResponse: "+response.code());
                 if (response.isSuccessful()) {
-                    //store the Email adrress for sending otp on it
-                    EmailForOTP = edt_Email.getText().toString();
-                    openVerfiyOTPDialogue();
 
+                    //store the Email adrress for sending otp on it
+                    if(!isSignUpWithSocialMedia){
+                        progressDialog.dismiss();
+                        EmailForOTP = edt_Email.getText().toString();
+                        openVerfiyOTPDialogue();
+                    }else {
+                        progressDialog.dismiss();
+                        LoginRegistrationModel data = response.body();
+
+                        saveDataInPreferences(data.getSuccess(),
+                                String.valueOf(data.getId()),
+                                data.getFirstname()+" "+data.getLastname(),
+                                data.getProfile_image(),
+                                EmailForOTP,
+                                Password);
+
+                        lunchNextActivity();
+                    }
                 } else if (response.code() == 409) {
-                    Log.i("TAG", "onResponse" + " Email Already Exit \n" + response.code());
-                    edt_Email.requestFocus();
-                    edt_Email.setError("Email Already Exit");
+                    if(isSignUpWithSocialMedia){
+                        progressDialog.dismiss();
+                        alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,
+                                false,"Note","this account is already registered\n" +
+                                        "You Can Sign in Now");
+                    }else {
+                        progressDialog.dismiss();
+                        edt_Email.requestFocus();
+                        edt_Email.setError("Email Already Exit");
+                    }
                 } else if (response.code() == 400) {
                     //reffral
-                    edt_Referal_Code.requestFocus();
-                    edt_Referal_Code.setError("Refferal not found");
+                    if(!isSignUpWithSocialMedia){
+                        progressDialog.dismiss();
+                        edt_Referal_Code.requestFocus();
+                        edt_Referal_Code.setError("Refferal not found");
+                    }
                 } else {
+                    progressDialog.dismiss();
                     Toast.makeText(RegistrationActivity.this, "Somthing Happend Wrong", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+            public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDialog.dismiss();
                 alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this, false, "No Internet", "Please Check Your Internet Connection");
             }
         });
-
-
     }
 
 
     private void signInWithGoogle() {
-
-        Intent signInIntent = mgoogleSignInClient.getSignInIntent();
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-
     private void handleSignInResult(Task<GoogleSignInAccount> taskCompete) {
-
         try {
             GoogleSignInAccount acc = taskCompete.getResult(ApiException.class);
+            progressDialog = DialogsUtils.showProgressDialog(RegistrationActivity.this, "Checking Credentials", "Please Wait...");
             Log.i("TAG", "handleSignInResult: Done");
-
-            Toast.makeText(this, "Google sign in success full", Toast.LENGTH_SHORT).show();//should remove
+            signUpNewUser(true,
+                    acc.getGivenName(),
+                    acc.getFamilyName(),
+                    acc.getEmail());
 
         } catch (ApiException e) {
-
+            progressDialog.dismiss();
             Log.i("TAG", "handleSignInResult: Failed " + e.getMessage());
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
 
@@ -454,8 +505,6 @@ public class RegistrationActivity extends AppCompatActivity {
             }
 
             public void afterTextChanged(Editable s) {
-
-
             }
         });
 
@@ -501,7 +550,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
                     OTP = Integer.parseInt(builder);
 
-
                     Call<LoginRegistrationModel> call = jsonApiHolder.verifyEmail(EmailForOTP, OTP);
 
                     call.enqueue(new Callback<LoginRegistrationModel>() {
@@ -518,13 +566,14 @@ public class RegistrationActivity extends AppCompatActivity {
                                 saveDataInPreferences(data.getSuccess(),
                                         String.valueOf(data.getId()),
                                         data.getFirstname()+" "+data.getLastname(),
-                                        data.getProfile_image());
+                                        data.getProfile_image(),
+                                        EmailForOTP,
+                                        Password);
 
                                 lunchNextActivity();
                             } else {
                                 error.setVisibility(View.VISIBLE);
                                 progressDialog.dismiss();
-
                             }
                         }
 
@@ -672,20 +721,21 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void lunchNextActivity(){
         Intent i = new Intent(RegistrationActivity.this,MainActivity.class);
-        i.putExtra("come_from_registration",false);
-        i.putExtra("email",edt_Email.getText().toString().trim());
-        i.putExtra("password", edt_Password.getText().toString().trim());
+        i.putExtra("come_from_registration",true);
         startActivity(i);
         finish();
     }
 
-    private void saveDataInPreferences(String userToken, String userId, String userName, String profileImage){
+    private void saveDataInPreferences(String userToken, String userId, String userName, String profileImage,String userEmail,String userPassword){
         preferenceData.setUserToken(RegistrationActivity.this, userToken);
         preferenceData.setUserId(RegistrationActivity.this, userId);
         preferenceData.setUserName(RegistrationActivity.this, userName);
         preferenceData.setUserImage(RegistrationActivity.this, profileImage);
         preferenceData.setUserLoggedInStatus(RegistrationActivity.this, true);
+        preferenceData.setUserEmail(RegistrationActivity.this, userEmail);
+        preferenceData.setUserPassword(RegistrationActivity.this, userPassword);
     }
+
     @Override
     protected void onStop() {
         super.onStop();

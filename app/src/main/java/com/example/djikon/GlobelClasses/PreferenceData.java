@@ -9,9 +9,11 @@ public class PreferenceData
 {
     static final String PREF_LOGGEDIN_USER_TOKEN = "logged_token_is";
     static final String PREF_LOGGEDIN_USER_ID = "logged_id_is";
-    static final String PREF_USER_LOGGEDIN_STATUS = "logged_in_status";
+    static final String PREF_USER_LOGGEDIN_STATUS = "biometric_login_status";
+    static final String PREF_USER_BIOMETRIC_LOGIN_STATUS = "logged_in_status";
     static final String PREF_USER_IMAGE = "Current_User_Image";
-    static final String PREF_USER_UID = "Current_User_Image";
+    static final String PREF_USER_Password = "Current_User_Password";
+    static final String PREF_USER_Email = "Current_User_Email";
 
 
     static final String PREF_LOGGEDIN_USER_FullName = "USER_FULL_NAME";
@@ -62,19 +64,31 @@ public class PreferenceData
         return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_ID, "No Id");
     }
 
-    public static void setUserUId(Context ctx, String uid)
+    public static void setUserEmail(Context ctx, String email)
     {
         Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(PREF_USER_UID, uid);
+        editor.putString(PREF_USER_Email, email);
         editor.apply();
         editor.commit();
     }
 
-    public static String getUserUId(Context ctx)
+    public static String getUserEmail(Context ctx)
     {
-        return getSharedPreferences(ctx).getString(PREF_USER_UID, "No uid");
+        return getSharedPreferences(ctx).getString(PREF_USER_Email, "no");
     }
 
+    public static void setUserPassword(Context ctx, String password)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_USER_Password, password);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getUserPassword(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_USER_Password, "no");
+    }
 
 
     public static void setUserImage(Context ctx, String imageName)
@@ -90,6 +104,17 @@ public class PreferenceData
         return getSharedPreferences(ctx).getString(PREF_USER_IMAGE, "No Image");
     }
 
+    public static void setBiometricLoginState(Context ctx, boolean status)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putBoolean(PREF_USER_BIOMETRIC_LOGIN_STATUS, status);
+        editor.commit();
+    }
+
+    public static boolean getBiometricLoginState(Context ctx)
+    {
+        return getSharedPreferences(ctx).getBoolean(PREF_USER_BIOMETRIC_LOGIN_STATUS, false);
+    }
 
     public static void setUserLoggedInStatus(Context ctx, boolean status)
     {
@@ -104,7 +129,15 @@ public class PreferenceData
     }
 
     //clear the memory of the shared prefrences
-    public static void clearPrefrences(Context ctx)
+    public static void clearLoginState(Context ctx)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.remove(PREF_LOGGEDIN_USER_TOKEN);
+        editor.remove(PREF_USER_LOGGEDIN_STATUS);
+        editor.commit();
+    }
+    //clear the memory of the shared prefrences
+    public static void clearPreferences(Context ctx)
     {
         Editor editor = getSharedPreferences(ctx).edit();
         editor.remove(PREF_LOGGEDIN_USER_TOKEN);

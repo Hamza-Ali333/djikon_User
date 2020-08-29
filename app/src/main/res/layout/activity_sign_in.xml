@@ -34,14 +34,14 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:contentDescription="@null"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_logo" />
+            app:srcCompat="@drawable/logo" />
 
     <TextView
         android:id="@+id/activity_name"
@@ -140,57 +140,35 @@
         android:paddingLeft="28dp"
         android:paddingRight="8dp" />
 
-        <TextView
-            android:id="@+id/txt_finger_print"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:text="Sign In With Finger Print"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/img_finger_print"
-            app:layout_constraintEnd_toStartOf="@+id/guideline5"
-            app:layout_constraintStart_toEndOf="@+id/img_finger_print"
-            app:layout_constraintTop_toTopOf="@+id/img_finger_print" />
 
-        <TextView
-            android:id="@+id/txt_face_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:text="Sign In With Face Id"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/img_face_id"
-            app:layout_constraintEnd_toStartOf="@+id/guideline5"
-            app:layout_constraintStart_toEndOf="@+id/img_face_id"
-            app:layout_constraintTop_toTopOf="@+id/img_face_id"
-            tools:text="Sign In With Face Id" />
 
-        <ImageView
-            android:id="@+id/img_finger_print"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:layout_constraintEnd_toStartOf="@+id/txt_finger_print"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/txt_create_new_acount"
-            app:srcCompat="@drawable/ic_white_fingerprint"
-            android:contentDescription="@null"/>
+<!--        <TextView-->
+<!--            android:id="@+id/txt_face_id"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginLeft="8dp"-->
+<!--            android:text="Sign In With Face Id"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/img_face_id"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/guideline5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/img_face_id"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/img_face_id"-->
+<!--            tools:text="Sign In With Face Id" />-->
 
-        <ImageView
-            android:id="@+id/img_face_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toStartOf="@+id/txt_face_id"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/img_finger_print"
-            app:srcCompat="@drawable/face_id"
-            android:contentDescription="@null"
-            />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/img_face_id"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/txt_face_id"-->
+<!--            app:layout_constraintHorizontal_chainStyle="packed"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/guideline4"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/img_finger_print"-->
+<!--            app:srcCompat="@drawable/face_id"-->
+<!--            android:contentDescription="@null"-->
+<!--            />-->
 
         <TextView
             android:id="@+id/txt_Forgot_Password"
@@ -243,7 +221,35 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/img_face_id" />
+            app:layout_constraintTop_toBottomOf="@+id/biometricpromt" />
+
+        <RelativeLayout
+            android:id="@+id/biometricpromt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/txt_create_new_acount">
+
+            <ImageView
+                android:id="@+id/img_biometric"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/ic_login" />
+
+            <TextView
+                android:id="@+id/txt_biometric"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_toRightOf="@+id/img_biometric"
+                android:text="Biometric Login"
+                android:textColor="#FFFFFF" />
+
+
+        </RelativeLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

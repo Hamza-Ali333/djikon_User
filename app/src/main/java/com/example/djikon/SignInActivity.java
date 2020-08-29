@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 
+import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
+
 
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.FingerPrintHandler;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.ResponseModels.LoginRegistrationModel;
@@ -71,11 +75,12 @@ import retrofit2.Retrofit;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
 
-    private TextView txt_Create_new_account, txt_Forgot_Password, txt_signWith_face, txt_signWith_Finger, txt_signWith_PIN;
+    private TextView txt_Create_new_account, txt_Forgot_Password, txt_signWith_face, txt_signWith_PIN;
 
     private Button btn_SignIn;
+    private RelativeLayout rlt_BiometricPrompt;
 
-    private ImageView img_face_Id, img_Finger_Print;
+    private ImageView img_Finger_Print;
     private EditText edt_Email, edt_Password;
     private PreferenceData preferenceData;
     private Retrofit retrofit;
@@ -105,6 +110,8 @@ public class SignInActivity extends AppCompatActivity {
     private BiometricPrompt.PromptInfo promptInfo;
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
+    private AlertDialog alertDialog;
+
 
     @Override
     protected void onStart() {
@@ -120,78 +127,12 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign__in);
+        setContentView(R.layout.activity_sign_in);
         getSupportActionBar().hide();
         createReferencer();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
-
-
-        executor = ContextCompat.getMainExecutor(this);
-        biometricPrompt = new BiometricPrompt(SignInActivity.this,
-                executor, new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errorCode,
-                                              @NonNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-                Toast.makeText(getApplicationContext(),
-                        "Authentication error: " + errString, Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            @Override
-            public void onAuthenticationSucceeded(
-                    @NonNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-                Toast.makeText(getApplicationContext(),
-                        "Authentication succeeded!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAuthenticationFailed() {
-                super.onAuthenticationFailed();
-                Toast.makeText(getApplicationContext(), "Authentication failed",
-                        Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-
-//        promptInfo = new BiometricPrompt.PromptInfo.Builder()
-//                .setTitle("Biometric login for my app")
-//                .setSubtitle("Log in using your biometric credential")
-//                .setNegativeButtonText("Use account Credentials")
-//                .build();
-
-
-        promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Biometric login for my app")
-                .setSubtitle("Log in using your biometric credential")
-                //.setNegativeButtonText("Use account password")
-                .setConfirmationRequired(false)
-                .setDeviceCredentialAllowed(true)
-                .build();
-
-        // biometricPrompt.authenticate(promptInfo);
-
-
-//        BiometricManager biometricManager = BiometricManager.(this);
-//        switch (biometricManager.canAuthenticate()) {
-//            case BiometricManager.BIOMETRIC_SUCCESS:
-//                Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
-//                break;
-//            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-//                Log.e("MY_APP_TAG", "No biometric features available on this device.");
-//                break;
-//            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-//                Log.e("MY_APP_TAG", "Biometric features are currently unavailable.");
-//                break;
-//            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-//                Log.e("MY_APP_TAG", "The user hasn't associated " +
-//                        "any biometric credentials with their account.");
-//                break;
-//        }
-
-
-        //AlertDialog alertDialog = DialogsUtils.showAlertDailog(this,false,"Sing In Alert","Please do the right thing");
+        //Handel the Result When User Sign In Throw the BioMetric
+        singInCallBackHandler();
 
 
         retrofit = ApiClient.retrofit( this);
@@ -234,31 +175,55 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isInfoRight()) {
-                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Cheking...");
-                    isUserExits();
+                    isUserExits(edt_Email.getText().toString().trim(), edt_Password.getText().toString().trim());
+                }
+            }
+        });
+
+
+        rlt_BiometricPrompt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               //first check is user has enable this feature for login
+                if(PreferenceData.getBiometricLoginState(SignInActivity.this)){
+                    if(!PreferenceData.getUserEmail(SignInActivity.this).equals("no")
+                            && !PreferenceData.getUserPassword(SignInActivity.this).equals("no") ){
+                        showBiometricPrompt();
+                    }else {
+                        alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,
+                                false,"Note","Something happened Wrong please login usually and then enable this feature again");
+                    }
+                }else {
+                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,
+                            false,"Note","You have to login usually for first " +
+                                    "time and make sure after that you enable biometric option in app settings");
                 }
 
             }
         });
 
-        txt_signWith_face.setOnClickListener(new View.OnClickListener() {
+
+            //sign in with face id
+        /*txt_signWith_face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openLoginWithFaceId();
             }
         });
-
-        img_face_Id.setOnClickListener(new View.OnClickListener() {
+*/
+        //SignIn With FingerPrint
+/*        img_face_Id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openLoginWithFaceId();
+
+                //openLoginWithFaceId();
             }
         });
 
         txt_signWith_Finger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openLoginWithFingerPrint();
+                //openLoginWithFingerPrint();
             }
         });
 
@@ -267,7 +232,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View v) {
                 openLoginWithFingerPrint();
             }
-        });
+        });*/
 
         txt_signWith_PIN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,7 +240,96 @@ public class SignInActivity extends AppCompatActivity {
                 openSignInWithPIN();
             }
         });
+    }
 
+
+    private Boolean isDeviceAbleForBiometricLogin(){
+        Boolean result = false;
+        BiometricManager biometricManager = BiometricManager.from(this);
+        switch (biometricManager.canAuthenticate()) {
+            case BiometricManager.BIOMETRIC_SUCCESS:
+                Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
+
+                result = true;
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                Log.e("MY_APP_TAG", "No biometric features available on this device.");
+                alertDialog = DialogsUtils.showAlertDialog(this,
+                        false,
+                        "Error",
+                        "No biometric features available on this device.");
+                result = false;
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+                Log.e("MY_APP_TAG", "Biometric features are currently unavailable.");
+                alertDialog = DialogsUtils.showAlertDialog(this,
+                        false,
+                        "Error",
+                        "Biometric features are currently unavailable.");
+                result = false;
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+                Log.e("MY_APP_TAG", "The user hasn't associated " +
+                        "any biometric credentials with their account.");
+                alertDialog = DialogsUtils.showAlertDialog(this,
+                        false,
+                        "Error",
+                        "The user hasn't associated " +
+                                "any biometric credentials with their account.");
+                result = false;
+                break;
+        }
+        return  result;
+    }
+
+    private void showBiometricPrompt(){
+//        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+//                .setTitle("Biometric login for my app")
+//                .setSubtitle("Log in using your biometric credential")
+//                .setNegativeButtonText("Use account Credentials")
+//                .build();
+        if(isDeviceAbleForBiometricLogin()){
+            promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Biometric login for my app")
+                    .setSubtitle("Log in using your biometric credential")
+                    //.setNegativeButtonText("Use account password")
+                    .setConfirmationRequired(false)
+                    .setDeviceCredentialAllowed(true)
+                    .build();
+
+            biometricPrompt.authenticate(promptInfo);
+        }
+    }
+
+    private void singInCallBackHandler () {
+        executor = ContextCompat.getMainExecutor(this);
+        biometricPrompt = new BiometricPrompt(SignInActivity.this,
+                executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode,
+                                              @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                Toast.makeText(getApplicationContext(),
+                        "Authentication error: " + errString, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(
+                    @NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+               isUserExits (PreferenceData.getUserEmail(SignInActivity.this),
+                       PreferenceData.getUserPassword(SignInActivity.this) );
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(getApplicationContext(), "Authentication failed",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
     }
 
     private void openForgotDialogue() {
@@ -312,7 +366,6 @@ public class SignInActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private void openVerfiyOTPDialogue(boolean isRunningForINValidEmail) {
@@ -470,7 +523,9 @@ public class SignInActivity extends AppCompatActivity {
                                     saveDataInPreferences(data.getSuccess(),
                                             String.valueOf(data.getId()),
                                             data.getFirstname()+" "+data.getLastname(),
-                                            data.getProfile_image());
+                                            data.getProfile_image(),
+                                            edt_Email.getText().toString().trim(),
+                                            edt_Password.getText().toString().trim());
 
                                     lunchNextActivity();
 
@@ -504,7 +559,6 @@ public class SignInActivity extends AppCompatActivity {
                                     } else {
                                         openUpdatePasswrodDialoge();
                                     }
-
 
                                 } else {
                                     error.setVisibility(View.VISIBLE);
@@ -711,7 +765,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
         TextView Msg = view.findViewById(R.id.msg);
-        ImageView img_fingerprint = view.findViewById(R.id.img_finger_print);
+        ImageView img_fingerprint = view.findViewById(R.id.img_biometric);
         Button btn_cancle_Face_Id = view.findViewById(R.id.cancel_fingerprint);
 
         builder.setView(view);
@@ -831,9 +885,10 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    private void isUserExits() {
+    private void isUserExits(String email,String password) {
+        progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Checking...");
 
-        Call<LoginRegistrationModel> call = jsonApiHolder.Login(edt_Email.getText().toString().trim(), edt_Password.getText().toString().trim(), 2);
+        Call<LoginRegistrationModel> call = jsonApiHolder.Login(email,password, 2);
 
         call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
@@ -844,7 +899,9 @@ public class SignInActivity extends AppCompatActivity {
                     saveDataInPreferences(data.getSuccess(),
                             String.valueOf(data.getId()),
                             data.getFirstname()+" "+data.getLastname(),
-                            data.getProfile_image());
+                            data.getProfile_image(),
+                            email,
+                            password);
 
                     lunchNextActivity();
 
@@ -859,12 +916,14 @@ public class SignInActivity extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 openVerfiyOTPDialogue(true);
                             } else {
+                                progressDialog.dismiss();
                                 alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "Someting happend worng try again");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                            progressDialog.dismiss();
                             alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "Someting happend worng try again");
                         }
                     });
@@ -976,8 +1035,8 @@ public class SignInActivity extends AppCompatActivity {
     private void createReferencer() {
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);
         txt_Forgot_Password = findViewById(R.id.txt_Forgot_Password);
-        txt_signWith_Finger = findViewById(R.id.txt_finger_print);
-        txt_signWith_face = findViewById(R.id.txt_face_id);
+        rlt_BiometricPrompt = findViewById(R.id.biometricpromt);
+//      txt_signWith_face = findViewById(R.id.txt_face_id);
         txt_signWith_PIN = findViewById(R.id.txt_signInWithPIN);
 
 
@@ -985,26 +1044,25 @@ public class SignInActivity extends AppCompatActivity {
         edt_Password = findViewById(R.id.edt_Password);
 
         btn_SignIn = findViewById(R.id.btn_SignIn);
-        img_face_Id = findViewById(R.id.img_face_id);
-        img_Finger_Print = findViewById(R.id.img_finger_print);
+        img_Finger_Print = findViewById(R.id.img_biometric);
     }
 
     private void lunchNextActivity(){
         Intent i = new Intent(SignInActivity.this,MainActivity.class);
         i.putExtra("come_from_registration",false);
-        i.putExtra("email",edt_Email.getText().toString().trim());
-        i.putExtra("password", edt_Password.getText().toString().trim());
         progressDialog.dismiss();
         startActivity(i);
         finish();
     }
 
-    private void saveDataInPreferences(String userToken, String userId, String userName, String profileImage){
+    private void saveDataInPreferences(String userToken, String userId, String userName, String profileImage,String userEmail,String userPassword){
         preferenceData.setUserToken(SignInActivity.this, userToken);
         preferenceData.setUserId(SignInActivity.this, userId);
         preferenceData.setUserName(SignInActivity.this, userName);
         preferenceData.setUserImage(SignInActivity.this, profileImage);
         preferenceData.setUserLoggedInStatus(SignInActivity.this, true);
+        preferenceData.setUserEmail(SignInActivity.this, userEmail);
+        preferenceData.setUserPassword(SignInActivity.this, userPassword);
     }
 
     @Override

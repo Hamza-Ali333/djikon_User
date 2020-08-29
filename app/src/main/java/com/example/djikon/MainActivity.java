@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (mFirebaseUser == null) {
                 Intent i = getIntent();
                 isComeFromRegistrationActivity = i.getBooleanExtra("come_from_registration", false);
-                currentUserEmail = i.getStringExtra("email");
-                currentUserPassword = i.getStringExtra("password");
+                currentUserEmail = PreferenceData.getUserEmail(this);
+                currentUserPassword = PreferenceData.getUserPassword(this);
                 if (currentUserEmail != null && currentUserEmail != null)
                     new RegisteringUserAlsoOnFirebase().execute(isComeFromRegistrationActivity);
             }
@@ -273,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
     private  void userLogOut () {
       jsonApiHolder = retrofit.create(JSONApiHolder.class);
       Call<LoginRegistrationModel> call = jsonApiHolder.logout();
@@ -282,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
                 if(response.isSuccessful()){
-                    PreferenceData.clearPrefrences(MainActivity.this);
+                    PreferenceData.clearLoginState(MainActivity.this);
                     mFirebaseAuth.getInstance().signOut();
                     progressDialog.dismiss();
                     startActivity(new Intent(MainActivity.this,SignInActivity.class));
@@ -354,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (!task.isSuccessful()) {
                     //if user is not exit in data base but successfully Sign in ON server then should create also on firebase
                     creatingUserOnFirebase(Email, Password);
-                    Log.i("TAG", "onComplete: SignIn Done");
+
                 }else {
                     saveUserIDAndUIDOnFirebase();
                     sendFCMToken();
@@ -407,7 +406,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
 
     private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean, Void, Void> {
         @Override
