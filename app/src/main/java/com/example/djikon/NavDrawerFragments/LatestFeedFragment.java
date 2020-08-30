@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.BookArtistOrServiceActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.ResponseModels.FeedBlogModel;
@@ -87,6 +88,7 @@ public class LatestFeedFragment extends Fragment {
 
                 if (!response.isSuccessful()) {
                     Log.i(TAG, "onResponse: "+response.code());
+                    alertDialog = DialogsUtils.showResponseMsg(getContext(),false);
                     return;
                 }
                         List<FeedBlogModel> blogs = response.body();
@@ -99,7 +101,7 @@ public class LatestFeedFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<FeedBlogModel>> call, Throwable t) {
-                alertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showResponseMsg(getContext(),true);
                 rlt_progressBar.setVisibility(View.INVISIBLE);
             }
         });

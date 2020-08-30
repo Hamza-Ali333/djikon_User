@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
+import android.telephony.CellSignalStrength;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -530,13 +531,13 @@ public class SignInActivity extends AppCompatActivity {
                                     lunchNextActivity();
 
                                 } else {
-                                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Not", "Some thing happened wrong please verify email again");
+                                    alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
-
+                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                             }
                         });
 
@@ -563,6 +564,7 @@ public class SignInActivity extends AppCompatActivity {
                                 } else {
                                     error.setVisibility(View.VISIBLE);
                                     progressDialog.dismiss();
+                                    alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
 
                                 }
                             }
@@ -570,6 +572,7 @@ public class SignInActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                                 progressDialog.dismiss();
+                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                             }
                         });
 
@@ -607,12 +610,14 @@ public class SignInActivity extends AppCompatActivity {
                             Toast.makeText(SignInActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
                             img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
                             startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
+                        }else {
+                           DialogsUtils.showResponseMsg(SignInActivity.this,false);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-
+                        alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                     }
                 });
             }
@@ -688,16 +693,17 @@ public class SignInActivity extends AppCompatActivity {
                             } else {
                                 progressDialog.dismiss();
                                 btn_update.setEnabled(true);
+                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,
+                                        false);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                            alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "No Internet", "Please Check Your Internet Connection");
+                            alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,
+                                    true);
                         }
                     });
-                } else {
-                    Toast.makeText(SignInActivity.this, "not Correct", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -917,14 +923,14 @@ public class SignInActivity extends AppCompatActivity {
                                 openVerfiyOTPDialogue(true);
                             } else {
                                 progressDialog.dismiss();
-                                alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "Someting happend worng try again");
+                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                             progressDialog.dismiss();
-                            alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "Someting happend worng try again");
+                            alert_AND_forgetDailoge = alertDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                         }
                     });
 
@@ -936,6 +942,8 @@ public class SignInActivity extends AppCompatActivity {
 
                 } else {
                     progressDialog.dismiss();
+                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                            "Try Again","Something happend wrong. please try again.");
                 }
             }
 
@@ -943,7 +951,8 @@ public class SignInActivity extends AppCompatActivity {
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDialog.dismiss();
-                alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "No Internet", "Please Check Your Internet Connection");
+                alert_AND_forgetDailoge =  DialogsUtils.showResponseMsg(SignInActivity.this,true);
+
             }
         });
 
@@ -964,13 +973,14 @@ public class SignInActivity extends AppCompatActivity {
 
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(SignInActivity.this, "Email Not Found", Toast.LENGTH_SHORT).show();
+                    alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 progressDialog.dismiss();
+                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
             }
         });
     }

@@ -262,7 +262,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
 
                 } else {
-                    Toast.makeText(BlogDetailActivity.this, response.code(), Toast.LENGTH_SHORT).show();
+                   alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,false);
 
                     return;
                 }
@@ -271,7 +271,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SingleBlogDetailModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showAlertDialog(BlogDetailActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,true);
                  progressBar.setVisibility(View.GONE);
             }
         });
@@ -297,7 +297,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         if (!Profile.equals("no")) {
             Picasso.get().load(Profile)
-                    .placeholder(R.drawable.ic_doctor)
+                    .placeholder(R.drawable.ic_avatar)
                     .into(img_Profile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -414,6 +414,8 @@ public class BlogDetailActivity extends AppCompatActivity {
                         Intent intent = getIntent();
                         finish();
                         startActivity(intent);
+                    }else {
+                        alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,false);
                     }
                 }
                 @Override
@@ -421,10 +423,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            alertDialog = DialogsUtils.showAlertDialog(BlogDetailActivity.this,
-                                    false,
-                                    "No Internet",
-                                    "Please Check Your Internet Connection");
+                            alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,true);
                         }
                     });
                 }

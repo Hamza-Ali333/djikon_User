@@ -23,13 +23,13 @@ public class ProgressButton {
      mProgressBar = view.findViewById(R.id.btn_progress);
     }
 
-    public void buttonActivated() {
+    public void btnOnClick(String text) {
         mProgressBar.setVisibility(View.VISIBLE);
-        mTextView.setText("Please Wait...");
+        mTextView.setText(text);
     }
-    public void buttonFinished() {
+
+    public void btnOnDone(String txt) {
         mProgressBar.setVisibility(View.GONE);
-        mTextView.setText("Done");
-        //lunsh the Activity
+        mTextView.setText(txt);
     }
 }

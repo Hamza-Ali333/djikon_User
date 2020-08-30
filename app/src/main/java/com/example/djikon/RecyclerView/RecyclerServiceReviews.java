@@ -65,7 +65,7 @@ public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerService
 
         if (!currentItem.getImage().equals("") && currentItem.getImage() != null){
             Picasso.get().load(IMAGE_BASE_URL+currentItem.getImage())
-                    .placeholder(R.drawable.ic_doctor)
+                    .placeholder(R.drawable.ic_avatar)
                     .into(holder.img_Reviewer_Profile, new Callback() {
                         @Override
                         public void onSuccess() {

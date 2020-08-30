@@ -22,6 +22,7 @@ import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.ResponseModels.FeedBlogModel;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.example.djikon.R;
+import com.example.djikon.SignInActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -92,7 +93,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()
-                    .placeholder(R.drawable.ic_doctor)
+                    .placeholder(R.drawable.ic_avatar)
                     .into(holder.img_uploaderProfile, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -213,6 +214,8 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                     view.setEnabled(true);
                     Log.i(TAG, "onResponse: "+response.code());
                 }else {
+                    alertDialog = DialogsUtils.showResponseMsg(context,
+                            false);
                     Log.i(TAG, "onResponse: "+response.code());
                 }
             }
@@ -220,8 +223,8 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 Log.i(TAG, "onResponse: "+t.getMessage());
-                alertDialog = DialogsUtils.showAlertDialog(context,false,"No Internet","Please Check Your Internet Connection");
-
+                alertDialog = DialogsUtils.showResponseMsg(context,
+                        true);
             }
         });
 

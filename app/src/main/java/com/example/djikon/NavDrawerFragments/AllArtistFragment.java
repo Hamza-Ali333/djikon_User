@@ -37,7 +37,7 @@ public class AllArtistFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private RelativeLayout progressBar;
-    private AlertDialog mAlertDialog;
+    private AlertDialog alertDialog;
 
     @Nullable
     @Override
@@ -82,17 +82,15 @@ public class AllArtistFragment extends Fragment {
                 }else {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-
-                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+                    alertDialog = DialogsUtils.showResponseMsg(getContext(),false);
                 }
             }
 
             @Override
             public void onFailure(Call<List<AllArtistModel>> call, Throwable t) {
-                mAlertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showResponseMsg(getContext(),true);
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -135,6 +135,8 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         description = intent.getStringExtra("description");
 
 
+
+
         Log.i(TAG, "onCreate: artistId "+artistId);
         Log.i(TAG, "onCreate: bookingForArtist "+bookingForArtist);
         Log.i(TAG, "onCreate: bookingForService "+bookingForService);
@@ -150,7 +152,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         }
 
         //if booking for service and price type is Fix then hide extra views
-        if (bookingForArtist == false && bookingForService == true &&priceType.equals("Fix")) {
+        if (bookingForArtist == false && bookingForService == true && priceType.equals("Fix")) {
             rlt_End_Date.setVisibility(View.GONE);
             rlt_End_Time.setVisibility(View.GONE);
         }
@@ -527,6 +529,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 //        } else {
 //            txt_Service_Name.setText("Book This Dj");
 //        }
+
         txt_Service_Name.setText(serviceOrDjName);
         //purchaser Detail
         txt_pName.setText(edt_Name.getText().toString());
@@ -596,7 +599,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                                     "You Will be informed when Dj Accept or Reject  Booking");
                         } else {
                             progressDialog.dismiss();
-                            Toast.makeText(BookArtistOrServiceActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,false);
                             Log.i(TAG, "onResponse: " + response.code());
                         }
                     }
@@ -609,7 +612,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         progressDialog.dismiss();
-                        alertDialog = DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this, false, "No Internet", t.getMessage());
+                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,true);
                     }
                 });
             }
@@ -677,6 +680,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                                 onBrainTreeSubmit(BrainTreeToken);
                             }
                         });
+                    }else {
+                        progressDialog.dismiss();
+                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,false);
                     }
                 }
 
@@ -686,8 +692,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            alertDialog = DialogsUtils.showAlertDialog(context, false,
-                                    "Network Error", "Failed to connect with server\nPlease Check Your Network!");
+                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,true);
                         }
                     });
                 }

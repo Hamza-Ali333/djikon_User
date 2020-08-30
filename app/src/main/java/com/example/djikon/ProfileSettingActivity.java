@@ -272,17 +272,15 @@ public class ProfileSettingActivity extends AppCompatActivity {
                     Toast.makeText(ProfileSettingActivity.this, "Done", Toast.LENGTH_SHORT).show();
                     Log.i("TAG", "onResponse: "+response.code());
                 }else {
-
                     mProgressDialog.dismiss();
-                    Toast.makeText(ProfileSettingActivity.this, "Failded", Toast.LENGTH_SHORT).show();
                     Log.i("TAG", "onResponse: "+response.code());
+                    alertDialog = DialogsUtils.showResponseMsg(ProfileSettingActivity.this,false);
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showAlertDialog(ProfileSettingActivity.this,false,"No Internet","Please Check Your Internet Connection");
-
+                alertDialog =  DialogsUtils.showResponseMsg(ProfileSettingActivity.this,true);
             }
         });
     }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,19 +49,21 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private RecyclerView mReviewsRecyclerView;
     private RecyclerView.Adapter mReviewsAdapter;
     private RecyclerView.LayoutManager mReviewsLayoutManager;
-
-
+    
     private Button btn_Proceed_To_Pay;
 
     private TextView txt_Service_Name,
             txt_Dj_Name,
             txt_Price,
             txt_Price_Type,
-            txt_Description;
+            txt_Description,
+    txt_ReviewHeading;
 
     private RatingBar ratingBar;
 
     private ImageView Featured_img;
+
+    private ProgressBar progressBarProfile;
 
     private String
             serviceImage,
@@ -152,6 +155,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         img.buildDrawingCache();
         Bitmap bitmap = img.getDrawingCache();
+
         Intent i = new Intent(ServiceDetailActivity.this, BookArtistOrServiceActivity.class);
         i.putExtra("artistId",artistId);
         i.putExtra("bookingForArtist", bookingForArtist);//booking Artist true
@@ -174,7 +178,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
 
     private void setDataInToView() {
-
         ratingBar.setRating(totalRating);
         txt_Service_Name.setText(serviceName);
         txt_Dj_Name.setText(dj_Name);
@@ -182,21 +185,23 @@ public class ServiceDetailActivity extends AppCompatActivity {
         txt_Price_Type.setText(price_type);
         txt_Description.setText(description);
 
-        //should see the response of the server here note
-        Picasso.get().load(FEATURED_IMAGES + serviceImage)
-                .fit()
-                .centerCrop()
-                .into(Featured_img, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
+        if(serviceImage != null){
+            Picasso.get().load(Featured_img+ serviceImage)
+                    .fit()
+                    .centerCrop()
+                    .into(Featured_img, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            progressBarProfile.setVisibility(View.GONE);
+                        }
 
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Toast.makeText(ServiceDetailActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onError(Exception e) {
+                            progressBarProfile.setVisibility(View.GONE);
+                            Toast.makeText(ServiceDetailActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }//if service is not equal to null
     }
 
 
@@ -224,14 +229,15 @@ public class ServiceDetailActivity extends AppCompatActivity {
     }
 
     private void createReferences() {
-
         Featured_img = findViewById(R.id.img_seervice_image);
         txt_Service_Name = findViewById(R.id.txt_Servic_Name);
         txt_Dj_Name = findViewById(R.id.txt_dj_name);
         txt_Price = findViewById(R.id.txt_service_charges);
         txt_Price_Type = findViewById(R.id.txt_price_type);
         txt_Description = findViewById(R.id.txt_service_discription);
+        txt_ReviewHeading = findViewById(R.id.reviewheading);
         ratingBar = findViewById(R.id.ratingBar);
+        progressBarProfile = findViewById(R.id.progressBarProfile);
 
         mGalleryRecyclerView = findViewById(R.id.recyclerview_service_gallery);
         mReviewsRecyclerView = findViewById(R.id.reviews_recycler);
@@ -295,6 +301,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                                 if (!reviewsModels.isEmpty()) {
                                     buildReviewsRecyclerView(reviewsModels);
                                 }else {
+                                    txt_ReviewHeading.setText("No Review Found");
                                     mReviewsRecyclerView.setVisibility(View.GONE);
                                 }
 
@@ -309,8 +316,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            alertDialog = DialogsUtils.showAlertDialog(ServiceDetailActivity.this,
-                                    false,"Failed to connect with server",t.getMessage());
+                            alertDialog = DialogsUtils.showResponseMsg(ServiceDetailActivity.this,true);
                         }
                     });
                 }

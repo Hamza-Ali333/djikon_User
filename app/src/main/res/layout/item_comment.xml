@@ -57,6 +57,6 @@
         app:civ_border_width="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_doctor" />
+        app:srcCompat="@drawable/ic_avatar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

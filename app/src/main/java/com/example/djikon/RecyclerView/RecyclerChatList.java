@@ -88,7 +88,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
             Picasso.get().load(currentItem.getImgProfileUrl())
                     .fit()
                     .centerCrop()
-                    .placeholder(R.drawable.ic_doctor)
+                    .placeholder(R.drawable.ic_avatar)
                     .into(holder.img_msg_DJ_Profile, new Callback() {
                         @Override
                         public void onSuccess() {

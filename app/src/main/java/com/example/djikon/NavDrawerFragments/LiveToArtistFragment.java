@@ -33,9 +33,9 @@ public class LiveToArtistFragment extends Fragment {
         mRecyclerView = v.findViewById(R.id.recyclerViewLiveToArtist);
         ArrayList<LiveToArtist> liveToArtistArrayList  = new ArrayList<>();
         liveToArtistArrayList.add(new LiveToArtist(R.drawable.woman,"Bilawal"));
-        liveToArtistArrayList.add(new LiveToArtist(R.drawable.ic_doctor,"Hamza"));
+        liveToArtistArrayList.add(new LiveToArtist(R.drawable.ic_avatar,"Hamza"));
         liveToArtistArrayList.add(new LiveToArtist(R.drawable.woman,"Usama"));
-        liveToArtistArrayList.add(new LiveToArtist(R.drawable.ic_doctor,"Ahmad"));
+        liveToArtistArrayList.add(new LiveToArtist(R.drawable.ic_avatar,"Ahmad"));
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());

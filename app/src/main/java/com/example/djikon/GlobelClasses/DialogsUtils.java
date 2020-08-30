@@ -40,6 +40,34 @@ public class DialogsUtils extends AppCompatDialogFragment {
         return alertDialog;
     }
 
+    public static AlertDialog showResponseMsg(Context context,Boolean isFromFailed) {
+
+        String Title, Msg;
+        if(isFromFailed){
+            //when Failed to connect with server
+            Title = "Failed to connect with server";
+            Msg = "Please check your internet.And try again";
+        }else {
+            //when server response is not successful
+            Title = "Try Again";
+            Msg = "Something happened wrong. Please try again.";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle(Title);
+        builder.setMessage(Msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setIcon(R.drawable.ic_alert);
+
+        AlertDialog alertDialog; alertDialog = builder.show();
+        return alertDialog;
+    }
+
 
 
 

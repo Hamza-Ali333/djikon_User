@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">User</string>
+    <string name="app_name">IKONICONNECTS</string>
     <string name="latestFeed">Latest Feed</string>
     <string name="liveToArtist">Live To Artist</string>
     <string name="ChatArea">Chat Area</string>
@@ -8,7 +8,6 @@
     <string name="CurrentLiveArtist">Current Live Artist</string>
     <string name="SubscribedArtist">Subscribed Artist</string>
     <string name="Artist">Artist</string>
-
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

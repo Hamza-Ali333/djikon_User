@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,13 +23,13 @@ public class RecyclerServiceGallery extends RecyclerView.Adapter<RecyclerService
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
         public ImageView img_gallery_Image;
-
-
+        public ProgressBar mProgressBar;
 
 
         public ViewHolder(View itemView){
             super(itemView);
             img_gallery_Image = itemView.findViewById(R.id.service_image);
+            mProgressBar = itemView.findViewById(R.id.imageProgress);
         }
     }
 
@@ -51,7 +52,6 @@ public class RecyclerServiceGallery extends RecyclerView.Adapter<RecyclerService
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final SliderModel currentItem = mServiceImage.get(position);
 
-
         if (!currentItem.getImage().equals("no")){
             Picasso.get().load(currentItem.getImage())
                     .fit()
@@ -59,13 +59,12 @@ public class RecyclerServiceGallery extends RecyclerView.Adapter<RecyclerService
                     .into(holder.img_gallery_Image, new Callback() {
                         @Override
                         public void onSuccess() {
-
-                            // holder.txt_Loading.setVisibility(View.GONE);
+                            holder.mProgressBar.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            // Toast.makeText(getC, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+                            holder.mProgressBar.setVisibility(View.GONE);
                         }
                     });
 

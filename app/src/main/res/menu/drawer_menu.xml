@@ -31,11 +31,11 @@
 
         <item android:id="@+id/nav_Following"
         android:icon="@drawable/dj"
-        android:title="Following Artist"/>
+        android:title="@string/SubscribedArtist"/>
 
         <item android:id="@+id/nav_Artist"
             android:icon="@drawable/dj"
-            android:title="Artist"/>
+            android:title="All Artist"/>
 
         <item android:id="@+id/nav_Logout"
             android:icon="@drawable/logout"

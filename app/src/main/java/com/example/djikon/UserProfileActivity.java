@@ -42,6 +42,7 @@ import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.ResponseModels.DjAndUserProfileModel;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -58,7 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class UserProfileActivity extends AppCompatActivity  {
+public class UserProfileActivity extends AppCompatActivity {
 
 
     private EditText edt_FirstName, edt_LastName, edt_Email, edt_Phone_No, edt_Address;
@@ -67,27 +68,30 @@ public class UserProfileActivity extends AppCompatActivity  {
     private Spinner mSpinner;
     private ImageView img_Profile;
 
-    private RelativeLayout  rlt_PaymentMethod, rlt_AboutApp, rlt_Setting ,rlt_Disclosures;
+    private RelativeLayout rlt_PaymentMethod, rlt_AboutApp, rlt_Setting, rlt_Disclosures;
     private ConstraintLayout rlt_Parent;
     private Switch swt_subcribeState;
     private ProgressBar mProgressBar;
     private TextView msg;
 
+    private ProgressBar progressBarProfile;
+
     private PreferenceData preferenceData;
 
-    private  Retrofit retrofit;
+    private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
 
 
-    private String[] genderArray = {"Select Gender","Male", "Female", "Other"};
+    private String[] genderArray = {"Select Gender", "Male", "Female", "Other"};
     private String FirstName, LastName;
 
-    private String SelectedGender ="Select Gender";
-    private String PhoneNo= "no";
-    private String  Address = "no";
-    private static  final String ImageUrl = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
+    private String SelectedGender = "Select Gender";
+    private String PhoneNo = "no";
+    private String Address = "no";
+    private String Profile;
+    private static final String ImageUrl = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
 
     private String[] serverData;
     private String[] newData;
@@ -101,7 +105,7 @@ public class UserProfileActivity extends AppCompatActivity  {
     String storagePermission[];
     private Bitmap bitmap;
     private Uri Image_uri;
-
+    private String ProfileChangeCode = "0";//0 means user not selected new image , 1 means user change his/her profile
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
 
@@ -122,14 +126,13 @@ public class UserProfileActivity extends AppCompatActivity  {
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        createRefrences();
+        createReferences();
         rlt_Parent.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         msg.setVisibility(View.VISIBLE);
-        preferenceData= new PreferenceData();
+        preferenceData = new PreferenceData();
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
-
 
         Thread downloadData = new Thread(new Runnable() {
             @Override
@@ -141,12 +144,11 @@ public class UserProfileActivity extends AppCompatActivity  {
         downloadData.start();
 
 
-
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 //camerapermission
-                cameraPermission = new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
                 //storagepermission
                 storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -187,7 +189,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
             }
         });
- 
+
         rlt_PaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,14 +208,14 @@ public class UserProfileActivity extends AppCompatActivity  {
         rlt_Disclosures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDisclusoreDialogue();
+                openDisclusorDialog();
             }
         });
 
         rlt_Setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(UserProfileActivity.this,ProfileSettingActivity.class);
+                Intent i = new Intent(UserProfileActivity.this, ProfileSettingActivity.class);
                 startActivity(i);
             }
         });
@@ -222,26 +224,16 @@ public class UserProfileActivity extends AppCompatActivity  {
         btn_Update_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*if(isInfoRight()){
+                if(isInfoRight()){
                     if(isDataChange()){
 
-                        progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,"Uploading","Please Wait...");
-                        Thread update = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateProfile(preferenceData.getUserId(UserProfileActivity.this));
-                              //  uploadImage();
-                            }
-                        });
-                        update.start();
+                       updateProfile();
 
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
                     }
-            }*/
-              progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,"Uploading","Please Wait...");
-           //updateProfile(preferenceData.getUserId(UserProfileActivity.this));
-               updateProfile();
+            }
+
             }
         });
 
@@ -253,20 +245,11 @@ public class UserProfileActivity extends AppCompatActivity  {
         });
 
 
-
         ArrayList<String> countryArrayList = new ArrayList<String>(Arrays.asList(CountriesList.getCountry()));
 
         ArrayAdapter<String> Cadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countryArrayList);
 
         edt_Location.setAdapter(Cadapter);///HERE YOUR_LIST_VIEW IS YOUR LISTVIEW NAME
-
-        edt_Location.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(UserProfileActivity.this, countryArrayList.get(i), Toast.LENGTH_SHORT).show();
-
-            }
-        });
 
 
     }//onCreate
@@ -286,7 +269,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         builder.setCancelable(false);
 
 
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,7 +281,7 @@ public class UserProfileActivity extends AppCompatActivity  {
     }
 
 
-    private void openDisclusoreDialogue() {
+    private void openDisclusorDialog() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -310,8 +293,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         builder.setView(view);
         builder.setCancelable(false);
 
-
-        final AlertDialog alertDialog =  builder.show();
+        final AlertDialog alertDialog = builder.show();
 
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -323,7 +305,6 @@ public class UserProfileActivity extends AppCompatActivity  {
     }
 
 
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -331,29 +312,27 @@ public class UserProfileActivity extends AppCompatActivity  {
     }
 
 
-    private void getUserDataFromServer(){
-
+    private void getUserDataFromServer() {
         retrofit = ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        String relativeURL = "api/user/"+PreferenceData.getUserId(this);
+        String relativeURL = "api/user/" + PreferenceData.getUserId(this);
         Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
 
         call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
             public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
-                    FirstName=response.body().getFirstname();
-                    LastName=response.body().getLastname();
-
+                    FirstName = response.body().getFirstname();
+                    LastName = response.body().getLastname();
                     edt_Email.setText(response.body().getEmail());
-
                     Address = response.body().getLocation();
                     PhoneNo = response.body().getContact();
                     SelectedGender = response.body().getGender();
+                    Profile = response.body().getProfile_image();
 
-                    for (int j = 0; j <genderArray.length-1 ; j++) {
-                        if(genderArray[j].equals(SelectedGender)){
+                    for (int j = 0; j < genderArray.length - 1; j++) {
+                        if (genderArray[j].equals(SelectedGender)) {
                             mSpinner.setSelection(j);
                         }
                     }
@@ -364,32 +343,39 @@ public class UserProfileActivity extends AppCompatActivity  {
                             rlt_Parent.setVisibility(View.VISIBLE);
                             mProgressBar.setVisibility(View.GONE);
                             msg.setVisibility(View.GONE);
-                            setDataInToFields();
+                            setDataInToViews();
                         }
                     }));
 
-                }else {
+                } else {
                     rlt_Parent.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     msg.setVisibility(View.GONE);
+                   alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
                 }
             }
 
             @Override
             public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
-
+                alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
             }
         });
     }
 
-        private void updateProfile(){
-            String userId= preferenceData.getUserId(UserProfileActivity.this);
-            retrofit = ApiClient.retrofit(this);
+    private void updateProfile() {
+        progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,
+                "Uploading",
+                "Please Wait...");
+        String userId = preferenceData.getUserId(UserProfileActivity.this);
+        retrofit = ApiClient.retrofit(this);
+        MultipartBody.Part filePart = null;
 
-           // String path = Image_uri.getPath();
+        if(Image_uri != null){
             File file = new File(Image_uri.getPath());
-            MultipartBody.Part filePart = MultipartBody.Part.createFormData("image","imageName",RequestBody.create(MediaType.parse("multipart/form-data"), file));
+            filePart = MultipartBody.Part.createFormData("image",
+                    "imageName",
+                    RequestBody.create(MediaType.parse("multipart/form-data"), file));
+        }
 
         RequestBody firstname = RequestBody.create(MediaType.parse("text/plain"),
                 edt_FirstName.getText().toString());
@@ -400,132 +386,149 @@ public class UserProfileActivity extends AppCompatActivity  {
         RequestBody location = RequestBody.create(MediaType.parse("text/plain"),
                 edt_Location.getText().toString());
         RequestBody gender = RequestBody.create(MediaType.parse("text/plain"),
-               SelectedGender);
+                SelectedGender);
 
-            jsonApiHolder = retrofit.create(JSONApiHolder.class);
-            Call<SuccessErrorModel> uploadCall = jsonApiHolder.UpdateUserProfile(
-                    "api/update_profile/"+userId,
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        Call<SuccessErrorModel> uploadCall = jsonApiHolder.UpdateProfileWithImage(
+                    "api/update_profile/" + userId,
                     filePart,
                     firstname,
                     lastName,
                     phone,
                     gender,
                     location
-                    );
-            uploadCall.enqueue(new Callback<SuccessErrorModel>() {
-                @Override
-                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+            );
 
-                    if(response.isSuccessful()){
-                        Toast.makeText(UserProfileActivity.this, "Yes Got it", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                    }
-                    else {
-                        progressDialog.dismiss();
-                        Log.i("TAG", "onResponse: "+response.code());
-                        Toast.makeText(UserProfileActivity.this, "Again Fucked", Toast.LENGTH_SHORT).show();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+        uploadCall.enqueue(new Callback<SuccessErrorModel>() {
+            @Override
+            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(UserProfileActivity.this, "Yes Got it", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
-                    alertDialog = DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
-
-                    Log.i("TAG", "onFailure: "+t.getMessage());
+                } else {
+                    progressDialog.dismiss();
+                    Log.i("TAG", "onResponse: " + response.code());
+                    alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                progressDialog.dismiss();
+                alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,true);
+                Log.i("TAG", "onFailure: " + t.getMessage());
+            }
+        });
+    }
 
 
-    private boolean isInfoRight () {
+    private boolean isInfoRight() {
         boolean result;
         if (edt_FirstName.getText().toString().trim().isEmpty()) {
             edt_FirstName.setError("Required");
             edt_FirstName.requestFocus();
-            result= false;
-        } else if (edt_FirstName.getText().toString().trim().isEmpty()){
+            result = false;
+        } else if (edt_FirstName.getText().toString().trim().isEmpty()) {
             edt_LastName.setError("Required");
             edt_LastName.requestFocus();
-            result= false;
-        }else if (!edt_Phone_No.getText().toString().trim().isEmpty() && edt_Phone_No.getText().length() < 11){
+            result = false;
+        } else if (!edt_Phone_No.getText().toString().trim().isEmpty() && edt_Phone_No.getText().length() < 11) {
             edt_Phone_No.setError("Phone No Should be Contain 11 Digits");
             edt_Phone_No.requestFocus();
-            result= false;
-        }else {
+            result = false;
+        } else {
             assainValue();
-            result =true;
+            result = true;
         }
         return result;
     }
 
-    private void assainValue(){
+    private void assainValue() {
         FirstName = edt_FirstName.getText().toString().trim();
         LastName = edt_LastName.getText().toString().trim();
 
-        if (!edt_Phone_No.getText().toString().trim().isEmpty()){
+        if (!edt_Phone_No.getText().toString().trim().isEmpty()) {
             PhoneNo = edt_Phone_No.getText().toString().trim();
         }
-        if (!edt_Location.getText().toString().trim().isEmpty()){
+        if (!edt_Location.getText().toString().trim().isEmpty()) {
             Address = edt_Location.getText().toString().trim();
         }
 
-        newData = new String[]{FirstName,LastName,PhoneNo,SelectedGender,Address};
+        newData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address, ProfileChangeCode};
     }
 
 
-    private boolean isDataChange(){
-        boolean result= false;
+    private boolean isDataChange() {
+        boolean result = false;
         for (int i = 0; i < 5; i++) {
-            if(!serverData[i].equals(newData[i])){
-                serverData[i]= newData[i];
-                result= true;
+            if (!serverData[i].equals(newData[i])) {
+                serverData[i] = newData[i];
+                result = true;
+                break;
             }
         }
         return result;
     }
 
+    private void setDataInToViews() {
+        serverData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address, ProfileChangeCode};
 
-    private void setDataInToFields(){
-        serverData = new String[]{FirstName, LastName, PhoneNo , SelectedGender , Address};
+        if(!Profile.equals("no") && Profile != null){
+            Picasso.get().load(ImageUrl + Profile)
+                    .placeholder(R.drawable.progressbar)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_avatar)
+                    .into(img_Profile, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                           progressBarProfile.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                           progressBarProfile.setVisibility(View.GONE);
+                        }
+                    });
+        }
 
         edt_FirstName.setText(FirstName);
         edt_LastName.setText(LastName);
-        if(!PhoneNo.equals("no"))
+        if (!PhoneNo.equals("no"))
             edt_Phone_No.setText(PhoneNo);
-        if(!Address.equals("no"))
+        if (!Address.equals("no"))
             edt_Location.setText(Address);
     }
 
 
-
-
     //image import
-    private void showImageImportDailog(){
+    private void showImageImportDailog() {
 
-        String[] items ={"Camera","Gallary"};
+        String[] items = {"Camera", "Gallary"};
         AlertDialog.Builder dailog = new AlertDialog.Builder(UserProfileActivity.this);
         dailog.setTitle("Select Image");
         dailog.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(which == 1){
+                if (which == 1) {
                     //camera run
-                    if(!checkCameraPermissions()){
+                    if (!checkCameraPermissions()) {
                         //RequestCamera Permission
                         requestPermissionCamera();
                     }
-                }else {
+                } else {
                     //pick Camera
                     pickCamera();
                 }
-                if(which == 0){
+                if (which == 0) {
                     //open Gallary
-                    if(!checkStoragePermissions()){
+                    if (!checkStoragePermissions()) {
                         //RequestStorage Permission
                         requestPermissionStorage();
                     }
-                }else {
+                } else {
                     //pick Gallary
                     pickGallary();
                 }
@@ -534,72 +537,72 @@ public class UserProfileActivity extends AppCompatActivity  {
         dailog.create().show();
     }
 
-    private boolean checkCameraPermissions(){
-        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.CAMERA) ==(PackageManager.PERMISSION_GRANTED);
-        boolean result1 = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==(PackageManager.PERMISSION_GRANTED);
+    private boolean checkCameraPermissions() {
+        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
+        boolean result1 = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
 
 
         return result && result1;
     }
 
-    private boolean checkStoragePermissions(){
-        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==(PackageManager.PERMISSION_GRANTED);
+    private boolean checkStoragePermissions() {
+        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
 
 
         return result;
     }
 
-    private void requestPermissionCamera(){
-        ActivityCompat.requestPermissions(UserProfileActivity.this,cameraPermission,CAMERA_REQUEST_CODE);
+    private void requestPermissionCamera() {
+        ActivityCompat.requestPermissions(UserProfileActivity.this, cameraPermission, CAMERA_REQUEST_CODE);
     }
 
-    private void requestPermissionStorage(){
-        ActivityCompat.requestPermissions(UserProfileActivity.this,storagePermission,STORAFGE_REQUEST_CODE);
+    private void requestPermissionStorage() {
+        ActivityCompat.requestPermissions(UserProfileActivity.this, storagePermission, STORAFGE_REQUEST_CODE);
     }
 
-    private void pickCamera(){
+    private void pickCamera() {
         //Intent to take Image for camera
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE,"New Pic");//title of the picture
-        values.put(MediaStore.Images.Media.DESCRIPTION,"Image To Text");//discription of the picture
+        values.put(MediaStore.Images.Media.TITLE, "New Pic");//title of the picture
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Image To Text");//discription of the picture
         Image_uri = this.getContentResolver()
                 .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,Image_uri);
-        startActivityForResult(cameraIntent,IMAGE_PICK_CAMERA_REQUEST_CODE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Image_uri);
+        startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_REQUEST_CODE);
     }
 
-    private void pickGallary(){
+    private void pickGallary() {
         //  intent for the Image from Gallary
         Intent gallery = new Intent(Intent.ACTION_PICK);
         gallery.setType("image/*");
-        startActivityForResult(gallery,IMAGE_PICK_GALLARY_REQUEST_CODE);
+        startActivityForResult(gallery, IMAGE_PICK_GALLARY_REQUEST_CODE);
     }
 
 
     //handle Request for permission
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
+        switch (requestCode) {
             case CAMERA_REQUEST_CODE:
-                if(grantResults.length > 0){
+                if (grantResults.length > 0) {
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if(cameraAccepted && storageAccepted){
+                    if (cameraAccepted && storageAccepted) {
                         pickCamera();
-                    }else {
+                    } else {
                         Toast.makeText(UserProfileActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
 
             case STORAFGE_REQUEST_CODE:
-                if(grantResults.length > 0){
+                if (grantResults.length > 0) {
                     boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if(storageAccepted){
+                    if (storageAccepted) {
                         pickGallary();
-                    }else {
+                    } else {
                         Toast.makeText(UserProfileActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -611,24 +614,24 @@ public class UserProfileActivity extends AppCompatActivity  {
     //Handle Image Result
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
 
         //get selected image Image
-        if(resultCode ==RESULT_OK) {
+        if (resultCode == RESULT_OK) {
 
-            if(requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE){
+            if (requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE) {
                 CropImage.activity(Image_uri)
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .start(UserProfileActivity.this);
             }
             //from gallary
-            if(requestCode == IMAGE_PICK_GALLARY_REQUEST_CODE){
+            if (requestCode == IMAGE_PICK_GALLARY_REQUEST_CODE) {
                 CropImage.activity(data.getData())
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .start(this);
             }
             //getcroped Image
-            if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
 
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 Image_uri = result.getUri();
@@ -638,22 +641,21 @@ public class UserProfileActivity extends AppCompatActivity  {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Image_uri);
                     //img_Profile.setImageBitmap(bitmap);
                 } catch (IOException e) {
-                    Log.i("TAG", "onActivityResult: "+e.getMessage());
+                    Log.i("TAG", "onActivityResult: " + e.getMessage());
                 }
 
                 img_Profile.setImageURI(Image_uri);
-
+                ProfileChangeCode = "1";
             }
 
-        }else {
+        } else {
             Toast.makeText(this, "Image is not Selected try Again", Toast.LENGTH_SHORT).show();
         }
 
 
     }//onActivity Result
 
-    public void createRefrences(){
-
+    public void createReferences() {
         edt_FirstName = findViewById(R.id.edt_User_First_Name);
         edt_LastName = findViewById(R.id.edt_User_LastName);
         edt_Email = findViewById(R.id.edt_UserEmail);
@@ -669,6 +671,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         swt_subcribeState = findViewById(R.id.swt_subscribeState);
         rlt_Parent = findViewById(R.id.parent);
         mProgressBar = findViewById(R.id.progress_circular);
+        progressBarProfile = findViewById(R.id.progressBarProfile);
         msg = findViewById(R.id.msg);
 
 

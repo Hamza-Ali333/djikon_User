@@ -2,12 +2,10 @@ package com.example.djikon.NavDrawerFragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +36,7 @@ public class RequestedSongFragment extends Fragment {
 
 
     private RelativeLayout progressBar;
-    private AlertDialog mAlertDialog;
+    private AlertDialog alertDialog;
 
     @Nullable
     @Override
@@ -81,20 +79,17 @@ public class RequestedSongFragment extends Fragment {
                             List<RequestedSongsModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
                                 //if no data then show dialoge to user
-                                AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
+                                 alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
                                         "No Artist Found","it's seems like you din't Request any Song yet");
                             }
                            else
                             initializeRecycler(artistModels);
 
                 }else {
-
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-
-                    Log.i("TAG", "onResponse: "+response.code());
+                    alertDialog = DialogsUtils.showResponseMsg(getContext(),false);
                 }
             }
 
@@ -102,7 +97,7 @@ public class RequestedSongFragment extends Fragment {
             public void onFailure(Call<List<RequestedSongsModel>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                mAlertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showResponseMsg(getContext(),true);
             }
         });
 

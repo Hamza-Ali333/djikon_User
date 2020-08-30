@@ -61,7 +61,7 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
        // holder.txt_requested_date.setText(currentItem.getDate());
         if(currentItem.getProfile_image() != null){
             Picasso.get().load(currentItem.getProfile_image())
-                    .placeholder(R.drawable.ic_doctor)
+                    .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
                     .into(holder.img_DJ_Profile, new com.squareup.picasso.Callback() {

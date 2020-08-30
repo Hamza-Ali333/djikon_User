@@ -334,6 +334,7 @@ public class DjProfileActivity extends AppCompatActivity {
                 } else {
 
                     Log.i("TAG", "onResponse: " + response.code());
+                    DialogsUtils.showResponseMsg(DjProfileActivity.this,false);
 
                     return;
                 }
@@ -343,8 +344,7 @@ public class DjProfileActivity extends AppCompatActivity {
             public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
 
                 Log.i("TAG", "onFailure: " + t.getMessage());
-                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,
-                        "Server connecting failed","Please Check Your Internet Connection");
+                alertDialog =DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
             }
 
         });
@@ -404,8 +404,7 @@ public class DjProfileActivity extends AppCompatActivity {
                             snackbar.show();
                 }else {
                     progressDialog.dismiss();
-                    snackBarText.setText("OPPS Request Failed To Posted Try Again");
-                    snackbar.show();
+                    alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,false);
                 }
             }
 
@@ -415,7 +414,7 @@ public class DjProfileActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 snackBarText.setText("OPPS Something Happend Wrong Check Network");
                 snackbar.show();
-                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,false,"No Internet","Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
             }
         });
     }
@@ -456,16 +455,16 @@ public class DjProfileActivity extends AppCompatActivity {
                     btn_Follow.setClickable(false);
                     btn_Follow.setEnabled(false);
                 }else {
+                    alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,
+                            false);
                     Log.i("TAG", "onResponse: "+response.code());
                 }
             }
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
 
-                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
-                        false,
-                        "No Internet",
-                        "Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,
+                        true);
             }
         });
     }

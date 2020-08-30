@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -13,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -65,7 +63,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_doctor)
+                        .setSmallIcon(R.drawable.ic_avatar)
                         .setContentTitle(title)
                         .setContentText(body)
                         .setAutoCancel(true)
@@ -109,7 +107,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 .setContentText(messageBody)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                 /*.setLargeIcon(largeIcon)*/
-                .setSmallIcon(R.drawable.ic_doctor) //needs white icon with transparent BG (For all platforms)
+                .setSmallIcon(R.drawable.ic_avatar) //needs white icon with transparent BG (For all platforms)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
                 .setVibrate(new long[]{1000, 1000})
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)

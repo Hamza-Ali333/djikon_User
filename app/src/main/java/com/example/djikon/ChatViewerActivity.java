@@ -257,7 +257,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         if (!imageUrl.equals("No Image") && !imageUrl.equals("no")){
 
             Picasso.get().load(imageUrl)
-                    .placeholder(R.drawable.ic_doctor)
+                    .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
                     .into(currentUserProfile, new com.squareup.picasso.Callback() {

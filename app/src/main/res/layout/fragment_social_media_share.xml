@@ -47,7 +47,7 @@
             android:scaleType="centerCrop"
             android:layout_marginLeft="4dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_doctor"/>
+            android:src="@drawable/ic_avatar"/>
         <com.mikhaellopez.circularimageview.CircularImageView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
             android:scaleType="centerCrop"
             android:layout_marginLeft="4dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_doctor"/>
+            android:src="@drawable/ic_avatar"/>
 
     </LinearLayout>
     <View

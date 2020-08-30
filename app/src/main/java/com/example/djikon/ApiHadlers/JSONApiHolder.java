@@ -85,7 +85,7 @@ public interface JSONApiHolder {
 
         @Multipart
         @POST()
-        Call<SuccessErrorModel> UpdateUserProfile(
+        Call<SuccessErrorModel> UpdateProfileWithImage(
                 @Url String relativeUrl,
                 @Part MultipartBody.Part image,
                 @Part("firstname") RequestBody firstName,
@@ -94,7 +94,6 @@ public interface JSONApiHolder {
                 @Part("gender")    RequestBody gender,
                 @Part("location")  RequestBody location
         );
-
 
     @FormUrlEncoded
     @POST()
@@ -199,16 +198,6 @@ public interface JSONApiHolder {
     @POST("api/updateToken")
     Call<SuccessErrorModel> postFCMTokenForWeb(
             @Field("token") String Token
-    );
-
-    @FormUrlEncoded
-    @POST("api/chekout")
-    Call<SuccessErrorModel> postNonceToServer(
-            @Field("amount") int amount,
-            @Field("payment_method_nonce") String paymentMethodNonce,
-            @Field("receiver_id") int receiverId,
-            @Field("sender_id") int senderId,
-            @Field("service_id") int serviceId
     );
 
 }

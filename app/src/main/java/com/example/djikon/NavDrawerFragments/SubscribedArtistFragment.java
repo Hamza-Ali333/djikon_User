@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.ApiHadlers.ApiClient;
+import com.example.djikon.BookArtistOrServiceActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.ResponseModels.SubscribeArtistModel;
@@ -56,7 +56,7 @@ public class SubscribedArtistFragment extends Fragment {
        });
        createRefreces.start();
 
-               getSubscribedArtist();
+       getSubscribedArtist();
 
        return v;
     }
@@ -87,9 +87,7 @@ public class SubscribedArtistFragment extends Fragment {
                 }else {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-
-                    alertDialog = DialogsUtils.showAlertDialog(getContext(),false,"No Internet","Please Check Your Internet Connection");
-
+                    alertDialog = DialogsUtils.showResponseMsg(getContext(),false);
 
                     Log.i("TAG", "onResponse: "+response.code());
                 }
@@ -99,10 +97,9 @@ public class SubscribedArtistFragment extends Fragment {
             public void onFailure(Call<List<SubscribeArtistModel>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                DialogsUtils.showResponseMsg(getContext(),true);
             }
         });
-
 
     }
 

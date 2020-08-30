@@ -36,7 +36,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -44,8 +43,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
@@ -372,7 +369,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(RegistrationActivity.this, "Somthing Happend Wrong", Toast.LENGTH_SHORT).show();
+                    alertDialog = DialogsUtils.showResponseMsg(RegistrationActivity.this,false);
                 }
             }
 
@@ -380,7 +377,7 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDialog.dismiss();
-                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this, false, "No Internet", "Please Check Your Internet Connection");
+                alertDialog = DialogsUtils.showResponseMsg(RegistrationActivity.this,true);
             }
         });
     }
@@ -574,12 +571,14 @@ public class RegistrationActivity extends AppCompatActivity {
                             } else {
                                 error.setVisibility(View.VISIBLE);
                                 progressDialog.dismiss();
+                                DialogsUtils.showResponseMsg(RegistrationActivity.this,false);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                             progressDialog.dismiss();
+                            DialogsUtils.showResponseMsg(RegistrationActivity.this,true);
                         }
                     });
 
@@ -641,6 +640,8 @@ public class RegistrationActivity extends AppCompatActivity {
                             }
                         });
 
+                    }else {
+                        alertDialog = DialogsUtils.showResponseMsg(RegistrationActivity.this,false);
                     }
                 }
 
@@ -649,7 +650,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(RegistrationActivity.this, "Failed To Send Email Try Again", Toast.LENGTH_SHORT).show();
+                            alertDialog = DialogsUtils.showResponseMsg(RegistrationActivity.this,true);
                         }
                     });
                 }

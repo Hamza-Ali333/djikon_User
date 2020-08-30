@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar toolbar;
 
-    private static String IMAGE_URL ="http://ec2-54-161-107-128.compute-1.amazonaws.com/";
+    private static String IMAGE_URL ="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
     private PreferenceData preferenceData;
 
     private CircularImageView currentUserProfile;
@@ -289,16 +289,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 else {
                     progressDialog.dismiss();
-                    Toast.makeText(MainActivity.this, "please check Your Network", Toast.LENGTH_SHORT).show();
                     Log.i("TAG", "onResponse: "+response.code());
+                    alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,
+                            false);
                 }
             }
 
             @Override
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: "+t.getMessage());
-                alertDialog = DialogsUtils.showAlertDialog(MainActivity.this,false,"No Internet","Please Check Your Internet Connection");
-
+                alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,
+                        true);
             }
         });
     }
@@ -307,9 +308,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String imageName = PreferenceData.getUserImage(this);
 
         if (!imageName.equals("No Image") && !imageName.equals("no")){
-            IMAGE_URL += imageName;
-            Picasso.get().load(IMAGE_URL)
-                    .placeholder(R.drawable.ic_doctor)
+            Picasso.get().load(IMAGE_URL + imageName)
+                    .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
                     .into(currentUserProfile, new com.squareup.picasso.Callback() {
@@ -393,13 +393,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                        if(!response.isSuccessful()){
                            //if failed to send token on server then run Again
-                           sendFCMToken();
+                           alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,false);
                        }
                     }
                     @Override
                     public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                         //if failed to send token on server then run Again
-                        sendFCMToken();
+                        alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,true);
                     }
                 });
 

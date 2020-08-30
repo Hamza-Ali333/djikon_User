@@ -58,7 +58,22 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_doctor" />
+        app:srcCompat="@drawable/ic_avatar"
+        app:civ_border="true"
+        app:civ_border_width="2dp"
+         />
+
+        <ProgressBar
+            android:id="@+id/progressBarProfile"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/progressbar"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/img_UserImage"
+            app:layout_constraintEnd_toEndOf="@+id/img_UserImage"
+            app:layout_constraintStart_toStartOf="@+id/img_UserImage"
+            app:layout_constraintTop_toTopOf="@+id/img_UserImage" />
 
 
     <EditText

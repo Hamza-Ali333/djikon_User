@@ -3,36 +3,40 @@ package com.example.djikon.RecyclerView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.ApiHadlers.ApiClient;
 import com.example.djikon.ApiHadlers.JSONApiHolder;
+import com.example.djikon.BlogDetailActivity;
+import com.example.djikon.DjProfileActivity;
 import com.example.djikon.GlobelClasses.DialogsUtils;
+import com.example.djikon.GlobelClasses.FollowUnFollowArtist;
 import com.example.djikon.ResponseModels.AllArtistModel;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.example.djikon.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.ViewHolder>{
 
     private List<AllArtistModel> mAllArtistModel;
-    private AlertDialog alertDialog;
     private Context context;
-    private Boolean doingWorking;
-    private int itemIdWorkingFor;
+    private static final String Image_Base_Url ="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -40,7 +44,9 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
         public ImageView img_Subscribe_Artist_Profile;
         public TextView txt_Subscribe_Artist_Name;
         public TextView txt_Subscribe_Artist_Location;
-        public TextView txt_Follow;
+        public TextView unFollow;
+        public View progressButton;
+        public ProgressBar ProgressBarProfile;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -48,7 +54,8 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
 
             txt_Subscribe_Artist_Name = itemView.findViewById(R.id.txt_msg_sender_name);
             txt_Subscribe_Artist_Location = itemView.findViewById(R.id.txt_SubscribeArtistStatus);
-            txt_Follow = itemView.findViewById(R.id.txt_UnFollow);
+            progressButton = itemView.findViewById(R.id.progress_button);
+            ProgressBarProfile = itemView.findViewById(R.id.progressBarProfile);
 
         }
     }
@@ -58,7 +65,6 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
         this.mAllArtistModel = allArtistModelList;
         this.context = context;
     }
-
 
 
     @Override
@@ -72,31 +78,47 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final AllArtistModel currentItem = mAllArtistModel.get(position);
+        holder.unFollow = holder.progressButton.findViewById(R.id.btn_title);
+        holder.unFollow.setText("Follow");
 
-      // holder.img_Subscribe_Artist_Profile.setImageResource(currentItem.getImg_Subscribe_Artist());
+        if (!currentItem.getProfile_image().equals("no")) {
+            holder.ProgressBarProfile.setVisibility(View.VISIBLE);
+            Picasso.get().load(Image_Base_Url + currentItem.getProfile_image())
+                    .placeholder(R.drawable.progressbar)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_avatar)
+                    .into(holder.img_Subscribe_Artist_Profile, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.ProgressBarProfile.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            holder.ProgressBarProfile.setVisibility(View.GONE);
+                        }
+                    });
+        }
        holder.txt_Subscribe_Artist_Name.setText(currentItem.getFirstname()+" "+ currentItem.getLastname());
        holder.txt_Subscribe_Artist_Location.setText(currentItem.getLocation());
 
-       holder.txt_Follow.setText("Follow");
-
-           holder.txt_Follow.setOnClickListener(new View.OnClickListener() {
+           holder.progressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.txt_Follow.setText("Followed");
-                new FollowArtist(currentItem.getFollow_status(),
-                        String.valueOf(currentItem.getId())).execute();
-
-                int newPosition = holder.getAdapterPosition();
-                mAllArtistModel.remove(newPosition);
-                notifyItemRemoved(newPosition);
-                notifyItemRangeChanged(newPosition, mAllArtistModel.size());
+                new FollowUnFollowArtist(0,
+                        String.valueOf(currentItem.getId()),
+                        context,
+                        view).execute();
             }
         });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(v.getContext(), DjProfileActivity.class);
+                intent.putExtra("id", currentItem.getId());
+                v.getContext().startActivity(intent);
             }
         });
 }
@@ -106,66 +128,4 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
         return mAllArtistModel.size();
     }
 
-
-    private class FollowArtist extends AsyncTask<Void,Void,Void> {
-        int CurrentStatus;
-        String artistID;
-
-
-        public FollowArtist(int CurrentStatus, String artistID) {
-            this.CurrentStatus = CurrentStatus;
-            this.artistID = artistID;
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Retrofit retrofit = ApiClient.retrofit(context);
-            JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-            String relativeUrl = "";
-            //0 means not following yet
-            if(CurrentStatus == 0){
-                relativeUrl = "api/follow_artist/"+artistID;
-            }else {
-                relativeUrl = "api/unfollow_artist/"+artistID;
-            }
-
-            Call<SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(relativeUrl);
-
-            call.enqueue(new Callback<SuccessErrorModel>() {
-                @Override
-                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                    if(response.isSuccessful()){
-
-                    }else {
-                        ((Activity)context).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                alertDialog = DialogsUtils.showAlertDialog(context,
-                                        false,
-                                        "Error",
-                                        "Something happened wrong try again");
-                            }
-                        });
-                    }
-                }
-                @Override
-                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                    ((Activity)context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            alertDialog = DialogsUtils.showAlertDialog(context,
-                                    false,
-                                    "Server Not Connected",
-                                    "Please Check Your Internet Connection and Try Again!");
-                        }
-                    });
-
-                }
-            });
-            return null;
-        }
-
-    }
 }

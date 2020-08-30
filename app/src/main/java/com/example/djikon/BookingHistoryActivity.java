@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,16 +83,14 @@ public class BookingHistoryActivity extends AppCompatActivity {
 
                     rlt_progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-
-                    Toast.makeText(BookingHistoryActivity.this, "Some thing happened wrong try Again", Toast.LENGTH_SHORT).show();
-
+                    alertDialog = DialogsUtils.showResponseMsg(BookingHistoryActivity.this,false);
                     Log.i("TAG", "onResponse: "+response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<BookingHistory>> call, Throwable t) {
-
+                alertDialog = DialogsUtils.showResponseMsg(BookingHistoryActivity.this,true);
             }
         });
 
