@@ -91,7 +91,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private String PhoneNo = "no";
     private String Address = "no";
     private String Profile;
-    private static final String ImageUrl = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
+    private static final String ImageUrl = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     private String[] serverData;
     private String[] newData;
@@ -105,7 +105,7 @@ public class UserProfileActivity extends AppCompatActivity {
     String storagePermission[];
     private Bitmap bitmap;
     private Uri Image_uri;
-    private String ProfileChangeCode = "0";//0 means user not selected new image , 1 means user change his/her profile
+    private Boolean isProfileChange = false;//0 means user not selected new image , 1 means user change his/her profile
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
 
@@ -226,9 +226,9 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isInfoRight()){
                     if(isDataChange()){
-
-                       updateProfile();
-
+                        PreferenceData.setUserAddress(UserProfileActivity.this,edt_Address.getText().toString());
+                        PreferenceData.setUserPhoneNo(UserProfileActivity.this,edt_Phone_No.getText().toString());
+                        updateProfile();
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
                     }
@@ -331,6 +331,8 @@ public class UserProfileActivity extends AppCompatActivity {
                     SelectedGender = response.body().getGender();
                     Profile = response.body().getProfile_image();
 
+                    Log.i("TAG", "onResponse: "+Profile);
+
                     for (int j = 0; j < genderArray.length - 1; j++) {
                         if (genderArray[j].equals(SelectedGender)) {
                             mSpinner.setSelection(j);
@@ -373,7 +375,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if(Image_uri != null){
             File file = new File(Image_uri.getPath());
             filePart = MultipartBody.Part.createFormData("image",
-                    "imageName",
+                    file.getName(),
                     RequestBody.create(MediaType.parse("multipart/form-data"), file));
         }
 
@@ -389,6 +391,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 SelectedGender);
 
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
+
         Call<SuccessErrorModel> uploadCall = jsonApiHolder.UpdateProfileWithImage(
                     "api/update_profile/" + userId,
                     filePart,
@@ -405,12 +408,13 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
 
                 if (response.isSuccessful()) {
-                    Toast.makeText(UserProfileActivity.this, "Yes Got it", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
+                    //save new image name in to the preferences
+                    PreferenceData.setUserImage(UserProfileActivity.this,response.body().getSuccess());
+                    DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"Successful",
+                            "Profile Successfully Updated");
                 } else {
                     progressDialog.dismiss();
-                    Log.i("TAG", "onResponse: " + response.code());
-                    alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
                 }
             }
 
@@ -456,7 +460,7 @@ public class UserProfileActivity extends AppCompatActivity {
             Address = edt_Location.getText().toString().trim();
         }
 
-        newData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address, ProfileChangeCode};
+        newData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address};
     }
 
 
@@ -469,11 +473,14 @@ public class UserProfileActivity extends AppCompatActivity {
                 break;
             }
         }
+        if(isProfileChange){
+           result = true;
+        }
         return result;
     }
 
     private void setDataInToViews() {
-        serverData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address, ProfileChangeCode};
+        serverData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address};
 
         if(!Profile.equals("no") && Profile != null){
             Picasso.get().load(ImageUrl + Profile)
@@ -496,16 +503,21 @@ public class UserProfileActivity extends AppCompatActivity {
 
         edt_FirstName.setText(FirstName);
         edt_LastName.setText(LastName);
-        if (!PhoneNo.equals("no"))
+
+        if (!PhoneNo.equals("no")){
             edt_Phone_No.setText(PhoneNo);
-        if (!Address.equals("no"))
+            PreferenceData.setUserAddress(UserProfileActivity.this,PhoneNo);
+        }
+
+        if (!Address.equals("no")) {
             edt_Location.setText(Address);
+            PreferenceData.setUserPhoneNo(UserProfileActivity.this,Address);
+        }
     }
 
 
     //image import
     private void showImageImportDailog() {
-
         String[] items = {"Camera", "Gallary"};
         AlertDialog.Builder dailog = new AlertDialog.Builder(UserProfileActivity.this);
         dailog.setTitle("Select Image");
@@ -645,13 +657,12 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
 
                 img_Profile.setImageURI(Image_uri);
-                ProfileChangeCode = "1";
+                isProfileChange = true;//True Means that user chose a new iamge for profile
             }
 
         } else {
             Toast.makeText(this, "Image is not Selected try Again", Toast.LENGTH_SHORT).show();
         }
-
 
     }//onActivity Result
 

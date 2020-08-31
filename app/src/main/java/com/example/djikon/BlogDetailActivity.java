@@ -55,7 +55,6 @@ import retrofit2.Retrofit;
 
 public class BlogDetailActivity extends AppCompatActivity {
 
-
     private TextView txt_Title, txt_artist_Name, txt_Description, txt_CreateTime, txt_Total_Likes, txt_Total_Comments;
     private Button btn_SendComment;
     private EditText edt_Comment;
@@ -136,6 +135,12 @@ public class BlogDetailActivity extends AppCompatActivity {
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
 
+        sliderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         btn_SendComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +176,6 @@ public class BlogDetailActivity extends AppCompatActivity {
 
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-
 
             }
         });

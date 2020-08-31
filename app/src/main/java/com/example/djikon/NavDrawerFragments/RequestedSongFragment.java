@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,7 +34,7 @@ public class RequestedSongFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    private TextView txt_Requested_Song_Count;
 
     private RelativeLayout progressBar;
     private AlertDialog alertDialog;
@@ -51,6 +52,7 @@ public class RequestedSongFragment extends Fragment {
                progressBar = v.findViewById(R.id.progressbar);
                mRecyclerView.setVisibility(View.GONE);
                progressBar.setVisibility(View.VISIBLE);
+               txt_Requested_Song_Count = v.findViewById(R.id.txt_new_request);
            }
        });
        createRefreces.start();
@@ -80,10 +82,13 @@ public class RequestedSongFragment extends Fragment {
                             if(artistModels.isEmpty()){
                                 //if no data then show dialoge to user
                                  alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
-                                        "No Artist Found","it's seems like you din't Request any Song yet");
+                                        "No Song Found","it's seems like you din't Request any Song yet");
                             }
-                           else
-                            initializeRecycler(artistModels);
+                           else{
+                               txt_Requested_Song_Count.setText("You have"+String.valueOf(artistModels.size())+"requested song.");
+                                initializeRecycler(artistModels);
+                            }
+
 
                 }else {
                     progressBar.setVisibility(View.GONE);

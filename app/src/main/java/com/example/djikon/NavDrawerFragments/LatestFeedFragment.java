@@ -85,7 +85,6 @@ public class LatestFeedFragment extends Fragment {
         call.enqueue(new Callback<List<FeedBlogModel>>() {
             @Override
             public void onResponse(Call<List<FeedBlogModel>> call, Response<List<FeedBlogModel>> response) {
-
                 if (!response.isSuccessful()) {
                     Log.i(TAG, "onResponse: "+response.code());
                     alertDialog = DialogsUtils.showResponseMsg(getContext(),false);

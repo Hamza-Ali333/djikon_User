@@ -13,10 +13,12 @@ public class PreferenceData
     static final String PREF_USER_BIOMETRIC_LOGIN_STATUS = "logged_in_status";
     static final String PREF_USER_IMAGE = "Current_User_Image";
     static final String PREF_USER_Password = "Current_User_Password";
-    static final String PREF_USER_Email = "Current_User_Email";
+    static final String PREF_USER_EMAIL = "Current_User_Email";
 
 
     static final String PREF_LOGGEDIN_USER_FullName = "USER_FULL_NAME";
+    static final String PREF_LOGGEDIN_USER_ADDRESS = "USER_ADDRESS";
+    static final String PREF_LOGGEDIN_USER_PHONE = "USER_PHONE";
 
 
     public static SharedPreferences getSharedPreferences(Context ctx)
@@ -67,14 +69,40 @@ public class PreferenceData
     public static void setUserEmail(Context ctx, String email)
     {
         Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(PREF_USER_Email, email);
+        editor.putString(PREF_USER_EMAIL, email);
         editor.apply();
         editor.commit();
     }
 
     public static String getUserEmail(Context ctx)
     {
-        return getSharedPreferences(ctx).getString(PREF_USER_Email, "no");
+        return getSharedPreferences(ctx).getString(PREF_USER_EMAIL, "no");
+    }
+
+    public static void setUserAddress(Context ctx, String fullName)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_LOGGEDIN_USER_ADDRESS, fullName);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getUserAddress(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_ADDRESS, "no");
+    }
+
+    public static void setUserPhoneNo(Context ctx, String fullName)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_LOGGEDIN_USER_PHONE, fullName);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getUserPhoneNo(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_PHONE, "no");
     }
 
     public static void setUserPassword(Context ctx, String password)

@@ -186,7 +186,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         txt_Description.setText(description);
 
         if(serviceImage != null){
-            Picasso.get().load(Featured_img+ serviceImage)
+            Picasso.get().load(FEATURED_IMAGES + serviceImage)
                     .fit()
                     .centerCrop()
                     .into(Featured_img, new com.squareup.picasso.Callback() {
@@ -267,7 +267,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                        // singleServiceModels = (List<SingleServiceModel>) response.body();
                         serviceId = response.body().getId();
-                        serviceImage = response.body().getFeatureImage();
+                        serviceImage = response.body().getFeature_image();
                         serviceName = response.body().getName();
                         dj_Name = response.body().getArtist_name();
                         price = String.valueOf(response.body().getPrice());

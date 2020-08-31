@@ -28,7 +28,7 @@ public class ProgressButton {
         mTextView.setText(text);
     }
 
-    public void btnOnDone(String txt) {
+    public void btnOnCompelet(String txt) {
         mProgressBar.setVisibility(View.GONE);
         mTextView.setText(txt);
     }

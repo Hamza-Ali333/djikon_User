@@ -196,7 +196,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("api/updateToken")
-    Call<SuccessErrorModel> postFCMTokenForWeb(
+    Call<Void> postFCMTokenForWeb(
             @Field("token") String Token
     );
 

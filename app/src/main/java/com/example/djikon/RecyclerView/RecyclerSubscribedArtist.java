@@ -65,10 +65,10 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
         final SubscribeArtistModel currentItem = mSubscribeToArtistArrayList.get(position);
         holder.unFollow = holder.progressButton.findViewById(R.id.btn_title);
         holder.unFollow.setText("UnFollow");
-        if (currentItem.getProfile_image() != null) {
+
+        if (currentItem.getProfile_image() != null && !currentItem.getProfile_image().equals("no")) {
             holder.ProgressBarProfile.setVisibility(View.VISIBLE);
             Picasso.get().load(Image_Base_Url + currentItem.getProfile_image())
-                    .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()
                     .placeholder(R.drawable.ic_avatar)
@@ -102,7 +102,7 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
                 new FollowUnFollowArtist(1,
                         String.valueOf(currentItem.getId()),
                         view.getContext(),
-                        view);
+                        view).execute();
             }
         });
 

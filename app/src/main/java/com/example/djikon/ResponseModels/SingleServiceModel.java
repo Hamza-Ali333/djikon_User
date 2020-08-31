@@ -11,7 +11,7 @@ public class SingleServiceModel {
     private String description;
     private String price_type;
     private Integer price;
-    private String featureImage;
+    private String feature_image;
     private String gallery;
     private String artist_name;
     private float rating;
@@ -19,8 +19,6 @@ public class SingleServiceModel {
     @SerializedName("reviews")
     @Expose
     private List<SingleServiceReviews> singleServiceReviews = null;
-
-
 
     public Integer getId() {
         return id;
@@ -50,8 +48,8 @@ public class SingleServiceModel {
         return price;
     }
 
-    public String getFeatureImage() {
-        return featureImage;
+    public String getFeature_image() {
+        return feature_image;
     }
 
     public String getGallery() {

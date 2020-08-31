@@ -145,14 +145,7 @@ public class DjProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btn_Follow.setClickable(false);
                 btn_Follow.setEnabled(false);
-                if(mFollow_Status== 0){
-                    mFollower_Count--;
-                    followUnFollow(0);
-                }else {
-                    mFollower_Count++;
-                    followUnFollow(1);
-                }
-                txt_Total_Follower.setText(String.valueOf(mFollower_Count));
+                followUnFollow();
             }
         });
 
@@ -213,8 +206,8 @@ public class DjProfileActivity extends AppCompatActivity {
         }
         txt_Total_Follower.setText(String.valueOf(mFollower_Count));
 
-        if (!mProfile.equals("no")) {
-            Picasso.get().load(mProfile)
+        if (mProfile!= null && !mProfile.equals("no")) {
+            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + mProfile)
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()
@@ -420,13 +413,13 @@ public class DjProfileActivity extends AppCompatActivity {
     }
 
 
-    private void followUnFollow (int CurrentStatus) {
+    private void followUnFollow () {
         Retrofit retrofit = ApiClient.retrofit( DjProfileActivity.this);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         String relativeUrl = "";
-        //means not following yet
-        if(CurrentStatus == 0){
+
+        if(mFollow_Status == 0){
             relativeUrl = "api/follow_artist/"+String.valueOf(artistID);
         }else {
             relativeUrl = "api/unfollow_artist/"+String.valueOf(artistID);
@@ -438,10 +431,10 @@ public class DjProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
-                    if (CurrentStatus == 0){
-                        snackBarText.setText(" Follow Successfully");
+                    if (mFollow_Status == 0){
                         mFollow_Status = 1;
                         mFollower_Count++;
+                        snackBarText.setText(" Follow Successfully");
                         btn_Follow.setText("UnFollow");
                     }
                     else {
@@ -450,10 +443,10 @@ public class DjProfileActivity extends AppCompatActivity {
                         snackBarText.setText(" UnFollow Successfully");
                         btn_Follow.setText("Follow");
                     }
-
+                    txt_Total_Follower.setText(String.valueOf(mFollower_Count));
                     snackbar.show();
-                    btn_Follow.setClickable(false);
-                    btn_Follow.setEnabled(false);
+                    btn_Follow.setClickable(true);
+                    btn_Follow.setEnabled(true);
                 }else {
                     alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,
                             false);

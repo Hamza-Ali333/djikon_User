@@ -121,7 +121,6 @@ public class ChatViewerActivity extends AppCompatActivity {
             }
         });
 
-        toolBarTitle.setText(djName);//set DJ Name in tool bar
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -133,6 +132,8 @@ public class ChatViewerActivity extends AppCompatActivity {
         djName = i.getStringExtra("dj_Name");
         imgProfileUrl = i.getStringExtra("imgProfileUrl");
         setDjProfile(imgProfileUrl);
+
+        toolBarTitle.setText(djName);//set DJ Name in tool bar
 
         myRef = FirebaseDatabase.getInstance().getReference("Chats");
 

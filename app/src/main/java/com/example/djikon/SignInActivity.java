@@ -13,6 +13,7 @@ import androidx.biometric.BiometricPrompt;
 
 
 import android.hardware.fingerprint.FingerprintManager;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
@@ -76,7 +77,7 @@ import retrofit2.Retrofit;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
 
-    private TextView txt_Create_new_account, txt_Forgot_Password, txt_signWith_face, txt_signWith_PIN;
+    private TextView txt_Create_new_account, txt_Forgot_Password, txt_signWith_face, txt_signWith_PIN, txt_Error;
 
     private Button btn_SignIn;
     private RelativeLayout rlt_BiometricPrompt;
@@ -892,6 +893,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
     private void isUserExits(String email,String password) {
+        txt_Error.setVisibility(View.GONE);
         progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Checking...");
 
         Call<LoginRegistrationModel> call = jsonApiHolder.Login(email,password, 2);
@@ -933,17 +935,13 @@ public class SignInActivity extends AppCompatActivity {
                             alert_AND_forgetDailoge = alertDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                         }
                     });
-
-
                 } else if (response.code() == 403) {
-
                     alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "This email is register as Subscriber can't use it here in User App");
                     progressDialog.dismiss();
-
-                } else {
+                }else {
                     progressDialog.dismiss();
-                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,false,
-                            "Try Again","Something happend wrong. please try again.");
+                    txt_Error.setText("Email or password is wrong.");
+                    txt_Error.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -1048,6 +1046,7 @@ public class SignInActivity extends AppCompatActivity {
         rlt_BiometricPrompt = findViewById(R.id.biometricpromt);
 //      txt_signWith_face = findViewById(R.id.txt_face_id);
         txt_signWith_PIN = findViewById(R.id.txt_signInWithPIN);
+        txt_Error = findViewById(R.id.txt_error);
 
 
         edt_Email = findViewById(R.id.edt_Email);

@@ -6,11 +6,11 @@ public class BookingHistory {
    private String firstname;
    private String lastname;
    private String name;
+   private String profile_image;
    private String price;
    private String address;
    private String start_date;
    private String end_date;
-
 
     public int getId() {
         return id;
@@ -74,5 +74,9 @@ public class BookingHistory {
 
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
+    }
+
+    public String getProfile_image() {
+        return profile_image;
     }
 }

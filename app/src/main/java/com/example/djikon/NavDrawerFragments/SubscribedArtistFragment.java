@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,14 +73,13 @@ public class SubscribedArtistFragment extends Fragment {
             public void onResponse(Call<List<SubscribeArtistModel>> call, Response<List<SubscribeArtistModel>> response) {
 
                 if(response.isSuccessful()){
-
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
                             List<SubscribeArtistModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
                                 AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
-                                        "No Artist Found","it's seems like you din't follow any artist now");
+                                        "No Subscribed Artist Found","it's seems like you din't follow any artist now");
                             }
                            else
                             initializeRecycler(artistModels);
@@ -100,7 +100,6 @@ public class SubscribedArtistFragment extends Fragment {
                 DialogsUtils.showResponseMsg(getContext(),true);
             }
         });
-
     }
 
     private void initializeRecycler (List<SubscribeArtistModel> ArtistList) {

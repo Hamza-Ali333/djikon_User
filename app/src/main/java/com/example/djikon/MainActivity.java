@@ -77,9 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
-    String currentUserEmail;
-    String currentUserPassword;
-    Boolean isComeFromRegistrationActivity;
+    private String currentUserEmail;
+    private String currentUserPassword;
+    private Boolean isComeFromRegistrationActivity;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getCurrentUserImage();
 
         setSupportActionBar(toolbar);
-//tool bar image
+        //tool bar image
         currentUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 // what do you want here
-
             }
         });
 
@@ -386,20 +385,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 jsonApiHolder = retrofit.create(JSONApiHolder.class);
-                Call<SuccessErrorModel> call = jsonApiHolder.postFCMTokenForWeb(instanceIdResult.getToken());
+                Call<Void> call = jsonApiHolder.postFCMTokenForWeb(instanceIdResult.getToken());
 
-                call.enqueue(new Callback<SuccessErrorModel>() {
+                call.enqueue(new Callback<Void>() {
                     @Override
-                    public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+                    public void onResponse(Call<Void> call, Response<Void> response) {
                        if(!response.isSuccessful()){
                            //if failed to send token on server then run Again
                            alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,false);
                        }
                     }
                     @Override
-                    public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                    public void onFailure(Call<Void> call, Throwable t) {
                         //if failed to send token on server then run Again
-                        alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,true);
+                        //alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,true);
+                        DialogsUtils.showAlertDialog(MainActivity.this,false,"no",t.getMessage());
                     }
                 });
 
@@ -419,6 +419,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getCurrentUserImage();
     }
 
     @Override

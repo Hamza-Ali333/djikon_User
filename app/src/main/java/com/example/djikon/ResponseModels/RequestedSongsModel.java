@@ -4,7 +4,8 @@ public class RequestedSongsModel {
     private int id;
     private String firstname,
     lastname,
-    profile_image;
+    created_Date,
+    song_name;
 
     //Date is remaing
     //Song Name also remaing
@@ -21,8 +22,11 @@ public class RequestedSongsModel {
         return lastname;
     }
 
-    public String getProfile_image() {
-        return profile_image;
+    public String getCreated_Date() {
+        return created_Date;
     }
 
+    public String getSong_name() {
+        return song_name;
+    }
 }

@@ -134,17 +134,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         serviceOrDjName = intent.getStringExtra("serviceOrDjName");
         description = intent.getStringExtra("description");
 
-
-
-
-        Log.i(TAG, "onCreate: artistId "+artistId);
-        Log.i(TAG, "onCreate: bookingForArtist "+bookingForArtist);
-        Log.i(TAG, "onCreate: bookingForService "+bookingForService);
-        Log.i(TAG, "onCreate: serviceId "+serviceId);
-        Log.i(TAG, "onCreate: priceType "+priceType);
-        Log.i(TAG, "onCreate: price "+RPH);
-        Log.i(TAG, "onCreate: ServiceOrDjName "+serviceOrDjName);
-        Log.i(TAG, "onCreate: description "+description);
+        setPreferencesDataIntoViews();//set User information into EditText which we already have
 
         if (bookingForArtist == true && bookingForService == false) {//if ture
             rlt_End_Date.setVisibility(View.VISIBLE);
@@ -178,7 +168,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             }
         });
 
-
         rlt_End_Time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,20 +191,31 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         btn_Check_Cost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (isInfoRight()) {
-                    String startDate = txt_Start_Date.getText().toString() + " " + txt_Start_Time.getText().toString();
-                    String endTime = txt_End_Date.getText().toString() + " " + txt_End_Time.getText().toString();
-                    getTimeDuration(startDate, endTime);
-//                    if (!bookingForArtist && !priceType.equals("Fix")) {
-//                        getTimeDuration(startDate, endTime);
-//                    } else if (bookingForArtist) {
-//                        getTimeDuration(startDate, endTime);
-//                    }
+                    if (!priceType.equals("Fix")) {
+                        String startDate = txt_Start_Date.getText().toString() + " " + txt_Start_Time.getText().toString();
+                        String endTime = txt_End_Date.getText().toString() + " " + txt_End_Time.getText().toString();
+                        getTimeDuration(startDate, endTime);
+                    } else if (bookingForArtist) {
+                       // getTimeDuration(startDate, endTime);
+                    }
                 }
             }
         });
     }//onCreate
+
+    private void setPreferencesDataIntoViews(){
+        edt_Name.setText(PreferenceData.getUserName(this));
+        edt_Email.setText(PreferenceData.getUserEmail(this));
+
+        if(PreferenceData.getUserAddress(this).equals("no")){
+            edt_Address.setText(PreferenceData.getUserAddress(this));
+        }
+        if (PreferenceData.getUserPhoneNo(this).equals("no")){
+            edt_Phone.setText(PreferenceData.getUserPhoneNo(this));
+        }
+
+    }
 
     private void showDatPiker(TextView textView) {
         Calendar c = Calendar.getInstance();
@@ -413,70 +413,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             Log.i(TAG, "getTimeDuration: " + e.getMessage());
         }
     }
-
-//For Fix
-//    private void getTimeDurationForFix(String Start, String End){
-//        //HH converts hour in 24 hours format (0-23), day calculation
-//        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-//
-//        Date d1 = null;
-//        Date d2 = null;
-//
-//        try {
-//            d1 = format.parse(Start);
-//            d2 = format.parse(End);
-//
-//            //in milliseconds
-//            long diff = d2.getTime() - d1.getTime();
-//
-//            long diffMinutes = diff / (60 * 1000) % 60;
-//            long diffHours = diff / (60 * 60 * 1000) % 24;
-//            long diffDays = diff / (24 * 60 * 60 * 1000);
-//
-//            Integer Day = (int) (long) diffDays;
-//            Integer Hour = (int) (long) diffHours;
-//            Integer Minutes = (int) (long) diffMinutes;
-//
-//            int TotalHour = 0;
-//            if (Day != 0) {
-//                Day = (Day * 24) * 60;
-//            } else {
-//                Day = 0;
-//            }
-//            if (Hour != 0) {
-//                TotalHour = Hour * 60;
-//            } else {
-//                Hour = 0;
-//            }
-//
-//            //getting total minuts
-//            int TotalMinutes = Day + TotalHour + Minutes;
-//
-//            Integer ratePerHour = Integer.parseInt(RPH);
-//
-//            Double perMint = Double.valueOf((double) ratePerHour / 60);
-//
-//            perMint = perMint * TotalMinutes;
-//
-//            if (perMint > 0) {
-//                //open Dailoge after Calculation and pass the value
-//                openCheckCostDialogue(
-//                        perMint,//total cost
-//                        //converting the long into Integer
-//                        (int) (long) diffDays, //this is for the days
-//                        (int) (long) diffHours, //total Hour
-//                        (int) (long) diffMinutes //total minutes
-//                );
-//            } else {
-//                alertDialog = DialogsUtils.showAlertDialog(this, false,
-//                        "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
-//            }
-//
-//        } catch (Exception e) {
-//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//            Log.i(TAG, "getTimeDuration: " + e.getMessage());
-//        }
-//    }
 
     private void openCheckCostDialogue(Double TotalCost, int Days, int Hour, int Minutes) {
 
