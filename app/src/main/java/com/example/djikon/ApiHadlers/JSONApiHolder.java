@@ -2,12 +2,15 @@ package com.example.djikon.ApiHadlers;
 
 import com.example.djikon.ResponseModels.AllArtistModel;
 import com.example.djikon.ResponseModels.BookingHistory;
+import com.example.djikon.ResponseModels.CurrentLiveArtistModel;
 import com.example.djikon.ResponseModels.DjAndUserProfileModel;
 import com.example.djikon.ResponseModels.FeedBlogModel;
+import com.example.djikon.ResponseModels.FramesModel;
 import com.example.djikon.ResponseModels.LoginRegistrationModel;
 import com.example.djikon.ResponseModels.RequestedSongsModel;
 import com.example.djikon.ResponseModels.SingleBlogDetailModel;
 import com.example.djikon.ResponseModels.SingleServiceModel;
+import com.example.djikon.ResponseModels.SliderModel;
 import com.example.djikon.ResponseModels.SubscribeArtistModel;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
 
@@ -61,6 +64,12 @@ public interface JSONApiHolder {
     //this will return current UserAll the booking
     @GET("api/bookingHistory")
     Call<List<BookingHistory>> getBookingHistory();
+
+    @GET("api/liveArtist")
+    Call<List<CurrentLiveArtistModel>> getCurrentLiveArtist();
+
+    @GET("api/socialFrames")
+    Call<FramesModel> getFrames();
 
     @FormUrlEncoded
     @POST("api/register")

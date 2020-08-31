@@ -39,7 +39,7 @@ public class LiveToArtistFragment extends Fragment {
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
-        mAdapter = new RecyclerLiveToArtist(liveToArtistArrayList);
+       /// mAdapter = new RecyclerLiveToArtist(liveToArtistArrayList);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);

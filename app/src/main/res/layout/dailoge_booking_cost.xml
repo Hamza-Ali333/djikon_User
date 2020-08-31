@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="15dp">
 
@@ -12,9 +14,9 @@
         android:orientation="vertical">
 
     <RelativeLayout
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
         android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -23,7 +25,9 @@
         android:id="@+id/img_dj_profile"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@drawable/woman"/>
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/colorBlack"
+        android:src="@drawable/ic_avatar"/>
 
         <TextView
             android:layout_marginTop="8dp"
@@ -61,236 +65,386 @@
             android:layout_height="wrap_content"/>
     </RelativeLayout>
 
-        <RelativeLayout
-            android:padding="10dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp"
+            >
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="6dp" />
 
             <TextView
                 android:id="@+id/purchserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Graycolor"
                 android:text="Name"
-                android:textSize="14sp"/>
+                android:textColor="@color/Graycolor"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline15"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/txt_pName"
-                android:layout_below="@id/purchserName"
-                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
+                android:layout_below="@id/purchserName"
                 android:text="Hamza Ali"
-                android:textSize="16sp"/>
+                android:textColor="@color/colorBlack"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/purchserName"
+                app:layout_constraintTop_toBottomOf="@+id/purchserName" />
 
             <TextView
                 android:id="@+id/email"
-                android:layout_below="@+id/txt_pName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Graycolor"
+                android:layout_below="@+id/txt_pName"
+                android:layout_marginTop="4dp"
                 android:text="Email"
-                android:textSize="14sp"/>
+                android:textColor="@color/Graycolor"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/txt_pName"
+                app:layout_constraintTop_toBottomOf="@+id/txt_pName" />
 
             <TextView
                 android:id="@+id/txt_pEmail"
-                android:layout_below="@id/email"
-                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
+                android:layout_below="@id/email"
                 android:text="hamzaregardless333@gmail.com"
-                android:textSize="16sp"/>
+                android:textColor="@color/colorBlack"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/email"
+                app:layout_constraintTop_toBottomOf="@+id/email" />
 
             <TextView
                 android:id="@+id/phone"
-                android:layout_below="@+id/txt_pEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Graycolor"
+                android:layout_below="@+id/txt_pEmail"
+                android:layout_marginTop="4dp"
                 android:text="Phone"
-                android:textSize="14sp"/>
+                android:textColor="@color/Graycolor"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/txt_pEmail"
+                app:layout_constraintTop_toBottomOf="@+id/txt_pEmail" />
 
             <TextView
                 android:id="@+id/txt_pPhone"
-                android:layout_below="@+id/phone"
-                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
+                android:layout_below="@+id/phone"
                 android:text="03131425080"
-                android:textSize="16sp"/>
+                android:textColor="@color/colorBlack"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/phone"
+                app:layout_constraintTop_toBottomOf="@+id/phone" />
 
             <TextView
                 android:id="@+id/address"
-                android:layout_below="@+id/txt_pPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Graycolor"
+                android:layout_below="@+id/txt_pPhone"
+                android:layout_marginTop="4dp"
                 android:text="Address"
-                android:textSize="14sp"/>
+                android:textColor="@color/Graycolor"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/txt_pPhone"
+                app:layout_constraintTop_toBottomOf="@+id/txt_pPhone" />
 
             <TextView
                 android:id="@+id/txt_pAddress"
-                android:layout_below="@id/address"
-                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
+                android:layout_below="@id/address"
                 android:text="105 William St, Chicago, US"
-                android:textSize="16sp"/>
-
-
+                android:textColor="@color/colorBlack"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/address"
+                app:layout_constraintTop_toBottomOf="@+id/address" />
 
             <TextView
                 android:id="@+id/total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_pAddress"
                 android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/Graycolor"
                 android:text="Payment Info"
-                android:textSize="14sp"/>
-
-
-            <TextView
-                android:id="@+id/days"
-                android:layout_below="@id/total"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textColor="@color/colorBlack"
-                android:text="Days"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_pAddress" />
 
-            <TextView
-                android:id="@+id/txt_days"
-                android:layout_below="@id/total"
-                android:layout_marginTop="4dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="0"
-                android:textSize="14sp"/>
+                android:background="#fff"
+                android:padding="6dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/total">
 
 
-            <TextView
-                android:id="@+id/Hour"
-                android:layout_below="@id/days"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="Hours"
-                android:textSize="14sp"/>
+                <TextView
+                    android:id="@+id/days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Days"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/txt_hour"
-                android:layout_below="@id/days"
-                android:layout_marginTop="4dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="0"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/minut"
-                android:layout_below="@id/txt_hour"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="Minuts"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/txt_minut"
-                android:layout_below="@id/txt_hour"
-                android:layout_marginTop="4dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="0"
-                android:textSize="14sp"/>
+                <TextView
+                    android:id="@+id/txt_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="4dp"
+                    android:text="0"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                android:id="@+id/txt_rate_per_hour"
-                android:layout_below="@id/minut"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="Rate Per Hour"
-                android:textSize="14sp"/>
+                <TextView
+                    android:id="@+id/Hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/days"
+                    android:layout_marginTop="4dp"
+                    android:text="Hours"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/days"
+                    app:layout_constraintTop_toBottomOf="@+id/days" />
 
-            <TextView
-                android:id="@+id/txt_rph"
-                android:layout_below="@id/minut"
-                android:layout_marginTop="4dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:text="$15.00"
-                android:textSize="14sp"/>
+                <TextView
+                    android:id="@+id/txt_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/days"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="4dp"
+                    android:text="0"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="@+id/Hour" />
 
-            <TextView
-                android:id="@+id/txt_servic"
-                android:layout_below="@id/txt_rate_per_hour"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlue"
-                android:text="Paid Amount"
-                android:textSize="14sp"/>
+                <TextView
+                    android:id="@+id/minut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_hour"
+                    android:layout_marginTop="4dp"
+                    android:text="Minuts"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/Hour"
+                    app:layout_constraintTop_toBottomOf="@+id/Hour" />
+
+                <TextView
+                    android:id="@+id/txt_minut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_hour"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="4dp"
+                    android:text="0"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                    app:layout_constraintTop_toBottomOf="@+id/Hour" />
+
+                <TextView
+                    android:id="@+id/txt_rate_per_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/minut"
+                    android:layout_marginTop="8dp"
+                    android:text="Rate Per Hour"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/minut" />
+
+                <TextView
+                    android:id="@+id/txt_rph"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/minut"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="4dp"
+                    android:text="$15.00"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="@+id/txt_rate_per_hour" />
+
+                <TextView
+                    android:id="@+id/txt_servic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_rate_per_hour"
+                    android:layout_marginTop="4dp"
+                    android:text="Paid Amount"
+                    android:textColor="@color/colorBlue"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/txt_rate_per_hour"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_rate_per_hour" />
 
 
+                <TextView
+                    android:id="@+id/txt_service_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_rate_per_hour"
+                    android:layout_alignParentRight="true"
+                    android:text="$15.00"
+                    android:textColor="@color/colorBlue"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/txt_rph"
+                    app:layout_constraintTop_toTopOf="@+id/txt_servic" />
 
-            <TextView
-                android:id="@+id/txt_service_amount"
-                android:layout_below="@id/txt_rate_per_hour"
-                android:layout_marginTop="4dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlue"
-                android:text="$15.00"
-                android:textSize="14sp"/>
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="1dp"
+                    android:layout_height="0dp"
+                    android:background="@color/colorBlue"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/txt_days" />
 
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Start Date"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Start Time"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView16"
+                    app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="End Date"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView17"
+                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="End Date"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView19"
+                    app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+                <TextView
+                    android:id="@+id/start_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 PM"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/start_date"
+                    app:layout_constraintTop_toTopOf="@+id/textView17" />
+
+                <TextView
+                    android:id="@+id/end_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/start_time"
+                    app:layout_constraintTop_toTopOf="@+id/textView19" />
+
+                <TextView
+                    android:id="@+id/end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 PM"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/end_date"
+                    app:layout_constraintTop_toTopOf="@+id/textView20" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
                 android:id="@+id/btn_booking_cancle"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
+                android:layout_below="@+id/btn_book_now"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/edt_shape"
+                android:text="Cancel"
+                android:textSize="14sp"
                 android:textColor="#fff"
-                android:layout_below="@+id/txt_service_amount"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:text="Cancel"/>
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
 
             <Button
                 android:id="@+id/btn_book_now"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@drawable/roundshape"
-                android:textColor="#fff"
+                android:layout_height="35dp"
                 android:layout_below="@+id/btn_booking_cancle"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:text="Book Now"/>
+                android:layout_marginTop="8dp"
+                android:background="@drawable/roundshape"
+                android:text="Book Now"
+                android:textSize="14sp"
+                android:textColor="#fff"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/btn_booking_cancle"
+                app:layout_constraintStart_toStartOf="@+id/btn_booking_cancle"
+                app:layout_constraintTop_toBottomOf="@+id/btn_booking_cancle" />
 
-        </RelativeLayout>
+            <!-- <RelativeLayout
+             android:padding="10dp"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+         </RelativeLayout>-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>

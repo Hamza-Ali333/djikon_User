@@ -3,7 +3,6 @@ package com.example.djikon.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -11,33 +10,32 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.djikon.R;
 import com.example.djikon.ResponseModels.CurrentLiveArtistModel;
+import com.example.djikon.ResponseModels.SliderModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class RecyclerLiveToArtist extends RecyclerView.Adapter<RecyclerLiveToArtist.ViewHolder> {
+public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSocialMediaFrames.ViewHolder> {
 
-    private List<CurrentLiveArtistModel> currentLiveArtistModels;
+    private List<SliderModel> currentLiveArtistModels;
 
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public CircularImageView img_LiveArtistProfile;
-        public TextView txt_LiveArtistName;
         public ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
             img_LiveArtistProfile = itemView.findViewById(R.id.img_SubscribeArtist);
 
-            txt_LiveArtistName = itemView.findViewById(R.id.txt_msg_sender_name);
             progressBar = itemView.findViewById(R.id.progressBarProfile);
         }
     }
 
     //constructor
-    public RecyclerLiveToArtist(List<CurrentLiveArtistModel> liveArtistModels) {
+    public RecyclerSocialMediaFrames(List<SliderModel> liveArtistModels) {
         this.currentLiveArtistModels = liveArtistModels;
     }
 
@@ -45,19 +43,19 @@ public class RecyclerLiveToArtist extends RecyclerView.Adapter<RecyclerLiveToArt
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_current_live_artisht, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_frams, parent, false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        CurrentLiveArtistModel currentItem = currentLiveArtistModels.get(position);
+        SliderModel currentItem = currentLiveArtistModels.get(position);
 
-        holder.txt_LiveArtistName.setText(currentItem.getFirstname() + " " + currentItem.getLastname());
-        if (currentItem.getProfile_image() != null && !currentItem.getProfile_image().equals("no")) {
+
+        if (currentItem.getImage() != null && !currentItem.getImage().equals("no")) {
             holder.progressBar.setVisibility(View.VISIBLE);
-            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + currentItem.getProfile_image())
+            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + currentItem.getImage())
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()

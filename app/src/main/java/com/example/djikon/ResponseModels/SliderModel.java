@@ -1,6 +1,9 @@
 package com.example.djikon.ResponseModels;
 
+import com.google.gson.annotations.SerializedName;
+
 public class SliderModel {
+
     private String image;
 
 

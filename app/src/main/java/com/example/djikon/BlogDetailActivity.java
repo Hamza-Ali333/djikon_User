@@ -67,7 +67,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     private SliderView sliderView;
     private ImageView img_Profile;
 
-    private static final String BASEURL_IMAGES = "http://ec2-54-161-107-128.compute-1.amazonaws.com/post_images/";
+    private static final String BASEURL_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
 
     private int blogId;
     private String Gallery;
@@ -212,7 +212,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-
+                            
                             //if comment is not Zero build recycler view
                             mRecyclerView.setVisibility(View.GONE);
                             if (Comments != 0) {

@@ -196,8 +196,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         String startDate = txt_Start_Date.getText().toString() + " " + txt_Start_Time.getText().toString();
                         String endTime = txt_End_Date.getText().toString() + " " + txt_End_Time.getText().toString();
                         getTimeDuration(startDate, endTime);
-                    } else if (bookingForArtist) {
-                       // getTimeDuration(startDate, endTime);
+                    } else {
+                        //no nead to get time Duration
+                       openCheckCostDialogue(Double.valueOf(RPH),0,0,0);//when user is booking fix service
                     }
                 }
             }
@@ -344,7 +345,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         edt_Email = findViewById(R.id.edt_booker_email);
         edt_Address = findViewById(R.id.edt_booker_address);
 
-        txt_Start_Date = findViewById(R.id.txt_start_date);
+        txt_Start_Date = findViewById(R.id.start_date);
         txt_End_Date = findViewById(R.id.txt_date_end);
         txt_Start_Time = findViewById(R.id.txt_start_time);
         txt_End_Time = findViewById(R.id.txt_time_end);
@@ -427,7 +428,10 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 //purchaser detail
                 txt_pName, txt_pEmail, txt_pContact, txt_pAddress,
                 //days,hour,Minutes and Rate per Hour
-                txt_Days, txt_Hour, txt_Minutes, txt_RPH;
+                txt_Days, txt_Hour, txt_Minutes, txt_RPH,
+                //Time And Date
+                start_date, start_time, end_date, end_time;
+
 
         Button btn_Cancle_Booking, btn_Book_Now;
 
@@ -441,6 +445,12 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         txt_pEmail = view.findViewById(R.id.txt_pEmail);
         txt_pContact = view.findViewById(R.id.txt_pPhone);
         txt_pAddress = view.findViewById(R.id.txt_pAddress);
+
+        //Time And Date references
+        start_date = view.findViewById(R.id.start_date);
+        start_time = view.findViewById(R.id.start_time);
+        end_date = view.findViewById(R.id.end_date);
+        end_time = view.findViewById(R.id.end_time);
 
 
         //Service Detail
@@ -460,18 +470,24 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         img_Profile.setImageBitmap(bitmap);
         txt_Name.setText(serviceOrDjName);
 
-//        if (!bookingForArtist) {
-//            txt_Service_Name.setText("Service Name");
-//        } else {
-//            txt_Service_Name.setText("Book This Dj");
-//        }
-
         txt_Service_Name.setText(serviceOrDjName);
         //purchaser Detail
         txt_pName.setText(edt_Name.getText().toString());
         txt_pEmail.setText(edt_Email.getText().toString());
         txt_pContact.setText(edt_Phone.getText().toString());
         txt_pAddress.setText(edt_Address.getText());
+
+        //setting Date And Time
+        if(!priceType.equals("Fix")){
+            start_date.setText(txt_Start_Date.getText().toString());
+            start_time.setText(txt_Start_Time.getText().toString());
+            end_date.setText(txt_End_Date.getText().toString());
+            end_time.setText(txt_End_Time.getText().toString());
+        }else {
+            start_date.setText(txt_Start_Date.getText().toString());
+            start_time.setText(txt_Start_Time.getText().toString());
+        }
+
 
         //Service Total Paid Amount
         txt_Service_Amount.setText("$" + new DecimalFormat("##.##").format(TotalCost));

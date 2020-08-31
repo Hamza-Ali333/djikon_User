@@ -89,7 +89,6 @@ public class RequestedSongFragment extends Fragment {
                                 initializeRecycler(artistModels);
                             }
 
-
                 }else {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);

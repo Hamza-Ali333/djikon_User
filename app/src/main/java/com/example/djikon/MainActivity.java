@@ -26,6 +26,7 @@ import com.example.djikon.ApiHadlers.JSONApiHolder;
 import com.example.djikon.GlobelClasses.DialogsUtils;
 import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
+import com.example.djikon.NavDrawerFragments.CurrentLiveArtistFragment;
 import com.example.djikon.ResponseModels.LoginRegistrationModel;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
 import com.example.djikon.NavDrawerFragments.AllArtistFragment;
@@ -251,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 getSupportActionBar().setTitle(R.string.CurrentLiveArtist);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new LiveToArtistFragment()).commit();
+                        new CurrentLiveArtistFragment()).commit();
                 break;
 
             case R.id.nav_Artist:
