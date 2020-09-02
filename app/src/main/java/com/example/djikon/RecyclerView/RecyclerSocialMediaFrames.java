@@ -1,22 +1,18 @@
 package com.example.djikon.RecyclerView;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.djikon.NavDrawerFragments.SocialMediaShareFragment;
 import com.example.djikon.R;
 import com.example.djikon.ResponseModels.FramesModel;
-import com.example.djikon.ResponseModels.SliderModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -27,15 +23,27 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
     private List<FramesModel> frameImageList;
     private Context context;
 
+    private onItemClickListner onItemClickListner;
+
+    public interface onItemClickListner{
+        void onClick(Bitmap bitmap);//pass your object types.
+    }
+
+    public void setOnItemClickListner(RecyclerSocialMediaFrames.onItemClickListner onItemClickListner) {
+        this.onItemClickListner = onItemClickListner;
+    }
+
+
+
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public CircularImageView img_LiveArtistProfile;
+        public ImageView img_Frame;
         public ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            img_LiveArtistProfile = itemView.findViewById(R.id.frame);
+            img_Frame = itemView.findViewById(R.id.frame);
             progressBar = itemView.findViewById(R.id.progressBarProfile);
 
         }
@@ -68,7 +76,7 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
-                    .into(holder.img_LiveArtistProfile, new com.squareup.picasso.Callback() {
+                    .into(holder.img_Frame, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
                             holder.progressBar.setVisibility(View.GONE);
@@ -80,6 +88,15 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
                         }
                     });
         }//if
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.img_Frame.buildDrawingCache();
+                Bitmap bitmap = holder.img_Frame.getDrawingCache();
+                onItemClickListner.onClick(bitmap);
+            }
+        });
 
     }
 
