@@ -394,6 +394,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                        if(!response.isSuccessful()){
                            //if failed to send token on server then run Again
                            alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,false);
+                       }else {
+                           Toast.makeText(MainActivity.this, "Token Send", Toast.LENGTH_SHORT).show();
                        }
                     }
                     @Override

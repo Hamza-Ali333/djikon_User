@@ -39,7 +39,7 @@ public class SaveFramImage {
     //saving screenshot in the storage
     public void saveBitmap() {
         String mSecond = String.valueOf(System.currentTimeMillis());
-        imagePath = new File(Environment.getExternalStorageDirectory() +"/"+mSecond+"scrnshot.png"); ////File imagePath
+        imagePath = new File(Environment.getExternalStorageDirectory() +"/ICONICCONNECTS"+mSecond+"scrnshot.png"); ////File imagePath
         FileOutputStream fos;
         try {
             fos = new FileOutputStream(imagePath);

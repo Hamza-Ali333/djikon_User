@@ -210,10 +210,10 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         edt_Name.setText(PreferenceData.getUserName(this));
         edt_Email.setText(PreferenceData.getUserEmail(this));
 
-        if (PreferenceData.getUserAddress(this).equals("no")) {
+        if (!PreferenceData.getUserAddress(this).equals("no")) {
             edt_Address.setText(PreferenceData.getUserAddress(this));
         }
-        if (PreferenceData.getUserPhoneNo(this).equals("no")) {
+        if (!PreferenceData.getUserPhoneNo(this).equals("no")) {
             edt_Phone.setText(PreferenceData.getUserPhoneNo(this));
         }
 

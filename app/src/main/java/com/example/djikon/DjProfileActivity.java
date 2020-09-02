@@ -516,10 +516,18 @@ public class DjProfileActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressDialog.dismiss();
+                            }
+                        });
                         artist_UID = dataSnapshot.child("uid").getValue(String.class);
-                        progressDialog.dismiss();
+
                             lunchMessageActivity();
+
                         }else {
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -531,13 +539,13 @@ public class DjProfileActivity extends AppCompatActivity {
                             }
                         });
                     }
-
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            progressDialog.dismiss();
                             btn_Message.setClickable(true);
                             btn_Message.setEnabled(true);
                             alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
