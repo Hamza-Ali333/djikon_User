@@ -21,37 +21,37 @@
         android:layout_marginTop="10dp"
         app:srcCompat="@drawable/ic_fingerprint" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:textSize="18sp"
-        android:text="Put Your Finger On Finger Print Scanner"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/colorBlack"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Put Your Finger On Finger Print Scanner"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="16sp"
-        android:text="Use Finger Print For Login"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/Graycolor"
-        />
+        <TextView
+            android:id="@+id/msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Use Finger Print For Login"
+            android:textColor="@color/Graycolor"
+            android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/cancel_fingerprint"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:textSize="14sp"
-        android:background="@drawable/fullroundshape"
-        android:text="Cancle"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#fff"
-        />
+        <Button
+            android:id="@+id/cancel_fingerprint"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/fullroundshape"
+            android:fontFamily="@font/montserrat"
+            android:text="Cancle"
+            android:textColor="#fff"
+            android:textSize="14sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

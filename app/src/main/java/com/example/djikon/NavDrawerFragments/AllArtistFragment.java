@@ -77,8 +77,15 @@ public class AllArtistFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                            List<AllArtistModel> artistModels = response.body();
-                            removeArtistWhichHaveStatusOne(artistModels);//will remove all artist which this user already followed
+                    List<AllArtistModel> artistModels = response.body();
+                    if(artistModels.isEmpty()) {
+                        AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
+                                "No Artist Found","it's seems like you din't follow any artist now");
+                    }
+                    else{
+                        initializeRecycler(artistModels);
+                    }
+
                 }else {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
@@ -94,32 +101,6 @@ public class AllArtistFragment extends Fragment {
             }
         });
 
-    }
-
-    //who is removing this dj from the list
-    private void removeArtistWhichHaveStatusOne (List<AllArtistModel> ArtistList){
-
-        if(!ArtistList.isEmpty()) {
-
-            for (int i = 0; i < ArtistList.size(); i++) {
-
-                if(ArtistList.get(i).getFollow_status() == 1){
-                    try {
-                        ArtistList.remove(i);
-                    }catch (Exception e){
-                        Log.i("TAG", "removeArtistWhichHaveStatusOne: "+e.getMessage());
-                    }
-                }
-            }
-        }
-        if(ArtistList.isEmpty()) {
-            AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
-                    "No Artist Found","it's seems like you din't follow any artist now");
-        }
-        else{
-            Toast.makeText(getContext(), "Have Data", Toast.LENGTH_SHORT).show();
-            initializeRecycler(ArtistList);
-        }
     }
 
     private void initializeRecycler (List<AllArtistModel> ArtistList) {

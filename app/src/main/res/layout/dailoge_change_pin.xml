@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:fontFamily="@font/montserrat"
             android:text="Change Pin"
             android:textColor="@color/colorBlue"
             android:textSize="18sp"
@@ -26,63 +27,68 @@
 
         <TextView
             android:id="@+id/info"
-            android:layout_marginTop="14dp"
-            android:layout_below="@+id/heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#A2A3A5"
+            android:layout_below="@+id/heading"
             android:layout_centerHorizontal="true"
-            android:textSize="14sp"
-            android:text="Please provide the info for change the Pin!"/>
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Please provide the info for change the Pin!"
+            android:textColor="#A2A3A5"
+            android:textSize="14sp" />
 
-    <EditText
-        android:id="@+id/edt_old_pin"
-        android:layout_below="@+id/info"
-        android:layout_marginTop="8dp"
-        android:hint="Old Pin"
-        android:textSize="14sp"
-        android:background="#ECF2FC"
-        android:paddingLeft="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"/>
+        <EditText
+            android:id="@+id/edt_old_pin"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_below="@+id/info"
+            android:layout_marginTop="8dp"
+            android:background="#ECF2FC"
+            android:fontFamily="@font/montserrat"
+            android:hint="Old Pin"
+            android:paddingLeft="8dp"
+            android:textSize="14sp" />
 
 
         <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
             android:id="@+id/edt_new_pin"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:layout_below="@+id/edt_old_pin"
             android:layout_marginTop="8dp"
+            android:background="#ECF2FC"
+            android:fontFamily="@font/montserrat"
             android:hint="New Pin"
             android:inputType="number"
-            android:textSize="14sp"
-            android:background="#ECF2FC"
             android:paddingLeft="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"/>
+            android:textSize="14sp" />
 
 
         <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
             android:id="@+id/edt_ConfirmPin"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:layout_below="@+id/edt_new_pin"
             android:layout_marginTop="8dp"
+            android:background="#ECF2FC"
+            android:fontFamily="@font/montserrat"
             android:hint="Confirm Pin"
             android:inputType="number"
-            android:textSize="14sp"
-            android:background="#ECF2FC"
             android:paddingLeft="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"/>
+            android:textSize="14sp" />
 
 
         <Button
             android:id="@+id/btn_Reset_Pin"
-            android:layout_marginTop="8dp"
-            android:textAllCaps="false"
-            android:layout_below="@+id/edt_ConfirmPin"
-            android:background="@color/colorBlue"
-            android:text="Reset Pin"
-            android:textColor="#fff"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_ConfirmPin"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorBlue"
+            android:fontFamily="@font/montserrat"
+            android:text="Reset Pin"
+            android:textAllCaps="false"
+            android:textColor="#fff" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
 

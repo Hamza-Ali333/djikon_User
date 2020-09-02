@@ -19,6 +19,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
+                android:fontFamily="@font/montserrat"
                 android:text="Live Streaming"
                 android:textColor="@color/Graycolor"
                 android:textSize="16sp" />
@@ -29,9 +30,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:textColor="#fff"
                 android:layout_marginRight="14dp"
-                android:text="Wifi Only"/>
+                android:fontFamily="@font/montserrat"
+                android:text="Wifi Only"
+                android:textColor="#fff" />
 
             <View
                 android:layout_width="match_parent"
@@ -53,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
+                android:fontFamily="@font/montserrat"
                 android:text="Face ID"
                 android:textColor="@color/Graycolor"
                 android:textSize="16sp" />
@@ -84,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
+                android:fontFamily="@font/montserrat"
                 android:text="Biometrics App"
                 android:textColor="@color/Graycolor"
                 android:textSize="16sp" />
@@ -117,6 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
+                android:fontFamily="@font/montserrat"
                 android:text="Change Password"
                 android:textColor="@color/Graycolor"
                 android:textSize="14sp" />
@@ -146,6 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
+                android:fontFamily="@font/montserrat"
                 android:text="Change Pin"
                 android:textColor="@color/Graycolor"
                 android:textSize="16sp" />
@@ -175,6 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
+            android:fontFamily="@font/montserrat"
             android:text="Booking History"
             android:textColor="@color/Graycolor"
             android:textSize="16sp" />
@@ -204,6 +211,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
+            android:fontFamily="@font/montserrat"
             android:text="Connect Social Media Accounts"
             android:textColor="@color/Graycolor"
             android:textSize="16sp" />

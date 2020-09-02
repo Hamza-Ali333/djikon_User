@@ -47,6 +47,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
@@ -75,6 +76,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,8 +103,11 @@ public class SignInActivity extends AppCompatActivity {
     private Button btn_SignIn;
     private RelativeLayout rlt_BiometricPrompt;
 
-    private LoginButton btn_Fb_Login;
-    private SignInButton btn_Google_Login;
+    //fb
+    private LoginButton loginButton;//hide
+    private Button fb;//visible
+    //google
+    private Button google;
 
     private ImageView img_Finger_Print;
     private EditText edt_Email, edt_Password;
@@ -164,6 +169,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_sign_in);
         getSupportActionBar().hide();
         createReferencer();
@@ -280,15 +286,12 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        btn_Fb_Login.setReadPermissions(Arrays.asList("email"));
+        loginButton.setReadPermissions(Arrays.asList("email"));
         mCallbackManager = CallbackManager.Factory.create();
 
-        btn_Fb_Login.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
-
-
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -346,13 +349,23 @@ public class SignInActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        btn_Google_Login.setOnClickListener(new View.OnClickListener() {
+        google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 signInWithGoogle();
+
             }
         });
 
+
+    }
+
+
+    public void onBtnFbClick(View v) {
+        if (v == fb) {
+            loginButton.performClick();
+        }
     }
 
     private void signInWithGoogle() {
@@ -363,10 +376,8 @@ public class SignInActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> taskCompete) {
         try {
             GoogleSignInAccount acc = taskCompete.getResult(ApiException.class);
-            progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait...");
-            Log.i("TAG", "handleSignInResult: Done");
 
-                socialMediaFirstName = acc.getGivenName();
+                socialMediaFirstName =  acc.getGivenName();
                 socialMediaLastName = acc.getFamilyName();
                 Email =   acc.getEmail();
                 providerId =  acc.getId();
@@ -389,7 +400,6 @@ public class SignInActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-
         } else {
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
@@ -1052,7 +1062,7 @@ public class SignInActivity extends AppCompatActivity {
         Map<String, String> params = new HashMap<>();
         params.put("role", "2");//will remain same in both conditions
         if(isSignWithSocial){
-            params.put("firsname", socialMediaFirstName);
+            params.put("firstname", socialMediaFirstName);
             params.put("lastname", socialMediaLastName);
             params.put("email", Email);
             params.put("social", "1");
@@ -1240,13 +1250,18 @@ public class SignInActivity extends AppCompatActivity {
         txt_signWith_PIN = findViewById(R.id.txt_signInWithPIN);
         txt_Error = findViewById(R.id.txt_error);
 
+        //FaceBookLoginButton
+        fb = findViewById(R.id.fb);//Visible
+        loginButton = findViewById(R.id.login_button);//hide
+        //Google
+        google = findViewById(R.id.google);//Visible
+
+
 
         edt_Email = findViewById(R.id.edt_Email);
         edt_Password = findViewById(R.id.edt_Password);
 
         btn_SignIn = findViewById(R.id.btn_SignIn);
-        btn_Fb_Login = findViewById(R.id.btn_fb_sign_up);
-        btn_Google_Login = findViewById(R.id.btn_google_sign_up);
         img_Finger_Print = findViewById(R.id.img_biometric);
     }
 

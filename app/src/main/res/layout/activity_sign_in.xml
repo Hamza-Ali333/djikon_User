@@ -16,7 +16,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -43,18 +44,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logo" />
 
-    <TextView
-        android:id="@+id/activity_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Sign In"
-        android:textColor="@color/colorBlue"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/logo"
-        tools:text="Sign In" />
+        <TextView
+            android:id="@+id/activity_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Sign In"
+            android:textColor="@color/colorBlue"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/logo"
+            tools:text="Sign In" />
 
         <EditText
             android:id="@+id/edt_Email"
@@ -64,6 +66,7 @@
             android:autofillHints="no"
             android:background="#FFFFFF"
             android:ems="10"
+            android:fontFamily="@font/montserrat"
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:paddingLeft="8dp"
@@ -72,72 +75,79 @@
             app:layout_constraintStart_toStartOf="@+id/guideline4"
             app:layout_constraintTop_toBottomOf="@+id/txt_error" />
 
-    <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
-        android:id="@+id/edt_Password"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="8dp"
-        android:background="#FFFFFF"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/edt_Email" />
+        <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
+            android:id="@+id/edt_Password"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="8dp"
+            android:background="#FFFFFF"
+            android:ems="10"
+            android:fontFamily="@font/montserrat"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/edt_Email" />
 
-    <Button
-        android:id="@+id/btn_SignIn"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/colorBlue"
-        android:text="Sign In"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/edt_Password"
-        tools:text="Sign In" />
+        <Button
+            android:id="@+id/btn_SignIn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorBlue"
+            android:fontFamily="@font/montserrat"
+            android:text="Sign In"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/edt_Password"
+            tools:text="Sign In" />
 
-    <Button
-        android:id="@+id/btn_fb_sign_up"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorBlue"
-        android:drawableStart="@drawable/f"
-        android:gravity="center"
-        android:paddingStart="28dp"
-        android:paddingEnd="8dp"
-        android:text="Sign With Google"
-        android:textColor="#fff"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/btn_SignIn"
-        android:drawableLeft="@drawable/f"
-        android:paddingLeft="28dp"
-        android:paddingRight="8dp" />
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/btn_SignIn"/>
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/btn_google_sign_up"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:drawableStart="@drawable/g"
-        android:paddingStart="28dp"
-        android:paddingEnd="8dp"
-        android:text="Sign Up With FaceBook"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/btn_fb_sign_up"
-        android:drawableLeft="@drawable/g"
-        android:paddingLeft="28dp"
-        android:paddingRight="8dp" />
+        <Button
+            android:id="@+id/fb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#416BC1"
+            android:fontFamily="@font/montserrat"
+            android:onClick="onBtnFbClick"
+            android:text="Sign In With FaceBook"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/btn_SignIn" />
+
+
+        <Button
+            android:id="@+id/google"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#d9534f"
+            android:fontFamily="@font/montserrat"
+            android:text="Sign In With Google"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/fb" />
+
 
 
 
@@ -174,6 +184,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat"
             android:text="Forgot your password?"
             android:textColor="@color/colorBlue"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
@@ -181,40 +192,42 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_signInWithPIN"
             tools:text="Forgot your password?" />
 
-    <TextView
-        android:id="@+id/txt_create_new_acount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Don't have an acount?"
-        android:textColor="@color/colorBlue"
-        app:layout_constraintEnd_toStartOf="@+id/txt_Create_new_account"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/btn_google_sign_up"
-        tools:text="don't have an acount?" />
+        <TextView
+            android:id="@+id/txt_create_new_acount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Don't have an acount?"
+            android:textColor="@color/colorBlue"
+            app:layout_constraintEnd_toStartOf="@+id/txt_Create_new_account"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/google"
+            tools:text="don't have an acount?" />
 
-    <TextView
-        android:id="@+id/txt_Create_new_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Create"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_create_new_acount"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/txt_create_new_acount"
-        tools:text="Create" />
+        <TextView
+            android:id="@+id/txt_Create_new_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Create"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_create_new_acount"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/txt_create_new_acount"
+            tools:text="Create" />
 
         <TextView
             android:id="@+id/txt_signInWithPIN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat"
             android:text="Sign In With PIN Code"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
@@ -244,6 +257,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_toRightOf="@+id/img_biometric"
+                android:fontFamily="@font/montserrat"
                 android:text="Biometric Login"
                 android:textColor="#FFFFFF" />
 

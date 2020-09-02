@@ -39,6 +39,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
             android:layout_toRightOf="@+id/img_SubscribeArtist"
+            android:fontFamily="@font/montserrat"
             android:text="Jhon Ibrahim"
             android:textColor="#fff"
             android:textSize="16sp"

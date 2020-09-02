@@ -10,17 +10,19 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <EditText
-        android:id="@+id/edt_search"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:hint="Search Contact"
-        android:padding="8dp"
-        android:textSize="14sp"
-        android:textColor="@color/colorBlack"
-        android:drawableRight="@drawable/ic_search"
-        android:paddingRight="8dp"
-        android:background="@drawable/white_roundshape"/>
+
+        <EditText
+            android:id="@+id/edt_search"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/white_roundshape"
+            android:drawableRight="@drawable/ic_search"
+            android:fontFamily="@font/montserrat"
+            android:hint="Search Contact"
+            android:padding="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="14sp" />
 
 
     <androidx.recyclerview.widget.RecyclerView

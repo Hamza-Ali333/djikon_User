@@ -44,6 +44,7 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 
 
 import java.util.Calendar;
+import java.util.jar.Attributes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,11 +124,11 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        artistId = intent.getIntExtra("artistId",0);
-        bookingForArtist = intent.getBooleanExtra("bookingForArtist",false);
-        serviceId = intent.getIntExtra("serviceId",0);
-        bookingForArtist = intent.getBooleanExtra("bookingForArtist",false);
-        bookingForService = intent.getBooleanExtra("bookingForService",false);
+        artistId = intent.getIntExtra("artistId", 0);
+        bookingForArtist = intent.getBooleanExtra("bookingForArtist", false);
+        serviceId = intent.getIntExtra("serviceId", 0);
+        bookingForArtist = intent.getBooleanExtra("bookingForArtist", false);
+        bookingForService = intent.getBooleanExtra("bookingForService", false);
         priceType = intent.getStringExtra("priceType");
         bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
         RPH = intent.getStringExtra("price");
@@ -198,21 +199,21 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         getTimeDuration(startDate, endTime);
                     } else {
                         //no nead to get time Duration
-                       openCheckCostDialogue(Double.valueOf(RPH),0,0,0);//when user is booking fix service
+                        openCheckCostDialogue(Double.valueOf(RPH), 0, 0, 0);//when user is booking fix service
                     }
                 }
             }
         });
     }//onCreate
 
-    private void setPreferencesDataIntoViews(){
+    private void setPreferencesDataIntoViews() {
         edt_Name.setText(PreferenceData.getUserName(this));
         edt_Email.setText(PreferenceData.getUserEmail(this));
 
-        if(PreferenceData.getUserAddress(this).equals("no")){
+        if (PreferenceData.getUserAddress(this).equals("no")) {
             edt_Address.setText(PreferenceData.getUserAddress(this));
         }
-        if (PreferenceData.getUserPhoneNo(this).equals("no")){
+        if (PreferenceData.getUserPhoneNo(this).equals("no")) {
             edt_Phone.setText(PreferenceData.getUserPhoneNo(this));
         }
 
@@ -423,6 +424,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         final View view = inflater.inflate(R.layout.dailoge_booking_cost, null);
 
         CircularImageView img_Profile;
+        TextView RateTypeTitle;
         TextView txt_Name, txt_Service_Name, txt_Servives_prize,
                 txt_Service_Amount,
                 //purchaser detail
@@ -436,6 +438,8 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         Button btn_Cancle_Booking, btn_Book_Now;
 
         img_Profile = view.findViewById(R.id.img_dj_profile);
+
+        RateTypeTitle = view.findViewById(R.id.txt_rate_per_hour);
 
         txt_Name = view.findViewById(R.id.txt_dj_name);
         txt_Service_Name = view.findViewById(R.id.txt_service_name);
@@ -478,12 +482,13 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         txt_pAddress.setText(edt_Address.getText());
 
         //setting Date And Time
-        if(!priceType.equals("Fix")){
+        if (!priceType.equals("Fix")) {
             start_date.setText(txt_Start_Date.getText().toString());
             start_time.setText(txt_Start_Time.getText().toString());
             end_date.setText(txt_End_Date.getText().toString());
             end_time.setText(txt_End_Time.getText().toString());
-        }else {
+        } else {
+            RateTypeTitle.setText("Fix Rate");
             start_date.setText(txt_Start_Date.getText().toString());
             start_time.setText(txt_Start_Time.getText().toString());
         }
@@ -502,7 +507,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         builder.setView(view);
         builder.setCancelable(false);
 
-       checkBookingCoastDialog = builder.show();
+        checkBookingCoastDialog = builder.show();
 
         btn_Cancle_Booking.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -525,6 +530,15 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
     private void postBooking(String PaidAmount) {
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        String EndDate, EndTime;
+
+        if (priceType.equals("Fix")) {
+            EndDate = "0";
+            EndTime = "0";
+        }else {
+            EndDate = txt_End_Date.getText().toString();
+            EndTime = txt_End_Time.getText().toString();
+        }
 
         Call<SuccessErrorModel> call = jsonApiHolder.postBooking(
                 artistId,
@@ -534,9 +548,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 edt_Phone.getText().toString(),
                 edt_Address.getText().toString(),
                 txt_Start_Date.getText().toString(),
-                txt_End_Date.getText().toString(),
+                EndDate,
                 txt_Start_Time.getText().toString(),
-                txt_End_Time.getText().toString(),
+                EndTime,
                 PaidAmount);
 
         call.enqueue(new Callback<SuccessErrorModel>() {
@@ -550,7 +564,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                             DialogsUtils.BookingDoneDialog(BookArtistOrServiceActivity.this);
                         } else {
                             progressDialog.dismiss();
-                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,false);
+                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
                             Log.i(TAG, "onResponse: " + response.code());
                         }
                     }
@@ -563,7 +577,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         progressDialog.dismiss();
-                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,true);
+                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, true);
                     }
                 });
             }
@@ -631,9 +645,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                                 onBrainTreeSubmit(BrainTreeToken);
                             }
                         });
-                    }else {
+                    } else {
                         progressDialog.dismiss();
-                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,false);
+                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
                     }
                 }
 
@@ -643,7 +657,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,true);
+                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, true);
                         }
                     });
                 }
@@ -652,7 +666,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         }
     }
 
-    private void PostNonceToServer (String Nonce){
+    private void PostNonceToServer(String Nonce) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("payment_method_nonce", Nonce);
@@ -666,10 +680,10 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
-                                progressDialog.dismiss();
-                                progressDialog = DialogsUtils.showProgressDialog(context,
-                                        "Post Booking",
-                                        "Please wait while booking is posting on server");
+                        progressDialog.dismiss();
+                        progressDialog = DialogsUtils.showProgressDialog(context,
+                                "Post Booking",
+                                "Please wait while booking is posting on server");
 
                         postBooking(TotalAmount);
                     }

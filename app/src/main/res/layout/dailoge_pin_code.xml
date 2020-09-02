@@ -19,68 +19,74 @@
             android:layout_gravity="right"
             android:layout_width="20dp"
             android:layout_height="20dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/montserrat"
             android:text="Welcome!"
-            android:textColor="@color/colorBlue"/>
+            android:textColor="@color/colorBlue"
+            android:textSize="18sp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat"
             android:text="Katharina"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack"
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat"
             android:text="(402) 123 -4567"
-            android:textColor="@color/Graycolor"/>
+            android:textColor="@color/Graycolor"
+            android:textSize="14sp" />
 
 
-            <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
-                android:id="@+id/pincode"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_margin="10dp"
-                android:inputType="numberPassword"
-                android:gravity="center"
-                android:hint="Enter PIN"
-                android:textColor="@color/colorBlack"
-                android:singleLine="true"
-                android:background="@drawable/blueround_stroke"
-                />
-
+        <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
+            android:id="@+id/pincode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/blueround_stroke"
+            android:fontFamily="@font/montserrat"
+            android:gravity="center"
+            android:hint="Enter PIN"
+            android:inputType="numberPassword"
+            android:singleLine="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
 
         <Button
-            android:layout_marginTop="8dp"
             android:id="@+id/btn_login_pin"
-            android:layout_gravity="center_horizontal"
             android:layout_width="120dp"
             android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/roundshape"
+            android:fontFamily="@font/montserrat"
             android:text="Login"
-            android:textSize="14sp"
             android:textColor="#fff"
-            android:background="@drawable/roundshape"/>
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat"
             android:text="Forgot PIN?"
-            android:textColor="@color/colorBlue"/>
+            android:textColor="@color/colorBlue"
+            android:textSize="14sp" />
 
 
     </LinearLayout>

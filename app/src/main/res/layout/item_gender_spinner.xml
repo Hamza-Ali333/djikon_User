@@ -13,10 +13,11 @@
         android:id="@+id/genders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:text="Hamza"
-        android:textSize="18sp"
         android:layout_gravity="center_vertical"
-        android:layout_weight="9"/>
+        android:layout_weight="9"
+        android:fontFamily="@font/montserrat"
+        android:text="Hamza"
+        android:textColor="#fff"
+        android:textSize="18sp" />
 
 </LinearLayout>

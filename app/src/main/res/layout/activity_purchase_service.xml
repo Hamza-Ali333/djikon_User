@@ -11,97 +11,105 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/edt_card_number"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingLeft="8dp"
-        android:hint="Enter Card Number"
-        android:inputType="number"
-        android:textColorHint="#fff"
-        android:textColor="#fff"
-        android:background="@drawable/edt_shape"/>
+        <EditText
+            android:id="@+id/edt_card_number"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/edt_shape"
+            android:fontFamily="@font/montserrat"
+            android:hint="Enter Card Number"
+            android:inputType="number"
+            android:paddingLeft="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff" />
 
-    <EditText
-        android:id="@+id/edt_card_hodler_name"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="8dp"
-        android:hint="Enter Card Name"
-        android:textColorHint="#fff"
-        android:textColor="#fff"
-        android:background="@drawable/edt_shape"/>
+        <EditText
+            android:id="@+id/edt_card_hodler_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edt_shape"
+            android:fontFamily="@font/montserrat"
+            android:hint="Enter Card Name"
+            android:paddingLeft="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff" />
 
-    <EditText
-        android:id="@+id/edt_cvv_code"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="8dp"
-        android:hint="Enter CVV Code"
-        android:textColorHint="#fff"
-        android:textColor="#fff"
-        android:drawableRight="@drawable/ic_lock"
-        android:paddingRight="8dp"
-        android:background="@drawable/edt_shape"/>
+        <EditText
+            android:id="@+id/edt_cvv_code"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edt_shape"
+            android:drawableRight="@drawable/ic_lock"
+            android:fontFamily="@font/montserrat"
+            android:hint="Enter CVV Code"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff" />
 
-    <EditText
-        android:id="@+id/edt_name"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="8dp"
-        android:hint="Name"
-        android:textColorHint="#fff"
-        android:textColor="#fff"
-        android:paddingRight="8dp"
-        android:background="@drawable/edt_shape"/>
+        <EditText
+            android:id="@+id/edt_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edt_shape"
+            android:fontFamily="@font/montserrat"
+            android:hint="Name"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff" />
 
-    <EditText
-        android:id="@+id/edt_email"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="8dp"
-        android:hint="Email"
-        android:textColorHint="#fff"
-        android:textColor="#fff"
-        android:paddingRight="8dp"
-        android:background="@drawable/edt_shape"/>
+        <EditText
+            android:id="@+id/edt_email"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edt_shape"
+            android:fontFamily="@font/montserrat"
+            android:hint="Email"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff" />
 
-    <EditText
-        android:id="@+id/edt_phone"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="8dp"
-        android:hint="Phone"
-        android:textColorHint="#fff"
-        android:textColor="#fff"
-        android:paddingRight="8dp"
-        android:background="@drawable/edt_shape"/>
+        <EditText
+            android:id="@+id/edt_phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edt_shape"
+            android:fontFamily="@font/montserrat"
+            android:hint="Phone"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff" />
 
-    <EditText
-        android:id="@+id/edt_address"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="8dp"
-        android:paddingLeft="8dp"
-        android:hint="Address (Optional)"
-        android:textColorHint="#fff"
-        android:textColor="#fff"
-        android:paddingRight="8dp"
-        android:background="@drawable/edt_shape"/>
+        <EditText
+            android:id="@+id/edt_address"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edt_shape"
+            android:fontFamily="@font/montserrat"
+            android:hint="Address (Optional)"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#fff"
+            android:textColorHint="#fff" />
 
-    <Button
-        android:id="@+id/btn_confirm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textColor="#fff"
-        android:text="Confirm Payment"
-        android:background="@drawable/roundshape"/>
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/roundshape"
+            android:fontFamily="@font/montserrat"
+            android:text="Confirm Payment"
+            android:textColor="#fff" />
 
 </LinearLayout>
 </ScrollView>

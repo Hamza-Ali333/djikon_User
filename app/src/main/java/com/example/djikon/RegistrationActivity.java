@@ -576,7 +576,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
             }
         }, 0, 1000);
-
     }
 
     private void createReferences() {

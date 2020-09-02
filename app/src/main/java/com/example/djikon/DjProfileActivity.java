@@ -171,7 +171,6 @@ public class DjProfileActivity extends AppCompatActivity {
                             "Disable",
                             "This dj is not available for booking at this time try again!");
                 }
-
             }
         });
 
@@ -341,7 +340,7 @@ public class DjProfileActivity extends AppCompatActivity {
                     setOnlineStatus(mOnlineStatus);//checkUser is Online or Not
 
                 } else {
-
+                    alertDialog.dismiss();
                     Log.i("TAG", "onResponse: " + response.code());
                     DialogsUtils.showResponseMsg(DjProfileActivity.this,false);
 
@@ -351,7 +350,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
-
+                alertDialog.dismiss();
                 Log.i("TAG", "onFailure: " + t.getMessage());
                 alertDialog =DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
             }
@@ -597,7 +596,7 @@ public class DjProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         parenLayout.setVisibility(View.GONE);
-        showLoadingDialogue();
+        //showLoadingDialogue();
         getProfileDataFromServer(String.valueOf(artistID));
     }
 }

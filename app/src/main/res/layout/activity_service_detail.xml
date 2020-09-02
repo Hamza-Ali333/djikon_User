@@ -53,54 +53,56 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="20dp" />
 
-    <TextView
-        android:id="@+id/txt_Servic_Name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:text="One Night Dj And Catering"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline12"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/cardview"
-        app:layout_constraintTop_toTopOf="@+id/guideline13" />
+        <TextView
+            android:id="@+id/txt_Servic_Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat"
+            android:text="One Night Dj And Catering"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline12"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/cardview"
+            app:layout_constraintTop_toTopOf="@+id/guideline13" />
 
-    <TextView
-        android:id="@+id/txt_service_charges"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:background="@color/colorBlue"
-        android:text=" $25.00 "
-        android:textColor="#fff"
-        app:layout_constraintBottom_toTopOf="@+id/txt_dj_name"
-        app:layout_constraintStart_toStartOf="@+id/txt_dj_name" />
+        <TextView
+            android:id="@+id/txt_service_charges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@color/colorBlue"
+            android:fontFamily="@font/montserrat"
+            android:text=" $25.00 "
+            android:textColor="#fff"
+            app:layout_constraintBottom_toTopOf="@+id/txt_dj_name"
+            app:layout_constraintStart_toStartOf="@+id/txt_dj_name" />
 
-    <TextView
-        android:id="@+id/txt_dj_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="10dp"
-        android:text="By: Charles Doug"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/cardview"
-        app:layout_constraintStart_toEndOf="@+id/cardview" />
+        <TextView
+            android:id="@+id/txt_dj_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="By: Charles Doug"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/cardview"
+            app:layout_constraintStart_toEndOf="@+id/cardview" />
 
-    <TextView
-        android:id="@+id/txt_service_discription"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Mix tapes are always great to be played at Events, Venues, Restaurants, in the car or while relaxing at home. With the songs you’ve provided I will create a seamless mix tape for your listening pleasure or commercial use.   "
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toStartOf="@+id/guideline12"
-        app:layout_constraintStart_toStartOf="@+id/guideline11"
-        app:layout_constraintTop_toBottomOf="@+id/cardview" />
+        <TextView
+            android:id="@+id/txt_service_discription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Mix tapes are always great to be played at Events, Venues, Restaurants, in the car or while relaxing at home. With the songs you’ve provided I will create a seamless mix tape for your listening pleasure or commercial use.   "
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toStartOf="@+id/guideline12"
+            app:layout_constraintStart_toStartOf="@+id/guideline11"
+            app:layout_constraintTop_toBottomOf="@+id/cardview" />
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -115,16 +117,17 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_service_discription"
          />
 
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Service Gallery"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/guideline11"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Service Gallery"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/guideline11"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -145,21 +148,23 @@
             android:background="@drawable/roundshape"
             android:text="Proceed to Pay"
             android:textColor="#fff"
+            android:fontFamily="@font/montserrat"
             android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline12"
             app:layout_constraintStart_toStartOf="@+id/guideline11" />
 
-    <TextView
-        android:id="@+id/txt_price_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="Fixed"
-        android:textColor="#fff"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_service_charges"
-        app:layout_constraintStart_toEndOf="@+id/txt_service_charges"
-        app:layout_constraintTop_toTopOf="@+id/txt_service_charges" />
+        <TextView
+            android:id="@+id/txt_price_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Fixed"
+            android:textColor="#fff"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_service_charges"
+            app:layout_constraintStart_toEndOf="@+id/txt_service_charges"
+            app:layout_constraintTop_toTopOf="@+id/txt_service_charges" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reviews_recycler"
@@ -177,6 +182,7 @@
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat"
             android:text="Reviews"
             android:textColor="#fff"
             android:textSize="18sp"

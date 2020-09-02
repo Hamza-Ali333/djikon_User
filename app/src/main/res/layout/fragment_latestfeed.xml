@@ -27,12 +27,14 @@
             android:secondaryProgress="0"
             android:indeterminateDrawable="@drawable/progressbar"
             />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Loading.."
                 android:layout_centerInParent="true"
-                android:textColor="#fff"/>
+                android:fontFamily="@font/montserrat"
+                android:text="Loading.."
+                android:textColor="#fff" />
         </RelativeLayout>
 
 

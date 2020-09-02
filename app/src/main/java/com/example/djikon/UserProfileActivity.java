@@ -61,14 +61,13 @@ import retrofit2.Retrofit;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-
     private EditText edt_FirstName, edt_LastName, edt_Email, edt_Phone_No, edt_Address;
     private AutoCompleteTextView edt_Location;
     private Button btn_Update_Profile;
     private Spinner mSpinner;
     private ImageView img_Profile;
 
-    private RelativeLayout rlt_PaymentMethod, rlt_AboutApp, rlt_Setting, rlt_Disclosures;
+    private RelativeLayout rlt_AboutApp, rlt_Setting, rlt_Disclosures;
     private ConstraintLayout rlt_Parent;
     private Switch swt_subcribeState;
     private ProgressBar mProgressBar;
@@ -187,14 +186,6 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        });
-
-        rlt_PaymentMethod.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(UserProfileActivity.this, PaymentMethodActivity.class);
-                startActivity(i);
             }
         });
 
@@ -465,7 +456,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private boolean isDataChange() {
         boolean result = false;
-        for (int i = 0; i < serverData.length; i++) {
+        for (int i = 0; i < 5; i++) {
             if (!serverData[i].equals(newData[i])) {
                 serverData[i] = newData[i];
                 result = true;
@@ -687,7 +678,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         rlt_AboutApp = findViewById(R.id.rlt_aboutApp);
         rlt_Disclosures = findViewById(R.id.rlt_disclosures);
-        rlt_PaymentMethod = findViewById(R.id.rlt_paymentMethod);
         rlt_Setting = findViewById(R.id.rlt_setting);
 
     }

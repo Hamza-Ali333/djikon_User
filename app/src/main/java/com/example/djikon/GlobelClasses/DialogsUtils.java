@@ -86,7 +86,7 @@ public class DialogsUtils extends AppCompatDialogFragment {
                 context.startActivity(new Intent(context,MainActivity.class));
             }
         });
-        builder.setIcon(R.drawable.ic_alert);
+        builder.setIcon(R.drawable.ic_check);
 
         AlertDialog alertDialog; alertDialog = builder.show();
         return alertDialog;

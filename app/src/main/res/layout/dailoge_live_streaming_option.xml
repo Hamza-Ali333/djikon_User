@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:fontFamily="@font/montserrat"
             android:text="Wifi Only"
             android:textColor="@color/colorBlack"
             android:textSize="16sp" />
@@ -47,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:fontFamily="@font/montserrat"
                 android:text="Cell Tower"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
@@ -71,6 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:fontFamily="@font/montserrat"
                 android:text="Both"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
