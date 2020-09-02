@@ -60,21 +60,12 @@ import retrofit2.Retrofit;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private static final String EMAIL = "email";
-
-    private CallbackManager mCallbackManager;
     private EditText edt_Name, edt_LastName, edt_Email, edt_Password, edt_C_Password, edt_Referal_Code;
 
-    private Button btn_SignUp;
-    private LoginButton btn_FBSignUp;
-    private SignInButton btn_GoogleSignIn;
+    private Button btn_SignUp, btn_SignIn;
 
     private RadioButton radioButton;
     private PreferenceData preferenceData;
-
-    private GoogleSignInClient mGoogleSignInClient;
-    private GoogleApiClient mGoogleApiClient;
-    private static final Integer RC_SIGN_IN = 736;
 
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
@@ -110,63 +101,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
         preferenceData = new PreferenceData();
-
-        btn_FBSignUp.setReadPermissions(Arrays.asList(EMAIL));
-        mCallbackManager = CallbackManager.Factory.create();
-
-        btn_FBSignUp.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.i("LoginActivity", response.toString());
-                                try {
-                                    // Application code
-                                    String email = response.getJSONObject().getString("email");
-                                    String firstName = object.getString("first_name");
-                                    firstName = firstName+" "+object.get("middle_name");
-                                    String lastName = object.getString("last_name");
-
-                                    signUpNewUser(true,
-                                            firstName,
-                                            lastName,
-                                            email);
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,"Note","Something happened wrong please try again or SingUp with Formally");
-                                }
-                            }
-                        });
-
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "first_name, middle_name, last_name, email");
-                request.setParameters(parameters);
-                request.executeAsync();
-
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,
-                        "Note",
-                        "FaceBook Login is Cancled");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-                alertDialog = DialogsUtils.showAlertDialog(RegistrationActivity.this,false,
-                        "Note",
-                        "Something happened wrong please try again or SingUp with Formally");
-                Log.i("TAG", "onError: "+exception);
-            }
-        });
 
 
         edt_Password.addTextChangedListener(new TextWatcher() {
@@ -204,7 +138,6 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-
         radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -231,18 +164,10 @@ public class RegistrationActivity extends AppCompatActivity {
             }//if
         });
 
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                //   .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        btn_GoogleSignIn.setOnClickListener(new View.OnClickListener() {
+        btn_SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signInWithGoogle();
+                startActivity(new Intent(RegistrationActivity.this,SignInActivity.class));
             }
         });
 
@@ -380,41 +305,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 alertDialog = DialogsUtils.showResponseMsg(RegistrationActivity.this,true);
             }
         });
-    }
-
-
-    private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> taskCompete) {
-        try {
-            GoogleSignInAccount acc = taskCompete.getResult(ApiException.class);
-            progressDialog = DialogsUtils.showProgressDialog(RegistrationActivity.this, "Checking Credentials", "Please Wait...");
-            Log.i("TAG", "handleSignInResult: Done");
-            signUpNewUser(true,
-                    acc.getGivenName(),
-                    acc.getFamilyName(),
-                    acc.getEmail());
-
-        } catch (ApiException e) {
-            progressDialog.dismiss();
-            Log.i("TAG", "handleSignInResult: Failed " + e.getMessage());
-            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    private void fetchProfileFromGoogle(GoogleSignInAccount acct) {
-        if (acct != null) {
-            String personName = acct.getDisplayName();
-            String personGivenName = acct.getGivenName();
-            String personFamilyName = acct.getFamilyName();
-            String personEmail = acct.getEmail();
-            String personId = acct.getId();
-            Uri personPhoto = acct.getPhotoUrl();
-        }
     }
 
     private void openVerfiyOTPDialogue() {
@@ -687,24 +577,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         }, 0, 1000);
 
-
     }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-
-        } else {
-            mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        }
-
-    }
-
 
     private void createReferences() {
         edt_Name = findViewById(R.id.edt_first_name);
@@ -714,8 +587,7 @@ public class RegistrationActivity extends AppCompatActivity {
         edt_C_Password = findViewById(R.id.edt_c_password);
         edt_Referal_Code = findViewById(R.id.edt_refrel_code);
         btn_SignUp = findViewById(R.id.btn_sign_up);
-        btn_FBSignUp = findViewById(R.id.btn_fb_sign_up);
-        btn_GoogleSignIn = findViewById(R.id.btn_google_sign_up);
+        btn_SignIn = findViewById(R.id.btn_sign_in);
 
         radioButton = findViewById(R.id.radiobutton_term);
     }

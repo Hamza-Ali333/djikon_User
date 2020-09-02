@@ -90,7 +90,7 @@
     <Button
         android:id="@+id/btn_SignIn"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:background="@color/colorBlue"
         android:text="Sign In"
@@ -111,9 +111,9 @@
         android:gravity="center"
         android:paddingStart="28dp"
         android:paddingEnd="8dp"
-        android:text="Sign Up With Facebook"
+        android:text="Sign With Google"
+        android:textColor="#fff"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/btn_SignIn"
@@ -121,12 +121,11 @@
         android:paddingLeft="28dp"
         android:paddingRight="8dp" />
 
-    <Button
+    <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_google_sign_up"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@color/colorgoogle"
         android:drawableStart="@drawable/g"
         android:paddingStart="28dp"
         android:paddingEnd="8dp"

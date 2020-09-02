@@ -105,7 +105,7 @@ public class CurrentLiveArtistFragment extends Fragment {
 
     private void buildRecyclerView(List<CurrentLiveArtistModel> liveToArtistList){
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-        mLayoutManager = new LinearLayoutManager(this.getContext());
+        mLayoutManager = new LinearLayoutManager(getContext());
         mAdapter = new RecyclerLiveToArtist(liveToArtistList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);

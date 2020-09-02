@@ -96,6 +96,7 @@ public class AllArtistFragment extends Fragment {
 
     }
 
+    //who is removing this dj from the list
     private void removeArtistWhichHaveStatusOne (List<AllArtistModel> ArtistList){
 
         if(!ArtistList.isEmpty()) {
@@ -128,8 +129,11 @@ public class AllArtistFragment extends Fragment {
 
             mRecyclerView.setLayoutManager(mLayoutManager);
             mRecyclerView.setAdapter(mAdapter);
-
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAllArtist();
+    }
 }

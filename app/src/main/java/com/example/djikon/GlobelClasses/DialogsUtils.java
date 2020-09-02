@@ -1,12 +1,15 @@
 package com.example.djikon.GlobelClasses;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.example.djikon.MainActivity;
 import com.example.djikon.R;
 
 public class DialogsUtils extends AppCompatDialogFragment {
@@ -69,6 +72,25 @@ public class DialogsUtils extends AppCompatDialogFragment {
     }
 
 
+    public static AlertDialog BookingDoneDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle("Congratulation");
+        builder.setMessage("Your booking is successfully done." +
+                "You will be inform when if DJ accept or reject Booking\nThank You");
+        builder.setCancelable(false);
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ((Activity) context).finish();
+                context.startActivity(new Intent(context,MainActivity.class));
+            }
+        });
+        builder.setIcon(R.drawable.ic_alert);
+
+        AlertDialog alertDialog; alertDialog = builder.show();
+        return alertDialog;
+    }
 
 
 }

@@ -13,13 +13,11 @@ import androidx.biometric.BiometricPrompt;
 
 
 import android.hardware.fingerprint.FingerprintManager;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
-import android.telephony.CellSignalStrength;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -45,8 +43,26 @@ import com.example.djikon.GlobelClasses.NetworkChangeReceiver;
 import com.example.djikon.GlobelClasses.PreferenceData;
 import com.example.djikon.ResponseModels.LoginRegistrationModel;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -57,6 +73,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
@@ -81,6 +100,9 @@ public class SignInActivity extends AppCompatActivity {
 
     private Button btn_SignIn;
     private RelativeLayout rlt_BiometricPrompt;
+
+    private LoginButton btn_Fb_Login;
+    private SignInButton btn_Google_Login;
 
     private ImageView img_Finger_Print;
     private EditText edt_Email, edt_Password;
@@ -113,6 +135,19 @@ public class SignInActivity extends AppCompatActivity {
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
     private AlertDialog alertDialog;
+
+    private CallbackManager mCallbackManager;//faceBook Login
+
+    private GoogleSignInClient mGoogleSignInClient;//Google
+    private GoogleApiClient mGoogleApiClient;
+    private static final Integer RC_SIGN_IN = 736;
+
+    private String socialMediaFirstName;
+    private String socialMediaLastName;
+    private String Email;
+    private String Password;
+    private String providerId;
+    private String providerName;
 
 
     @Override
@@ -177,7 +212,9 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isInfoRight()) {
-                    isUserExits(edt_Email.getText().toString().trim(), edt_Password.getText().toString().trim());
+                    Email = edt_Email.getText().toString().trim();
+                    Password = edt_Password.getText().toString().trim();
+                    isUserExits(false);
                 }
             }
         });
@@ -242,8 +279,122 @@ public class SignInActivity extends AppCompatActivity {
                 openSignInWithPIN();
             }
         });
+
+        btn_Fb_Login.setReadPermissions(Arrays.asList("email"));
+        mCallbackManager = CallbackManager.Factory.create();
+
+        btn_Fb_Login.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+
+
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.i("LoginActivity", response.toString());
+                                try {
+                                    // Application code
+                                    Email = response.getJSONObject().getString("email");
+                                    socialMediaFirstName = object.getString("first_name");
+                                    socialMediaFirstName = socialMediaFirstName + " " + object.get("middle_name");
+                                    socialMediaLastName = object.getString("last_name");
+                                    providerId =String.valueOf(AccessToken.getCurrentAccessToken());
+                                    providerName = "FaceBook";
+                                    //sign in user with this detail
+                                    isUserExits(true);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    alertDialog = DialogsUtils.showAlertDialog(SignInActivity.this,false,"Note","Something happened wrong please try again or SingUp with Formally");
+                                }
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "first_name, middle_name, last_name, email");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+                DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                        "Note",
+                        "FaceBook Login is Cancled");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+                 DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                        "Note",
+                        "Something happened wrong please try again or SingUp with Formally");
+                Log.i("TAG", "onError: "+exception);
+            }
+        });
+
+
+        //Sign In With Google
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        btn_Google_Login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signInWithGoogle();
+            }
+        });
+
     }
 
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> taskCompete) {
+        try {
+            GoogleSignInAccount acc = taskCompete.getResult(ApiException.class);
+            progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait...");
+            Log.i("TAG", "handleSignInResult: Done");
+
+                socialMediaFirstName = acc.getGivenName();
+                socialMediaLastName = acc.getFamilyName();
+                Email =   acc.getEmail();
+                providerId =  acc.getId();
+                providerName = "Google";
+
+              isUserExits(true);
+
+        } catch (ApiException e) {
+            progressDialog.dismiss();
+            Log.i("TAG", "handleSignInResult: Failed " + e.getMessage());
+            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+
+        } else {
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+    }
 
     private Boolean isDeviceAbleForBiometricLogin(){
         Boolean result = false;
@@ -320,8 +471,9 @@ public class SignInActivity extends AppCompatActivity {
             public void onAuthenticationSucceeded(
                     @NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-               isUserExits (PreferenceData.getUserEmail(SignInActivity.this),
-                       PreferenceData.getUserPassword(SignInActivity.this) );
+                Email = PreferenceData.getUserEmail(SignInActivity.this);
+                Password = PreferenceData.getUserPassword(SignInActivity.this);
+                isUserExits(false);
             }
 
             @Override
@@ -892,29 +1044,49 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    private void isUserExits(String email,String password) {
+    private void isUserExits(Boolean isSignWithSocial) {
         txt_Error.setVisibility(View.GONE);
+
         progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Checking...");
 
-        Call<LoginRegistrationModel> call = jsonApiHolder.Login(email,password, 2);
+        Map<String, String> params = new HashMap<>();
+        params.put("role", "2");//will remain same in both conditions
+        if(isSignWithSocial){
+            params.put("firsname", socialMediaFirstName);
+            params.put("lastname", socialMediaLastName);
+            params.put("email", Email);
+            params.put("social", "1");
+            params.put("provider_id",providerId);
+            params.put("provider_name",providerName);
+        }else{
+            params.put("email", Email);
+            params.put("password", Password);
+        }
+
+        Call<LoginRegistrationModel> call = jsonApiHolder.Login(params);
 
         call.enqueue(new Callback<LoginRegistrationModel>() {
             @Override
             public void onResponse(Call<LoginRegistrationModel> call, Response<LoginRegistrationModel> response) {
+                Log.i("TAG", "onResponse: "+response.code());
                 if (response.isSuccessful()) {
+                    progressDialog.dismiss();
                     LoginRegistrationModel data = response.body();
-
+                    if(isSignWithSocial){
+                        Password = "K283K8CoZBqp";
+                    }
                     saveDataInPreferences(data.getSuccess(),
                             String.valueOf(data.getId()),
                             data.getFirstname()+" "+data.getLastname(),
                             data.getProfile_image(),
-                            email,
-                            password);
+                            Email,
+                            Password);
 
                     lunchNextActivity();
 
                 } else if (response.code() == 402) {
                     EmailForOTP = edt_Email.getText().toString();
+
                     Call<SuccessErrorModel> resendOTPCall = jsonApiHolder.resendOTP(EmailForOTP);
 
                     resendOTPCall.enqueue(new Callback<SuccessErrorModel>() {
@@ -936,12 +1108,32 @@ public class SignInActivity extends AppCompatActivity {
                         }
                     });
                 } else if (response.code() == 403) {
-                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "This email is register as Subscriber can't use it here in User App");
                     progressDialog.dismiss();
-                }else {
+                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "This email is register as Subscriber can't use it here in User App");
+
+                }else if(response.code() == 409){
+                    progressDialog.dismiss();
+                    if(isSignWithSocial){
+                        DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                                "Already Exit",
+                                "This "+Email+" is already exit with an account you can't login with Facebook or Google" +
+                                        "\nFor Login with this Email Enter Email And Password");
+                    }
+                }
+                else if(response.code() == 401 ){
                     progressDialog.dismiss();
                     txt_Error.setText("Email or password is wrong.");
                     txt_Error.setVisibility(View.VISIBLE);
+                }
+                else {
+                    progressDialog.dismiss();
+                    txt_Error.setVisibility(View.GONE);
+                    if(!isSignWithSocial){
+                        txt_Error.setText("Email or password is wrong.");
+                        txt_Error.setVisibility(View.VISIBLE);
+                    }else {
+                        DialogsUtils.showResponseMsg(SignInActivity.this, false);
+                    }
                 }
             }
 
@@ -1053,6 +1245,8 @@ public class SignInActivity extends AppCompatActivity {
         edt_Password = findViewById(R.id.edt_Password);
 
         btn_SignIn = findViewById(R.id.btn_SignIn);
+        btn_Fb_Login = findViewById(R.id.btn_fb_sign_up);
+        btn_Google_Login = findViewById(R.id.btn_google_sign_up);
         img_Finger_Print = findViewById(R.id.img_biometric);
     }
 

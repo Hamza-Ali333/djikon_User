@@ -547,8 +547,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     public void run() {
                         if (response.isSuccessful()) {
                             progressDialog.dismiss();
-                            alertDialog = DialogsUtils.showAlertDialog(context, false, "Booking is Done",
-                                    "You Will be informed when Dj Accept or Reject  Booking");
+                            DialogsUtils.BookingDoneDialog(BookArtistOrServiceActivity.this);
                         } else {
                             progressDialog.dismiss();
                             alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this,false);

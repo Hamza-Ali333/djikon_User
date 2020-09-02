@@ -5,10 +5,14 @@ public class LoginRegistrationModel {
     private String success,
     firstname,
     lastname,
-    profile_image;
+    profile_image,
+    error;
 
     private int id;
 
+    public String getError() {
+        return error;
+    }
 
     public int getId() {
         return id;

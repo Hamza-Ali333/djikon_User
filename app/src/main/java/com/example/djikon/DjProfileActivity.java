@@ -95,6 +95,8 @@ public class DjProfileActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
 
     private String artist_UID;
+    private int allowMessage;
+    private int allowBooking;
 
     List<ServicesModel> services;
     List<DjProfileBlogsModel> blogs;
@@ -134,7 +136,7 @@ public class DjProfileActivity extends AppCompatActivity {
 
         showLoadingDialogue();//show lodaing dailoge while data is dowloading from the server
 
-        services = new ArrayList<ServicesModel>();
+        services = new ArrayList<ServicesModel>();//service Array Initializing
         Intent i = getIntent();
         artistID = i.getIntExtra("id", 0);
 
@@ -149,24 +151,29 @@ public class DjProfileActivity extends AppCompatActivity {
             }
         });
 
-
         btn_Book_Artist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(allowBooking == 1){
+                    addExtraToIntentAndLunchActivity(img_DJ_Profile,
+                            artistID,
+                            true,
+                            false,
+                            0,
+                            "rate_per_hour",
+                            DjBookingRatePerHour,
+                            mDJName,
+                            mAbout
+                    );
+                }else {
+                    DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                            false,
+                            "Disable",
+                            "This dj is not available for booking at this time try again!");
+                }
 
-                addExtraToIntentAndLunchActivity(img_DJ_Profile,
-                        artistID,
-                        true,
-                        false,
-                        0,
-                        "rate_per_hour",
-                        DjBookingRatePerHour,
-                        mDJName,
-                        mAbout
-                        );
             }
         });
-
 
         btn_Request_A_Song.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,10 +185,17 @@ public class DjProfileActivity extends AppCompatActivity {
         btn_Message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn_Message.setClickable(false);
-                btn_Message.setEnabled(false);
+                if(allowMessage == 1){
+                    btn_Message.setClickable(false);
+                    btn_Message.setEnabled(false);
 
-                new GetDjUidFromFirebase().execute();
+                    new GetDjUidFromFirebase().execute();
+                }else {
+                    DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                            false,
+                            "Disable",
+                            "This DJ is not allowed to do Chat with other wait for turn it on\nThank You");
+                }
             }
         });
     }
@@ -196,7 +210,7 @@ public class DjProfileActivity extends AppCompatActivity {
             btn_Follow.setText("UnFollow");
         }
 
-            txt_address.setText(mAddress);
+        txt_address.setText(mAddress);
 
         if(mAbout == null)
             rlt_About.setVisibility(View.GONE);
@@ -297,6 +311,8 @@ public class DjProfileActivity extends AppCompatActivity {
                     mFollow_Status = djAndUserProfileModel.getFollow_status();
                     mOnlineStatus = djAndUserProfileModel.getOnline_status();
                     mAbout = djAndUserProfileModel.getAbout();
+                    allowBooking = djAndUserProfileModel.getAllow_booking();
+                    allowMessage = djAndUserProfileModel.getAllow_message();
 
 
                     services = response.body().getServices();
@@ -575,5 +591,13 @@ public class DjProfileActivity extends AppCompatActivity {
         i.putExtra("serviceOrDjName", serviceNameOrDjName);//Name of Artist if booking him or Name of Service if Booking Artist Service
         i.putExtra("description", description);
         startActivity(i);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        parenLayout.setVisibility(View.GONE);
+        showLoadingDialogue();
+        getProfileDataFromServer(String.valueOf(artistID));
     }
 }

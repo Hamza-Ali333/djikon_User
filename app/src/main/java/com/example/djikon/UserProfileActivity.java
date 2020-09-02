@@ -463,10 +463,9 @@ public class UserProfileActivity extends AppCompatActivity {
         newData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address};
     }
 
-
     private boolean isDataChange() {
         boolean result = false;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < serverData.length; i++) {
             if (!serverData[i].equals(newData[i])) {
                 serverData[i] = newData[i];
                 result = true;
@@ -699,4 +698,3 @@ public class UserProfileActivity extends AppCompatActivity {
         unregisterReceiver(mNetworkChangeReceiver);
     }
 }
-

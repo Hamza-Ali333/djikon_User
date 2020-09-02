@@ -15,11 +15,13 @@ import com.example.djikon.ResponseModels.SubscribeArtistModel;
 import com.example.djikon.ResponseModels.SuccessErrorModel;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -69,7 +71,7 @@ public interface JSONApiHolder {
     Call<List<CurrentLiveArtistModel>> getCurrentLiveArtist();
 
     @GET("api/socialFrames")
-    Call<FramesModel> getFrames();
+    Call<List<FramesModel>>getFrames();
 
     @FormUrlEncoded
     @POST("api/register")
@@ -122,12 +124,8 @@ public interface JSONApiHolder {
     @FormUrlEncoded
     @POST("api/login")
     Call <LoginRegistrationModel> Login(
-            @Field("email") String email,
-            @Field("password") String password,
-            @Field("role") Integer role
+            @FieldMap Map<String, String> params
     );
-
-
 
     @FormUrlEncoded
     @POST("api/resend_otp")
@@ -141,7 +139,6 @@ public interface JSONApiHolder {
             @Field("email") String email,
             @Field("otp") Integer otp
     );
-
     
     @FormUrlEncoded
     @POST("api/send_otp")
@@ -154,7 +151,6 @@ public interface JSONApiHolder {
     Call <SuccessErrorModel>  confirmOTP(
             @Field("email") String email,
             @Field("otp") Integer otp
-
     );
 
     @FormUrlEncoded

@@ -39,7 +39,7 @@ public class SocialMediaShareFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
-
+    private List<FramesModel> listOFImagesName;
     private static final String BASEURL_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
 
     @Nullable
@@ -48,6 +48,8 @@ public class SocialMediaShareFragment extends Fragment {
 
        View v =  inflater.inflate(R.layout.fragment_social_media_share,container,false);
         mRecyclerView = v.findViewById(R.id.recyclerView_frame);
+
+        listOFImagesName = new ArrayList<>();
         showLoadingDialogue();
         getFrames();
 
@@ -58,24 +60,25 @@ public class SocialMediaShareFragment extends Fragment {
 
         Retrofit retrofit= ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        Call<FramesModel> call = jsonApiHolder.getFrames();
+        Call<List<FramesModel>> call = jsonApiHolder.getFrames();
 
-        call.enqueue(new Callback<FramesModel>() {
+        call.enqueue(new Callback<List<FramesModel>>() {
             @Override
-            public void onResponse(Call<FramesModel> call, Response<FramesModel> response) {
+            public void onResponse(Call<List<FramesModel>> call, Response<List<FramesModel>> response) {
 
                 if(response.isSuccessful()){
                     alertDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                    String frames = response.body().getFrame();
-                    Log.i("TAG", "onResponse: "+frames);
-                    if(frames.isEmpty()) {
+                    List<FramesModel> framesModelList= response.body();
+
+                    if(framesModelList.isEmpty()) {
                         //if no data then show dialoge to user
                         DialogsUtils.showAlertDialog(getContext(),false,
                                 "Note","No live artist found at this moment.");
                     } else{
-                        sperationOfArray(frames);
+
+                            sperationOfArray(framesModelList);
                     }
 
                 }else {
@@ -87,12 +90,10 @@ public class SocialMediaShareFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<FramesModel> call, Throwable t) {
+            public void onFailure(Call<List<FramesModel>> call, Throwable t) {
                 alertDialog.dismiss();
                 mRecyclerView.setVisibility(View.VISIBLE);
-                Log.i("TAG", "onFailure: "+t.getMessage());
-//                DialogsUtils.showResponseMsg(getContext(),true);
-                DialogsUtils.showAlertDialog(getContext(),false,"",t.getMessage());
+                DialogsUtils.showResponseMsg(getContext(),true);
             }
         });
     }
@@ -107,22 +108,25 @@ public class SocialMediaShareFragment extends Fragment {
         alertDialog = builder.show();
     }
 
-    private void sperationOfArray(String Gallery){
-        List<SliderModel> mSliderModels = new ArrayList<>();
-        Gallery = Gallery.replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
-        String[] GalleryArray = Gallery.split(",");
+    private void sperationOfArray(List<FramesModel> list){
+        for (int i = 0; i < list.size() ; i++) {
+            String Gallery= list.get(i).getFrame();
+            Gallery = Gallery.replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
+            String[] GalleryArray = Gallery.split(",");
 
-        for (int i = 0; i <= GalleryArray.length - 1; i++) {
-            mSliderModels.add(new SliderModel(BASEURL_IMAGES + GalleryArray[i]));
+            for (int j = 0; j <= GalleryArray.length - 1; j++) {
+                listOFImagesName.add(new FramesModel(BASEURL_IMAGES + GalleryArray[j]));
+            }
         }
 
-       // buildRecyclerView(mSliderModels);
+       buildRecyclerView(listOFImagesName);
     }
 
-    private void buildRecyclerView(List<SliderModel> imageslist){
+    private void buildRecyclerView(List<FramesModel> imageslist){
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mAdapter = new RecyclerSocialMediaFrames(imageslist);
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mAdapter = new RecyclerSocialMediaFrames(imageslist,getContext());
+
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }

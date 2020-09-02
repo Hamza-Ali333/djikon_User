@@ -176,7 +176,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         return true;
     }
 
-
     private void setDataInToView() {
         ratingBar.setRating(totalRating);
         txt_Service_Name.setText(serviceName);

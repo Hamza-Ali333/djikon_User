@@ -1,15 +1,21 @@
 package com.example.djikon.RecyclerView;
 
+import android.content.Context;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.djikon.NavDrawerFragments.SocialMediaShareFragment;
 import com.example.djikon.R;
-import com.example.djikon.ResponseModels.CurrentLiveArtistModel;
+import com.example.djikon.ResponseModels.FramesModel;
 import com.example.djikon.ResponseModels.SliderModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -18,7 +24,8 @@ import java.util.List;
 
 public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSocialMediaFrames.ViewHolder> {
 
-    private List<SliderModel> currentLiveArtistModels;
+    private List<FramesModel> frameImageList;
+    private Context context;
 
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -28,15 +35,17 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
 
         public ViewHolder(View itemView) {
             super(itemView);
-            img_LiveArtistProfile = itemView.findViewById(R.id.img_SubscribeArtist);
-
+            img_LiveArtistProfile = itemView.findViewById(R.id.frame);
             progressBar = itemView.findViewById(R.id.progressBarProfile);
+
         }
     }
 
     //constructor
-    public RecyclerSocialMediaFrames(List<SliderModel> liveArtistModels) {
-        this.currentLiveArtistModels = liveArtistModels;
+    public RecyclerSocialMediaFrames(List<FramesModel> liveArtistModels, Context context) {
+        this.frameImageList = liveArtistModels;
+        this.context = context;
+
     }
 
 
@@ -50,12 +59,12 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SliderModel currentItem = currentLiveArtistModels.get(position);
+        FramesModel currentItem = frameImageList.get(position);
+        Log.i("TAG", "onBindViewHolder: "+currentItem);
 
-
-        if (currentItem.getImage() != null && !currentItem.getImage().equals("no")) {
+        if (currentItem.getFrame() != null && !currentItem.getFrame().equals("no")) {
             holder.progressBar.setVisibility(View.VISIBLE);
-            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + currentItem.getImage())
+            Picasso.get().load(currentItem.getFrame())
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
@@ -72,11 +81,10 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
                     });
         }//if
 
-
     }
 
     @Override
     public int getItemCount() {
-        return currentLiveArtistModels.size();
+        return frameImageList.size();
     }
 }
