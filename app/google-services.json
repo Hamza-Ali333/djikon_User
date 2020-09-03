@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:750969288865:android:29babeaf03fe11b7a598e0",
+        "mobilesdk_app_id": "1:750969288865:android:daaed84835663e48a598e0",
         "android_client_info": {
-          "package_name": "com.example.djikon"
+          "package_name": "com.ikonholdings.ikoniconnects"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "750969288865-fg1qg60thmeucouphsqtaptk0qjpp4ld.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.djikon",
-            "certificate_hash": "3e639a9cd4646eb0f46a10657507729b0eb3d494"
-          }
-        },
         {
           "client_id": "750969288865-3mickj73d6irvg0ckbf2uo7cgb85sr57.apps.googleusercontent.com",
           "client_type": 3
@@ -38,6 +30,13 @@
             {
               "client_id": "750969288865-3mickj73d6irvg0ckbf2uo7cgb85sr57.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "750969288865-jo1vb2uou16al6pcphk451aqsscc5e8v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.djikonuser"
+              }
             }
           ]
         }

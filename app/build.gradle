@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -12,7 +13,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.example.djikon"
+        applicationId "com.ikonholdings.ikoniconnects"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -72,6 +73,7 @@ dependencies {
     //Google
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
     //firebase
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'

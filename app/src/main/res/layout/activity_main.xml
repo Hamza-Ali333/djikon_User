@@ -33,7 +33,6 @@
                 app:srcCompat="@drawable/ic_avatar"/>
         </androidx.appcompat.widget.Toolbar>
 
-
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"

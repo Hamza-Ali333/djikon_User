@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.djikon">
+    package="com.ikonholdings.ikoniconnects">
 
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
@@ -24,9 +24,9 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LiveStreaming.LiveVideoStreaming"></activity>
+        <activity android:name="com.ikonholdings.ikoniconnects.LiveStreaming.LiveVideoStreaming"></activity>
 
-        <activity android:name=".BrainTree.BrainTreeActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.BrainTree.BrainTreeActivity" />
 
         <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"
             android:launchMode="singleTask">
@@ -64,37 +64,37 @@
             android:resizeableActivity="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".BlogDetailActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.BlogDetailActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.ikonholdings.ikoniconnects.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ChatViewerActivity"
+            android:name="com.ikonholdings.ikoniconnects.ChatViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".UserProfileActivity"
+            android:name="com.ikonholdings.ikoniconnects.UserProfileActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
-            android:name=".PurchaseServiceActivity"
+            android:name="com.ikonholdings.ikoniconnects.PurchaseServiceActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
-        <activity android:name=".BookArtistOrServiceActivity" />
-        <activity android:name=".ServiceDetailActivity" />
-        <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".DjProfileActivity" />
-        <activity android:name=".BookingHistoryActivity" />
-        <activity android:name=".ProfileSettingActivity" />
-        <activity android:name=".PaymentMethodActivity" />
-        <activity android:name=".BookingPaymentMethodActivity" />
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".RegistrationActivity" />
-        <activity android:name=".SplashScreenActivity">
+        <activity android:name="com.ikonholdings.ikoniconnects.BookArtistOrServiceActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.ServiceDetailActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.ResetPasswordActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.DjProfileActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.BookingHistoryActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.ProfileSettingActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.PaymentMethodActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.BookingPaymentMethodActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.SignInActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.RegistrationActivity" />
+        <activity android:name="com.ikonholdings.ikoniconnects.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name=".Notification.MyFirebaseIdService"
+        <service android:name="com.ikonholdings.ikoniconnects.Notification.MyFirebaseIdService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -102,7 +102,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".Notification.MyFirebaseMessaging"
+        <service android:name="com.ikonholdings.ikoniconnects.Notification.MyFirebaseMessaging"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
