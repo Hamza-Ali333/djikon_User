@@ -39,6 +39,7 @@ import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.CountriesList;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
+import com.ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjAndUserProfileModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
@@ -95,13 +96,13 @@ public class UserProfileActivity extends AppCompatActivity {
     private String[] serverData;
     private String[] newData;
 
-    private static final int CAMERA_REQUEST_CODE = 300;
-    private static final int STORAFGE_REQUEST_CODE = 400;
+
     private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 2000;
+    private static final int CAMERA_REQUEST_CODE = 300;
+    private static final int STORAFGE_REQUEST_CODE = 400;
 
-    String cameraPermission[];
-    String storagePermission[];
+
     private Bitmap bitmap;
     private Uri Image_uri;
     private Boolean isProfileChange = false;//0 means user not selected new image , 1 means user change his/her profile
@@ -141,27 +142,6 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         downloadData.start();
-
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //camerapermission
-                cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                //storagepermission
-                storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-                //Ask for Required Permissions
-                final String[] permissions = new String[]{
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.CALL_PHONE
-                };
-
-                ActivityCompat.requestPermissions(UserProfileActivity.this, permissions, 123);
-            }
-        });
-        thread.start();
 
 
         swt_subcribeState.setOnClickListener(new View.OnClickListener() {
@@ -504,7 +484,6 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
-
     //image import
     private void showImageImportDailog() {
         String[] items = {"Camera", "Gallary"};
@@ -515,9 +494,9 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 1) {
                     //camera run
-                    if (!checkCameraPermissions()) {
+                    if (!PermissionHelper.checkCameraPermissions(UserProfileActivity.this)) {
                         //RequestCamera Permission
-                        requestPermissionCamera();
+                        PermissionHelper.requestPermissionCamera(UserProfileActivity.this);
                     }
                 } else {
                     //pick Camera
@@ -525,9 +504,9 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
                 if (which == 0) {
                     //open Gallary
-                    if (!checkStoragePermissions()) {
+                    if (!PermissionHelper.checkStoragePermissions(UserProfileActivity.this)) {
                         //RequestStorage Permission
-                        requestPermissionStorage();
+                        PermissionHelper.requestPermissionStorage(UserProfileActivity.this);
                     }
                 } else {
                     //pick Gallary
@@ -536,27 +515,6 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
         dailog.create().show();
-    }
-
-    private boolean checkCameraPermissions() {
-        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
-        boolean result1 = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        return result && result1;
-    }
-
-    private boolean checkStoragePermissions() {
-        boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-
-
-        return result;
-    }
-
-    private void requestPermissionCamera() {
-        ActivityCompat.requestPermissions(UserProfileActivity.this, cameraPermission, CAMERA_REQUEST_CODE);
-    }
-
-    private void requestPermissionStorage() {
-        ActivityCompat.requestPermissions(UserProfileActivity.this, storagePermission, STORAFGE_REQUEST_CODE);
     }
 
     private void pickCamera() {
@@ -615,7 +573,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         //get selected image Image
         if (resultCode == RESULT_OK) {
-
             if (requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE) {
                 CropImage.activity(Image_uri)
                         .setGuidelines(CropImageView.Guidelines.ON)
@@ -632,8 +589,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 Image_uri = result.getUri();
-                //img_Profile.setImageURI(Image_uri);
-                //Image_uri = data.getData();//data is getting null have to check
+
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Image_uri);
                     //img_Profile.setImageBitmap(bitmap);
@@ -674,7 +630,6 @@ public class UserProfileActivity extends AppCompatActivity {
         rlt_AboutApp = findViewById(R.id.rlt_aboutApp);
         rlt_Disclosures = findViewById(R.id.rlt_disclosures);
         rlt_Setting = findViewById(R.id.rlt_setting);
-
     }
 
     @Override
