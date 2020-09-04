@@ -64,7 +64,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
             txt_Description = itemView.findViewById(R.id.txt_imgDescription);
             txt_LikesNo = itemView.findViewById(R.id.txt_LikesNo);
             txt_ChatNo = itemView.findViewById(R.id.txt_chatNo);
-
         }
     }
 

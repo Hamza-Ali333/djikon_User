@@ -180,7 +180,6 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 SelectedGender = genderArray[i];
-
             }
 
             @Override
@@ -542,8 +541,6 @@ public class UserProfileActivity extends AppCompatActivity {
     private boolean checkCameraPermissions() {
         boolean result = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
         boolean result1 = ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-
-
         return result && result1;
     }
 
@@ -582,7 +579,6 @@ public class UserProfileActivity extends AppCompatActivity {
         startActivityForResult(gallery, IMAGE_PICK_GALLARY_REQUEST_CODE);
     }
 
-
     //handle Request for permission
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -610,7 +606,6 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
                 break;
         }
-
     }
 
     //Handle Image Result

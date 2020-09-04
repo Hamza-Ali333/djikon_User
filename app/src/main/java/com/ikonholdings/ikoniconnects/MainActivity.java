@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -223,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_Following:
 
                 getSupportActionBar().setTitle(R.string.SubscribedArtist);
-
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SubscribedArtistFragment()).commit();
 
@@ -232,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_SocialMedia:
 
                 getSupportActionBar().setTitle(R.string.SocialMediaSharing);
-
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SocialMediaShareFragment()).commit();
 
@@ -241,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_RequestedSong:
 
                 getSupportActionBar().setTitle(R.string.RequestedSong);
-
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new RequestedSongFragment()).commit();
 
