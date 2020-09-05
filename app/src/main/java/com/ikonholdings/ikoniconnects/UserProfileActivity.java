@@ -140,9 +140,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 getUserDataFromServer();
             }
         });
-
         downloadData.start();
-
 
         swt_subcribeState.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -12,6 +12,7 @@ public class PermissionHelper {
 
     private static final int CAMERA_REQUEST_CODE = 300;
     private static final int STORAGE_REQUEST_CODE = 400;
+    private static final int CAM_AND_STORAGE_REQUEST_CODE = 500;
 
     private static  final String CAMERA_PERMISSION[] = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final String STORAGE_PERMISSION[] = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -22,7 +23,9 @@ public class PermissionHelper {
             Manifest.permission.CALL_PHONE };
 
     public static void askForDefault(Activity activity){
-        ActivityCompat.requestPermissions(activity, ALL_PERMISSION, 123);
+        if(useRunTimePermissions()){
+            ActivityCompat.requestPermissions(activity, ALL_PERMISSION, CAM_AND_STORAGE_REQUEST_CODE);
+        }
     }
 
     public static boolean useRunTimePermissions() {
@@ -41,11 +44,15 @@ public class PermissionHelper {
     }
 
     public static void requestPermissionCamera(Activity activity) {
-        ActivityCompat.requestPermissions(activity, CAMERA_PERMISSION, CAMERA_REQUEST_CODE);
+        if(useRunTimePermissions()){
+            ActivityCompat.requestPermissions(activity, CAMERA_PERMISSION, CAMERA_REQUEST_CODE);
+        }
     }
 
     public static void requestPermissionStorage(Activity activity) {
-        ActivityCompat.requestPermissions(activity, STORAGE_PERMISSION, STORAGE_REQUEST_CODE);
+        if(useRunTimePermissions()) {
+            ActivityCompat.requestPermissions(activity, STORAGE_PERMISSION, STORAGE_REQUEST_CODE);
+        }
     }
 
 }
