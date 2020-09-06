@@ -173,6 +173,8 @@ public class SignInActivity extends AppCompatActivity {
         //Handel the Result When User Sign In Throw the BioMetric
         singInCallBackHandler();
 
+        PreferenceData.setBuildVersion(this,BuildConfig.VERSION_CODE);//saving Version Number
+
 
         retrofit = ApiClient.retrofit( this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);

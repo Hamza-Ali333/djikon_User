@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.FollowResultInterface;
+import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjAndUserProfileModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjProfileBlogsModel;
@@ -51,7 +55,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class DjProfileActivity extends AppCompatActivity {
+public class DjProfileActivity extends AppCompatActivity implements FollowResultInterface {
 
     private Button btn_Book_Artist,
             btn_Request_A_Song,
@@ -69,7 +73,6 @@ public class DjProfileActivity extends AppCompatActivity {
     private RelativeLayout rlt_About;
 
     private CircularImageView img_DJ_Profile;
-
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
@@ -147,7 +150,10 @@ public class DjProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btn_Follow.setClickable(false);
                 btn_Follow.setEnabled(false);
-                followUnFollow();
+                //followUnFollow();
+                new FollowUnFollowArtist(1,
+                        "1",
+                        DjProfileActivity.this).execute();
             }
         });
 
@@ -297,7 +303,7 @@ public class DjProfileActivity extends AppCompatActivity {
          String relativeURL = "api/user/"+djId;
          Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
 
-        call.enqueue(new Callback<DjAndUserProfileModel>() {
+         call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
             public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
 
@@ -314,9 +320,9 @@ public class DjProfileActivity extends AppCompatActivity {
                     allowMessage = djAndUserProfileModel.getAllow_message();
 
 
-                    services = response.body().getServices();
-                    blogs = response.body().getBlog();
-                    DjBookingRatePerHour = response.body().getRate_per_hour();
+                    services = djAndUserProfileModel.getServices();
+                    blogs = djAndUserProfileModel.getBlog();
+                    DjBookingRatePerHour = djAndUserProfileModel.getRate_per_hour();
 
                     parenLayout.setVisibility(View.VISIBLE);
                     alertDialog.dismiss();//hide the loading Dailoge
@@ -428,24 +434,8 @@ public class DjProfileActivity extends AppCompatActivity {
     }
 
 
-    private void followUnFollow () {
-        Retrofit retrofit = ApiClient.retrofit( DjProfileActivity.this);
-        JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-        String relativeUrl = "";
-
-        if(mFollow_Status == 0){
-            relativeUrl = "api/follow_artist/"+String.valueOf(artistID);
-        }else {
-            relativeUrl = "api/unfollow_artist/"+String.valueOf(artistID);
-        }
-
-        Call <SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(relativeUrl);
-
-        call.enqueue(new Callback<SuccessErrorModel>() {
-            @Override
-            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                if(response.isSuccessful()){
+    private void followUnFollow (Boolean responseResult) {
+                if(responseResult){
                     if (mFollow_Status == 0){
                         mFollow_Status = 1;
                         mFollower_Count++;
@@ -465,18 +455,8 @@ public class DjProfileActivity extends AppCompatActivity {
                 }else {
                     alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,
                             false);
-                    Log.i("TAG", "onResponse: "+response.code());
                 }
-            }
-            @Override
-            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-
-                alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,
-                        true);
-            }
-        });
     }
-
 
     private void showLoadingDialogue() {
         builder = new AlertDialog.Builder(this);
@@ -498,6 +478,18 @@ public class DjProfileActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void followResponse(Boolean response) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                followUnFollow(response);
+            }
+        });
+
     }
 
     private class GetDjUidFromFirebase extends AsyncTask<Void,Void,Void>{

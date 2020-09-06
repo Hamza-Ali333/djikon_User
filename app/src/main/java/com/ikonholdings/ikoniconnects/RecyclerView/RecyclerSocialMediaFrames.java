@@ -28,6 +28,7 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
         void onClick(Bitmap bitmap);//pass your object types.
     }
 
+    //initailizing
     public void setOnItemClickListner(RecyclerSocialMediaFrames.onItemClickListner onItemClickListner) {
         this.onItemClickListner = onItemClickListner;
     }

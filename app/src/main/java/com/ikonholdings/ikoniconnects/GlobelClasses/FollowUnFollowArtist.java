@@ -19,8 +19,11 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
     private int CurrentStatus;
     private String artistID;
     private Context context;
+    private Boolean runingFromFragment = false;//when class is runing from subcribe arits or all artist fragment
 
     private ProgressButton mProgressButton;
+
+    private FollowResultInterface mInterface;
 
     public FollowUnFollowArtist(int CurrentStatus, String artistID, Context context, View view) {
         this.CurrentStatus = CurrentStatus;
@@ -29,12 +32,25 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
 
         view.setClickable(false);
         view.setEnabled(false);
+
+        runingFromFragment = true;
+
         mProgressButton = new ProgressButton(context,view);
         if(CurrentStatus == 0){
             mProgressButton.btnOnClick("Following...");
         }else {
             mProgressButton.btnOnClick("UnFollowing...");
         }
+    }
+
+    public FollowUnFollowArtist(int CurrentStatus, String artistID, Context context) {
+        this.CurrentStatus = CurrentStatus;
+        this.artistID = artistID;
+        this.context = context;
+
+        runingFromFragment = false;
+
+        initializeInterface((FollowResultInterface) context);
     }
 
     @Override
@@ -56,25 +72,32 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
-                    Log.i("TAG", "onResponse: globel" + response.code());
-                    ((Activity)context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(CurrentStatus == 0) {
-                                mProgressButton.btnOnCompelet("Followed");
-                            } else{
-                                mProgressButton.btnOnCompelet("UnFollowed");
+                    if(runingFromFragment){
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(CurrentStatus == 0) {
+                                    mProgressButton.btnOnCompelet("Followed");
+                                } else{
+                                    mProgressButton.btnOnCompelet("UnFollowed");
+                                }
                             }
-                        }
-                    });
+                        });
+                    }else {
+                        mInterface.followResponse(true);//sending info to DJ Acitivity
+                    }
                 }else {
-                    ((Activity)context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                             DialogsUtils.showResponseMsg(context,
-                                    false);
-                        }
-                    });
+                    if(runingFromFragment){
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DialogsUtils.showResponseMsg(context,
+                                        false);
+                            }
+                        });
+                    }else {
+                        mInterface.followResponse(false);//sending info to DJ Acitivity
+                    }
                 }
             }
             @Override
@@ -85,10 +108,13 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                         DialogsUtils.showResponseMsg(context,true);
                     }
                 });
-
             }
         });
         return null;
+    }
+
+    private void initializeInterface(FollowResultInterface Interface){
+        this.mInterface = Interface;
     }
 
 }

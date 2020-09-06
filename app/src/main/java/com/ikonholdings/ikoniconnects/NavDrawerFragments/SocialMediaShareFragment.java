@@ -22,7 +22,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,10 +29,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
 import com.ikonholdings.ikoniconnects.GlobelClasses.SaveFramImage;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerSocialMediaFrames;
 import com.ikonholdings.ikoniconnects.ResponseModels.FramesModel;
+import com.ikonholdings.ikoniconnects.UserProfileActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -75,7 +76,6 @@ public class SocialMediaShareFragment extends Fragment{
     private String cameraPermission[];
     private String storagePermission[];
 
-
     private Uri Image_uri;
     private TextView txt_Change_Image;
 
@@ -108,14 +108,14 @@ public class SocialMediaShareFragment extends Fragment{
         btn_Select_Image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showImageImportDailog();
+                manageImageDialog();
             }
         });
 
         txt_Change_Image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showImageImportDailog();
+                manageImageDialog();
             }
         });
 
@@ -131,6 +131,14 @@ public class SocialMediaShareFragment extends Fragment{
         return v;
     }
 
+    private void manageImageDialog () {
+        if ( PermissionHelper.checkDefaultPermissions(getActivity())) {
+            showImageImportDailog();
+        }else {
+            PermissionHelper.managePermissions(getActivity());
+        }
+    }
+
     private void createReferencse(View v) {
         view = v.findViewById(R.id.view);
 
@@ -144,7 +152,6 @@ public class SocialMediaShareFragment extends Fragment{
     }
 
     private void getFrames(){
-
         Retrofit retrofit= ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
         Call<List<FramesModel>> call = jsonApiHolder.getFrames();
@@ -237,51 +244,16 @@ public class SocialMediaShareFragment extends Fragment{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 1) {
-                    //camera run
-                    if (!checkCameraPermissions()) {
-                        //RequestCamera Permission
-                        requestPermissionCamera();
-                    }
-                } else {
                     //pick Camera
                     pickCamera();
                 }
                 if (which == 0) {
-                    //open Gallary
-                    if (!checkStoragePermissions()) {
-                        //RequestStorage Permission
-                        requestPermissionStorage();
-                    }
-                } else {
                     //pick Gallary
                     pickGallary();
                 }
             }
         });
         dailog.create().show();
-    }
-
-    private boolean checkCameraPermissions() {
-        boolean result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
-        boolean result1 = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-
-
-        return result && result1;
-    }
-
-    private boolean checkStoragePermissions() {
-        boolean result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-
-
-        return result;
-    }
-
-    private void requestPermissionCamera() {
-        ActivityCompat.requestPermissions(getActivity(), cameraPermission, CAMERA_REQUEST_CODE);
-    }
-
-    private void requestPermissionStorage() {
-        ActivityCompat.requestPermissions(getActivity(), storagePermission, STORAFGE_REQUEST_CODE);
     }
 
     private void pickCamera() {
@@ -304,36 +276,19 @@ public class SocialMediaShareFragment extends Fragment{
         startActivityForResult(gallery, IMAGE_PICK_GALLARY_REQUEST_CODE);
     }
 
-
-
     //handle Request for permission
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case CAMERA_REQUEST_CODE:
-                if (grantResults.length > 0) {
-                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (cameraAccepted && storageAccepted) {
-                        pickCamera();
-                    } else {
-                        Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
+        if(requestCode == 200){
+            if (grantResults.length > 0) {
+                boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
-            case STORAFGE_REQUEST_CODE:
-                if (grantResults.length > 0) {
-                    boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (storageAccepted) {
-                        pickGallary();
-                    } else {
-                        Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-                    }
+                if (!cameraAccepted || !storageAccepted) {
+                    PermissionHelper.showPermissionAlert(getContext());
                 }
-                break;
+            }
         }
-
     }
 
     //Handle Image Result

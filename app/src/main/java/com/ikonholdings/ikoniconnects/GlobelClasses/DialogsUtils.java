@@ -26,7 +26,6 @@ public class DialogsUtils extends AppCompatDialogFragment {
     }
 
     public static AlertDialog showAlertDialog(Context context, Boolean CancelAbleState , String Title, String Msg) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setTitle(Title);
@@ -44,7 +43,6 @@ public class DialogsUtils extends AppCompatDialogFragment {
     }
 
     public static AlertDialog showResponseMsg(Context context,Boolean isFromFailed) {
-
         String Title, Msg;
         if(isFromFailed){
             //when Failed to connect with server

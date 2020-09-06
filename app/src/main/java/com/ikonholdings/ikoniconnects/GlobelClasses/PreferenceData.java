@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 
 public class PreferenceData
 {
+    static final String PREF_BUILD_VERSION = "build_version";
     static final String PREF_LOGGEDIN_USER_TOKEN = "logged_token_is";
     static final String PREF_LOGGEDIN_USER_ID = "logged_id_is";
     static final String PREF_USER_LOGGEDIN_STATUS = "biometric_login_status";
@@ -20,11 +21,24 @@ public class PreferenceData
     static final String PREF_LOGGEDIN_USER_ADDRESS = "USER_ADDRESS";
     static final String PREF_LOGGEDIN_USER_PHONE = "USER_PHONE";
 
-
     public static SharedPreferences getSharedPreferences(Context ctx)
     {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
     }
+
+    public static void setBuildVersion(Context ctx, int version)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putInt(PREF_BUILD_VERSION, version);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static int getBuildVersion(Context ctx)
+    {
+        return getSharedPreferences(ctx).getInt(PREF_BUILD_VERSION, 0);
+    }
+
 
     public static void setUserToken(Context ctx, String token)
     {
@@ -51,7 +65,6 @@ public class PreferenceData
     {
         return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_FullName, "No Name");
     }
-
 
     public static void setUserId(Context ctx, String id)
     {

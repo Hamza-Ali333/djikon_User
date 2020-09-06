@@ -1,6 +1,5 @@
 package com.ikonholdings.ikoniconnects;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -31,8 +30,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
@@ -84,7 +81,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private AlertDialog alertDialog;
 
 
-    private String[] genderArray = {"Select Gender", "Male", "Female", "Other"};
+    private String[] genderArray = {"Select Gender", "Male", "Female", "Other"};//for sippiner adapter
     private String FirstName, LastName;
 
     private String SelectedGender = "Select Gender";
@@ -208,10 +205,13 @@ public class UserProfileActivity extends AppCompatActivity {
         img_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showImageImportDailog();
+                if ( PermissionHelper.checkDefaultPermissions(UserProfileActivity.this)) {
+                    showImageImportDailog();
+                }else {
+                    PermissionHelper.managePermissions(UserProfileActivity.this);
+                }
             }
         });
-
 
         ArrayList<String> countryArrayList = new ArrayList<String>(Arrays.asList(CountriesList.getCountry()));
 
@@ -232,10 +232,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
         ImageView img_close = view.findViewById(R.id.close);
 
-
         builder.setView(view);
         builder.setCancelable(false);
-
 
         final AlertDialog alertDialog = builder.show();
 
@@ -298,8 +296,6 @@ public class UserProfileActivity extends AppCompatActivity {
                     PhoneNo = response.body().getContact();
                     SelectedGender = response.body().getGender();
                     Profile = response.body().getProfile_image();
-
-                    Log.i("TAG", "onResponse: "+Profile);
 
                     for (int j = 0; j < genderArray.length - 1; j++) {
                         if (genderArray[j].equals(SelectedGender)) {
@@ -491,22 +487,10 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 1) {
-                    //camera run
-                    if (!PermissionHelper.checkCameraPermissions(UserProfileActivity.this)) {
-                        //RequestCamera Permission
-                        PermissionHelper.requestPermissionCamera(UserProfileActivity.this);
-                    }
-                } else {
                     //pick Camera
                     pickCamera();
                 }
                 if (which == 0) {
-                    //open Gallary
-                    if (!PermissionHelper.checkStoragePermissions(UserProfileActivity.this)) {
-                        //RequestStorage Permission
-                        PermissionHelper.requestPermissionStorage(UserProfileActivity.this);
-                    }
-                } else {
                     //pick Gallary
                     pickGallary();
                 }
@@ -538,29 +522,15 @@ public class UserProfileActivity extends AppCompatActivity {
     //handle Request for permission
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case CAMERA_REQUEST_CODE:
-                if (grantResults.length > 0) {
-                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (cameraAccepted && storageAccepted) {
-                        pickCamera();
-                    } else {
-                        Toast.makeText(UserProfileActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
+        if(requestCode == 200){
+            if (grantResults.length > 0) {
+                boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
-            case STORAFGE_REQUEST_CODE:
-                if (grantResults.length > 0) {
-                    boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (storageAccepted) {
-                        pickGallary();
-                    } else {
-                        Toast.makeText(UserProfileActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
-                    }
+                if (!cameraAccepted || !storageAccepted) {
+                    PermissionHelper.showPermissionAlert(UserProfileActivity.this);
                 }
-                break;
+            }
         }
     }
 
@@ -584,7 +554,6 @@ public class UserProfileActivity extends AppCompatActivity {
             }
             //getcroped Image
             if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 Image_uri = result.getUri();
 
@@ -623,7 +592,6 @@ public class UserProfileActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progress_circular);
         progressBarProfile = findViewById(R.id.progressBarProfile);
         msg = findViewById(R.id.msg);
-
 
         rlt_AboutApp = findViewById(R.id.rlt_aboutApp);
         rlt_Disclosures = findViewById(R.id.rlt_disclosures);
