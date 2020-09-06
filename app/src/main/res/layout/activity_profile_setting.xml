@@ -14,7 +14,6 @@
             android:layout_height="30dp">
 
             <TextView
-                android:id="@+id/txt_subscribingToEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -61,7 +60,6 @@
                 android:textSize="16sp" />
 
             <Switch
-                android:id="@+id/swt_faceId_State"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

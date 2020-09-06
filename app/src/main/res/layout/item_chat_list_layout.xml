@@ -33,7 +33,6 @@
             android:textSize="20sp"
             />
         <ImageView
-            android:id="@+id/imgOnline"
             android:layout_height="15dp"
             android:layout_width="15dp"
             android:src="@drawable/ic_online"
@@ -43,7 +42,6 @@
             android:visibility="visible"
             />
         <ImageView
-            android:id="@+id/imgOffline"
             android:layout_height="15dp"
             android:layout_width="15dp"
             android:src="@drawable/ic_offline"
@@ -91,7 +89,6 @@
             android:layout_below="@+id/txt_recieve_time"/>-->
 
         <View
-            android:id="@+id/divider10"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="4dp"

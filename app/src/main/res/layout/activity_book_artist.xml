@@ -27,7 +27,6 @@
             android:paddingBottom="8dp">
 
             <TextView
-                android:id="@+id/infodate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Start Date"
@@ -148,7 +147,6 @@
             android:paddingBottom="8dp">
 
             <TextView
-                android:id="@+id/info_time_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Start Time"
@@ -178,7 +176,6 @@
             android:paddingBottom="8dp">
 
             <TextView
-                android:id="@+id/info_end_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="End Time"

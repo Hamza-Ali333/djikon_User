@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -17,11 +19,13 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubscribedArtist.ViewHolder>{
+public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubscribedArtist.ViewHolder> implements Filterable {
 
-    private List<SubscribeArtistModel> mSubscribeToArtistArrayList;
+    private List<SubscribeArtistModel> mSubscribeArtistList;
+    private List<SubscribeArtistModel> mSearchList;
     private static final String Image_Base_Url ="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     //view holder class
@@ -46,8 +50,9 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
     }
 
 //constructor
-    public RecyclerSubscribedArtist(List<SubscribeArtistModel> subscribeToArtistArrayList) {
-        this.mSubscribeToArtistArrayList = subscribeToArtistArrayList;
+    public RecyclerSubscribedArtist(List<SubscribeArtistModel> subscribeArtistList) {
+        this.mSubscribeArtistList = subscribeArtistList;
+        mSearchList = new ArrayList<>(subscribeArtistList);
     }
 
     @Override
@@ -60,7 +65,7 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final SubscribeArtistModel currentItem = mSubscribeToArtistArrayList.get(position);
+        final SubscribeArtistModel currentItem = mSubscribeArtistList.get(position);
         holder.unFollow = holder.progressButton.findViewById(R.id.btn_title);
         holder.unFollow.setText("UnFollow");
 
@@ -103,12 +108,48 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
                         view).execute();
             }
         });
-
-
 }
 
     @Override
     public int getItemCount() {
-        return mSubscribeToArtistArrayList.size();
+        return mSubscribeArtistList.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return listFilter;
+    }
+
+    private Filter listFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<SubscribeArtistModel> filteredList = new ArrayList<>();
+
+            if(charSequence == null || charSequence.length() == 0 ) {
+                filteredList.addAll(mSearchList);
+            } else{
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+                String nameConcatination;
+
+                for(SubscribeArtistModel item : mSearchList){
+                    nameConcatination= item.getFirstname()+" "+item.getLastname();
+                    if(nameConcatination.toLowerCase().contains(filterPattern)){
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            mSubscribeArtistList.clear();
+            mSubscribeArtistList.addAll((List) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 }

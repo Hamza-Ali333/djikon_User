@@ -55,11 +55,6 @@ import retrofit2.Retrofit;
 
 public class BookArtistOrServiceActivity extends AppCompatActivity {
 
-    private static final String TAG = "Book this Artist";
-
-    private final static String BASE_URL = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/book_artist/";
-    private final static String BASE_URL_SERVICE = "http://ec2-54-161-107-128.compute-1.amazonaws.com/api/book_service/";
-
     private Button btn_Check_Cost;
     private RadioButton mRadioButton;
     private EditText edt_Name, edt_Phone, edt_Email, edt_Address;
@@ -79,7 +74,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
     private String description;
 
     private ProgressDialog progressDialog;
-    private AlertDialog alertDialog;
     private AlertDialog checkBookingCoastDialog;
 
     private Retrofit retrofit;
@@ -97,7 +91,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
     }
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
-
 
     @Override
     protected void onStart() {
@@ -405,13 +398,13 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         (int) (long) diffMinutes //total minutes
                 );
             } else {
-                alertDialog = DialogsUtils.showAlertDialog(this, false,
+               DialogsUtils.showAlertDialog(this, false,
                         "InValid Time", "Please Select the Time And Date Again With CareFully (Check PM , AM)");
             }
 
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "getTimeDuration: " + e.getMessage());
+            Log.i("TAG", "getTimeDuration: " + e.getMessage());
         }
     }
 
@@ -563,8 +556,8 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                             DialogsUtils.BookingDoneDialog(BookArtistOrServiceActivity.this);
                         } else {
                             progressDialog.dismiss();
-                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
-                            Log.i(TAG, "onResponse: " + response.code());
+                            DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
+                            Log.i("TAG", "onResponse: " + response.code());
                         }
                     }
                 });
@@ -576,7 +569,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         progressDialog.dismiss();
-                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, true);
+                        DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, true);
                     }
                 });
             }
@@ -612,10 +605,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 Exception error = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
             }
         } else {
-            Toast.makeText(this, "Result is not correct", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Card not found.Try again", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private class GetBrainTreeToken extends AsyncTask<Void, Void, Void> {
 
@@ -646,7 +638,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         });
                     } else {
                         progressDialog.dismiss();
-                        alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
+                        DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
                     }
                 }
 
@@ -656,7 +648,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            alertDialog = DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, true);
+                            DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, true);
                         }
                     });
                 }
@@ -689,7 +681,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        alertDialog = DialogsUtils.showAlertDialog(context,
+                         DialogsUtils.showAlertDialog(context,
                                 false,
                                 "Note",
                                 "Please check your internet and try again");

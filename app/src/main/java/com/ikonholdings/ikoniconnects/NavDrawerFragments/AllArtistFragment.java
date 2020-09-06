@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerAllArtist;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,17 +33,19 @@ import retrofit2.Retrofit;
 public class AllArtistFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerAllArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private RelativeLayout progressBar;
-    private AlertDialog alertDialog;
+    private SearchView mSearchView;
+    private List<AllArtistModel> artistList;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v =  inflater.inflate(R.layout.fragment_subscribe_artist,container,false);
+        artistList = new ArrayList<>();
 
        Thread createRefereces = new Thread(new Runnable() {
            @Override
@@ -50,13 +54,40 @@ public class AllArtistFragment extends Fragment {
                progressBar = v.findViewById(R.id.progressbar);
                mRecyclerView.setVisibility(View.GONE);
                progressBar.setVisibility(View.VISIBLE);
+               mSearchView = v.findViewById(R.id.txt_search);
            }
        });
        createRefereces.start();
 
-               getAllArtist();
+       getAllArtist();
+
+       mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+           @Override
+           public boolean onQueryTextSubmit(String s) {
+               return false;
+           }
+
+           @Override
+           public boolean onQueryTextChange(String s) {
+               filter(s);
+               return false;
+           }
+       });
 
        return v;
+    }
+
+    private void filter(String searchText){
+        List<AllArtistModel> filteredlist = new ArrayList<>();
+        String ConcatinatName;
+        for(AllArtistModel item: artistList) {
+            ConcatinatName = item.getFirstname()+" "+item.getLastname();
+            if(ConcatinatName.toLowerCase().contains(searchText.toLowerCase())){
+                filteredlist.add(item);
+            }
+        }
+
+        mAdapter.filterList(filteredlist);
     }
 
 
@@ -75,25 +106,25 @@ public class AllArtistFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                    List<AllArtistModel> artistModels = response.body();
-                    if(artistModels.isEmpty()) {
+                    artistList = response.body();
+                    if(artistList.isEmpty()) {
                         AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
                                 "No Artist Found","it's seems like you din't follow any artist now");
                     }
                     else{
-                        initializeRecycler(artistModels);
+                        initializeRecycler(artistList);
                     }
 
                 }else {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-                    alertDialog = DialogsUtils.showResponseMsg(getContext(),false);
+                    DialogsUtils.showResponseMsg(getContext(),false);
                 }
             }
 
             @Override
             public void onFailure(Call<List<AllArtistModel>> call, Throwable t) {
-                alertDialog = DialogsUtils.showResponseMsg(getContext(),true);
+                DialogsUtils.showResponseMsg(getContext(),true);
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
             }

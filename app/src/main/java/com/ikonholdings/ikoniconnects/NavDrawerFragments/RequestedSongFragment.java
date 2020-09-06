@@ -37,7 +37,6 @@ public class RequestedSongFragment extends Fragment {
     private TextView txt_Requested_Song_Count;
 
     private RelativeLayout progressBar;
-    private AlertDialog alertDialog;
 
     @Nullable
     @Override
@@ -81,11 +80,11 @@ public class RequestedSongFragment extends Fragment {
                             List<RequestedSongsModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
                                 //if no data then show dialoge to user
-                                 alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
+                                DialogsUtils.showAlertDialog(getContext(),false,
                                         "No Song Found","it's seems like you din't Request any Song yet");
                             }
                            else{
-                               txt_Requested_Song_Count.setText("You have"+String.valueOf(artistModels.size())+"requested song.");
+                               txt_Requested_Song_Count.setText("You have "+String.valueOf(artistModels.size())+" requested song.");
                                 initializeRecycler(artistModels);
                             }
 
@@ -93,7 +92,7 @@ public class RequestedSongFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                    alertDialog = DialogsUtils.showResponseMsg(getContext(),false);
+                    DialogsUtils.showResponseMsg(getContext(),false);
                 }
             }
 
@@ -101,10 +100,9 @@ public class RequestedSongFragment extends Fragment {
             public void onFailure(Call<List<RequestedSongsModel>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                alertDialog = DialogsUtils.showResponseMsg(getContext(),true);
+                DialogsUtils.showResponseMsg(getContext(),true);
             }
         });
-
 
     }
 
@@ -116,7 +114,6 @@ public class RequestedSongFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
 

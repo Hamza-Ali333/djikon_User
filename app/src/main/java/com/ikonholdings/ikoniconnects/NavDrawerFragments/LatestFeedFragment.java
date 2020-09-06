@@ -43,7 +43,6 @@ public class LatestFeedFragment extends Fragment {
     private RelativeLayout rlt_progressBar;
     private AlertDialog alertDialog;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

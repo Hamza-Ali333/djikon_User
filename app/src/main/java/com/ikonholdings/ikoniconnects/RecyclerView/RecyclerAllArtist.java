@@ -116,4 +116,9 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
         return mAllArtistModel.size();
     }
 
+    public void filterList(List<AllArtistModel> list) {
+        mAllArtistModel = list;
+        notifyDataSetChanged();
+    }
+
 }

@@ -101,8 +101,8 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     private int allowMessage;
     private int allowBooking;
 
-    List<ServicesModel> services;
-    List<DjProfileBlogsModel> blogs;
+    private List<ServicesModel> services;
+    private List<DjProfileBlogsModel> blogs;
 
     private Snackbar snackbar;
     private TextView snackBarText;

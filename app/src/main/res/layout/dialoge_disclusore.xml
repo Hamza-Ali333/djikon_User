@@ -36,7 +36,6 @@
         />
 
     <TextView
-        android:id="@+id/txt_aboutapp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Most mobile devices are sold with several apps bundled as pre-installed software, such as a web browser, email client, calendar, mapping program, and an app for buying music, other media, or more apps. Some pre-installed apps can be removed by an ordinary uninstall process, thus leaving more storage space for desired ones. Where the software does not allow this, some devices can be rooted to eliminate the undesired apps.

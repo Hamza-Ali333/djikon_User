@@ -129,7 +129,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/txt_followers" />
 
             <View
-                android:id="@+id/divider"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"

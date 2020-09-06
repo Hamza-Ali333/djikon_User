@@ -178,7 +178,7 @@ public class PreferenceData
         editor.commit();
     }
     //clear the memory of the shared prefrences
-    public static void clearPreferences(Context ctx)
+    public static void clearAllPreferences(Context ctx)
     {
         Editor editor = getSharedPreferences(ctx).edit();
         editor.remove(PREF_LOGGEDIN_USER_TOKEN);

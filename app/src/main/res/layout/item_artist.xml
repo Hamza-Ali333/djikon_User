@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#000">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/subscribe_artist_layout"
         android:padding="6dp"
         android:background="#000"
         android:layout_width="match_parent"
@@ -68,7 +67,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/divider10"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"

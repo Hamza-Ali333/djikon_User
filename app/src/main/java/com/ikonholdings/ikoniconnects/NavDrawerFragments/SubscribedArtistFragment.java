@@ -4,9 +4,13 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,11 +36,12 @@ import retrofit2.Retrofit;
 public class SubscribedArtistFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerSubscribedArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private RelativeLayout progressBar;
     private AlertDialog alertDialog;
+    private SearchView mSearchView;
 
     @Nullable
     @Override
@@ -51,11 +56,26 @@ public class SubscribedArtistFragment extends Fragment {
                progressBar = v.findViewById(R.id.progressbar);
                mRecyclerView.setVisibility(View.GONE);
                progressBar.setVisibility(View.VISIBLE);
+               mSearchView = v.findViewById(R.id.txt_search);
+               mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
            }
        });
        createRefreces.start();
 
        getSubscribedArtist();
+
+       mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+           @Override
+           public boolean onQueryTextSubmit(String s) {
+               return false;
+           }
+
+           @Override
+           public boolean onQueryTextChange(String s) {
+               mAdapter.getFilter().filter(s);
+               return false;
+           }
+       });
 
        return v;
     }
@@ -109,8 +129,6 @@ public class SubscribedArtistFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-
     }
 
     @Override

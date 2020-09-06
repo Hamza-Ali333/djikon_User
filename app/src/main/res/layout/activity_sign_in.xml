@@ -252,7 +252,6 @@
                 app:srcCompat="@drawable/ic_login" />
 
             <TextView
-                android:id="@+id/txt_biometric"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"

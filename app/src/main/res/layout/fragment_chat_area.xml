@@ -11,12 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
+        <SearchView
             android:id="@+id/edt_search"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:background="@drawable/white_roundshape"
-            android:drawableRight="@drawable/ic_search"
             android:fontFamily="@font/montserrat"
             android:hint="Search Contact"
             android:padding="8dp"
