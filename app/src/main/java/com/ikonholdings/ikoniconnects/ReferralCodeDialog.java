@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,9 +20,6 @@ import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
-import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
-
-import java.lang.ref.PhantomReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +27,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ReferralCodeDialog {
+     static ProgressDialog progressDialog;
 
     public static AlertDialog showReferralCodeDialog(Context context, String Email) {
 
@@ -39,6 +38,7 @@ public class ReferralCodeDialog {
 
         Button btn_update = view.findViewById(R.id.btn_changepassword);
         EditText edt_Code = view.findViewById(R.id.edt_refrel_code);
+        ImageView img_close = view.findViewById(R.id.close);
 
         builder.setView(view);
         builder.setCancelable(false);
@@ -53,10 +53,10 @@ public class ReferralCodeDialog {
             public void onClick(View v) {
 
                 if(edt_Code.getText() == null || edt_Code.getText().toString().length() == 0){
-
-                    Toast.makeText(context, "Please Enter Referral Code", Toast.LENGTH_SHORT).show();
+                    edt_Code.setError("Please Enter Code");
+                    edt_Code.requestFocus();
                 }else {
-                    ProgressDialog progressDialog = DialogsUtils.showProgressDialog(context,"Checking Code",
+                     progressDialog = DialogsUtils.showProgressDialog(context,"Checking Code",
                             "Please wait while server is checking validation of code.");
                     Call<LoginRegistrationModel> call = jsonApiHolder.postReferral(edt_Code.getText().toString(), Email);
 
@@ -94,9 +94,16 @@ public class ReferralCodeDialog {
                 }
             }
         });
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.dismiss();
+                alertDialog.dismiss();
+            }
+        });
         return alertDialog;
     }
-
 
 
     private static void saveDataInPreferences(Context context,
