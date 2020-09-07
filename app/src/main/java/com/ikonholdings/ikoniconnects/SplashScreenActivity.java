@@ -25,7 +25,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        //preferenceData.clearLoginState(this);
+        //PreferenceData.clearLoginState(this);
         //mFirebaseAuth.getInstance().signOut();
         getSupportActionBar().hide();
 
@@ -56,6 +56,5 @@ public class SplashScreenActivity extends AppCompatActivity {
                 startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
                 finish();
         }
-
     }
 }

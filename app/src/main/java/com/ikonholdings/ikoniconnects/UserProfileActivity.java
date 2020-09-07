@@ -105,7 +105,6 @@ public class UserProfileActivity extends AppCompatActivity {
     private Boolean isProfileChange = false;//0 means user not selected new image , 1 means user change his/her profile
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
-
     @Override
     protected void onStart() {
         super.onStart();

@@ -35,6 +35,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.auth.api.Auth;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
@@ -102,9 +103,9 @@ public class SignInActivity extends AppCompatActivity {
 
     //fb
     private LoginButton loginButton;//hide
-    private Button fb;//visible
+    private Button btn_Fb;//visible
     //google
-    private Button google;
+    private Button btn_Google;
 
     private ImageView img_Finger_Print;
     private EditText edt_Email, edt_Password;
@@ -218,11 +219,10 @@ public class SignInActivity extends AppCompatActivity {
                 if (isInfoRight()) {
                     Email = edt_Email.getText().toString().trim();
                     Password = edt_Password.getText().toString().trim();
-                    isUserExits(false);
+                    manageUserLogin(false);
                 }
             }
         });
-
 
         rlt_BiometricPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,7 +305,7 @@ public class SignInActivity extends AppCompatActivity {
                                     providerId =String.valueOf(AccessToken.getCurrentAccessToken());
                                     providerName = "FaceBook";
                                     //sign in user with this detail
-                                    isUserExits(true);
+                                    manageUserLogin(true);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -347,12 +347,10 @@ public class SignInActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        google.setOnClickListener(new View.OnClickListener() {
+        btn_Google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 signInWithGoogle();
-
             }
         });
 
@@ -360,12 +358,13 @@ public class SignInActivity extends AppCompatActivity {
 
 
     public void onBtnFbClick(View v) {
-        if (v == fb) {
+        if (v == btn_Fb) {
             loginButton.performClick();
         }
     }
 
     private void signInWithGoogle() {
+        mGoogleSignInClient.signOut();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -380,7 +379,7 @@ public class SignInActivity extends AppCompatActivity {
                 providerId =  acc.getId();
                 providerName = "Google";
 
-              isUserExits(true);
+              manageUserLogin(true);
 
         } catch (ApiException e) {
             Log.i("TAG", "handleSignInResult: Failed " + e.getMessage());
@@ -478,7 +477,7 @@ public class SignInActivity extends AppCompatActivity {
                 super.onAuthenticationSucceeded(result);
                 Email = PreferenceData.getUserEmail(SignInActivity.this);
                 Password = PreferenceData.getUserPassword(SignInActivity.this);
-                isUserExits(false);
+                manageUserLogin(false);
             }
 
             @Override
@@ -806,8 +805,6 @@ public class SignInActivity extends AppCompatActivity {
                 });
             }
         }, 0, 1000);
-
-
     }
 
 
@@ -837,7 +834,7 @@ public class SignInActivity extends AppCompatActivity {
                 btn_update.setEnabled(false);
                 if (checkUpdatePasswordInput(Password, confirmPassword)) {
                     progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Updating Password", "Please Wait...");
-                    Call<SuccessErrorModel> call = jsonApiHolder.Updatepassword(EmailForOTP,
+                    Call<SuccessErrorModel> call = jsonApiHolder.updatePassword(EmailForOTP,
                             Password.getText().toString().trim());
 
                     call.enqueue(new Callback<SuccessErrorModel>() {
@@ -1004,7 +1001,6 @@ public class SignInActivity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dailoge_pin_code, null);
 
-
         EditText edt_Pin_Code = view.findViewById(R.id.pincode);
         Button btn_Login_Pin = view.findViewById(R.id.btn_login_pin);
 
@@ -1049,7 +1045,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    private void isUserExits(Boolean isSignWithSocial) {
+    private void manageUserLogin(Boolean isSignWithSocial) {
         txt_Error.setVisibility(View.GONE);
 
         progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Checking Credentials", "Please Wait While Checking...");
@@ -1129,6 +1125,8 @@ public class SignInActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     txt_Error.setText("Email or password is wrong.");
                     txt_Error.setVisibility(View.VISIBLE);
+                }else if(response.code() == 400){
+                    ReferralCodeDialog.showReferralCodeDialog(SignInActivity.this,Email);
                 }
                 else {
                     progressDialog.dismiss();
@@ -1141,6 +1139,7 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 }
             }
+
 
             @Override
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
@@ -1246,10 +1245,10 @@ public class SignInActivity extends AppCompatActivity {
         txt_Error = findViewById(R.id.txt_error);
 
         //FaceBookLoginButton
-        fb = findViewById(R.id.fb);//Visible
+        btn_Fb = findViewById(R.id.fb);//Visible
         loginButton = findViewById(R.id.login_button);//hide
         //Google
-        google = findViewById(R.id.google);//Visible
+        btn_Google = findViewById(R.id.google);//Visible
 
 
 

@@ -3,11 +3,11 @@ package com.ikonholdings.ikoniconnects.GlobelClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.Interfaces.FollowResultInterface;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
 
 import retrofit2.Call;

@@ -153,7 +153,7 @@ public interface JSONApiHolder {
 
     @FormUrlEncoded
     @POST("api/update_password")
-    Call <SuccessErrorModel> Updatepassword(
+    Call <SuccessErrorModel> updatePassword(
             @Field("email") String email,
             @Field("password") String newpassord
     );
@@ -164,6 +164,7 @@ public interface JSONApiHolder {
             @Url String relativeUrl,
             @Field("status") Integer likeStatus
     );
+
 
     @POST()
     Call <SuccessErrorModel>  followUnFollowArtist(
@@ -201,6 +202,13 @@ public interface JSONApiHolder {
     @POST("api/updateToken")
     Call<Void> postFCMTokenForWeb(
             @Field("token") String Token
+    );
+
+    @FormUrlEncoded
+    @POST("api/referralConfirm")
+    Call<LoginRegistrationModel> postReferral(
+            @Field("refferal") String Code,
+            @Field("email") String Email
     );
 
 }

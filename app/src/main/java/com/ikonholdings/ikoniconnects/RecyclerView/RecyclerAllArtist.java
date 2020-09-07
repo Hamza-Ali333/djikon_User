@@ -54,7 +54,6 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
         this.context = context;
     }
 
-
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 

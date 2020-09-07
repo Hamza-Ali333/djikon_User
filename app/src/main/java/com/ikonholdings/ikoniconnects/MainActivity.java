@@ -52,6 +52,8 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -323,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         }
                     });
-
         }
 
     }
