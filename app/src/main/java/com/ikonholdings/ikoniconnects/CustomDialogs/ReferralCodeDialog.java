@@ -1,25 +1,25 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.CustomDialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
+import com.ikonholdings.ikoniconnects.MainActivity;
+import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
+
+import java.util.jar.Attributes;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +29,10 @@ import retrofit2.Retrofit;
 public class ReferralCodeDialog {
      static ProgressDialog progressDialog;
 
-    public static AlertDialog showReferralCodeDialog(Context context, String Email) {
+    public static AlertDialog showReferralCodeDialog(Context context,
+                                                     String Email,
+                                                     String ProviderId,
+                                                     String ProviderName) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -72,8 +75,11 @@ public class ReferralCodeDialog {
                                         data.getFirstname()+" "+data.getLastname(),
                                         data.getProfile_image(),
                                         Email,
-                                        "K283K8CoZBqp");
-                                context.startActivity(new Intent(context,MainActivity.class));
+                                        "K283K8CoZBqp",
+                                        true,
+                                        ProviderId,
+                                        ProviderName);
+                                context.startActivity(new Intent(context, MainActivity.class));
                             }else if(response.code() == 400) {
                                 progressDialog.dismiss();
                                 edt_Code.setError("Wrong Code");
@@ -107,7 +113,15 @@ public class ReferralCodeDialog {
 
 
     private static void saveDataInPreferences(Context context,
-                                              String userToken, String userId, String userName, String profileImage, String userEmail, String userPassword){
+                                              String userToken,
+                                              String userId,
+                                              String userName,
+                                              String profileImage,
+                                              String userEmail,
+                                              String userPassword,
+                                              Boolean isLoginSocial,
+                                              String providerId,
+                                              String providerName){
         PreferenceData.setUserToken(context, userToken);
         PreferenceData.setUserId(context, userId);
         PreferenceData.setUserName(context, userName);
@@ -115,6 +129,9 @@ public class ReferralCodeDialog {
         PreferenceData.setUserLoggedInStatus(context, true);
         PreferenceData.setUserEmail(context, userEmail);
         PreferenceData.setUserPassword(context, userPassword);
+        PreferenceData.setUserLoginWithSocial(context, isLoginSocial);
+        PreferenceData.setProviderId(context, providerId);
+        PreferenceData.setProviderName(context, providerName);
     }
 }
 

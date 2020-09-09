@@ -16,6 +16,10 @@ public class PreferenceData
     static final String PREF_USER_Password = "Current_User_Password";
     static final String PREF_USER_EMAIL = "Current_User_Email";
 
+    static final String PREF_Login_With_Social = "logged_WITH_Social";
+    static final String PREF_Provider_Id = "logged_provider_id";
+    static final String PREF_ProviderName = "logged_provider_name";
+
 
     static final String PREF_LOGGEDIN_USER_FullName = "USER_FULL_NAME";
     static final String PREF_LOGGEDIN_USER_ADDRESS = "USER_ADDRESS";
@@ -162,6 +166,45 @@ public class PreferenceData
         Editor editor = getSharedPreferences(ctx).edit();
         editor.putBoolean(PREF_USER_LOGGEDIN_STATUS, status);
         editor.commit();
+    }
+
+    //saving a state if user is login with socialmedia
+    public static boolean getLoginWithSocial(Context ctx)
+    {
+        return getSharedPreferences(ctx).getBoolean(PREF_Login_With_Social, false);
+    }
+
+    public static void setUserLoginWithSocial(Context ctx, boolean loginWithName)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putBoolean(PREF_Login_With_Social, loginWithName);
+        editor.commit();
+    }
+
+    public static void setProviderId(Context ctx, String providerId)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_Provider_Id, providerId);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getProviderId(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_Provider_Id, "no");
+    }
+
+    public static void setProviderName(Context ctx, String providerName)
+    {
+        Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_ProviderName, providerName);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getProviderName(Context ctx)
+    {
+        return getSharedPreferences(ctx).getString(PREF_ProviderName, "no");
     }
 
     public static boolean getUserLoggedInStatus(Context ctx)

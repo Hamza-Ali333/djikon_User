@@ -73,13 +73,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private ProgressBar progressBarProfile;
 
-    private PreferenceData preferenceData;
-
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
-
 
     private String[] genderArray = {"Select Gender", "Male", "Female", "Other"};//for sippiner adapter
     private String FirstName, LastName;
@@ -88,7 +85,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private String PhoneNo = "no";
     private String Address = "no";
     private String Profile;
-    private static final String ImageUrl = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
+    private static boolean isHavePassword;
 
     private String[] serverData;
     private String[] newData;
@@ -96,8 +93,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 2000;
-    private static final int CAMERA_REQUEST_CODE = 300;
-    private static final int STORAFGE_REQUEST_CODE = 400;
 
 
     private Bitmap bitmap;
@@ -126,17 +121,10 @@ public class UserProfileActivity extends AppCompatActivity {
         rlt_Parent.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         msg.setVisibility(View.VISIBLE);
-        preferenceData = new PreferenceData();
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
-        Thread downloadData = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                getUserDataFromServer();
-            }
-        });
-        downloadData.start();
+        getUserDataFromServer();
 
         swt_subcribeState.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +168,7 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(UserProfileActivity.this, ProfileSettingActivity.class);
+                i.putExtra("password",isHavePassword);
                 startActivity(i);
             }
         });
@@ -287,14 +276,15 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
                 if (response.isSuccessful()) {
-
-                    FirstName = response.body().getFirstname();
-                    LastName = response.body().getLastname();
-                    edt_Email.setText(response.body().getEmail());
-                    Address = response.body().getLocation();
-                    PhoneNo = response.body().getContact();
-                    SelectedGender = response.body().getGender();
-                    Profile = response.body().getProfile_image();
+                    DjAndUserProfileModel data = response.body();
+                    FirstName = data.getFirstname();
+                    LastName = data.getLastname();
+                    edt_Email.setText(data.getEmail());
+                    Address = data.getLocation();
+                    PhoneNo = data.getContact();
+                    SelectedGender =data.getGender();
+                    Profile = data.getProfile_image();
+                    isHavePassword = data.getPassword();
 
                     for (int j = 0; j < genderArray.length - 1; j++) {
                         if (genderArray[j].equals(SelectedGender)) {
@@ -331,7 +321,7 @@ public class UserProfileActivity extends AppCompatActivity {
         progressDialog = DialogsUtils.showProgressDialog(UserProfileActivity.this,
                 "Uploading",
                 "Please Wait...");
-        String userId = preferenceData.getUserId(UserProfileActivity.this);
+        String userId = PreferenceData.getUserId(UserProfileActivity.this);
         retrofit = ApiClient.retrofit(this);
         MultipartBody.Part filePart = null;
 
@@ -365,7 +355,6 @@ public class UserProfileActivity extends AppCompatActivity {
                     location
             );
 
-
         uploadCall.enqueue(new Callback<SuccessErrorModel>() {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
@@ -374,18 +363,18 @@ public class UserProfileActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     //save new image name in to the preferences
                     PreferenceData.setUserImage(UserProfileActivity.this,response.body().getSuccess());
-                    DialogsUtils.showAlertDialog(UserProfileActivity.this,false,"Successful",
-                            "Profile Successfully Updated");
+                    DialogsUtils.showSuccessDialog(UserProfileActivity.this,"Successful",
+                            "Profile Successfully Updated",false);
                 } else {
                     progressDialog.dismiss();
+                    DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 progressDialog.dismiss();
-                alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,true);
-                Log.i("TAG", "onFailure: " + t.getMessage());
+                DialogsUtils.showResponseMsg(UserProfileActivity.this,true);
             }
         });
     }
@@ -445,7 +434,7 @@ public class UserProfileActivity extends AppCompatActivity {
         serverData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address};
 
         if(!Profile.equals("no") && Profile != null){
-            Picasso.get().load(ImageUrl + Profile)
+            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + Profile)
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()
@@ -486,12 +475,12 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 1) {
-                    //pick Camera
-                    pickCamera();
-                }
-                if (which == 0) {
                     //pick Gallary
                     pickGallary();
+                }
+                if (which == 0) {
+                    //pick Camera
+                    pickCamera();
                 }
             }
         });

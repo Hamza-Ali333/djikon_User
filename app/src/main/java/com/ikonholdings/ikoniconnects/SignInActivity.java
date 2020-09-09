@@ -35,9 +35,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.auth.api.Auth;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.CustomDialogs.CreateNewPasswordDialog;
+import com.ikonholdings.ikoniconnects.CustomDialogs.ReferralCodeDialog;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FingerPrintHandler;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
@@ -109,7 +110,6 @@ public class SignInActivity extends AppCompatActivity {
 
     private ImageView img_Finger_Print;
     private EditText edt_Email, edt_Password;
-    private PreferenceData preferenceData;
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
@@ -172,15 +172,12 @@ public class SignInActivity extends AppCompatActivity {
         createReferencer();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
         //Handel the Result When User Sign In Throw the BioMetric
-        singInCallBackHandler();
+        biometricSingInCallBackHandler();
 
         PreferenceData.setBuildVersion(this,BuildConfig.VERSION_CODE);//saving Version Number
 
-
         retrofit = ApiClient.retrofit( this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-        preferenceData = new PreferenceData();
 
         edt_Password.addTextChangedListener(new TextWatcher() {
             @Override
@@ -231,6 +228,7 @@ public class SignInActivity extends AppCompatActivity {
                 if(PreferenceData.getBiometricLoginState(SignInActivity.this)){
                     if(!PreferenceData.getUserEmail(SignInActivity.this).equals("no")
                             && !PreferenceData.getUserPassword(SignInActivity.this).equals("no") ){
+
                         showBiometricPrompt();
                     }else {
                         alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,
@@ -380,7 +378,6 @@ public class SignInActivity extends AppCompatActivity {
                 providerName = "Google";
 
               manageUserLogin(true);
-
         } catch (ApiException e) {
             Log.i("TAG", "handleSignInResult: Failed " + e.getMessage());
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
@@ -440,16 +437,10 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void showBiometricPrompt(){
-//        promptInfo = new BiometricPrompt.PromptInfo.Builder()
-//                .setTitle("Biometric login for my app")
-//                .setSubtitle("Log in using your biometric credential")
-//                .setNegativeButtonText("Use account Credentials")
-//                .build();
         if(isDeviceAbleForBiometricLogin()){
             promptInfo = new BiometricPrompt.PromptInfo.Builder()
                     .setTitle("Biometric login for my app")
                     .setSubtitle("Log in using your biometric credential")
-                    //.setNegativeButtonText("Use account password")
                     .setConfirmationRequired(false)
                     .setDeviceCredentialAllowed(true)
                     .build();
@@ -458,7 +449,7 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    private void singInCallBackHandler () {
+    private void biometricSingInCallBackHandler() {
         executor = ContextCompat.getMainExecutor(this);
         biometricPrompt = new BiometricPrompt(SignInActivity.this,
                 executor, new BiometricPrompt.AuthenticationCallback() {
@@ -477,7 +468,11 @@ public class SignInActivity extends AppCompatActivity {
                 super.onAuthenticationSucceeded(result);
                 Email = PreferenceData.getUserEmail(SignInActivity.this);
                 Password = PreferenceData.getUserPassword(SignInActivity.this);
-                manageUserLogin(false);
+                providerId = PreferenceData.getProviderId(SignInActivity.this);
+                providerName = PreferenceData.getProviderName(SignInActivity.this);
+                socialMediaFirstName = PreferenceData.getProviderName(SignInActivity.this);
+                socialMediaLastName = PreferenceData.getProviderName(SignInActivity.this);
+                manageUserLogin(PreferenceData.getLoginWithSocial(SignInActivity.this));
             }
 
             @Override
@@ -683,7 +678,8 @@ public class SignInActivity extends AppCompatActivity {
                                             data.getFirstname()+" "+data.getLastname(),
                                             data.getProfile_image(),
                                             edt_Email.getText().toString().trim(),
-                                            edt_Password.getText().toString().trim());
+                                            edt_Password.getText().toString().trim(),
+                                            false);
 
                                     lunchNextActivity();
 
@@ -715,7 +711,8 @@ public class SignInActivity extends AppCompatActivity {
                                         startActivity(new Intent(SignInActivity.this, MainActivity.class));
 
                                     } else {
-                                        openUpdatePasswrodDialoge();
+                                        CreateNewPasswordDialog.createNewPassword(SignInActivity.this,
+                                                EmailForOTP);
                                     }
 
                                 } else {
@@ -742,13 +739,9 @@ public class SignInActivity extends AppCompatActivity {
             //textWatcher extra method not in use
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-
-
             }
 
             public void afterTextChanged(Editable s) {
-
-
             }
         });
 
@@ -806,91 +799,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         }, 0, 1000);
     }
-
-
-    private void openUpdatePasswrodDialoge() {
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dailoge_update_password, null);
-
-
-        ShowHidePasswordEditText Password = view.findViewById(R.id.edt_new_password);
-        ShowHidePasswordEditText confirmPassword = view.findViewById(R.id.edt_ConfirmPassword);
-
-        Button btn_update = view.findViewById(R.id.btn_changepassword);
-
-        builder.setView(view);
-        builder.setCancelable(false);
-
-
-        final AlertDialog alertDialog = builder.show();
-
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                btn_update.setEnabled(false);
-                if (checkUpdatePasswordInput(Password, confirmPassword)) {
-                    progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this, "Updating Password", "Please Wait...");
-                    Call<SuccessErrorModel> call = jsonApiHolder.updatePassword(EmailForOTP,
-                            Password.getText().toString().trim());
-
-                    call.enqueue(new Callback<SuccessErrorModel>() {
-                        @Override
-                        public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-
-                            if (response.isSuccessful()) {
-                                alertDialog.dismiss();
-                                progressDialog.dismiss();
-                                Toast.makeText(SignInActivity.this, "Login With Your New Password", Toast.LENGTH_SHORT).show();
-                            } else {
-                                progressDialog.dismiss();
-                                btn_update.setEnabled(true);
-                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,
-                                        false);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                            alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,
-                                    true);
-                        }
-                    });
-                }
-
-
-            }
-        });
-
-    }
-
-
-    private boolean checkUpdatePasswordInput(EditText Password, EditText confirmPassword) {
-
-        boolean result = true;
-        if (Password.getText().toString().trim().isEmpty()) {
-            Password.setError("Please Enter Your New Password");
-            Password.requestFocus();
-            result = false;
-        } else if (confirmPassword.getText().toString().isEmpty()) {
-            confirmPassword.setError("Please Enter Your Password Again");
-            confirmPassword.requestFocus();
-            result = false;
-        } else if (Password.getText().length() < 8) {
-            Password.setError("Password can't be less then 8 digit");
-            edt_Password.requestFocus();
-            result = false;
-        } else if (!Password.getText().toString().trim().equals(confirmPassword.getText().toString().trim())) {
-            Password.setError("Password not matched");
-            edt_Password.requestFocus();
-            result = false;
-        }
-        return result;
-    }
-
 
     private void openLoginWithFaceId() {
 
@@ -1053,6 +961,7 @@ public class SignInActivity extends AppCompatActivity {
         Map<String, String> params = new HashMap<>();
         params.put("role", "2");//will remain same in both conditions
         if(isSignWithSocial){
+            Password = "K283K8CoZBqp";//nead an password saving in preference
             params.put("firstname", socialMediaFirstName);
             params.put("lastname", socialMediaLastName);
             params.put("email", Email);
@@ -1073,15 +982,14 @@ public class SignInActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     LoginRegistrationModel data = response.body();
-                    if(isSignWithSocial){
-                        Password = "K283K8CoZBqp";
-                    }
+
                     saveDataInPreferences(data.getSuccess(),
                             String.valueOf(data.getId()),
                             data.getFirstname()+" "+data.getLastname(),
                             data.getProfile_image(),
                             Email,
-                            Password);
+                            Password,
+                            true);
 
                     lunchNextActivity();
 
@@ -1098,19 +1006,19 @@ public class SignInActivity extends AppCompatActivity {
                                 openVerfiyOTPDialogue(true);
                             } else {
                                 progressDialog.dismiss();
-                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
+                                DialogsUtils.showResponseMsg(SignInActivity.this,false);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                             progressDialog.dismiss();
-                            alert_AND_forgetDailoge = alertDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
+                            DialogsUtils.showResponseMsg(SignInActivity.this,true);
                         }
                     });
                 } else if (response.code() == 403) {
                     progressDialog.dismiss();
-                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "This email is register as Subscriber can't use it here in User App");
+                    DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "This email is register as Subscriber can't use it here in User App");
 
                 }else if(response.code() == 409){
                     progressDialog.dismiss();
@@ -1126,7 +1034,7 @@ public class SignInActivity extends AppCompatActivity {
                     txt_Error.setText("Email or password is wrong.");
                     txt_Error.setVisibility(View.VISIBLE);
                 }else if(response.code() == 400){
-                    ReferralCodeDialog.showReferralCodeDialog(SignInActivity.this,Email);
+                    ReferralCodeDialog.showReferralCodeDialog(SignInActivity.this,Email,providerId,providerName);
                 }
                 else {
                     progressDialog.dismiss();
@@ -1140,17 +1048,12 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
 
-
             @Override
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
-                Log.i("TAG", "onFailure: " + t.getMessage());
                 progressDialog.dismiss();
-                alert_AND_forgetDailoge =  DialogsUtils.showResponseMsg(SignInActivity.this,true);
-
+                DialogsUtils.showResponseMsg(SignInActivity.this,true);
             }
         });
-
-
     }
 
     private void getOTP(String Email) {
@@ -1251,7 +1154,6 @@ public class SignInActivity extends AppCompatActivity {
         btn_Google = findViewById(R.id.google);//Visible
 
 
-
         edt_Email = findViewById(R.id.edt_Email);
         edt_Password = findViewById(R.id.edt_Password);
 
@@ -1267,14 +1169,20 @@ public class SignInActivity extends AppCompatActivity {
         finish();
     }
 
-    private void saveDataInPreferences(String userToken, String userId, String userName, String profileImage,String userEmail,String userPassword){
-        preferenceData.setUserToken(SignInActivity.this, userToken);
-        preferenceData.setUserId(SignInActivity.this, userId);
-        preferenceData.setUserName(SignInActivity.this, userName);
-        preferenceData.setUserImage(SignInActivity.this, profileImage);
-        preferenceData.setUserLoggedInStatus(SignInActivity.this, true);
-        preferenceData.setUserEmail(SignInActivity.this, userEmail);
-        preferenceData.setUserPassword(SignInActivity.this, userPassword);
+    private void saveDataInPreferences(String userToken, String userId, String userName, String profileImage,String userEmail,String userPassword,Boolean isSocialMedia){
+        PreferenceData.setUserToken(SignInActivity.this, userToken);
+        PreferenceData.setUserId(SignInActivity.this, userId);
+        PreferenceData.setUserName(SignInActivity.this, userName);
+        PreferenceData.setUserImage(SignInActivity.this, profileImage);
+        PreferenceData.setUserLoggedInStatus(SignInActivity.this, true);
+        PreferenceData.setUserEmail(SignInActivity.this, userEmail);
+        PreferenceData.setUserPassword(SignInActivity.this, userPassword);
+        PreferenceData.setUserLoginWithSocial(SignInActivity.this, true);
+
+        if(isSocialMedia){
+            PreferenceData.setProviderId(SignInActivity.this, providerId);
+            PreferenceData.setProviderName(SignInActivity.this, providerName);
+        }
     }
 
     @Override

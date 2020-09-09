@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,22 +15,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.CustomDialogs.CreateNewPasswordDialog;
+import com.ikonholdings.ikoniconnects.CustomDialogs.UpdatePasswordDialog;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
-import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ProfileSettingActivity extends AppCompatActivity {
 
 
-    RelativeLayout rlt_LiveStreaming, rlt_FaceId, rlt_Biometrics, rlt_ChangePassword, rlt_ChangePin, rlt_BookingHistory,
+    RelativeLayout rlt_LiveStreaming, rlt_Biometrics, rlt_ChangePassword, rlt_ChangePin, rlt_BookingHistory,
     rlt_ConnectSocial;
 
     private Switch swt_FaceId_State, swt_Biometric_State;
@@ -39,8 +35,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
     private JSONApiHolder mJSONApiHolder;
 
     private ProgressDialog mProgressDialog;
-    private AlertDialog alertDialog;
-
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
     @Override
@@ -50,7 +44,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-
     }
 
 
@@ -64,6 +57,9 @@ public class ProfileSettingActivity extends AppCompatActivity {
         createRefrences();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
+        Intent info = getIntent();
+        Boolean isHavePassword = info.getBooleanExtra("password",false);
+
         if(PreferenceData.getBiometricLoginState(ProfileSettingActivity.this)){
             swt_Biometric_State.setChecked(true);
         }else {
@@ -72,7 +68,13 @@ public class ProfileSettingActivity extends AppCompatActivity {
         rlt_ChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             openChangePasswordDialogue();
+             if(isHavePassword){
+                 UpdatePasswordDialog.showChangePasswordDialogue(ProfileSettingActivity.this);
+             }else {
+                 //openCreate
+                 CreateNewPasswordDialog.createNewPassword(ProfileSettingActivity.this,
+                         PreferenceData.getUserEmail(ProfileSettingActivity.this));
+             }
             }
         });
 
@@ -110,67 +112,16 @@ public class ProfileSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(swt_Biometric_State.isChecked()) {
-                    alertDialog = DialogsUtils.showAlertDialog(ProfileSettingActivity.this,
+                     DialogsUtils.showAlertDialog(ProfileSettingActivity.this,
                             false,
                             "Note","Biometric is Enable Now");
                     PreferenceData.setBiometricLoginState(ProfileSettingActivity.this,true);
                 }else {
-                    alertDialog = DialogsUtils.showAlertDialog(ProfileSettingActivity.this,
+                    DialogsUtils.showAlertDialog(ProfileSettingActivity.this,
                             false,
                             "Note","Biometric is Disable Now");
                     PreferenceData.setBiometricLoginState(ProfileSettingActivity.this,false);
                 }
-            }
-        });
-
-    }
-
-
-    private void openChangePasswordDialogue() {
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dailoge_change_password, null);
-
-        EditText edt_oldPassword, edt_newPassword, edt_confirmPassword;
-        Button btnResetPassword;
-
-        edt_oldPassword = view.findViewById(R.id.edt_old_password);
-        edt_newPassword = view.findViewById(R.id.edt_new_password);
-        edt_confirmPassword = view.findViewById(R.id.edt_ConfirmPassword);
-        btnResetPassword = view.findViewById(R.id.btn_Reset_Password);
-
-        builder.setView(view);
-        builder.setCancelable(true);
-
-        final AlertDialog alertDialog =  builder.show();
-
-        btnResetPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(edt_oldPassword.getText().toString().trim().isEmpty()){
-                    edt_oldPassword.setError("Enter Old Password");
-                    edt_oldPassword.requestFocus();
-                }
-                else if(edt_newPassword.getText().toString().trim().isEmpty()){
-                    edt_newPassword.setError("Enter New Password");
-                    edt_newPassword.requestFocus();
-                }
-                else if(edt_confirmPassword.getText().toString().trim().isEmpty()){
-                    edt_confirmPassword.setError("Enter New Password");
-                    edt_confirmPassword.requestFocus();
-                }
-                else if(!edt_newPassword.getText().toString().trim().equals(edt_confirmPassword.getText().toString().trim())){
-                    edt_newPassword.setError("New Password Not Matched");
-                    edt_newPassword.requestFocus();
-                }
-                else {
-                    alertDialog.dismiss();
-                    changePasswrod( edt_oldPassword.getText().toString(), edt_newPassword.getText().toString());
-                    mProgressDialog = DialogsUtils.showProgressDialog(ProfileSettingActivity.this,"Updating Password","Please Wait...");
-                }
-
             }
         });
 
@@ -199,10 +150,10 @@ public class ProfileSettingActivity extends AppCompatActivity {
         btnResetPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(ProfileSettingActivity.this, "this feature will available soon", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
             }
         });
-
     }
 
 
@@ -222,6 +173,34 @@ public class ProfileSettingActivity extends AppCompatActivity {
 
         builder.setView(view);
         builder.setCancelable(true);
+
+        rlt_Twitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ProfileSettingActivity.this, "this feature will available soon", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        rlt_FaceBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ProfileSettingActivity.this, "this feature will available soon", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        rlt_Instagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ProfileSettingActivity.this, "this feature will available soon", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        rlt_Pinterst.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ProfileSettingActivity.this, "this feature will available soon", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         builder.show();
     }
@@ -251,38 +230,11 @@ public class ProfileSettingActivity extends AppCompatActivity {
         rlt_wifiOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ProfileSettingActivity.this, "i m clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileSettingActivity.this, "this feature will available soon", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
             }
         });
 
-    }
-
-    private void changePasswrod(String Old,String New){
-        mRetrofit = ApiClient.retrofit(this);
-        mJSONApiHolder = mRetrofit.create(JSONApiHolder.class);
-        Call<SuccessErrorModel> call = mJSONApiHolder.changePasswrod( Old, New);
-
-        call.enqueue(new Callback<SuccessErrorModel>() {
-            @Override
-            public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                if(response.isSuccessful()){
-
-                    mProgressDialog.dismiss();
-                    Toast.makeText(ProfileSettingActivity.this, "Done", Toast.LENGTH_SHORT).show();
-                    Log.i("TAG", "onResponse: "+response.code());
-                }else {
-                    mProgressDialog.dismiss();
-                    Log.i("TAG", "onResponse: "+response.code());
-                    alertDialog = DialogsUtils.showResponseMsg(ProfileSettingActivity.this,false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                alertDialog =  DialogsUtils.showResponseMsg(ProfileSettingActivity.this,true);
-            }
-        });
     }
 
     private void createRefrences(){
@@ -290,7 +242,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
           rlt_ChangePin = findViewById(R.id.rlt_ChangePin);
           rlt_Biometrics = findViewById(R.id.rlt_biometrics);
           rlt_BookingHistory = findViewById(R.id.rlt_bookingHistory);
-          rlt_FaceId = findViewById(R.id.rlt_faceId);
           rlt_ConnectSocial = findViewById(R.id.rlt_socialmedia);
           rlt_LiveStreaming = findViewById(R.id.rlt_liveStreaming);
 

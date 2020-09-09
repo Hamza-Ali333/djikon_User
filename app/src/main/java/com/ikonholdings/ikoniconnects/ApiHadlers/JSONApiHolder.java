@@ -126,16 +126,16 @@ public interface JSONApiHolder {
     );
 
     @FormUrlEncoded
-    @POST("api/resend_otp")
-    Call <SuccessErrorModel> resendOTP(
-            @Field("email") String email
-    );
-
-    @FormUrlEncoded
     @POST("api/verify_email")
     Call <LoginRegistrationModel> verifyEmail(
             @Field("email") String email,
             @Field("otp") Integer otp
+    );
+
+    @FormUrlEncoded
+    @POST("api/resend_otp")
+    Call <SuccessErrorModel> resendOTP(
+            @Field("email") String email
     );
     
     @FormUrlEncoded

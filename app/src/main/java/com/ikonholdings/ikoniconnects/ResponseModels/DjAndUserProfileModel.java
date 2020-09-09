@@ -18,6 +18,7 @@ public class DjAndUserProfileModel {
             location,
             rate_per_hour,
             online_status;
+    private Boolean password;
 
     private int allow_message;
     private int allow_booking;
@@ -95,5 +96,9 @@ public class DjAndUserProfileModel {
 
     public String getLocation() {
         return location;
+    }
+
+    public Boolean getPassword() {
+        return password;
     }
 }

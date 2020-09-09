@@ -553,7 +553,8 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                     public void run() {
                         if (response.isSuccessful()) {
                             progressDialog.dismiss();
-                            DialogsUtils.BookingDoneDialog(BookArtistOrServiceActivity.this);
+                            DialogsUtils.showSuccessDialog(BookArtistOrServiceActivity.this,"Congratulation","Your booking is successfully done." +
+                                    "You will be inform when if DJ accept or reject Booking\nThank You",true);
                         } else {
                             progressDialog.dismiss();
                             DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);

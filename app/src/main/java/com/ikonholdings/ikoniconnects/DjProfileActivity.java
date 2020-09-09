@@ -327,19 +327,9 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     parenLayout.setVisibility(View.VISIBLE);
                     alertDialog.dismiss();//hide the loading Dailoge
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            buildServiceRecycler(services);
-                        }
-                    }).start();
+                    buildServiceRecycler(services);
+                    buildBlogRecycler(blogs);
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            buildBlogRecycler(blogs);
-                        }
-                    }).start();
 
                     setDataInToViews();//set User Data in to Views
 

@@ -68,8 +68,6 @@ public class SocialMediaShareFragment extends Fragment{
     private RelativeLayout view;
 
     //for permission handling and onActivity Result
-    private static final int CAMERA_REQUEST_CODE = 300;
-    private static final int STORAFGE_REQUEST_CODE = 400;
     private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 2000;
 
@@ -89,20 +87,6 @@ public class SocialMediaShareFragment extends Fragment{
         listOFImagesName = new ArrayList<>();
         showLoadingDialogue();
         getFrames();
-
-        //camerapermission
-        cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        //storagepermission
-        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-        //Ask for Required Permissions
-        final String[] permissions = new String[]{
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CALL_PHONE
-        };
-
-        ActivityCompat.requestPermissions(getActivity(), permissions, 123);
 
 
         btn_Select_Image.setOnClickListener(new View.OnClickListener() {
@@ -244,12 +228,13 @@ public class SocialMediaShareFragment extends Fragment{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 1) {
-                    //pick Camera
-                    pickCamera();
-                }
-                if (which == 0) {
                     //pick Gallary
                     pickGallary();
+                }
+                if (which == 0) {
+                    //pick Camera
+                    pickCamera();
+
                 }
             }
         });
