@@ -31,22 +31,22 @@ import retrofit2.http.Url;
 public interface JSONApiHolder {
 
     //will return all the blogs
-    @GET ("api/blog")
+    @GET ("blog")
     Call<List<FeedBlogModel>> getBlogs();
 
-    @GET("api/getStart")
+    @GET("getStart")
     Call<SuccessErrorModel> getBrainTreeToken();
 
     //will return All subscribed Artist  by current User
-    @GET ("api/following")
+    @GET ("following")
     Call<List<SubscribeArtistModel>> getSubscribeArtist();
 
     //will return All subscribed Artist  by current User
-    @GET ("api/artistAll")
+    @GET ("artistAll")
     Call<List<AllArtistModel>> getAllArtist();
 
     //will return all the requested Song
-    @GET ("api/requested_songs")
+    @GET ("requested_songs")
     Call<List<RequestedSongsModel>> getRequestedSongs();
 
     //will return detail of a blog
@@ -60,20 +60,20 @@ public interface JSONApiHolder {
 
     //this will return full detail of a service
     @GET
-    Call<SingleServiceModel> getSingleServieData(@Url String id);
+    Call<SingleServiceModel> getSingleServiceData(@Url String id);
 
     //this will return current UserAll the booking
-    @GET("api/bookingHistory")
+    @GET("bookingHistory")
     Call<List<BookingHistory>> getBookingHistory();
 
-    @GET("api/liveArtist")
+    @GET("liveArtist")
     Call<List<CurrentLiveArtistModel>> getCurrentLiveArtist();
 
-    @GET("api/socialFrames")
+    @GET("socialFrames")
     Call<List<FramesModel>>getFrames();
 
     @FormUrlEncoded
-    @POST("api/register")
+    @POST("register")
     Call <LoginRegistrationModel> registerUser(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
@@ -84,7 +84,7 @@ public interface JSONApiHolder {
             );
 
     @FormUrlEncoded
-    @POST("api/register")
+    @POST("register")
     Call <LoginRegistrationModel> registerUserFromSocialMedia(
             @Field("firstname") String firstname,
             @Field("lastname") String lastname,
@@ -113,46 +113,46 @@ public interface JSONApiHolder {
 
 
     @FormUrlEncoded
-    @POST("api/change_password")
+    @POST("change_password")
     Call <SuccessErrorModel> changePasswrod(
             @Field("oldpass") String oldpassword,
             @Field("password") String newpassword
     );
 
     @FormUrlEncoded
-    @POST("api/login")
+    @POST("login")
     Call <LoginRegistrationModel> Login(
             @FieldMap Map<String, String> params
     );
 
     @FormUrlEncoded
-    @POST("api/verify_email")
+    @POST("verify_email")
     Call <LoginRegistrationModel> verifyEmail(
             @Field("email") String email,
             @Field("otp") Integer otp
     );
 
     @FormUrlEncoded
-    @POST("api/resend_otp")
+    @POST("resend_otp")
     Call <SuccessErrorModel> resendOTP(
             @Field("email") String email
     );
     
     @FormUrlEncoded
-    @POST("api/send_otp")
+    @POST("send_otp")
     Call <SuccessErrorModel> sendOTP(
             @Field("email") String email
     );
 
     @FormUrlEncoded
-    @POST("api/confirm_otp")
+    @POST("confirm_otp")
     Call <SuccessErrorModel>  confirmOTP(
             @Field("email") String email,
             @Field("otp") Integer otp
     );
 
     @FormUrlEncoded
-    @POST("api/update_password")
+    @POST("update_password")
     Call <SuccessErrorModel> updatePassword(
             @Field("email") String email,
             @Field("password") String newpassord
@@ -171,11 +171,11 @@ public interface JSONApiHolder {
             @Url String relativeUrl
     );
 
-    @POST("api/logout")
+    @POST("logout")
     Call <LoginRegistrationModel> logout();
 
     @FormUrlEncoded
-    @POST("api/bookings")
+    @POST("bookings")
     Call<SuccessErrorModel> postBooking(
             @Field("sub_id") int artistId,
             @Field("service_id") int ServiceId,
@@ -199,18 +199,16 @@ public interface JSONApiHolder {
     );
 
     @FormUrlEncoded
-    @POST("api/updateToken")
+    @POST("updateToken")
     Call<Void> postFCMTokenForWeb(
             @Field("token") String Token
     );
 
     @FormUrlEncoded
-    @POST("api/referralConfirm")
+    @POST("referralConfirm")
     Call<LoginRegistrationModel> postReferral(
             @Field("refferal") String Code,
             @Field("email") String Email
     );
 
 }
-
-

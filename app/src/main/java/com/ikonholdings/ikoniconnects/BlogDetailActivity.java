@@ -186,7 +186,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     private void downloadBlogs(String BlogId) {
         JsonApiHolder = retrofit.create(JSONApiHolder.class);
-        Call<SingleBlogDetailModel> call = JsonApiHolder.getSingleBlog("api/"+BlogId);
+        Call<SingleBlogDetailModel> call = JsonApiHolder.getSingleBlog(BlogId);
 
         call.enqueue(new Callback<SingleBlogDetailModel>() {
             @Override
@@ -410,7 +410,7 @@ public class BlogDetailActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... strings) {
             JsonApiHolder = retrofit.create(JSONApiHolder.class);
-            Call<SuccessErrorModel> call = JsonApiHolder.postComment("api/comment_store/"+String.valueOf(blogId), strings[0]);
+            Call<SuccessErrorModel> call = JsonApiHolder.postComment("comment_store/"+String.valueOf(blogId), strings[0]);
             call.enqueue(new Callback<SuccessErrorModel>() {
                 @Override
                 public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {

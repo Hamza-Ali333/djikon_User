@@ -267,7 +267,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void getUserDataFromServer() {
         retrofit = ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        String relativeURL = "api/user/" + PreferenceData.getUserId(this);
+        String relativeURL = "user/" + PreferenceData.getUserId(this);
         Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
 
         call.enqueue(new Callback<DjAndUserProfileModel>() {
@@ -344,7 +344,7 @@ public class UserProfileActivity extends AppCompatActivity {
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         Call<SuccessErrorModel> uploadCall = jsonApiHolder.UpdateProfileWithImage(
-                    "api/update_profile/" + userId,
+                    "update_profile/" + userId,
                     filePart,
                     firstname,
                     lastName,
@@ -438,7 +438,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         if(!Profile.equals("no") && Profile != null){
             progressBarProfile.setVisibility(View.VISIBLE);
-            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + Profile)
+            Picasso.get().load(ApiClient.Base_Url+"post_images/" + Profile)
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()

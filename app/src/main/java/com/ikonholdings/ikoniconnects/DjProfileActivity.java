@@ -300,7 +300,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     private void getProfileDataFromServer(String djId) {
          retrofit= ApiClient.retrofit(this);
          jsonApiHolder = retrofit.create(JSONApiHolder.class);
-         String relativeURL = "api/user/"+djId;
+         String relativeURL = "user/"+djId;
          Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
 
          call.enqueue(new Callback<DjAndUserProfileModel>() {
@@ -393,7 +393,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     private void postRequestSong (String UserName,String SongName) {
         retrofit= ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        String relativeUrl = "api/request_song/"+String.valueOf(artistID);
+        String relativeUrl = "request_song/"+String.valueOf(artistID);
         Call<SuccessErrorModel> call = jsonApiHolder.postSongRequest(relativeUrl,
                 UserName,
                 SongName

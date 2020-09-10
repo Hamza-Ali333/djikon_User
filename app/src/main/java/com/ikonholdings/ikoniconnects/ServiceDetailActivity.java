@@ -257,7 +257,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         protected Void doInBackground(String... strings) {
 
             jsonApiHolder = retrofit.create(JSONApiHolder.class);
-            Call<SingleServiceModel> call = jsonApiHolder.getSingleServieData("api/products/"+strings[0]);
+            Call<SingleServiceModel> call = jsonApiHolder.getSingleServiceData("products/"+strings[0]);
 
             call.enqueue(new Callback<SingleServiceModel>() {
                 @Override

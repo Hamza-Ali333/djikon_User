@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -136,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         preferenceData = new PreferenceData();
 
         UserName.setText(PreferenceData.getUserName(MainActivity.this));
-        Toast.makeText(this, PreferenceData.getUserName(this), Toast.LENGTH_SHORT).show();
 
         getCurrentUserImage();
 
@@ -410,12 +408,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    //when name change will automatically
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        Log.i("TAG", "onSharedPreferenceChanged: "+s);
             UserName.setText(PreferenceData.getUserName(this));
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-
     }
 
     private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean, Void, Void> {

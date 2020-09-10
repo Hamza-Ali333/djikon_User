@@ -15,9 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static Retrofit retrofit (Context context){
+    public static final String Base_Url = "https://ikoniconnext.com/api/";
 
-        final String Base_Url = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
+    public static Retrofit retrofit (Context context){
         PreferenceData preferenceData = new PreferenceData();
         String Token = preferenceData.getUserToken(context);
 

@@ -207,7 +207,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     private void likeAndUnlikeBlog(ImageView view,String BlogID,Integer Status){
         Retrofit retrofit = ApiClient.retrofit(context);
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        Call <SuccessErrorModel> call = jsonApiHolder.LikeUnlike ( "api/like_blog/"+BlogID, Status);
+        Call <SuccessErrorModel> call = jsonApiHolder.LikeUnlike ( "like_blog/"+BlogID, Status);
 
         call.enqueue(new retrofit2.Callback<SuccessErrorModel>() {
             @Override

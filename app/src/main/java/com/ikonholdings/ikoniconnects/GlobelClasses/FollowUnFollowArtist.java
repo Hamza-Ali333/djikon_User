@@ -61,9 +61,9 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
         String relativeUrl = "";
         //0 means not following yet
         if(CurrentStatus == 0){
-            relativeUrl = "api/follow_artist/"+artistID;
+            relativeUrl = "follow_artist/"+artistID;
         }else {
-            relativeUrl = "api/unfollow_artist/"+artistID;
+            relativeUrl = "unfollow_artist/"+artistID;
         }
 
         Call<SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(relativeUrl);
