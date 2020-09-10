@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.BlogDetailActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
@@ -175,7 +177,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                             likeAndUnlikeBlog( holder.img_Likes,currentItem.getId().toString(),1);//do like and make status=1
                             holder.img_Likes.setImageResource(R.drawable.ic_heart_fill);
 
-                            holder.txt_LikesNo.setText(String.valueOf(currentItem.getLikes()));
                         }else  {
 
                             currentItem.setLike_status(0);
@@ -184,9 +185,13 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                             total_likes= currentItem.getLikes()-1;
                             currentItem.setLikes(total_likes);
                             holder.img_Likes.setImageResource(R.drawable.ic_unlike);
-                            holder.txt_LikesNo.setText(String.valueOf(currentItem.getLikes()));
 
                         }
+                        YoYo.with(Techniques.BounceInUp)
+                                .duration(700)
+                                .repeat(0)
+                                .playOn(holder.img_Likes);
+                        holder.txt_LikesNo.setText(String.valueOf(currentItem.getLikes()));
 
                     }
                 });

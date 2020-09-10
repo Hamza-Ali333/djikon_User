@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
-import com.ikonholdings.ikoniconnects.Interfaces.RemoveItemFromRecycler;
 import com.ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.squareup.picasso.Callback;
