@@ -306,12 +306,12 @@ public class BlogDetailActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
 
-                            //holder.progressBar.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            Toast.makeText(BlogDetailActivity.this, "Something Happend Wrong Uploader Image", Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
         }
