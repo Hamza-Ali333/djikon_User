@@ -66,6 +66,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
     private SliderView sliderView;
     private ImageView img_Profile;
+    private ProgressBar profileProgressBar;
 
 
 
@@ -300,18 +301,19 @@ public class BlogDetailActivity extends AppCompatActivity {
         txt_CreateTime.setText(Date);
 
         if (!Profile.equals("no")) {
+            profileProgressBar.setVisibility(View.VISIBLE);
             Picasso.get().load(Profile)
                     .placeholder(R.drawable.ic_avatar)
                     .into(img_Profile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
 
-                            progressBar.setVisibility(View.GONE);
+                            profileProgressBar.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            progressBar.setVisibility(View.GONE);
+                            profileProgressBar.setVisibility(View.GONE);
                         }
                     });
         }
@@ -329,6 +331,7 @@ public class BlogDetailActivity extends AppCompatActivity {
         sliderView = findViewById(R.id.imageSlider);
         videoView = findViewById(R.id.videoView);
         img_Profile = findViewById(R.id.img_profile);
+        profileProgressBar = findViewById(R.id.progress_profile);
         frameLayout = findViewById(R.id.fram);
 
         progressBar = findViewById(R.id.progress_circular);
@@ -351,7 +354,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         if (Slider) {
             for (int i = 0; i <= Gallery.length - 1; i++) {
-                mSliderModels.add(new SliderModel(ApiClient.Base_Url + Gallery[i]));
+                mSliderModels.add(new SliderModel(ApiClient.Base_Url+"post_images/" + Gallery[i]));
             }
         } else {
             mSliderModels.add(new SliderModel(Featured_image));

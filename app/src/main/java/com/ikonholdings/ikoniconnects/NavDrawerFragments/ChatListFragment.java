@@ -103,7 +103,6 @@ public class ChatListFragment extends Fragment {
         reference.child(fuser.getUid()).setValue(token1);
     }
 
-
     private void getChatList(){
         //if get some data or not get the default value(No Email) form preferences
         if (!currentUserId.isEmpty() && !currentUserId.equals("No Id")) {
@@ -128,12 +127,14 @@ public class ChatListFragment extends Fragment {
                         showHideProgressBar();
 
                     }else {
+                        showHideProgressBar();
                         DialogsUtils.showAlertDialog(getContext(),false,"Note","It's seems like you didn't have conversation with any DJ");
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    showHideProgressBar();
                     DialogsUtils.showAlertDialog(getContext(),false,"Error","It's seems like you didn't have conversation with any DJ");
                 }
             });
