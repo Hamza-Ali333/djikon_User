@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ResponseModels.BookingHistory;
 import com.ikonholdings.ikoniconnects.R;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -64,7 +65,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
 
         if (currentItem.getProfile_image() != null && !currentItem.getProfile_image().equals("no")) {
             holder.profileProgressBar.setVisibility(View.VISIBLE);
-            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + currentItem.getProfile_image())
+            Picasso.get().load(ApiClient.Base_Url + currentItem.getProfile_image())
                     .fit()
                     .placeholder(R.drawable.ic_avatar)
                     .centerCrop()

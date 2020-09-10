@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.BlogDetailActivity;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjProfileBlogsModel;
 import com.ikonholdings.ikoniconnects.R;
@@ -27,8 +28,6 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
         public TextView txt_BlogTitle;
         public ImageView img_blog;
         public ProgressBar progressBar;
-
-        public static final String IMAGERELATIVELAYOUT="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -61,7 +60,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
         if (!currentItem.getPhoto().equals("no")) {
             holder.progressBar.setVisibility(View.VISIBLE);
-            Picasso.get().load(ViewHolder.IMAGERELATIVELAYOUT+currentItem.getPhoto())
+            Picasso.get().load(ApiClient.Base_Url +currentItem.getPhoto())
                     .fit()
                     .centerCrop()
                     .into(holder.img_blog, new com.squareup.picasso.Callback() {

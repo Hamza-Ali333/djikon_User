@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
 import com.ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
@@ -24,7 +25,6 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
 
     private List<AllArtistModel> mAllArtistModel;
     private Context context;
-    private static final String Image_Base_Url ="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -70,7 +70,7 @@ public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.Vi
 
         if (!currentItem.getProfile_image().equals("no")) {
             holder.ProgressBarProfile.setVisibility(View.VISIBLE);
-            Picasso.get().load(Image_Base_Url + currentItem.getProfile_image())
+            Picasso.get().load(ApiClient.Base_Url + currentItem.getProfile_image())
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()

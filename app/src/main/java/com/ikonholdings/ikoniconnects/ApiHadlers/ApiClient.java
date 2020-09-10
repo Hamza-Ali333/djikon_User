@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static final String Base_Url = "https://ikoniconnext.com/api/";
+    public static final String Base_Url = "https://ikoniconnext.com/";
 
     public static Retrofit retrofit (Context context){
         PreferenceData preferenceData = new PreferenceData();
@@ -39,7 +39,7 @@ public class ApiClient {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Base_Url)
+                .baseUrl(Base_Url+"api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();

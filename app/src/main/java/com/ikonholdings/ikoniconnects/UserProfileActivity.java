@@ -438,7 +438,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         if(!Profile.equals("no") && Profile != null){
             progressBarProfile.setVisibility(View.VISIBLE);
-            Picasso.get().load(ApiClient.Base_Url+"post_images/" + Profile)
+            Picasso.get().load(ApiClient.Base_Url + Profile)
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()

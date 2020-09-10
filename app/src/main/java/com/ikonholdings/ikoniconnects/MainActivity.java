@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar toolbar;
 
-    private static String IMAGE_URL ="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
     private PreferenceData preferenceData;
 
     private CircularImageView currentUserProfile;
@@ -310,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String imageName = PreferenceData.getUserImage(this);
 
         if (!imageName.equals("No Image") && !imageName.equals("no")){
-            Picasso.get().load(IMAGE_URL + imageName)
+            Picasso.get().load(ApiClient.Base_Url + imageName)
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()

@@ -3,11 +3,13 @@ package com.ikonholdings.ikoniconnects.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ResponseModels.SingleServiceReviews;
 import com.ikonholdings.ikoniconnects.R;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -19,7 +21,7 @@ import java.util.List;
 public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerServiceReviews.ViewHolder>{
 
     private List<SingleServiceReviews> serviceReviewsModels;
-    private static final String IMAGE_BASE_URL ="http://ec2-52-91-44-156.compute-1.amazonaws.com/api/";
+
 
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
@@ -30,6 +32,7 @@ public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerService
         public TextView txt_Review;//msg or comment
         public TextView txt_Created_Date;
         public CircularImageView img_Reviewer_Profile;
+        public ProgressBar progressBar;
 
 
         public ViewHolder(View itemView){
@@ -40,6 +43,7 @@ public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerService
             ratingBar = itemView.findViewById(R.id.ratbar);
             txt_Review = itemView.findViewById(R.id.txt_body);
             txt_Created_Date = itemView.findViewById(R.id.txt_created_date);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 
@@ -64,18 +68,18 @@ public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerService
         final SingleServiceReviews currentItem = serviceReviewsModels.get(position);
 
         if (!currentItem.getImage().equals("") && currentItem.getImage() != null){
-            Picasso.get().load(IMAGE_BASE_URL+currentItem.getImage())
+            holder.progressBar.setVisibility(View.VISIBLE);
+            Picasso.get().load(ApiClient.Base_Url +currentItem.getImage())
                     .placeholder(R.drawable.ic_avatar)
                     .into(holder.img_Reviewer_Profile, new Callback() {
                         @Override
                         public void onSuccess() {
-
-                            // holder.txt_Loading.setVisibility(View.GONE);
+                            holder.progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            // Toast.makeText(getC, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+                            holder.progressBar.setVisibility(View.GONE);
                         }
                     });
 

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.CurrentLiveArtistModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -56,7 +57,7 @@ public class RecyclerLiveToArtist extends RecyclerView.Adapter<RecyclerLiveToArt
         holder.txt_LiveArtistName.setText(currentItem.getFirstname() + " " + currentItem.getLastname());
         if (currentItem.getProfile_image() != null && !currentItem.getProfile_image().equals("no")) {
             holder.progressBar.setVisibility(View.VISIBLE);
-            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + currentItem.getProfile_image())
+            Picasso.get().load(ApiClient.Base_Url + currentItem.getProfile_image())
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()

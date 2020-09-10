@@ -43,7 +43,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     private AlertDialog alertDialog;
 
     private int total_likes;
-    private static final String Image_Base_Url ="http://ec2-52-91-44-156.compute-1.amazonaws.com/";
 
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -109,7 +108,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
 
             if (!currentItem.getPhoto().equals("no")) {
                 holder.progressBarFeed.setVisibility(View.VISIBLE);
-                Picasso.get().load(Image_Base_Url+currentItem.getPhoto())
+                Picasso.get().load(ApiClient.Base_Url +currentItem.getPhoto())
                         .fit()
                         .centerCrop()
                         .into(holder.img_feedImage, new Callback() {

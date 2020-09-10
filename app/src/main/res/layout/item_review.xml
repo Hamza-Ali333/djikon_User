@@ -73,4 +73,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_avatar" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:indeterminateDrawable="@drawable/progressbar"
+        android:visibility="gone"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_commentor"
+        app:layout_constraintEnd_toEndOf="@+id/img_commentor"
+        app:layout_constraintStart_toStartOf="@+id/img_commentor"
+        app:layout_constraintTop_toTopOf="@+id/img_commentor"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

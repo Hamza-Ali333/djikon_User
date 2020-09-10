@@ -67,7 +67,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     private SliderView sliderView;
     private ImageView img_Profile;
 
-    private static final String BASEURL_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
+
 
     private int blogId;
     private String Gallery;
@@ -351,7 +351,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         if (Slider) {
             for (int i = 0; i <= Gallery.length - 1; i++) {
-                mSliderModels.add(new SliderModel(BASEURL_IMAGES + Gallery[i]));
+                mSliderModels.add(new SliderModel(ApiClient.Base_Url + Gallery[i]));
             }
         } else {
             mSliderModels.add(new SliderModel(Featured_image));

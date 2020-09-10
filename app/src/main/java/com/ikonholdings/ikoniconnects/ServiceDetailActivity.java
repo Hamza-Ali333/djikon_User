@@ -79,9 +79,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private int artistId;
     private Bitmap BitmapImage;
 
-    private static final String BASEURL_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
-    private static final String FEATURED_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/";
-
     private List<SliderModel> singleServiceModleArrayList;
     private List<SingleServiceModel> singleServiceModels;
     private List<SingleServiceReviews> reviewsModels;
@@ -185,7 +182,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         txt_Description.setText(description);
 
         if(serviceImage != null){
-            Picasso.get().load(FEATURED_IMAGES + serviceImage)
+            Picasso.get().load(ApiClient.Base_Url + serviceImage)
                     .fit()
                     .centerCrop()
                     .into(Featured_img, new com.squareup.picasso.Callback() {
@@ -207,7 +204,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private void buildServiceGalleryRecycler(String[] gallery) {
 
         for (int i = 0; i <= gallery.length - 1; i++) {
-            singleServiceModleArrayList.add(new SliderModel(BASEURL_IMAGES + gallery[i]));
+            singleServiceModleArrayList.add(new SliderModel(ApiClient.Base_Url+"post_images/" + gallery[i]));
         }
         mGalleryRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mGalleryLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

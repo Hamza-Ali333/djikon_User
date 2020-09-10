@@ -226,7 +226,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         txt_Total_Follower.setText(String.valueOf(mFollower_Count));
 
         if (mProfile!= null && !mProfile.equals("no")) {
-            Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + mProfile)
+            Picasso.get().load(ApiClient.Base_Url+ mProfile)
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()

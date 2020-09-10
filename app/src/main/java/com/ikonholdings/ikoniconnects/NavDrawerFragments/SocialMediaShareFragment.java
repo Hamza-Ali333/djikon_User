@@ -58,7 +58,6 @@ public class SocialMediaShareFragment extends Fragment{
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
     private List<FramesModel> listOFImagesName;
-    private static final String BASEURL_IMAGES = "http://ec2-52-91-44-156.compute-1.amazonaws.com/post_images/";
 
     private ImageView img_Main;
     private ImageView img_Frame;
@@ -153,7 +152,7 @@ public class SocialMediaShareFragment extends Fragment{
                     if(framesModelList.isEmpty()) {
                         //if no data then show dialoge to user
                         DialogsUtils.showAlertDialog(getContext(),false,
-                                "Note","No live artist found at this moment.");
+                                "Note","No frames found against your followed DJ's");
                     } else{
 
                             sperationOfArray(framesModelList);
@@ -193,7 +192,7 @@ public class SocialMediaShareFragment extends Fragment{
             String[] GalleryArray = Gallery.split(",");
 
             for (int j = 0; j <= GalleryArray.length - 1; j++) {
-                listOFImagesName.add(new FramesModel(BASEURL_IMAGES + GalleryArray[j]));
+                listOFImagesName.add(new FramesModel(ApiClient.Base_Url+"post_images/" + GalleryArray[j]));
             }
         }
 

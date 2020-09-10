@@ -667,7 +667,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         params.put("sender_id", Integer.parseInt(PreferenceData.getUserId(this)));
         params.put("service_id", serviceId);
 
-        client.post("http://ec2-52-91-44-156.compute-1.amazonaws.com/api/chekout", params,
+        client.post(ApiClient.Base_Url+"chekout", params,
                 new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
