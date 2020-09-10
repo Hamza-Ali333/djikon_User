@@ -8,8 +8,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.MenuItem;
@@ -62,7 +64,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -194,8 +196,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         UserProfileHeader = navHeaderView.findViewById(R.id.img_userProfile);
         UserName = navHeaderView.findViewById(R.id.txt_userName);
-
-
     }
 
 

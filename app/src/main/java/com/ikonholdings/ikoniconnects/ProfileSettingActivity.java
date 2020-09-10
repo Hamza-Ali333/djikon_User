@@ -206,7 +206,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
     }
 
 
-
     private void openLiveStreaming() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);

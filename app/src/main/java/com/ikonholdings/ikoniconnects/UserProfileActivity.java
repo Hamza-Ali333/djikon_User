@@ -363,6 +363,9 @@ public class UserProfileActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     //save new image name in to the preferences
                     PreferenceData.setUserImage(UserProfileActivity.this,response.body().getSuccess());
+                    PreferenceData.setUserName(UserProfileActivity.this,
+                            edt_FirstName.getContext().toString()+" "+edt_LastName.getText().toString());
+                    Log.i("TAG", "onResponse: "+PreferenceData.getUserName(UserProfileActivity.this));
                     DialogsUtils.showSuccessDialog(UserProfileActivity.this,"Successful",
                             "Profile Successfully Updated",false);
                 } else {
@@ -434,6 +437,7 @@ public class UserProfileActivity extends AppCompatActivity {
         serverData = new String[]{FirstName, LastName, PhoneNo, SelectedGender, Address};
 
         if(!Profile.equals("no") && Profile != null){
+            progressBarProfile.setVisibility(View.VISIBLE);
             Picasso.get().load("http://ec2-52-91-44-156.compute-1.amazonaws.com/" + Profile)
                     .placeholder(R.drawable.progressbar)
                     .fit()

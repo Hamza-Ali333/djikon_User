@@ -43,7 +43,6 @@ public class PreferenceData
         return getSharedPreferences(ctx).getInt(PREF_BUILD_VERSION, 0);
     }
 
-
     public static void setUserToken(Context ctx, String token)
     {
         Editor editor = getSharedPreferences(ctx).edit();

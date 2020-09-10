@@ -41,8 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
                        finish();
                    }else {
-                       startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
-                       finish();
+                       lunchSignInActivity();
                    }
                }
            },2000);
@@ -53,8 +52,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == 200){
-                startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
-                finish();
+            lunchSignInActivity();
         }
+    }
+    private void lunchSignInActivity(){
+        startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+        finish();
     }
 }
