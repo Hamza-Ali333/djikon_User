@@ -282,6 +282,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        //facebook button
         loginButton.setReadPermissions(Arrays.asList("email"));
         mCallbackManager = CallbackManager.Factory.create();
 

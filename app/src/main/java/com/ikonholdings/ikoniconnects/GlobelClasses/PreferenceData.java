@@ -21,7 +21,7 @@ public class PreferenceData
     static final String PREF_ProviderName = "logged_provider_name";
 
 
-    static final String PREF_LOGGEDIN_USER_FullName = "USER_FULL_NAME";
+    public static final String PREF_USER_FullName = "USER_FULL_NAME";
     static final String PREF_LOGGEDIN_USER_ADDRESS = "USER_ADDRESS";
     static final String PREF_LOGGEDIN_USER_PHONE = "USER_PHONE";
 
@@ -59,14 +59,14 @@ public class PreferenceData
     public static void setUserName(Context ctx, String fullName)
     {
         Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(PREF_LOGGEDIN_USER_FullName, fullName);
+        editor.putString(PREF_USER_FullName, fullName);
         editor.apply();
         editor.commit();
     }
 
     public static String getUserName(Context ctx)
     {
-        return getSharedPreferences(ctx).getString(PREF_LOGGEDIN_USER_FullName, "No Name");
+        return getSharedPreferences(ctx).getString(PREF_USER_FullName, "No Name");
     }
 
     public static void setUserId(Context ctx, String id)
@@ -227,7 +227,17 @@ public class PreferenceData
         editor.remove(PREF_LOGGEDIN_USER_ID);
         editor.remove(PREF_USER_LOGGEDIN_STATUS);
         editor.remove(PREF_USER_IMAGE);
-        editor.remove(PREF_LOGGEDIN_USER_FullName);
+        editor.remove(PREF_USER_FullName);
         editor.commit();
+    }
+
+    public static void registerPref(Context context, SharedPreferences.OnSharedPreferenceChangeListener listener){
+        SharedPreferences pref = getSharedPreferences(context);
+        pref.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public static void unRegisterPref(Context context, SharedPreferences.OnSharedPreferenceChangeListener listener){
+        SharedPreferences pref = getSharedPreferences(context);
+        pref.unregisterOnSharedPreferenceChangeListener(listener);
     }
 }

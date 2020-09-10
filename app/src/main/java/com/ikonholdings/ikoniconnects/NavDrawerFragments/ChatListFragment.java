@@ -128,13 +128,13 @@ public class ChatListFragment extends Fragment {
                         showHideProgressBar();
 
                     }else {
-                        mAlertDialog = DialogsUtils.showAlertDialog(getContext(),false,"Note","It's seems like you didn't have conversation with any DJ");
+                        DialogsUtils.showAlertDialog(getContext(),false,"Note","It's seems like you didn't have conversation with any DJ");
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    mAlertDialog = DialogsUtils.showAlertDialog(getContext(),false,"Error","It's seems like you didn't have conversation with any DJ");
+                    DialogsUtils.showAlertDialog(getContext(),false,"Error","It's seems like you didn't have conversation with any DJ");
                 }
             });
         }

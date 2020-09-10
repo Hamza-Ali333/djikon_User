@@ -179,8 +179,6 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isInfoRight()){
                     if(isDataChange()){
-                        PreferenceData.setUserAddress(UserProfileActivity.this,edt_Address.getText().toString());
-                        PreferenceData.setUserPhoneNo(UserProfileActivity.this,edt_Phone_No.getText().toString());
                         updateProfile();
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
@@ -363,9 +361,11 @@ public class UserProfileActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     //save new image name in to the preferences
                     PreferenceData.setUserImage(UserProfileActivity.this,response.body().getSuccess());
+                    PreferenceData.setUserAddress(UserProfileActivity.this,edt_Address.getText().toString());
+                    PreferenceData.setUserPhoneNo(UserProfileActivity.this,edt_Phone_No.getText().toString());
                     PreferenceData.setUserName(UserProfileActivity.this,
-                            edt_FirstName.getContext().toString()+" "+edt_LastName.getText().toString());
-                    Log.i("TAG", "onResponse: "+PreferenceData.getUserName(UserProfileActivity.this));
+                            edt_FirstName.getText().toString()+" "+edt_LastName.getText().toString());
+
                     DialogsUtils.showSuccessDialog(UserProfileActivity.this,"Successful",
                             "Profile Successfully Updated",false);
                 } else {

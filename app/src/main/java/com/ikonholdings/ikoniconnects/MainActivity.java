@@ -64,7 +64,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener{
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         registerReceiver(mNetworkChangeReceiver, filter);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
+        PreferenceData.registerPref(this,this);
+
         //if User in not Register on FireBase then Register him
         try {
             mFirebaseAuth = FirebaseAuth.getInstance();
@@ -134,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         preferenceData = new PreferenceData();
 
         UserName.setText(PreferenceData.getUserName(MainActivity.this));
+        Toast.makeText(this, PreferenceData.getUserName(this), Toast.LENGTH_SHORT).show();
 
         getCurrentUserImage();
 
@@ -407,6 +410,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        Log.i("TAG", "onSharedPreferenceChanged: "+s);
+            UserName.setText(PreferenceData.getUserName(this));
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+
+    }
+
     private class RegisteringUserAlsoOnFirebase extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected Void doInBackground(Boolean... booleans) {
@@ -431,5 +442,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mNetworkChangeReceiver);
+        PreferenceData.unRegisterPref(this, this);
     }
 }
