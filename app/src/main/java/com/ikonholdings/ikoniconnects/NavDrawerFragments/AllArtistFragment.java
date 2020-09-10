@@ -108,7 +108,7 @@ public class AllArtistFragment extends Fragment {
 
                     artistList = response.body();
                     if(artistList.isEmpty()) {
-                        AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
+                        DialogsUtils.showAlertDialog(getContext(),false,
                                 "No Artist Found","it's seems like you din't follow any artist now");
                     }
                     else{

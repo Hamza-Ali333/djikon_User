@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
+import com.ikonholdings.ikoniconnects.Interfaces.RemoveItemFromRecycler;
 import com.ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.squareup.picasso.Callback;
@@ -20,7 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.ViewHolder>{
+public class RecyclerAllArtist extends RecyclerView.Adapter<RecyclerAllArtist.ViewHolder>  {
 
     private List<AllArtistModel> mAllArtistModel;
     private Context context;

@@ -23,7 +23,7 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
 
     private ProgressButton mProgressButton;
 
-    private FollowResultInterface mInterface;
+    private FollowResultInterface mFollowResultInterface;
 
     public FollowUnFollowArtist(int CurrentStatus, String artistID, Context context, View view) {
         this.CurrentStatus = CurrentStatus;
@@ -49,8 +49,8 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
         this.context = context;
 
         runingFromFragment = false;
-
-        initializeInterface((FollowResultInterface) context);
+        //this will return
+        initializeFollowInterface((FollowResultInterface) context);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                             }
                         });
                     }else {
-                        mInterface.followResponse(true);//sending info to DJ Acitivity
+                        mFollowResultInterface.followResponse(true);//sending info to DJ Acitivity
                     }
                 }else {
                     if(runingFromFragment){
@@ -96,7 +96,7 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                             }
                         });
                     }else {
-                        mInterface.followResponse(false);//sending info to DJ Acitivity
+                        mFollowResultInterface.followResponse(false);//sending info to DJ Acitivity
                     }
                 }
             }
@@ -113,8 +113,7 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
         return null;
     }
 
-    private void initializeInterface(FollowResultInterface Interface){
-        this.mInterface = Interface;
+    private void initializeFollowInterface(FollowResultInterface Interface){
+        this.mFollowResultInterface = Interface;
     }
-
 }
