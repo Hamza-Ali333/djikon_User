@@ -75,6 +75,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -304,7 +305,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void faceBookLoginManage() {
-        faceBookLoginBtn.setLoginBehavior(LoginBehavior.WEB_ONLY);
         mCallbackManager = CallbackManager.Factory.create();
         faceBookLoginBtn.setReadPermissions("public_profile email");
         faceBookLoginBtn.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {

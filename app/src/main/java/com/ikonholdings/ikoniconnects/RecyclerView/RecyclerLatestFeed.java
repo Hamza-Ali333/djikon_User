@@ -108,7 +108,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
 
             if (!currentItem.getPhoto().equals("no")) {
                 holder.progressBarFeed.setVisibility(View.VISIBLE);
-                Log.i(TAG, "onBindViewHolder: "+ApiClient.Base_Url+currentItem.getPhoto());
                 Picasso.get().load(ApiClient.Base_Url +currentItem.getPhoto())
                         .fit()
                         .centerCrop()
@@ -187,7 +186,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                             holder.img_Likes.setImageResource(R.drawable.ic_unlike);
 
                         }
-                        YoYo.with(Techniques.Wave)
+                        YoYo.with(Techniques.Wobble)
                                 .duration(700)
                                 .repeat(0)
                                 .playOn(holder.img_Likes);
@@ -200,7 +199,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 holder.img_Chat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        YoYo.with(Techniques.Wave)
+                        YoYo.with(Techniques.Wobble)
                                 .duration(700)
                                 .repeat(0)
                                 .playOn(holder.img_Chat);
@@ -232,13 +231,11 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 }else {
                     alertDialog = DialogsUtils.showResponseMsg(context,
                             false);
-                    Log.i(TAG, "onResponse: "+response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                Log.i(TAG, "onResponse: "+t.getMessage());
                 alertDialog = DialogsUtils.showResponseMsg(context,
                         true);
             }
