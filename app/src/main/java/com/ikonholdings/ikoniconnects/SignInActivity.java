@@ -35,6 +35,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
@@ -62,7 +63,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONObject;
 
@@ -75,7 +75,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -103,7 +102,7 @@ public class SignInActivity extends AppCompatActivity {
     private RelativeLayout rlt_BiometricPrompt;
 
     //fb
-    private LoginButton loginButton;//hide
+    private LoginButton faceBookLoginBtn;//hide
     private Button btn_Fb;//visible
     //google
     private Button btn_Google;
@@ -171,6 +170,7 @@ public class SignInActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         createReferencer();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+
         //Handel the Result When User Sign In Throw the BioMetric
         biometricSingInCallBackHandler();
 
@@ -283,60 +283,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         //facebook button
-        loginButton.setReadPermissions(Arrays.asList("email"));
-        mCallbackManager = CallbackManager.Factory.create();
-
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.i("LoginActivity", response.toString());
-                                try {
-                                    // Application code
-                                    Email = response.getJSONObject().getString("email");
-                                    socialMediaFirstName = object.getString("first_name");
-                                    socialMediaFirstName = socialMediaFirstName + " " + object.get("middle_name");
-                                    socialMediaLastName = object.getString("last_name");
-                                    providerId =String.valueOf(AccessToken.getCurrentAccessToken());
-                                    providerName = "FaceBook";
-                                    //sign in user with this detail
-                                    manageUserLogin(true);
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    alertDialog = DialogsUtils.showAlertDialog(SignInActivity.this,false,
-                                            "Note","Something happened wrong please try again or SingUp with Formally");
-                                }
-                            }
-                        });
-
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "first_name, middle_name, last_name, email");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-                DialogsUtils.showAlertDialog(SignInActivity.this,false,
-                        "Note",
-                        "FaceBook Login is Cancled");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-                 DialogsUtils.showAlertDialog(SignInActivity.this,false,
-                        "Note",
-                        "Something happened wrong please try again or SingUp with Formally  "+exception.getMessage());
-                Log.i("TAG", "onError: "+exception);
-            }
-        });
+        faceBookLoginManage();
 
 
         //Sign In With Google
@@ -356,10 +303,70 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
+    private void faceBookLoginManage() {
+        faceBookLoginBtn.setLoginBehavior(LoginBehavior.WEB_ONLY);
+        mCallbackManager = CallbackManager.Factory.create();
+        faceBookLoginBtn.setReadPermissions("public_profile email");
+        faceBookLoginBtn.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                fetchDataFromFBLoginResult(loginResult);
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+                DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                        "Note",
+                        "FaceBook Login is Cancled");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+                DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                        "Note",
+                        "Something happened wrong please try again or SingUp with Formally  "+exception.getMessage());
+                Log.i("TAG", "onError: "+exception);
+            }
+        });
+    }
+
+    private void fetchDataFromFBLoginResult(LoginResult loginResult){
+        GraphRequest request = GraphRequest.newMeRequest(
+                loginResult.getAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.i("LoginActivity", response.toString());
+                        try {
+                            // Application code
+                            Email = response.getJSONObject().getString("email");
+                            socialMediaFirstName = object.getString("first_name");
+                            socialMediaFirstName = socialMediaFirstName + " " + object.get("middle_name");
+                            socialMediaLastName = object.getString("last_name");
+                            providerId =String.valueOf(AccessToken.getCurrentAccessToken());
+                            providerName = "FaceBook";
+                            //sign in user with this detail
+                            // manageUserLogin(true);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            alertDialog = DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                                    "Note","Something happened wrong please try again or SingUp with Formally\n"+e.getMessage());
+                        }
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "first_name, middle_name, last_name, email");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
 
     public void onBtnFbClick(View v) {
         if (v == btn_Fb) {
-            loginButton.performClick();
+            faceBookLoginBtn.performClick();
         }
     }
 
@@ -1142,7 +1149,7 @@ public class SignInActivity extends AppCompatActivity {
 
         //FaceBookLoginButton
         btn_Fb = findViewById(R.id.fb);//Visible
-        loginButton = findViewById(R.id.login_button);//hide
+        faceBookLoginBtn = findViewById(R.id.login_button);//hide
         //Google
         btn_Google = findViewById(R.id.google);//Visible
 

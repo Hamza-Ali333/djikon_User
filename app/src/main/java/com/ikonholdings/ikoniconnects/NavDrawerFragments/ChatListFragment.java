@@ -49,8 +49,6 @@ public class ChatListFragment extends Fragment {
 
     String currentUserId;
 
-    AlertDialog mAlertDialog;
-
     private FirebaseUser fuser;
 
     @Override

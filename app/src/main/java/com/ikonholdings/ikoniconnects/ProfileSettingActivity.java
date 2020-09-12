@@ -26,15 +26,11 @@ import retrofit2.Retrofit;
 
 public class ProfileSettingActivity extends AppCompatActivity {
 
-
     RelativeLayout rlt_LiveStreaming, rlt_Biometrics, rlt_ChangePassword, rlt_ChangePin, rlt_BookingHistory,
     rlt_ConnectSocial;
 
     private Switch swt_FaceId_State, swt_Biometric_State;
-    private Retrofit mRetrofit;
-    private JSONApiHolder mJSONApiHolder;
 
-    private ProgressDialog mProgressDialog;
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
     @Override
@@ -143,7 +139,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
         btnResetPin = view.findViewById(R.id.btn_Reset_Pin);
 
         builder.setView(view);
-        builder.setCancelable(true);
 
         final AlertDialog alertDialog =  builder.show();
 
