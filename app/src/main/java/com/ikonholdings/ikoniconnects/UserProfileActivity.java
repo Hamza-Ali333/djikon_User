@@ -183,7 +183,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
                     }
-            }
+                }
 
             }
         });
@@ -304,7 +304,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     rlt_Parent.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     msg.setVisibility(View.GONE);
-                   alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
+                    alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
                 }
             }
 
@@ -344,14 +344,14 @@ public class UserProfileActivity extends AppCompatActivity {
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
 
         Call<SuccessErrorModel> uploadCall = jsonApiHolder.UpdateProfileWithImage(
-                    "update_profile/" + userId,
-                    filePart,
-                    firstname,
-                    lastName,
-                    phone,
-                    gender,
-                    location
-            );
+                "update_profile/" + userId,
+                filePart,
+                firstname,
+                lastName,
+                phone,
+                gender,
+                location
+        );
 
         uploadCall.enqueue(new Callback<SuccessErrorModel>() {
             @Override
@@ -360,11 +360,14 @@ public class UserProfileActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     //save new image name in to the preferences
-                    PreferenceData.setUserImage(UserProfileActivity.this,response.body().getSuccess());
                     PreferenceData.setUserAddress(UserProfileActivity.this,edt_Address.getText().toString());
                     PreferenceData.setUserPhoneNo(UserProfileActivity.this,edt_Phone_No.getText().toString());
                     PreferenceData.setUserName(UserProfileActivity.this,
                             edt_FirstName.getText().toString()+" "+edt_LastName.getText().toString());
+
+                    if(response.body().getSuccess() != null){
+                        PreferenceData.setUserImage(UserProfileActivity.this,response.body().getSuccess());
+                    }
 
                     DialogsUtils.showSuccessDialog(UserProfileActivity.this,"Successful",
                             "Profile Successfully Updated",false);
@@ -428,7 +431,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
         if(isProfileChange){
-           result = true;
+            result = true;
         }
         return result;
     }
@@ -438,22 +441,27 @@ public class UserProfileActivity extends AppCompatActivity {
 
         if(!Profile.equals("no") && Profile != null){
             progressBarProfile.setVisibility(View.VISIBLE);
-            Picasso.get().load(ApiClient.Base_Url + Profile)
-                    .placeholder(R.drawable.progressbar)
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_avatar)
-                    .into(img_Profile, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                           progressBarProfile.setVisibility(View.GONE);
-                        }
+            try {
+                Picasso.get().load(ApiClient.Base_Url + Profile)
+                        .fit()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_avatar)
+                        .into(img_Profile, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                progressBarProfile.setVisibility(View.GONE);
+                            }
 
-                        @Override
-                        public void onError(Exception e) {
-                           progressBarProfile.setVisibility(View.GONE);
-                        }
-                    });
+                            @Override
+                            public void onError(Exception e) {
+                                progressBarProfile.setVisibility(View.GONE);
+                            }
+                        });
+            } catch (Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
         }
 
         edt_FirstName.setText(FirstName);

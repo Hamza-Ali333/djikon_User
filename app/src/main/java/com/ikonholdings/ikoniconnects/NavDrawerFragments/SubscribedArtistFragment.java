@@ -40,7 +40,6 @@ public class SubscribedArtistFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private RelativeLayout progressBar;
-    private AlertDialog alertDialog;
     private SearchView mSearchView;
 
     @Nullable
@@ -49,18 +48,12 @@ public class SubscribedArtistFragment extends Fragment {
 
         View v =  inflater.inflate(R.layout.fragment_subscribe_artist,container,false);
 
-       Thread createRefreces = new Thread(new Runnable() {
-           @Override
-           public void run() {
-               mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
-               progressBar = v.findViewById(R.id.progressbar);
-               mRecyclerView.setVisibility(View.GONE);
-               progressBar.setVisibility(View.VISIBLE);
-               mSearchView = v.findViewById(R.id.txt_search);
-               mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-           }
-       });
-       createRefreces.start();
+         mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
+         progressBar = v.findViewById(R.id.progressbar);
+         mRecyclerView.setVisibility(View.GONE);
+         progressBar.setVisibility(View.VISIBLE);
+         mSearchView = v.findViewById(R.id.txt_search);
+         mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
        getSubscribedArtist();
 
@@ -96,7 +89,7 @@ public class SubscribedArtistFragment extends Fragment {
 
                             List<SubscribeArtistModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
-                                AlertDialog alertDialog = DialogsUtils.showAlertDialog(getContext(),false,
+                               DialogsUtils.showAlertDialog(getContext(),false,
                                         "No Subscribed Artist Found","it's seems like you din't follow any artist now");
                             }
                            else
@@ -105,7 +98,7 @@ public class SubscribedArtistFragment extends Fragment {
                 }else {
                     progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-                    alertDialog = DialogsUtils.showResponseMsg(getContext(),false);
+                    DialogsUtils.showResponseMsg(getContext(),false);
 
                     Log.i("TAG", "onResponse: "+response.code());
                 }
@@ -125,7 +118,6 @@ public class SubscribedArtistFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
         mAdapter = new RecyclerSubscribedArtist(ArtistList);
-
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);

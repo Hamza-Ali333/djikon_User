@@ -662,12 +662,13 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("payment_method_nonce", Nonce);
+        Log.i("TAG", "PostNonceToServer: "+Nonce);
         params.put("amount", TotalAmount);
         params.put("receiver_id", artistId);
         params.put("sender_id", Integer.parseInt(PreferenceData.getUserId(this)));
         params.put("service_id", serviceId);
 
-        client.post(ApiClient.Base_Url+"chekout", params,
+        client.post(ApiClient.Base_Url+"api/chekout", params,
                 new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -685,7 +686,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                          DialogsUtils.showAlertDialog(context,
                                 false,
                                 "Note",
-                                "Please check your internet and try again");
+                                "Please check your internet and try again \n"+error.getMessage());
                     }
                 }
         );

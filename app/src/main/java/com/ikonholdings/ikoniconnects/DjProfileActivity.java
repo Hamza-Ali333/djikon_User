@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -70,9 +71,9 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
             onlineStatus;
 
     private ScrollView parenLayout;
-    private RelativeLayout rlt_About;
 
     private CircularImageView img_DJ_Profile;
+    private ProgressBar profileBar;
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
@@ -217,27 +218,24 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
         txt_address.setText(mAddress);
 
-        if(mAbout == null)
-            rlt_About.setVisibility(View.GONE);
-        else {
-            rlt_About.setVisibility(View.VISIBLE);
-            txt_about.setText(mAbout);
-        }
+        txt_about.setText(mAbout);
+
         txt_Total_Follower.setText(String.valueOf(mFollower_Count));
 
         if (mProfile!= null && !mProfile.equals("no")) {
+            profileBar.setVisibility(View.VISIBLE);
             Picasso.get().load(ApiClient.Base_Url+ mProfile)
-                    .placeholder(R.drawable.progressbar)
+                    .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
                     .into(img_DJ_Profile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
+                            profileBar.setVisibility(View.GONE);
                         }
                         @Override
                         public void onError(Exception e) {
-                            Toast.makeText(DjProfileActivity.this, "Something Happend Wrong feed image", Toast.LENGTH_SHORT).show();
+                            profileBar.setVisibility(View.GONE);
                         }
                     });
         }
@@ -294,7 +292,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                 }
             }
         });
-
     }
 
     private void getProfileDataFromServer(String djId) {
@@ -371,7 +368,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
     private void createReferences() {
         parenLayout = findViewById(R.id.scrollable);
-        rlt_About = findViewById(R.id.rlt_about);
         btn_Book_Artist = findViewById(R.id.btn_book_artist);
         btn_Request_A_Song = findViewById(R.id.btn_RequestASong);
         btn_Follow = findViewById(R.id.Follow_Dj);
@@ -387,6 +383,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         mBlogRecyclerView = findViewById(R.id.blog_recyclerview);
 
         img_DJ_Profile = findViewById(R.id.img_dj_profile);
+        profileBar = findViewById(R.id.progressBarProfile);
 
     }
 

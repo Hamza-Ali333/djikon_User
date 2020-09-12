@@ -35,6 +35,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.facebook.login.LoginManager;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.CustomDialogs.CreateNewPasswordDialog;
@@ -92,7 +93,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SignInActivity extends AppCompatActivity {
@@ -308,7 +308,8 @@ public class SignInActivity extends AppCompatActivity {
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    alertDialog = DialogsUtils.showAlertDialog(SignInActivity.this,false,"Note","Something happened wrong please try again or SingUp with Formally");
+                                    alertDialog = DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                                            "Note","Something happened wrong please try again or SingUp with Formally");
                                 }
                             }
                         });
@@ -332,7 +333,7 @@ public class SignInActivity extends AppCompatActivity {
                 // App code
                  DialogsUtils.showAlertDialog(SignInActivity.this,false,
                         "Note",
-                        "Something happened wrong please try again or SingUp with Formally");
+                        "Something happened wrong please try again or SingUp with Formally  "+exception.getMessage());
                 Log.i("TAG", "onError: "+exception);
             }
         });
@@ -1021,16 +1022,7 @@ public class SignInActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     DialogsUtils.showAlertDialog(SignInActivity.this, false, "Note", "This email is register as Subscriber can't use it here in User App");
 
-                }else if(response.code() == 409){
-                    progressDialog.dismiss();
-                    if(isSignWithSocial){
-                        DialogsUtils.showAlertDialog(SignInActivity.this,false,
-                                "Already Exit",
-                                "This "+Email+" is already exit with an account you can't login with Facebook or Google" +
-                                        "\nFor Login with this Email Enter Email And Password");
-                    }
-                }
-                else if(response.code() == 401 ){
+                } else if(response.code() == 401 ){
                     progressDialog.dismiss();
                     txt_Error.setText("Email or password is wrong.");
                     txt_Error.setVisibility(View.VISIBLE);

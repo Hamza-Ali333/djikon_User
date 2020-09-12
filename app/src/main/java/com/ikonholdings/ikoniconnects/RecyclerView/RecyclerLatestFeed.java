@@ -108,6 +108,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
 
             if (!currentItem.getPhoto().equals("no")) {
                 holder.progressBarFeed.setVisibility(View.VISIBLE);
+                Log.i(TAG, "onBindViewHolder: "+ApiClient.Base_Url+currentItem.getPhoto());
                 Picasso.get().load(ApiClient.Base_Url +currentItem.getPhoto())
                         .fit()
                         .centerCrop()
@@ -186,7 +187,7 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                             holder.img_Likes.setImageResource(R.drawable.ic_unlike);
 
                         }
-                        YoYo.with(Techniques.BounceInUp)
+                        YoYo.with(Techniques.Wave)
                                 .duration(700)
                                 .repeat(0)
                                 .playOn(holder.img_Likes);
@@ -196,6 +197,19 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                 });
 
 
+                holder.img_Chat.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        YoYo.with(Techniques.Wave)
+                                .duration(700)
+                                .repeat(0)
+                                .playOn(holder.img_Chat);
+                        Intent i = new Intent(v.getContext(), BlogDetailActivity.class);
+                        i.putExtra("url",currentItem.getId());
+                        i.putExtra("featured_image",currentItem.getPhoto());
+                        v.getContext().startActivity(i);
+                    }
+                });
             }
 
     @Override

@@ -68,7 +68,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="6dp"
+            android:paddingBottom="20dp"
             android:paddingTop="6dp"
             >
 
@@ -361,7 +361,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="End Date"
+                    android:text="End Time"
                     android:textColor="@color/colorBlack"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="@+id/textView19"
@@ -410,7 +410,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@+id/btn_book_now"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/edt_shape"
                 android:text="Cancel"
                 android:textSize="14sp"
@@ -427,7 +427,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@+id/btn_booking_cancle"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/roundshape"
                 android:text="Book Now"
                 android:textSize="14sp"
