@@ -35,8 +35,16 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.facebook.login.LoginBehavior;
-import com.facebook.login.LoginManager;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.CustomDialogs.CreateNewPasswordDialog;
@@ -47,14 +55,7 @@ import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -167,6 +168,7 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
         getSupportActionBar().hide();
         createReferencer();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
@@ -304,7 +306,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void faceBookLoginManage() {
-        faceBookLoginBtn.setLoginBehavior(LoginBehavior.WEB_ONLY);
+        //faceBookLoginBtn.setLoginBehavior(LoginBehavior.WEB_ONLY);
         mCallbackManager = CallbackManager.Factory.create();
         faceBookLoginBtn.setReadPermissions("public_profile email");
         faceBookLoginBtn.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -338,7 +340,6 @@ public class SignInActivity extends AppCompatActivity {
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.i("LoginActivity", response.toString());
                         try {
                             // Application code
                             Email = response.getJSONObject().getString("email");
