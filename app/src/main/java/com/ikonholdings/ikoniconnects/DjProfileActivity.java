@@ -137,11 +137,11 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
         parenLayout.setVisibility(View.GONE);//hide the parent view
 
-        showLoadingDialogue();//show lodaing dailoge while data is dowloading from the server
-
         services = new ArrayList<ServicesModel>();//service Array Initializing
         Intent i = getIntent();
         artistID = i.getIntExtra("id", 0);
+
+        showLoadingDialogue();//show lodaing dailoge while data is dowloading from the server
 
         getProfileDataFromServer(String.valueOf(artistID));//getAll the data of this user
 
@@ -161,16 +161,22 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
             @Override
             public void onClick(View view) {
                 if(allowBooking == 1){
-                    addExtraToIntentAndLunchActivity(img_Subscriber_Profile,
-                            artistID,
-                            true,
-                            false,
-                            0,
-                            "rate_per_hour",
-                            SubscriberBookingRatePerHour,
-                            mSubscriberName,
-                            mAbout
-                    );
+                    if(!SubscriberBookingRatePerHour.equals("no")){
+                        addExtraToIntentAndLunchActivity(img_Subscriber_Profile,
+                                artistID,
+                                true,
+                                false,
+                                0,
+                                "rate_per_hour",
+                                SubscriberBookingRatePerHour,
+                                mSubscriberName,
+                                mAbout
+                        );
+                    }else {
+                        DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                                false,
+                                "Note!","This Subscriber is not set it's charge amount yet");
+                    }
                 }else {
                     DialogsUtils.showAlertDialog(DjProfileActivity.this,
                             false,
@@ -209,7 +215,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         txt_Subscriber_Name.setText(mSubscriberName);
         txt_Total_Follower.setText(String.valueOf(mFollower_Count));
         txt_Subscriber_Rate.setText(SubscriberBookingRatePerHour);
-
 
         if (mFollow_Status == 0) {
             btn_Follow.setText("Follow");
@@ -286,7 +291,11 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     postRequestSong(edt_Requester_Name.getText().toString(), edt_Song_Name.getText().toString());
                     alertDialog.dismiss();
                 }else {
-                    Toast.makeText(DjProfileActivity.this, "Empty", Toast.LENGTH_SHORT).show();
+                    if(edt_Requester_Name.getText().toString().isEmpty()){
+                        edt_Requester_Name.setError("Please enter your name");
+                    }else {
+                        edt_Song_Name.setError("Please enter song name");
+                    }
                 }
             }
         });
@@ -342,8 +351,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
             @Override
             public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
                 alertDialog.dismiss();
-                Log.i("TAG", "onFailure: " + t.getMessage());
-                alertDialog =DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
+                DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
             }
 
         });
@@ -404,7 +412,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                             snackbar.show();
                 }else {
                     progressDialog.dismiss();
-                    alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,false);
+                    DialogsUtils.showResponseMsg(DjProfileActivity.this,false);
                 }
             }
 
@@ -414,7 +422,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                 progressDialog.dismiss();
                 snackBarText.setText("OPPS Something Happend Wrong Check Network");
                 snackbar.show();
-                alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
+                DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
             }
         });
     }
@@ -439,7 +447,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     btn_Follow.setClickable(true);
                     btn_Follow.setEnabled(true);
                 }else {
-                    alertDialog = DialogsUtils.showResponseMsg(DjProfileActivity.this,
+                    DialogsUtils.showResponseMsg(DjProfileActivity.this,
                             false);
                 }
     }
@@ -512,7 +520,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                                 btn_Message.setClickable(true);
                                 btn_Message.setEnabled(true);
                                 progressDialog.dismiss();
-                                alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                                DialogsUtils.showAlertDialog(DjProfileActivity.this,
                                         false, "Not Connected", "May currently this Subscriber is not able to get massage.\nor try again!");
                             }
                         });
@@ -526,7 +534,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                             progressDialog.dismiss();
                             btn_Message.setClickable(true);
                             btn_Message.setEnabled(true);
-                            alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
+                            DialogsUtils.showAlertDialog(DjProfileActivity.this,
                                     false,"Error","Something happened wrong\nplease try again!");
                         }
                      });
@@ -576,13 +584,5 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         i.putExtra("serviceOrSubscriberName", serviceNameOrSubscriberName);//Name of Artist if booking him or Name of Service if Booking Artist Service
         i.putExtra("description", description);
         startActivity(i);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        parenLayout.setVisibility(View.GONE);
-        //showLoadingDialogue();
-        getProfileDataFromServer(String.valueOf(artistID));
     }
 }

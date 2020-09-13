@@ -4,7 +4,7 @@ public class SubscribeArtistModel {
 
     private int id;
 
-    String firstname,
+    private String firstname,
     lastname,
     profile_image,
     location;

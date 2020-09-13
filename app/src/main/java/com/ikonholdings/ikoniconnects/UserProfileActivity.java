@@ -263,7 +263,6 @@ public class UserProfileActivity extends AppCompatActivity {
         return true;
     }
 
-
     private void getUserDataFromServer() {
         retrofit = ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
@@ -289,22 +288,15 @@ public class UserProfileActivity extends AppCompatActivity {
                             mSpinner.setSelection(j);
                         }
                     }
-
-                    runOnUiThread(new Thread(new Runnable() {
-                        @Override
-                        public void run() {
                             rlt_Parent.setVisibility(View.VISIBLE);
                             mProgressBar.setVisibility(View.GONE);
                             msg.setVisibility(View.GONE);
                             setDataInToViews();
-                        }
-                    }));
-
                 } else {
                     rlt_Parent.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                     msg.setVisibility(View.GONE);
-                    alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
+                    DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
                 }
             }
 
@@ -441,7 +433,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         if(!Profile.equals("no") && Profile != null){
             progressBarProfile.setVisibility(View.VISIBLE);
-            try {
                 Picasso.get().load(ApiClient.Base_Url + Profile)
                         .fit()
                         .centerCrop()
@@ -457,10 +448,6 @@ public class UserProfileActivity extends AppCompatActivity {
                                 progressBarProfile.setVisibility(View.GONE);
                             }
                         });
-            } catch (Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
 
         }
 
@@ -469,12 +456,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
         if (!PhoneNo.equals("no")){
             edt_Phone_No.setText(PhoneNo);
-            PreferenceData.setUserAddress(UserProfileActivity.this,PhoneNo);
+            PreferenceData.setUserPhoneNo(UserProfileActivity.this,PhoneNo);
         }
 
         if (!Address.equals("no")) {
             edt_Location.setText(Address);
-            PreferenceData.setUserPhoneNo(UserProfileActivity.this,Address);
+            PreferenceData.setUserAddress(UserProfileActivity.this,Address);
         }
     }
 
