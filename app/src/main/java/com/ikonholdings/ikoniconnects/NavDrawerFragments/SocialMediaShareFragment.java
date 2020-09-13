@@ -47,7 +47,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.FacebookSdk.getApplicationContext;
+//import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class SocialMediaShareFragment extends Fragment{
@@ -209,7 +209,7 @@ public class SocialMediaShareFragment extends Fragment{
                         if(bitmap != null)
                         img_Frame.setImageBitmap(bitmap);
                         else
-                            Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
                     }
                 });
 

@@ -27,7 +27,7 @@ import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
-import com.facebook.FacebookSdk;
+//import com.facebook.FacebookSdk;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,7 +75,6 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_registration);
         getSupportActionBar().hide();
         createReferences();
