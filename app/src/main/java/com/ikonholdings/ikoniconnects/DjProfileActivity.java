@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,8 +73,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     private CircularImageView img_Subscriber_Profile;
     private ProgressBar profileBar;
 
-    private AlertDialog.Builder builder;
-    private AlertDialog alertDialog;
+    private AlertDialog loadingDialog;
 
     private String mSubscriberName,
             mAddress,
@@ -329,7 +327,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     SubscriberBookingRatePerHour = djAndUserProfileModel.getRate_per_hour();
 
                     parenLayout.setVisibility(View.VISIBLE);
-                    alertDialog.dismiss();//hide the loading Dailoge
+                    loadingDialog.dismiss();//hide the loading Dailoge
 
                     buildServiceRecycler(services);
                     buildBlogRecycler(blogs);
@@ -340,7 +338,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     setOnlineStatus(mOnlineStatus);//checkUser is Online or Not
 
                 } else {
-                    alertDialog.dismiss();
+                    loadingDialog.dismiss();
                     Log.i("TAG", "onResponse: " + response.code());
                     DialogsUtils.showResponseMsg(DjProfileActivity.this,false);
 
@@ -350,7 +348,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
             @Override
             public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
-                alertDialog.dismiss();
+                loadingDialog.dismiss();
                 DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
             }
 
@@ -453,13 +451,13 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     }
 
     private void showLoadingDialogue() {
-        builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialoge_loading, null);
 
         builder.setView(view);
         builder.setCancelable(false);
-        alertDialog = builder.show();
+        loadingDialog = builder.show();
     }
 
     @Override

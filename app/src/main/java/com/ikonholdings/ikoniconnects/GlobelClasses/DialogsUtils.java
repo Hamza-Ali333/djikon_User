@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
@@ -25,6 +27,17 @@ public class DialogsUtils extends AppCompatDialogFragment {
         m_Dialog.setCancelable(false);
         m_Dialog.show();
         return m_Dialog;
+    }
+
+    public static AlertDialog showLoadingDialogue(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialoge_loading, null);
+
+        builder.setView(view);
+        builder.setCancelable(false);
+        AlertDialog alertDialog; alertDialog = builder.show();
+        return alertDialog;
     }
 
     public static AlertDialog showAlertDialog(Context context, Boolean CancelAbleState , String Title, String Msg) {

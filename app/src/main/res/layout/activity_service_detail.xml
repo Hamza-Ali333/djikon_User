@@ -7,6 +7,7 @@
     android:fillViewport="true"
     android:background="@color/colorBlack">
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <androidx.cardview.widget.CardView
@@ -144,6 +145,7 @@
         <Button
             android:id="@+id/btn_proceed_to_pay"
             android:layout_width="0dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:background="@drawable/roundshape"
             android:text="Proceed to Pay"

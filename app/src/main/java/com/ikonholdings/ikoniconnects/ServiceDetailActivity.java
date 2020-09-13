@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,7 +40,6 @@ import retrofit2.Retrofit;
 
 public class ServiceDetailActivity extends AppCompatActivity {
 
-    private static final String TAG = "ServiceDetailActivity";
     //Service Recycler View
     private RecyclerView mGalleryRecyclerView;
     private RecyclerView.Adapter mGalleryAdapter;
@@ -65,6 +65,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     private ProgressBar progressBarProfile;
 
+    private ConstraintLayout Parent;
+
     private String
             serviceImage,
             serviceName,
@@ -85,7 +87,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
-    private AlertDialog alertDialog;
+    private AlertDialog loadingDialog;
 
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
@@ -97,7 +99,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-
+        loadingDialog = DialogsUtils.showLoadingDialogue(this);
+        Parent.setVisibility(View.GONE);
     }
 
     @Override
@@ -225,6 +228,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
     }
 
     private void createReferences() {
+        Parent = findViewById(R.id.parent);
+
         Featured_img = findViewById(R.id.img_seervice_image);
         txt_Service_Name = findViewById(R.id.txt_Servic_Name);
         txt_Subscriber_Name = findViewById(R.id.txt_subscriber_name);
@@ -261,7 +266,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                 public void onResponse(Call<SingleServiceModel> call, Response<SingleServiceModel> response) {
 
                     if (response.isSuccessful()) {
-                       // singleServiceModels = (List<SingleServiceModel>) response.body();
+
                         serviceId = response.body().getId();
                         serviceImage = response.body().getFeature_image();
                         serviceName = response.body().getName();
@@ -300,7 +305,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
                                     txt_ReviewHeading.setText("No Review Found");
                                     mReviewsRecyclerView.setVisibility(View.GONE);
                                 }
-
+                                Parent.setVisibility(View.VISIBLE);
+                                loadingDialog.dismiss();
                             }
                         });
 
@@ -312,7 +318,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            alertDialog = DialogsUtils.showResponseMsg(ServiceDetailActivity.this,true);
+                            loadingDialog.dismiss();
+                            DialogsUtils.showResponseMsg(ServiceDetailActivity.this,true);
                         }
                     });
                 }
