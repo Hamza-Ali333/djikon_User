@@ -53,7 +53,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private Button btn_Proceed_To_Pay;
 
     private TextView txt_Service_Name,
-            txt_Dj_Name,
+            txt_Subscriber_Name,
             txt_Price,
             txt_Price_Type,
             txt_Description,
@@ -68,7 +68,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private String
             serviceImage,
             serviceName,
-            dj_Name,
+            subscriber_Name,
             price,
             price_type,
             description,
@@ -147,7 +147,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                                                    int serviceId,
                                                    String priceType,
                                                    String price,
-                                                   String serviceNameOrDjName,
+                                                   String serviceNameOrSubscriberName,
                                                    String description) {
 
         img.buildDrawingCache();
@@ -161,7 +161,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         i.putExtra("priceType", priceType);
         i.putExtra("BitmapImage", bitmap);
         i.putExtra("price", price);//rate per hour
-        i.putExtra("serviceOrDjName", serviceNameOrDjName);//Name of Artist if booking him or Name of Service if Booking Artist Service
+        i.putExtra("serviceOrSubscriberName", serviceNameOrSubscriberName);//Name of Artist if booking him or Name of Service if Booking Artist Service
         i.putExtra("description", description);
         startActivity(i);
     }
@@ -176,7 +176,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private void setDataInToView() {
         ratingBar.setRating(totalRating);
         txt_Service_Name.setText(serviceName);
-        txt_Dj_Name.setText(dj_Name);
+        txt_Subscriber_Name.setText(subscriber_Name);
         txt_Price.setText(" $" + price + " ");
         txt_Price_Type.setText(price_type);
         txt_Description.setText(description);
@@ -227,7 +227,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private void createReferences() {
         Featured_img = findViewById(R.id.img_seervice_image);
         txt_Service_Name = findViewById(R.id.txt_Servic_Name);
-        txt_Dj_Name = findViewById(R.id.txt_dj_name);
+        txt_Subscriber_Name = findViewById(R.id.txt_subscriber_name);
         txt_Price = findViewById(R.id.txt_service_charges);
         txt_Price_Type = findViewById(R.id.txt_price_type);
         txt_Description = findViewById(R.id.txt_service_discription);
@@ -265,7 +265,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                         serviceId = response.body().getId();
                         serviceImage = response.body().getFeature_image();
                         serviceName = response.body().getName();
-                        dj_Name = response.body().getArtist_name();
+                        subscriber_Name = response.body().getArtist_name();
                         price = String.valueOf(response.body().getPrice());
                         price_type = response.body().getPrice_type();
                         totalRating = response.body().getRating();

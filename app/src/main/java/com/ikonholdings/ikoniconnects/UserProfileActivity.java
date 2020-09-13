@@ -268,7 +268,7 @@ public class UserProfileActivity extends AppCompatActivity {
         retrofit = ApiClient.retrofit(this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
         String relativeURL = "user/" + PreferenceData.getUserId(this);
-        Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
+        Call<DjAndUserProfileModel> call = jsonApiHolder.getSubscriberOrUserProfile(relativeURL);
 
         call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override

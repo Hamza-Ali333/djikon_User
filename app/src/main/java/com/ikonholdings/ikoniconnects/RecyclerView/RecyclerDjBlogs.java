@@ -20,7 +20,7 @@ import java.util.List;
 
 public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHolder> {
 
-    private List<DjProfileBlogsModel> djBlogsModels;
+    private List<DjProfileBlogsModel> subscriberBlogsModels;
 
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,7 +39,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
     //constructor
     public RecyclerDjBlogs(List<DjProfileBlogsModel> blogsModels) {
-        this.djBlogsModels = blogsModels;
+        this.subscriberBlogsModels = blogsModels;
 
     }
 
@@ -54,7 +54,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        DjProfileBlogsModel currentItem = djBlogsModels.get(position);
+        DjProfileBlogsModel currentItem = subscriberBlogsModels.get(position);
 
         holder.txt_BlogTitle.setText(currentItem.getTitle());
 
@@ -90,7 +90,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
     @Override
     public int getItemCount() {
-        return djBlogsModels.size();
+        return subscriberBlogsModels.size();
     }
 }
 

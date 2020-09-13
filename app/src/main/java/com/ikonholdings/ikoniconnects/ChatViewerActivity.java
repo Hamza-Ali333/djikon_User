@@ -82,9 +82,9 @@ public class ChatViewerActivity extends AppCompatActivity {
     private AlertDialog alertDialog;
     private Boolean alreadyHaveChat = false;
 
-    private String djId;
-    private String djUid;
-    private String djName , imgProfileUrl;
+    private String subscriberId;
+    private String subscriberUid;
+    private String subscriberName , imgProfileUrl;
     private String userName;
     private String CurrentUserId;
 
@@ -116,7 +116,7 @@ public class ChatViewerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ChatViewerActivity.this, DjProfileActivity.class);
-                i.putExtra("id",djId);
+                i.putExtra("id",subscriberId);
                 startActivity(i);
             }
         });
@@ -127,19 +127,19 @@ public class ChatViewerActivity extends AppCompatActivity {
 
         //getting data of the Receiver
         Intent i = getIntent();
-        djId =i.getStringExtra("dj_Id");
-        djUid = i.getStringExtra("dj_Uid");
-        djName = i.getStringExtra("dj_Name");
+        subscriberId =i.getStringExtra("subscriber_Id");
+        subscriberUid = i.getStringExtra("subscriber_Uid");
+        subscriberName = i.getStringExtra("subscriber_Name");
         imgProfileUrl = i.getStringExtra("imgProfileUrl");
-        setDjProfile(imgProfileUrl);
+        setSubscriberProfile(imgProfileUrl);
 
-        toolBarTitle.setText(djName);//set DJ Name in tool bar
+        toolBarTitle.setText(subscriberName);//set Subscriber Name in tool bar
 
         myRef = FirebaseDatabase.getInstance().getReference("Chats");
 
         CurrentUserId = PreferenceData.getUserId(this);
 
-        chatNodeName = "djId_" + djId + "_userId_" + CurrentUserId;
+        chatNodeName = "subscriberId_" + subscriberId + "_userId_" + CurrentUserId;
         checkHaveChatOrNot();
 
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -152,7 +152,7 @@ public class ChatViewerActivity extends AppCompatActivity {
 
         //this function will extract the only ids of user and dJ
 //        String[] str = chatNodeName.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-//        Log.i("TAG", "onCreate: Dj "+str[1]);
+//        Log.i("TAG", "onCreate: Subscriber "+str[1]);
 //        Log.i("TAG", "onCreate: User "+str[3]);
 
         mProgressDialog = DialogsUtils.showProgressDialog(this,"Getting Massages","Please Wait");
@@ -165,11 +165,11 @@ public class ChatViewerActivity extends AppCompatActivity {
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){
                        //MAke Node for this new User if they are texting first time
-                       // UserChatListModel userChatListModel = new UserChatListModel(String.valueOf(djId), djName, imgProfileUrl);
-                       new CreateChatListOfUserAndDJ().execute();
+                       // UserChatListModel userChatListModel = new UserChatListModel(String.valueOf(subscriberId), subscriberName, imgProfileUrl);
+                       new CreateChatListOfUserAndSubscriber().execute();
                     }
 
-                    sendMassage(edt_Massage.getText().toString(), fuser.getUid(), djUid, currentDateAndTime);
+                    sendMassage(edt_Massage.getText().toString(), fuser.getUid(), subscriberUid, currentDateAndTime);
                 }else{
                     Toast.makeText(ChatViewerActivity.this, "You Can't Send Empty massage", Toast.LENGTH_SHORT).show();
                 }
@@ -254,7 +254,7 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     }
 
-    private void setDjProfile(String imageUrl){
+    private void setSubscriberProfile(String imageUrl){
         if (!imageUrl.equals("No Image") && !imageUrl.equals("no")){
 
             Picasso.get().load(imageUrl)
@@ -278,15 +278,15 @@ public class ChatViewerActivity extends AppCompatActivity {
     }
 
     private void checkHaveChatOrNot(){
-        //check if User have already chat with this DJ
+        //check if User have already chat with this Subscriber
         myRef.child("Massages").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                //Here check Node of this User Email and DJ Email is exit or not
+                //Here check Node of this User Email and Subscriber Email is exit or not
                 if (snapshot.hasChild(chatNodeName)) {
 
                     //when find node in db
-                    //extract email of DJ on base of Current User Email
+                    //extract email of Subscriber on base of Current User Email
                     //String receiver = chatNodeName.replace("Hamza","");
                     //Toast.makeText(ChatViewerActivity.this, receiver, Toast.LENGTH_SHORT).show();
 
@@ -354,7 +354,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
                     Toast.makeText(ChatViewerActivity.this, Massage, Toast.LENGTH_SHORT).show();
-                    sendNotification(djUid,fuser.getUid(),Massage);//1=Reciever,2=Sender,Massage
+                    sendNotification(subscriberUid,fuser.getUid(),Massage);//1=Reciever,2=Sender,Massage
                 }
                 notify = false;
             }
@@ -376,7 +376,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
                     Data data = new Data(fuser.getUid(),R.mipmap.ic_launcher,userName+": "+message,"New Message",
-                            djUid);
+                            subscriberUid);
 
                     Sender sender = new Sender(data,token.getToken());
 
@@ -435,14 +435,14 @@ public class ChatViewerActivity extends AppCompatActivity {
     }
 
 
-    private class CreateChatListOfUserAndDJ extends AsyncTask<Void,Void, Void>{
+    private class CreateChatListOfUserAndSubscriber extends AsyncTask<Void,Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {
             UserChatListModel userChatListModel = new UserChatListModel();
-            userChatListModel.setdj_Id(String.valueOf(djId));
-            userChatListModel.setdj_Uid(djUid);
-            userChatListModel.setdj_Name(djName);
+            userChatListModel.setsubscriber_Id(String.valueOf(subscriberId));
+            userChatListModel.setsubscriber_Uid(subscriberUid);
+            userChatListModel.setsubscriber_Name(subscriberName);
             userChatListModel.setimgProfileUrl(imgProfileUrl);
             myRef.child("chatListOfUser").child(CurrentUserId).push().setValue(userChatListModel);
 
@@ -451,7 +451,7 @@ public class ChatViewerActivity extends AppCompatActivity {
             userData.put("user_Name",userName);
             userData.put("user_Uid", fuser.getUid());
             userData.put("imgProfileUrl",imgProfileUrl);
-            myRef.child("chatListOfDj").child(String.valueOf(djId)).push().setValue(userData);
+            myRef.child("chatListOfSubscriber").child(String.valueOf(subscriberId)).push().setValue(userData);
 
             return null;
         }

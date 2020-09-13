@@ -53,10 +53,10 @@ public interface JSONApiHolder {
     @GET
     Call<SingleBlogDetailModel> getSingleBlog(@Url String id);
 
-    //this will return full detail dj profile
+    //this will return full detail subscriber profile
     //same for  current user profile
     @GET
-    Call<DjAndUserProfileModel> getDjOrUserProfile(@Url String id);
+    Call<DjAndUserProfileModel> getSubscriberOrUserProfile(@Url String id);
 
     //this will return full detail of a service
     @GET
@@ -164,7 +164,6 @@ public interface JSONApiHolder {
             @Url String relativeUrl,
             @Field("status") Integer likeStatus
     );
-
 
     @POST()
     Call <SuccessErrorModel>  followUnFollowArtist(

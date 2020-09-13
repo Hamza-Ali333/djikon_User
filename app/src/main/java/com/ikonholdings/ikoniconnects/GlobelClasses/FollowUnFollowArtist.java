@@ -84,7 +84,7 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                             }
                         });
                     }else {
-                        mFollowResultInterface.followResponse(true);//sending info to DJ Acitivity
+                        mFollowResultInterface.followResponse(true);//sending info to Subscriber Acitivity
                     }
                 }else {
                     if(runingFromFragment){
@@ -96,7 +96,7 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                             }
                         });
                     }else {
-                        mFollowResultInterface.followResponse(false);//sending info to DJ Acitivity
+                        mFollowResultInterface.followResponse(false);//sending info to Subscriber Acitivity
                     }
                 }
             }

@@ -26,7 +26,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
         <TextView
-            android:id="@+id/txt_dj_name"
+            android:id="@+id/txt_subscriber_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -55,8 +55,8 @@
             android:text="Song Name:"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/txt_dj_name"
-            app:layout_constraintTop_toBottomOf="@+id/txt_dj_name"
+            app:layout_constraintStart_toStartOf="@+id/txt_subscriber_name"
+            app:layout_constraintTop_toBottomOf="@+id/txt_subscriber_name"
             app:layout_constraintVertical_bias="0.01999998" />
 
 

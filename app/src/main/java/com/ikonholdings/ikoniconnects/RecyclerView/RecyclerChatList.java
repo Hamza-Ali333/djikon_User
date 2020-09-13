@@ -38,7 +38,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
-        public CircularImageView img_msg_DJ_Profile;
+        public CircularImageView img_msg_Subscriber_Profile;
         public TextView txt_msg_Sender_Name;
        // public TextView  txt_Last_msg,txt_Recive_Time;
         public TextView  txt_UnRead;
@@ -46,7 +46,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 
         public ViewHolder(View itemView){
             super(itemView);
-            img_msg_DJ_Profile = itemView.findViewById(R.id.img_msg_sender);
+            img_msg_Subscriber_Profile = itemView.findViewById(R.id.img_msg_sender);
 
             txt_msg_Sender_Name = itemView.findViewById(R.id.txt_msg_sender_name);
 //            txt_Last_msg = itemView.findViewById(R.id.txt_last_send_msg);
@@ -81,7 +81,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
        final UserChatListModel currentItem = mChat_Aera.get(position);
 
 
-       holder.txt_msg_Sender_Name.setText(currentItem.getDj_Name());
+       holder.txt_msg_Sender_Name.setText(currentItem.getSubscriber_Name());
 
         if (!currentItem.getImgProfileUrl().equals("no")) {
 
@@ -89,7 +89,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
                     .fit()
                     .centerCrop()
                     .placeholder(R.drawable.ic_avatar)
-                    .into(holder.img_msg_DJ_Profile, new Callback() {
+                    .into(holder.img_msg_Subscriber_Profile, new Callback() {
                         @Override
                         public void onSuccess() {
 
@@ -112,9 +112,9 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
            @Override
            public void onClick(View view) {
                Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
-               i.putExtra("dj_Id", currentItem.getDj_Id());
-               i.putExtra("dj_Uid", currentItem.getDj_Uid());
-               i.putExtra("dj_Name", currentItem.getDj_Name());
+               i.putExtra("subscriber_Id", currentItem.getSubscriber_Id());
+               i.putExtra("subscriber_Uid", currentItem.getSubscriber_Uid());
+               i.putExtra("subscriber_Name", currentItem.getSubscriber_Name());
                i.putExtra("imgProfileUrl", currentItem.getImgProfileUrl());
                view.getContext().startActivity(i);
            }

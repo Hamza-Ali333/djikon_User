@@ -60,7 +60,7 @@ public class CountriesList {
                 "Czech Republic",
                 "Democratic Republic of the Congo",
                 "Denmark ",
-                "Djibouti ",
+                "Subscriberibouti ",
                 "Dominica ",
                 "Dominican Republic",
                 "East Timor",

@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,27 +62,27 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
             btn_Follow, btn_Message;
 
     private TextView
-            txt_DJ_Name,
+            txt_Subscriber_Name,
             txt_address,
             txt_Total_Follower,
             txt_about,
-            txt_Progress_Msg,
+            txt_Subscriber_Rate,
             onlineStatus;
 
     private ScrollView parenLayout;
 
-    private CircularImageView img_DJ_Profile;
+    private CircularImageView img_Subscriber_Profile;
     private ProgressBar profileBar;
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
 
-    private String mDJName,
+    private String mSubscriberName,
             mAddress,
             mProfile,
             mAbout,
             mOnlineStatus,
-    DjBookingRatePerHour;
+    SubscriberBookingRatePerHour;
 
     private int artistID, mFollower_Count, mFollow_Status;
 
@@ -125,7 +124,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dj_profile);
-        getSupportActionBar().setTitle("Dj Profile");
+        getSupportActionBar().setTitle("Subscriber Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createReferences();
@@ -162,21 +161,21 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
             @Override
             public void onClick(View view) {
                 if(allowBooking == 1){
-                    addExtraToIntentAndLunchActivity(img_DJ_Profile,
+                    addExtraToIntentAndLunchActivity(img_Subscriber_Profile,
                             artistID,
                             true,
                             false,
                             0,
                             "rate_per_hour",
-                            DjBookingRatePerHour,
-                            mDJName,
+                            SubscriberBookingRatePerHour,
+                            mSubscriberName,
                             mAbout
                     );
                 }else {
                     DialogsUtils.showAlertDialog(DjProfileActivity.this,
                             false,
                             "Disable",
-                            "This dj is not available for booking at this time try again!");
+                            "This subscriber is not available for booking at this time try again!");
                 }
             }
         });
@@ -195,20 +194,22 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     btn_Message.setClickable(false);
                     btn_Message.setEnabled(false);
 
-                    new GetDjUidFromFirebase().execute();
+                    new GetSubscriberUidFromFirebase().execute();
                 }else {
                     DialogsUtils.showAlertDialog(DjProfileActivity.this,
                             false,
                             "Disable",
-                            "This DJ is not allowed to do Chat with other wait for turn it on\nThank You");
+                            "This Subscriber is not allowed to do Chat with other wait for turn it on\nThank You");
                 }
             }
         });
     }
 
     private void setDataInToViews() {
-        txt_DJ_Name.setText(mDJName);
+        txt_Subscriber_Name.setText(mSubscriberName);
         txt_Total_Follower.setText(String.valueOf(mFollower_Count));
+        txt_Subscriber_Rate.setText(SubscriberBookingRatePerHour);
+
 
         if (mFollow_Status == 0) {
             btn_Follow.setText("Follow");
@@ -217,9 +218,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         }
 
         txt_address.setText(mAddress);
-
         txt_about.setText(mAbout);
-
         txt_Total_Follower.setText(String.valueOf(mFollower_Count));
 
         if (mProfile!= null && !mProfile.equals("no")) {
@@ -228,7 +227,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
-                    .into(img_DJ_Profile, new com.squareup.picasso.Callback() {
+                    .into(img_Subscriber_Profile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
                             profileBar.setVisibility(View.GONE);
@@ -240,7 +239,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                     });
         }
     }
-
 
     private void buildServiceRecycler(List<ServicesModel> serviceList) {
 
@@ -294,11 +292,11 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         });
     }
 
-    private void getProfileDataFromServer(String djId) {
+    private void getProfileDataFromServer(String subscriberId) {
          retrofit= ApiClient.retrofit(this);
          jsonApiHolder = retrofit.create(JSONApiHolder.class);
-         String relativeURL = "user/"+djId;
-         Call<DjAndUserProfileModel> call = jsonApiHolder.getDjOrUserProfile(relativeURL);
+         String relativeURL = "user/"+subscriberId;
+         Call<DjAndUserProfileModel> call = jsonApiHolder.getSubscriberOrUserProfile(relativeURL);
 
          call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
@@ -306,7 +304,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
                 if (response.isSuccessful()) {
                     DjAndUserProfileModel djAndUserProfileModel = response.body();
-                    mDJName = djAndUserProfileModel.getFirstname() + " " + response.body().getLastname();
+                    mSubscriberName = djAndUserProfileModel.getFirstname() + " " + response.body().getLastname();
                     mAddress = djAndUserProfileModel.getLocation();
                     mProfile = djAndUserProfileModel.getProfile_image();
                     mFollower_Count = djAndUserProfileModel.getFollowers();
@@ -319,7 +317,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
                     services = djAndUserProfileModel.getServices();
                     blogs = djAndUserProfileModel.getBlog();
-                    DjBookingRatePerHour = djAndUserProfileModel.getRate_per_hour();
+                    SubscriberBookingRatePerHour = djAndUserProfileModel.getRate_per_hour();
 
                     parenLayout.setVisibility(View.VISIBLE);
                     alertDialog.dismiss();//hide the loading Dailoge
@@ -374,7 +372,8 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         btn_Message = findViewById(R.id.message_dj);
 
         onlineStatus = findViewById(R.id.txt_dj_status);
-        txt_DJ_Name = findViewById(R.id.txt_dj_name);
+        txt_Subscriber_Rate = findViewById(R.id.djRate);
+        txt_Subscriber_Name = findViewById(R.id.txt_subscriber_name);
         txt_address = findViewById(R.id.txt_address);
         txt_Total_Follower = findViewById(R.id.txt_followers);
         txt_about = findViewById(R.id.txt_about_dj);
@@ -382,7 +381,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         mServicesRecycler = findViewById(R.id.services_recycler);
         mBlogRecyclerView = findViewById(R.id.blog_recyclerview);
 
-        img_DJ_Profile = findViewById(R.id.img_dj_profile);
+        img_Subscriber_Profile = findViewById(R.id.img_subscriber_profile);
         profileBar = findViewById(R.id.progressBarProfile);
 
     }
@@ -479,7 +478,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
     }
 
-    private class GetDjUidFromFirebase extends AsyncTask<Void,Void,Void>{
+    private class GetSubscriberUidFromFirebase extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -491,7 +490,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         protected Void doInBackground(Void... voids) {
             myRef= FirebaseDatabase.getInstance().getReference("All_Users");
 
-            myRef.child("DJs").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
+            myRef.child("Subscribers").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()){
@@ -514,7 +513,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                                 btn_Message.setEnabled(true);
                                 progressDialog.dismiss();
                                 alertDialog = DialogsUtils.showAlertDialog(DjProfileActivity.this,
-                                        false, "Not Connected", "May currently this DJ is not able to get massage.\nor try again!");
+                                        false, "Not Connected", "May currently this Subscriber is not able to get massage.\nor try again!");
                             }
                         });
                     }
@@ -547,9 +546,9 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
     private void lunchMessageActivity() {
         Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
-        i.putExtra("dj_Id", String.valueOf(artistID));
-        i.putExtra("dj_Uid",artist_UID);
-        i.putExtra("dj_Name",mDJName);
+        i.putExtra("subscriber_Id", String.valueOf(artistID));
+        i.putExtra("subscriber_Uid",artist_UID);
+        i.putExtra("subscriber_Name",mSubscriberName);
         i.putExtra("imgProfileUrl",mProfile);
         startActivity(i);
     }
@@ -561,7 +560,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                                                    int serviceId,
                                                    String priceType,
                                                    String price,
-                                                   String serviceNameOrDjName,
+                                                   String serviceNameOrSubscriberName,
                                                    String description) {
 
         img.buildDrawingCache();
@@ -574,7 +573,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         i.putExtra("priceType", priceType);
         i.putExtra("BitmapImage", bitmap);
         i.putExtra("price", price);//rate per hour
-        i.putExtra("serviceOrDjName", serviceNameOrDjName);//Name of Artist if booking him or Name of Service if Booking Artist Service
+        i.putExtra("serviceOrSubscriberName", serviceNameOrSubscriberName);//Name of Artist if booking him or Name of Service if Booking Artist Service
         i.putExtra("description", description);
         startActivity(i);
     }

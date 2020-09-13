@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void creatingUserOnFirebase(String Email, String Password) {
-        //Creating DJ also on Firebase for Chat System
+        //Creating Subscriber also on Firebase for Chat System
         mFirebaseAuth.createUserWithEmailAndPassword
                 (Email, Password)
                 .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void signInUserOnFirebase(String Email, String Password) {
-        //SignIn DJ Also on FireBase For ChatSystem
+        //SignIn Subscriber Also on FireBase For ChatSystem
         mFirebaseAuth.signInWithEmailAndPassword(Email,
                 Password).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
             @Override

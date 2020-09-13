@@ -22,7 +22,7 @@
         android:layout_height="wrap_content">
 
     <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/img_dj_profile"
+        android:id="@+id/img_subscriber_profile"
         android:layout_width="70dp"
         android:layout_height="70dp"
         app:civ_border_width="2dp"
@@ -31,8 +31,8 @@
 
         <TextView
             android:layout_marginTop="8dp"
-            android:id="@+id/txt_dj_name"
-            android:layout_toRightOf="@+id/img_dj_profile"
+            android:id="@+id/txt_subscriber_name"
+            android:layout_toRightOf="@+id/img_subscriber_profile"
             android:layout_marginLeft="4dp"
             android:text="Bilawal Yo Dj "
             android:textSize="18sp"
@@ -41,9 +41,9 @@
 
         <TextView
             android:id="@+id/txt_service_name"
-            android:layout_below="@+id/txt_dj_name"
+            android:layout_below="@+id/txt_subscriber_name"
             android:layout_marginTop="6dp"
-            android:layout_toRightOf="@+id/img_dj_profile"
+            android:layout_toRightOf="@+id/img_subscriber_profile"
             android:layout_marginLeft="4dp"
             android:textColor="#fff"
             android:paddingLeft="8dp"

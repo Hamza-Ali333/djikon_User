@@ -123,7 +123,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
                                                    int serviceId,
                                                    String priceType,
                                                    String price,
-                                                   String serviceNameOrDjName,
+                                                   String serviceNameOrSubscriberName,
                                                    String description) {
 
         img.buildDrawingCache();
@@ -136,7 +136,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
         i.putExtra("priceType", priceType);
         i.putExtra("BitmapImage", bitmap);
         i.putExtra("price", price);//rate per hour
-        i.putExtra("serviceOrDjName", serviceNameOrDjName);//Name of Artist if booking him or Name of Service if Booking Artist Service
+        i.putExtra("serviceOrSubscriberName", serviceNameOrSubscriberName);//Name of Artist if booking him or Name of Service if Booking Artist Service
         i.putExtra("description", description);
         context.startActivity(i);
     }

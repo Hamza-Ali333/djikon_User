@@ -65,7 +65,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
     private Boolean bookingForArtist;
     private Boolean bookingForService;
     private String RPH;//Rate Per Hour
-    private String serviceOrDjName;
+    private String serviceOrSubscriberName;
     private String priceType;
     private int artistId;//artist id
     private int serviceId;
@@ -124,7 +124,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         priceType = intent.getStringExtra("priceType");
         bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
         RPH = intent.getStringExtra("price");
-        serviceOrDjName = intent.getStringExtra("serviceOrDjName");
+        serviceOrSubscriberName = intent.getStringExtra("serviceOrSubscriberName");
         description = intent.getStringExtra("description");
 
         setPreferencesDataIntoViews();//set User information into EditText which we already have
@@ -429,11 +429,11 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
         Button btn_Cancle_Booking, btn_Book_Now;
 
-        img_Profile = view.findViewById(R.id.img_dj_profile);
+        img_Profile = view.findViewById(R.id.img_subscriber_profile);
 
         RateTypeTitle = view.findViewById(R.id.txt_rate_per_hour);
 
-        txt_Name = view.findViewById(R.id.txt_dj_name);
+        txt_Name = view.findViewById(R.id.txt_subscriber_name);
         txt_Service_Name = view.findViewById(R.id.txt_service_name);
 
         //purchaser Detail
@@ -464,9 +464,9 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
 
         img_Profile.setImageBitmap(bitmap);
-        txt_Name.setText(serviceOrDjName);
+        txt_Name.setText(serviceOrSubscriberName);
 
-        txt_Service_Name.setText(serviceOrDjName);
+        txt_Service_Name.setText(serviceOrSubscriberName);
         //purchaser Detail
         txt_pName.setText(edt_Name.getText().toString());
         txt_pEmail.setText(edt_Email.getText().toString());
@@ -484,7 +484,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             start_date.setText(txt_Start_Date.getText().toString());
             start_time.setText(txt_Start_Time.getText().toString());
         }
-
 
         //Service Total Paid Amount
         txt_Service_Amount.setText("$" + new DecimalFormat("##.##").format(TotalCost));
@@ -514,7 +513,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 checkBookingCoastDialog.dismiss();
                 TotalAmount = String.valueOf(TotalCost);//for sending amount with nonce to server
                 new GetBrainTreeToken().execute();
-
             }
         });
 
@@ -554,7 +552,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             progressDialog.dismiss();
                             DialogsUtils.showSuccessDialog(BookArtistOrServiceActivity.this,"Congratulation","Your booking is successfully done." +
-                                    "You will be inform when if DJ accept or reject Booking\nThank You",true);
+                                    "You will be inform when if Subscriber accept or reject Booking\nThank You",true);
                         } else {
                             progressDialog.dismiss();
                             DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
@@ -576,7 +574,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             }
         });
     }
-
 
     public void onBrainTreeSubmit(String braintreetoken) {
         DropInRequest dropInRequest = new DropInRequest()
@@ -662,7 +659,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("payment_method_nonce", Nonce);
-        Log.i("TAG", "PostNonceToServer: "+Nonce);
         params.put("amount", TotalAmount);
         params.put("receiver_id", artistId);
         params.put("sender_id", Integer.parseInt(PreferenceData.getUserId(this)));

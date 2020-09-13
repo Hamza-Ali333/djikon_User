@@ -5,7 +5,6 @@ import java.util.List;
 
 public class DjAndUserProfileModel {
 
-
     private Integer id;
 
     private String profile_image,

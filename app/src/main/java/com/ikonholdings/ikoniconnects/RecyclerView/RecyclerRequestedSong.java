@@ -20,17 +20,17 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
-        public ImageView img_DJ_Profile;
-        public TextView txt_DJ_Name;
+        public ImageView img_Subscriber_Profile;
+        public TextView txt_Subscriber_Name;
         public TextView txt_requested_date;
         public TextView txt_Song_Name;
 
 
         public ViewHolder(View itemView){
             super(itemView);
-            img_DJ_Profile = itemView.findViewById(R.id.img_SubscribeArtist);
+            img_Subscriber_Profile = itemView.findViewById(R.id.img_SubscribeArtist);
 
-            txt_DJ_Name = itemView.findViewById(R.id.txt_dj_name);
+            txt_Subscriber_Name = itemView.findViewById(R.id.txt_subscriber_name);
            // txt_requested_date = itemView.findViewById(R.id.txt_start_date);
             txt_Song_Name = itemView.findViewById(R.id.txt_song_name);
 
@@ -55,7 +55,7 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         RequestedSongsModel currentItem = mRequestedSongs_models.get(position);
 
-        holder.txt_DJ_Name.setText(currentItem.getFirstname() +" "+ currentItem.getLastname());
+        holder.txt_Subscriber_Name.setText(currentItem.getFirstname() +" "+ currentItem.getLastname());
         holder.txt_Song_Name.setText(currentItem.getSong_name());
 
 //        if(currentItem.getCreated_Date() != null){
@@ -63,7 +63,7 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
 //                    .placeholder(R.drawable.ic_avatar)
 //                    .fit()
 //                    .centerCrop()
-//                    .into(holder.img_DJ_Profile, new com.squareup.picasso.Callback() {
+//                    .into(holder.img_Subscriber_Profile, new com.squareup.picasso.Callback() {
 //                        @Override
 //                        public void onSuccess() {
 //

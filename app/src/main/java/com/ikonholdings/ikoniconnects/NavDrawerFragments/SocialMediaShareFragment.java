@@ -152,7 +152,7 @@ public class SocialMediaShareFragment extends Fragment{
                     if(framesModelList.isEmpty()) {
                         //if no data then show dialoge to user
                         DialogsUtils.showAlertDialog(getContext(),false,
-                                "Note","No frames found against your followed DJ's");
+                                "Note","No frames found against your followed Subscriber's");
                     } else{
 
                             sperationOfArray(framesModelList);

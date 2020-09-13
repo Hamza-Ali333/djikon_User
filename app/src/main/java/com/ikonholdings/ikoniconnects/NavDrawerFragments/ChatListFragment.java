@@ -112,9 +112,9 @@ public class ChatListFragment extends Fragment {
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             mUserChatList.add(new UserChatListModel(
-                                    snapshot.child("dj_Id").getValue(String.class),
-                                    snapshot.child("dj_Uid").getValue(String.class),
-                                    snapshot.child("dj_Name").getValue(String.class),
+                                    snapshot.child("subscriber_Id").getValue(String.class),
+                                    snapshot.child("subscriber_Uid").getValue(String.class),
+                                    snapshot.child("subscriber_Name").getValue(String.class),
                                     snapshot.child("imgProfileUrl").getValue(String.class),
                                     snapshot.getKey()
                             ));
@@ -126,14 +126,14 @@ public class ChatListFragment extends Fragment {
 
                     }else {
                         showHideProgressBar();
-                        DialogsUtils.showAlertDialog(getContext(),false,"Note","It's seems like you didn't have conversation with any DJ");
+                        DialogsUtils.showAlertDialog(getContext(),false,"Note","It's seems like you didn't have conversation with any Subscriber");
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     showHideProgressBar();
-                    DialogsUtils.showAlertDialog(getContext(),false,"Error","It's seems like you didn't have conversation with any DJ");
+                    DialogsUtils.showAlertDialog(getContext(),false,"Error","It's seems like you didn't have conversation with any Subscriber");
                 }
             });
         }

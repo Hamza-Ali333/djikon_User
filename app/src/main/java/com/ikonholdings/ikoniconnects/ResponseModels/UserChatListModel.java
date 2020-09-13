@@ -2,35 +2,35 @@ package com.ikonholdings.ikoniconnects.ResponseModels;
 
 public class UserChatListModel {
 
-    private  String dj_Id, dj_Name, dj_Uid, imgProfileUrl, key;
+    private  String subscriber_Id, subscriber_Name, subscriber_Uid, imgProfileUrl, key;
     private  String talkTime,last_send_msg;
 
     public UserChatListModel() {
     }
 
     //this constructor only for id , dJName, imageUrl
-    public UserChatListModel(String dj_Id, String dj_Uid, String dj_Name, String imgProfileUrl, String key) {
-        this.dj_Id = dj_Id;
-        this.dj_Uid = dj_Uid;
-        this.dj_Name = dj_Name;
+    public UserChatListModel(String subscriber_Id, String subscriber_Uid, String subscriber_Name, String imgProfileUrl, String key) {
+        this.subscriber_Id = subscriber_Id;
+        this.subscriber_Uid = subscriber_Uid;
+        this.subscriber_Name = subscriber_Name;
         this.imgProfileUrl = imgProfileUrl;
         this.key = key;
     }
 
-    public String getDj_Uid() {
-        return dj_Uid;
+    public String getSubscriber_Uid() {
+        return subscriber_Uid;
     }
 
-    public void setdj_Uid(String dj_Uid) {
-        this.dj_Uid = dj_Uid;
+    public void setsubscriber_Uid(String subscriber_Uid) {
+        this.subscriber_Uid = subscriber_Uid;
     }
 
-    public void setdj_Id(String dj_Id) {
-        this.dj_Id = dj_Id;
+    public void setsubscriber_Id(String subscriber_Id) {
+        this.subscriber_Id = subscriber_Id;
     }
 
-    public void setdj_Name(String dj_Name) {
-        this.dj_Name = dj_Name;
+    public void setsubscriber_Name(String subscriber_Name) {
+        this.subscriber_Name = subscriber_Name;
     }
 
     public void setimgProfileUrl(String imageUrl) {
@@ -61,16 +61,16 @@ public class UserChatListModel {
         this.last_send_msg = last_send_msg;
     }
 
-    public String getDj_Name() {
-        return dj_Name;
+    public String getSubscriber_Name() {
+        return subscriber_Name;
     }
 
     public String getImgProfileUrl() {
         return imgProfileUrl;
     }
 
-    public String getDj_Id() {
-        return dj_Id;
+    public String getSubscriber_Id() {
+        return subscriber_Id;
     }
 
 }
