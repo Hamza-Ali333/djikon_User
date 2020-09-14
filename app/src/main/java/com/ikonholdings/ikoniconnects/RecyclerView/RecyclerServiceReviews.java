@@ -60,7 +60,6 @@ public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerService
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
 
-
     }
 
     @Override

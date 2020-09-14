@@ -163,9 +163,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="100dp"
-            android:background="#1C1C1C"
-            android:paddingLeft="14dp"
-            android:paddingRight="14dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline12"
             app:layout_constraintStart_toStartOf="@+id/guideline11"
             app:layout_constraintTop_toBottomOf="@+id/reviewheading" />

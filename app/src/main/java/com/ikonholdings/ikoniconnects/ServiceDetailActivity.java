@@ -208,6 +208,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         for (int i = 0; i <= gallery.length - 1; i++) {
             singleServiceModleArrayList.add(new SliderModel(ApiClient.Base_Url+"post_images/" + gallery[i]));
         }
+        mGalleryRecyclerView.setNestedScrollingEnabled(false);
         mGalleryRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mGalleryLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mGalleryAdapter = new RecyclerServiceGallery(singleServiceModleArrayList);
