@@ -78,7 +78,6 @@
         <activity android:name="com.ikonholdings.ikoniconnects.ServiceDetailActivity" />
         <activity android:name="com.ikonholdings.ikoniconnects.ResetPasswordActivity" />
         <activity android:name="com.ikonholdings.ikoniconnects.DjProfileActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.BookingHistoryActivity" />
         <activity android:name="com.ikonholdings.ikoniconnects.ProfileSettingActivity" />
         <activity android:name="com.ikonholdings.ikoniconnects.PaymentMethodActivity" />
         <activity android:name="com.ikonholdings.ikoniconnects.BookingPaymentMethodActivity" />

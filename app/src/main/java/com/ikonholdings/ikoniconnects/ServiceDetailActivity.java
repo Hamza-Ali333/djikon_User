@@ -203,7 +203,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         }//if service is not equal to null
     }
 
-
     private void buildServiceGalleryRecycler(String[] gallery) {
 
         for (int i = 0; i <= gallery.length - 1; i++) {

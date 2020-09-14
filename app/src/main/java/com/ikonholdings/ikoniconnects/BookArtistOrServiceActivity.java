@@ -483,6 +483,12 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
             RateTypeTitle.setText("Fix Rate");
             start_date.setText(txt_Start_Date.getText().toString());
             start_time.setText(txt_Start_Time.getText().toString());
+            end_date.setVisibility(View.GONE);
+            end_time.setVisibility(View.GONE);
+            TextView time = view.findViewById(R.id.time);
+            TextView date = view.findViewById(R.id.date);
+            time.setVisibility(View.GONE);
+            date.setVisibility(View.GONE);
         }
 
         //Service Total Paid Amount

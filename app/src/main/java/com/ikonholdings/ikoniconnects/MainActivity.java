@@ -29,6 +29,7 @@ import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
+import com.ikonholdings.ikoniconnects.NavDrawerFragments.BookingHistoryFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.CurrentLiveArtistFragment;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.AllArtistFragment;
@@ -205,66 +206,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
 
             case R.id.nav_LatestFeed:
-
                 getSupportActionBar().setTitle(R.string.latestFeed);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new LatestFeedFragment()).commit();
             break;
 
             case R.id.nav_LiveToArtist:
-
                 getSupportActionBar().setTitle(R.string.liveToArtist);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new LiveToArtistFragment()).commit();
                 break;
 
             case R.id.nav_ChatArea:
-
                 getSupportActionBar().setTitle(R.string.ChatArea);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ChatListFragment()).commit();
                 break;
 
             case R.id.nav_Following:
-
                 getSupportActionBar().setTitle(R.string.SubscribedArtist);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SubscribedArtistFragment()).commit();
-
                 break;
 
             case R.id.nav_SocialMedia:
-
                 getSupportActionBar().setTitle(R.string.SocialMediaSharing);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SocialMediaShareFragment()).commit();
-
                 break;
 
             case R.id.nav_RequestedSong:
-
                 getSupportActionBar().setTitle(R.string.RequestedSong);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new RequestedSongFragment()).commit();
+                break;
 
+            case R.id.nav_BookingHistory:
+                getSupportActionBar().setTitle(R.string.BookingHistory);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new BookingHistoryFragment()).commit();
                 break;
 
             case R.id.nav_CurrentLiveArtist:
-
                 getSupportActionBar().setTitle(R.string.CurrentLiveArtist);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new CurrentLiveArtistFragment()).commit();
                 break;
 
             case R.id.nav_Artist:
-
                 getSupportActionBar().setTitle(R.string.Artist);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new AllArtistFragment()).commit();
                 break;
 
             case R.id.nav_Logout:
-
                 progressDialog= DialogsUtils.showProgressDialog(this,"Login Out","Please wait...");
                 userLogOut();
                 break;

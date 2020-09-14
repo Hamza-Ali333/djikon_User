@@ -137,36 +137,6 @@
         </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rlt_bookingHistory"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:fontFamily="@font/montserrat"
-            android:text="Booking History"
-            android:textColor="@color/Graycolor"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            app:srcCompat="@drawable/ic_arrow_forward" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/Graycolor" />
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/rlt_socialmedia"
         android:layout_width="match_parent"
         android:layout_height="30dp"

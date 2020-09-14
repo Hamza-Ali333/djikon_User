@@ -26,7 +26,7 @@ import retrofit2.Retrofit;
 
 public class ProfileSettingActivity extends AppCompatActivity {
 
-    RelativeLayout rlt_LiveStreaming, rlt_Biometrics, rlt_ChangePassword, rlt_ChangePin, rlt_BookingHistory,
+    RelativeLayout rlt_LiveStreaming, rlt_Biometrics, rlt_ChangePassword, rlt_ChangePin,
     rlt_ConnectSocial;
 
     private Switch swt_FaceId_State, swt_Biometric_State;
@@ -78,14 +78,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openLiveStreaming();
-            }
-        });
-
-        rlt_BookingHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ProfileSettingActivity.this,BookingHistoryActivity.class);
-                startActivity(i);
             }
         });
 
@@ -235,7 +227,6 @@ public class ProfileSettingActivity extends AppCompatActivity {
           rlt_ChangePassword = findViewById(R.id.rlt_ChangePassowrd);
           rlt_ChangePin = findViewById(R.id.rlt_ChangePin);
           rlt_Biometrics = findViewById(R.id.rlt_biometrics);
-          rlt_BookingHistory = findViewById(R.id.rlt_bookingHistory);
           rlt_ConnectSocial = findViewById(R.id.rlt_socialmedia);
           rlt_LiveStreaming = findViewById(R.id.rlt_liveStreaming);
 

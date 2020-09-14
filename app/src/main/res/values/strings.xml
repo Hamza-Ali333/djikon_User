@@ -4,7 +4,8 @@
     <string name="liveToArtist">Live To Artist</string>
     <string name="ChatArea">Chat Area</string>
     <string name="SocialMediaSharing">Social Media Sharing</string>
-    <string name="RequestedSong">Request A Song</string>
+    <string name="RequestedSong">Requested Song</string>
+    <string name="BookingHistory">Booking History</string>
     <string name="CurrentLiveArtist">Current Live Artist</string>
     <string name="SubscribedArtist">Subscribed Artist</string>
     <string name="Artist">Artist</string>

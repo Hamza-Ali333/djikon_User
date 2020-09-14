@@ -43,6 +43,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
@@ -156,7 +157,7 @@ public class SignInActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-        //firebase Auth i
+        //firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
@@ -169,6 +170,7 @@ public class SignInActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         createReferencer();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+        LoginManager.getInstance().logOut();
 
         //Handel the Result When User Sign In Throw the BioMetric
         biometricSingInCallBackHandler();
@@ -348,7 +350,7 @@ public class SignInActivity extends AppCompatActivity {
                             }
 
                             socialMediaLastName = object.getString("last_name");
-                            providerId =String.valueOf(AccessToken.getCurrentAccessToken());
+                            providerId =object.getString("id");
                             providerName = "FaceBook";
                             //sign in user with this detail
                              manageUserLogin(true);
@@ -366,7 +368,7 @@ public class SignInActivity extends AppCompatActivity {
                 });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "first_name, middle_name, last_name, email");
+        parameters.putString("fields", "id, first_name, middle_name, last_name, email");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -1196,7 +1198,5 @@ public class SignInActivity extends AppCompatActivity {
         super.onStop();
         unregisterReceiver(mNetworkChangeReceiver);
     }
-
-
 
 }

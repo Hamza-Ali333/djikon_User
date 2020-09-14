@@ -80,6 +80,7 @@ public class ReferralCodeDialog {
                                         ProviderId,
                                         ProviderName);
                                 context.startActivity(new Intent(context, MainActivity.class));
+                                ((Activity) context).finish();
                             }else if(response.code() == 400) {
                                 progressDialog.dismiss();
                                 edt_Code.setError("Wrong Code");

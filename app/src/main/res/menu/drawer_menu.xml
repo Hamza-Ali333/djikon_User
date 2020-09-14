@@ -25,6 +25,13 @@
         android:icon="@drawable/song"
         android:title="Requested Songs"/>
 
+
+
+
+        <item android:id="@+id/nav_BookingHistory"
+            android:icon="@drawable/ic_calendar"
+            android:title="Bookings History"/>
+
         <item android:id="@+id/nav_CurrentLiveArtist"
         android:icon="@drawable/teacher"
         android:title="Current Live Artist"/>
