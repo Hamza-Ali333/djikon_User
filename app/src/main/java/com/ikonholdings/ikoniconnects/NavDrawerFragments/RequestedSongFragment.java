@@ -36,7 +36,7 @@ public class RequestedSongFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView txt_Requested_Song_Count;
 
-    private RelativeLayout progressBar;
+    private AlertDialog loadingDialog;
 
     @Nullable
     @Override
@@ -48,21 +48,20 @@ public class RequestedSongFragment extends Fragment {
            @Override
            public void run() {
                mRecyclerView = v.findViewById(R.id.recyclerView_song_request);
-               progressBar = v.findViewById(R.id.progressbar);
                mRecyclerView.setVisibility(View.GONE);
-               progressBar.setVisibility(View.VISIBLE);
                txt_Requested_Song_Count = v.findViewById(R.id.txt_new_request);
            }
        });
        createRefreces.start();
 
-      getRequestedSong();
+       getRequestedSong();
 
        return v;
     }
 
 
     private void getRequestedSong() {
+        loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
                 //return all the requested song of this user
         Retrofit retrofit= ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
@@ -74,9 +73,6 @@ public class RequestedSongFragment extends Fragment {
 
                 if(response.isSuccessful()){
 
-                    progressBar.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-
                             List<RequestedSongsModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
                                 //if no data then show dialoge to user
@@ -87,19 +83,20 @@ public class RequestedSongFragment extends Fragment {
                                txt_Requested_Song_Count.setText("You have "+String.valueOf(artistModels.size())+" requested song.");
                                 initializeRecycler(artistModels);
                             }
-
-                }else {
-                    progressBar.setVisibility(View.GONE);
+                    loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
 
+                }else {
+                    loadingDialog.dismiss();
+                    mRecyclerView.setVisibility(View.GONE);
                     DialogsUtils.showResponseMsg(getContext(),false);
                 }
             }
 
             @Override
             public void onFailure(Call<List<RequestedSongsModel>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.VISIBLE);
+                loadingDialog.dismiss();
+                mRecyclerView.setVisibility(View.GONE);
                 DialogsUtils.showResponseMsg(getContext(),true);
             }
         });

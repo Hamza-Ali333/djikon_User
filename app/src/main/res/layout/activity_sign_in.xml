@@ -229,6 +229,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/montserrat"
             android:text="Sign In With PIN Code"
+            android:visibility="gone"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"

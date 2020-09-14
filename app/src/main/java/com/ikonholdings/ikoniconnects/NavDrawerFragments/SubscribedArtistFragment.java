@@ -39,8 +39,14 @@ public class SubscribedArtistFragment extends Fragment {
     private RecyclerSubscribedArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private RelativeLayout progressBar;
+    private AlertDialog loadingDialog;
     private SearchView mSearchView;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
 
     @Nullable
     @Override
@@ -49,13 +55,11 @@ public class SubscribedArtistFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_subscribe_artist,container,false);
 
          mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
-         progressBar = v.findViewById(R.id.progressbar);
          mRecyclerView.setVisibility(View.GONE);
-         progressBar.setVisibility(View.VISIBLE);
          mSearchView = v.findViewById(R.id.txt_search);
          mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
-       getSubscribedArtist();
+        loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
+        getSubscribedArtist();
 
        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
            @Override
@@ -84,7 +88,6 @@ public class SubscribedArtistFragment extends Fragment {
             public void onResponse(Call<List<SubscribeArtistModel>> call, Response<List<SubscribeArtistModel>> response) {
 
                 if(response.isSuccessful()){
-                    progressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
                             List<SubscribeArtistModel> artistModels = response.body();
@@ -95,8 +98,10 @@ public class SubscribedArtistFragment extends Fragment {
                            else
                             initializeRecycler(artistModels);
 
+                    loadingDialog.dismiss();
+
                 }else {
-                    progressBar.setVisibility(View.GONE);
+                    loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
                     DialogsUtils.showResponseMsg(getContext(),false);
 
@@ -106,7 +111,7 @@ public class SubscribedArtistFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<SubscribeArtistModel>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                loadingDialog.dismiss();
                 mRecyclerView.setVisibility(View.VISIBLE);
                 DialogsUtils.showResponseMsg(getContext(),true);
             }

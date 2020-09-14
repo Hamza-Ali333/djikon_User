@@ -377,7 +377,6 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 
-
     private boolean isInfoRight() {
         boolean result;
         if (edt_FirstName.getText().toString().trim().isEmpty()) {
@@ -448,7 +447,6 @@ public class UserProfileActivity extends AppCompatActivity {
                                 progressBarProfile.setVisibility(View.GONE);
                             }
                         });
-
         }
 
         edt_FirstName.setText(FirstName);
@@ -525,7 +523,6 @@ public class UserProfileActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         //get selected image Image
         if (resultCode == RESULT_OK) {
             if (requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE) {

@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_Logout:
 
-                progressDialog= DialogsUtils.showProgressDialog(this,"LogingOut","Please wait...");
+                progressDialog= DialogsUtils.showProgressDialog(this,"Login Out","Please wait...");
                 userLogOut();
                 break;
 

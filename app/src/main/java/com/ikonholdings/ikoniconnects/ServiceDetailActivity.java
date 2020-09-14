@@ -85,7 +85,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private List<SingleServiceModel> singleServiceModels;
     private List<SingleServiceReviews> reviewsModels;
 
-
     private NetworkChangeReceiver mNetworkChangeReceiver;
     private AlertDialog loadingDialog;
 
@@ -99,8 +98,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-        loadingDialog = DialogsUtils.showLoadingDialogue(this);
-        Parent.setVisibility(View.GONE);
     }
 
     @Override
@@ -113,6 +110,9 @@ public class ServiceDetailActivity extends AppCompatActivity {
         createReferences();
         retrofit = ApiClient.retrofit( this);
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+
+        loadingDialog = DialogsUtils.showLoadingDialogue(this);
+        Parent.setVisibility(View.GONE);
 
         Intent intent = getIntent();
         serviceId = intent.getIntExtra("serviceId", 0);
@@ -213,7 +213,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         mGalleryLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mGalleryAdapter = new RecyclerServiceGallery(singleServiceModleArrayList);
 
-
         mGalleryRecyclerView.setLayoutManager(mGalleryLayoutManager);
         mGalleryRecyclerView.setAdapter(mGalleryAdapter);
     }
@@ -307,6 +306,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
                                 }
                                 Parent.setVisibility(View.VISIBLE);
                                 loadingDialog.dismiss();
+                                btn_Proceed_To_Pay.setVisibility(View.VISIBLE);
                             }
                         });
 

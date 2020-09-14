@@ -209,7 +209,7 @@ public class SocialMediaShareFragment extends Fragment{
                         if(bitmap != null)
                         img_Frame.setImageBitmap(bitmap);
                         else
-                            Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "something went wrong", Toast.LENGTH_SHORT).show();
                     }
                 });
 

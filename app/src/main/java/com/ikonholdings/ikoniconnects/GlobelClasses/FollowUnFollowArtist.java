@@ -3,12 +3,16 @@ package com.ikonholdings.ikoniconnects.GlobelClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.Interfaces.FollowResultInterface;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
+
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -86,7 +90,24 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                     }else {
                         mFollowResultInterface.followResponse(true);//sending info to Subscriber Acitivity
                     }
-                }else {
+                }else if(response.code() == 400){
+                    DialogsUtils.showAlertDialog(context,
+                            false,
+                            "Note",
+                            "You can't unfollow this Subscriber.\n" +
+                                    "Your account is created by this Subscriber referral");
+
+                    if(runingFromFragment){
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                  mProgressButton.btnOnCompelet("UnFollow");
+                            }
+                        });
+                    }
+                }
+                //response is not successful
+                else {
                     if(runingFromFragment){
                         ((Activity)context).runOnUiThread(new Runnable() {
                             @Override
@@ -98,8 +119,8 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                     }else {
                         mFollowResultInterface.followResponse(false);//sending info to Subscriber Acitivity
                     }
-                }
-            }
+                }//response is not successful
+            }//onResponse
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 ((Activity)context).runOnUiThread(new Runnable() {

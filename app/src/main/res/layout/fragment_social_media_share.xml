@@ -11,7 +11,7 @@
     android:layout_height="match_parent">
     <RelativeLayout
         android:id="@+id/view"
-        android:background="@color/colorWhite"
+        android:background="@color/colorBlack"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7">
@@ -20,7 +20,7 @@
             android:id="@+id/fram_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"
+            android:background="@color/colorBlack"
             android:scaleType="fitXY"/>
 
         <ImageView
@@ -40,7 +40,7 @@
             android:fontFamily="@font/montserrat"
             android:padding="8dp"
             android:text="Select Image"
-            android:textColor="@color/colorBlack" />
+            android:textColor="@color/colorWhite" />
     </RelativeLayout>
 
     <TextView
@@ -50,7 +50,7 @@
         android:layout_marginTop="10dp"
         android:layout_weight="0.1"
         android:fontFamily="@font/montserrat"
-        android:text="Select Frames"
+        android:text="Frames"
         android:textColor="@color/colorBlue"
         android:textSize="18sp" />
 

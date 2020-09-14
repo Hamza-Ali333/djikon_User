@@ -36,9 +36,16 @@ public class AllArtistFragment extends Fragment {
     private RecyclerAllArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private RelativeLayout progressBar;
     private SearchView mSearchView;
     private List<AllArtistModel> artistList;
+
+    private AlertDialog loadingDialog;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
+    }
 
     @Nullable
     @Override
@@ -51,9 +58,7 @@ public class AllArtistFragment extends Fragment {
            @Override
            public void run() {
                mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
-               progressBar = v.findViewById(R.id.progressbar);
                mRecyclerView.setVisibility(View.GONE);
-               progressBar.setVisibility(View.VISIBLE);
                mSearchView = v.findViewById(R.id.txt_search);
            }
        });
@@ -103,7 +108,7 @@ public class AllArtistFragment extends Fragment {
 
                 if(response.isSuccessful()){
 
-                    progressBar.setVisibility(View.GONE);
+                    loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
 
                     artistList = response.body();
@@ -113,10 +118,11 @@ public class AllArtistFragment extends Fragment {
                     }
                     else{
                         initializeRecycler(artistList);
+                        loadingDialog.dismiss();
                     }
 
                 }else {
-                    progressBar.setVisibility(View.GONE);
+                    loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
                     DialogsUtils.showResponseMsg(getContext(),false);
                 }
@@ -125,11 +131,10 @@ public class AllArtistFragment extends Fragment {
             @Override
             public void onFailure(Call<List<AllArtistModel>> call, Throwable t) {
                 DialogsUtils.showResponseMsg(getContext(),true);
-                progressBar.setVisibility(View.GONE);
+                loadingDialog.dismiss();
                 mRecyclerView.setVisibility(View.VISIBLE);
             }
         });
-
     }
 
     private void initializeRecycler (List<AllArtistModel> ArtistList) {
@@ -144,6 +149,7 @@ public class AllArtistFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        loadingDialog.show();
         getAllArtist();
     }
 }

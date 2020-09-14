@@ -113,16 +113,14 @@ public class SignInActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
-    private AlertDialog alert_AND_forgetDailoge;//also using for show net error
+    private AlertDialog alert_AND_forgetDialog;//also using for show net error
 
     private int OTP = 0;
     private String EmailForOTP;
     private int seconds;//seconds for showing CountDown
 
-
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
-
 
     //finger print
     private KeyStore keyStore;
@@ -151,7 +149,6 @@ public class SignInActivity extends AppCompatActivity {
     private String Password;
     private String providerId;
     private String providerName;
-
 
     @Override
     protected void onStart() {
@@ -233,11 +230,11 @@ public class SignInActivity extends AppCompatActivity {
 
                         showBiometricPrompt();
                     }else {
-                        alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,
+                        alert_AND_forgetDialog = DialogsUtils.showAlertDialog(SignInActivity.this,
                                 false,"Note","Something happened Wrong please login usually and then enable this feature again");
                     }
                 }else {
-                    alert_AND_forgetDailoge = DialogsUtils.showAlertDialog(SignInActivity.this,
+                    alert_AND_forgetDialog = DialogsUtils.showAlertDialog(SignInActivity.this,
                             false,"Note","You have to login usually for first " +
                                     "time and make sure after that you enable biometric option in app settings");
                 }
@@ -287,7 +284,6 @@ public class SignInActivity extends AppCompatActivity {
         //facebook button
         faceBookLoginManage();
 
-
         //Sign In With Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -329,7 +325,6 @@ public class SignInActivity extends AppCompatActivity {
                 DialogsUtils.showAlertDialog(SignInActivity.this,false,
                         "Note",
                         "Something happened wrong please try again or SingUp with Formally  "+exception.getMessage());
-                Log.i("TAG", "onError: "+exception);
             }
         });
     }
@@ -343,16 +338,27 @@ public class SignInActivity extends AppCompatActivity {
                         try {
                             // Application code
                             Email = response.getJSONObject().getString("email");
+
                             socialMediaFirstName = object.getString("first_name");
-                            socialMediaFirstName = socialMediaFirstName + " " + object.get("middle_name");
+
+                            try {
+                                    socialMediaFirstName = socialMediaFirstName + " " + object.get("middle_name");
+                            }catch (Exception e){
+
+                            }
+
                             socialMediaLastName = object.getString("last_name");
                             providerId =String.valueOf(AccessToken.getCurrentAccessToken());
                             providerName = "FaceBook";
                             //sign in user with this detail
-                            // manageUserLogin(true);
+                             manageUserLogin(true);
 
                         } catch (Exception e) {
                             e.printStackTrace();
+                            if(Email == null){
+                                DialogsUtils.showAlertDialog(SignInActivity.this,false,
+                                        "Email not found","IKONICONNECTS not found any email associated with this FB account\ncan't login with out email");
+                            }else
                             alertDialog = DialogsUtils.showAlertDialog(SignInActivity.this,false,
                                     "Note","Something happened wrong please try again or SingUp with Formally\n"+e.getMessage());
                         }
@@ -510,7 +516,7 @@ public class SignInActivity extends AppCompatActivity {
         builder.setCancelable(true);
 
 
-        alert_AND_forgetDailoge = builder.show();
+        alert_AND_forgetDialog = builder.show();
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -694,13 +700,13 @@ public class SignInActivity extends AppCompatActivity {
                                     lunchNextActivity();
 
                                 } else {
-                                    alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
+                                    alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,false);
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
-                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
+                                alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                             }
                         });
 
@@ -728,7 +734,7 @@ public class SignInActivity extends AppCompatActivity {
                                 } else {
                                     error.setVisibility(View.VISIBLE);
                                     progressDialog.dismiss();
-                                    alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
+                                    alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,false);
 
                                 }
                             }
@@ -736,7 +742,7 @@ public class SignInActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                                 progressDialog.dismiss();
-                                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
+                                alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                             }
                         });
 
@@ -777,7 +783,7 @@ public class SignInActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                        alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
+                        alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                     }
                 });
             }
@@ -1065,20 +1071,20 @@ public class SignInActivity extends AppCompatActivity {
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
 
                 if (response.isSuccessful()) {
-                    alert_AND_forgetDailoge.dismiss();
+                    alert_AND_forgetDialog.dismiss();
                     progressDialog.dismiss();
                     openVerfiyOTPDialogue(false);
 
                 } else {
                     progressDialog.dismiss();
-                    alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,false);
+                    alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,false);
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 progressDialog.dismiss();
-                alert_AND_forgetDailoge = DialogsUtils.showResponseMsg(SignInActivity.this,true);
+                alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
             }
         });
     }
@@ -1138,7 +1144,6 @@ public class SignInActivity extends AppCompatActivity {
         }
 
     }
-
 
     private void createReferencer() {
         txt_Create_new_account = findViewById(R.id.txt_Create_new_account);

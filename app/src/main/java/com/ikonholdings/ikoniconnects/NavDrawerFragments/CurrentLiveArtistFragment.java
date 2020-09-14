@@ -32,8 +32,8 @@ public class CurrentLiveArtistFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private AlertDialog.Builder builder;
-    private AlertDialog alertDialog;
+
+    private AlertDialog loadingDialog;
 
     @Nullable
     @Override
@@ -42,13 +42,14 @@ public class CurrentLiveArtistFragment extends Fragment {
        View v =  inflater.inflate(R.layout.fragment_live_to_artist,container,false);
 
         mRecyclerView = v.findViewById(R.id.recyclerViewLiveToArtist);
-        showLoadingDialogue();
+
         getCurrentLiveArtist();
 
 
        return v;
     }
     private void getCurrentLiveArtist(){
+        loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
         Retrofit retrofit= ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
         Call<List<CurrentLiveArtistModel>> call = jsonApiHolder.getCurrentLiveArtist();
@@ -58,8 +59,6 @@ public class CurrentLiveArtistFragment extends Fragment {
             public void onResponse(Call<List<CurrentLiveArtistModel>> call, Response<List<CurrentLiveArtistModel>> response) {
 
                 if(response.isSuccessful()){
-                    alertDialog.dismiss();
-                    mRecyclerView.setVisibility(View.VISIBLE);
 
                     List<CurrentLiveArtistModel> liveArtistModels = response.body();
                     if(liveArtistModels.isEmpty()) {
@@ -69,11 +68,13 @@ public class CurrentLiveArtistFragment extends Fragment {
                     } else{
                        buildRecyclerView(liveArtistModels);
                     }
+                    loadingDialog.dismiss();
+                    mRecyclerView.setVisibility(View.VISIBLE);
 
 
                 }else {
-                    alertDialog.dismiss();
-                    mRecyclerView.setVisibility(View.VISIBLE);
+                    loadingDialog.dismiss();
+                    mRecyclerView.setVisibility(View.GONE);
 
                     DialogsUtils.showResponseMsg(getContext(),false);
                 }
@@ -81,22 +82,12 @@ public class CurrentLiveArtistFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<CurrentLiveArtistModel>> call, Throwable t) {
-                alertDialog.dismiss();
-                mRecyclerView.setVisibility(View.VISIBLE);
-                 DialogsUtils.showResponseMsg(getContext(),true);
+                loadingDialog.dismiss();
+                mRecyclerView.setVisibility(View.GONE);
+                DialogsUtils.showResponseMsg(getContext(),true);
             }
         });
 
-    }
-
-    private void showLoadingDialogue() {
-        builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialoge_loading, null);
-
-        builder.setView(view);
-        builder.setCancelable(false);
-        alertDialog = builder.show();
     }
 
     private void buildRecyclerView(List<CurrentLiveArtistModel> liveToArtistList){

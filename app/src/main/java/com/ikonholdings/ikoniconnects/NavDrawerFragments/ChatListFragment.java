@@ -40,16 +40,18 @@ public class ChatListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private ProgressBar mProgressBar;
+
     private TextView txt_progressMsg;
     private SwipeRefreshLayout pullToRefresh;
 
-    DatabaseReference myRef;
-    List<UserChatListModel> mUserChatList;
+    private DatabaseReference myRef;
+    private List<UserChatListModel> mUserChatList;
 
-    String currentUserId;
+    private String currentUserId;
 
     private FirebaseUser fuser;
+
+    private AlertDialog loadingDialog;
 
     @Override
     public void onStart() {
@@ -62,8 +64,6 @@ public class ChatListFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_chat_area,container,false);
         createReferences(v);
-
-        showHideProgressBar();//show progressbar while downloading
 
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
@@ -83,7 +83,6 @@ public class ChatListFragment extends Fragment {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showHideProgressBar();
                 getChatList();
                 pullToRefresh.setRefreshing(false);
             }
@@ -102,6 +101,7 @@ public class ChatListFragment extends Fragment {
     }
 
     private void getChatList(){
+        loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
         //if get some data or not get the default value(No Email) form preferences
         if (!currentUserId.isEmpty() && !currentUserId.equals("No Id")) {
             myRef.child("chatListOfUser").child(currentUserId).addValueEventListener(new ValueEventListener() {
@@ -122,17 +122,17 @@ public class ChatListFragment extends Fragment {
 
                         mAdapter = new RecyclerChatList(mUserChatList,currentUserId);
                         mRecyclerView.setAdapter(mAdapter);
-                        showHideProgressBar();
+                        loadingDialog.dismiss();
 
                     }else {
-                        showHideProgressBar();
+                        loadingDialog.dismiss();
                         DialogsUtils.showAlertDialog(getContext(),false,"Note","It's seems like you didn't have conversation with any Subscriber");
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    showHideProgressBar();
+                    loadingDialog.dismiss();
                     DialogsUtils.showAlertDialog(getContext(),false,"Error","It's seems like you didn't have conversation with any Subscriber");
                 }
             });
@@ -141,21 +141,8 @@ public class ChatListFragment extends Fragment {
 
     private void createReferences(View v) {
 
-        mProgressBar = v.findViewById(R.id.progress_circular);
-        txt_progressMsg = v.findViewById(R.id.progress_msg);
         mRecyclerView = v.findViewById(R.id.recyclerView_Chat);
         pullToRefresh =v.findViewById(R.id.pullToRefresh);
-    }
-
-    private void showHideProgressBar(){
-        if (mProgressBar.getVisibility()== View.VISIBLE) {
-            mProgressBar.setVisibility(View.GONE);
-            txt_progressMsg.setVisibility(View.GONE);
-        }else
-        {
-            mProgressBar.setVisibility(View.VISIBLE);
-            txt_progressMsg.setVisibility(View.VISIBLE);
-        }
     }
 
 
