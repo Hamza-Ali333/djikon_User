@@ -1,5 +1,6 @@
 package com.ikonholdings.ikoniconnects.RecyclerView;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
+import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.ChatModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -30,6 +34,7 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
 
     private List<ChatModel> mChat_model;
     public  String currentUserId;
+    public Context context;
 
     DatabaseReference myRef;
 
@@ -55,9 +60,10 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     }
 
 //constructor
-    public RecyclerChatViewer(List<ChatModel> chat_modelList,String currentUserUid, String chatMainNode) {
+    public RecyclerChatViewer(List<ChatModel> chat_modelList, String currentUserUid, String chatMainNode, Context context) {
         this.mChat_model = chat_modelList;
         this.currentUserId = currentUserUid;
+        this.context = context;
         myRef = FirebaseDatabase.getInstance().getReference("Chats").child("Massages").child(chatMainNode);
     }
 
@@ -82,6 +88,25 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
 
        holder.txt_msg.setText(currentItem.getMessage());
        holder.txt_Time.setText(currentItem.getTime_stemp());
+
+        if (!PreferenceData.getUserImage(context).equals("no")){
+            Picasso.get().load(ApiClient.Base_Url+PreferenceData.getUserImage(context))
+                    .placeholder(R.drawable.ic_avatar)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.img_Profile, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+
+        }
 
        //image setting remaining
 

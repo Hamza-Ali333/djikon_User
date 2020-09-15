@@ -47,7 +47,9 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -508,7 +510,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                         });
                         artist_UID = dataSnapshot.child("uid").getValue(String.class);
 
-                            lunchMessageActivity();
+                        lunchMessageActivity();
 
                         }else {
 
@@ -519,7 +521,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                                 btn_Message.setEnabled(true);
                                 progressDialog.dismiss();
                                 DialogsUtils.showAlertDialog(DjProfileActivity.this,
-                                        false, "Not Connected", "May currently this Subscriber is not able to get massage.\nor try again!");
+                                        false, "Firebase Not Connected", "May currently this Subscriber is not able to get massage.\nor try again!");
                             }
                         });
                     }
@@ -551,6 +553,8 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     }
 
     private void lunchMessageActivity() {
+        img_Subscriber_Profile.buildDrawingCache();
+        Bitmap bitmap = img_Subscriber_Profile.getDrawingCache();
         Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
         i.putExtra("subscriber_Id", String.valueOf(artistID));
         i.putExtra("subscriber_Uid",artist_UID);

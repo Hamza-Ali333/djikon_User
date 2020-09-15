@@ -66,9 +66,9 @@ public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerService
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final SingleServiceReviews currentItem = serviceReviewsModels.get(position);
 
-        if (!currentItem.getImage().equals("") && currentItem.getImage() != null){
+        if (!currentItem.getImage().equals("no") && currentItem.getImage() != null){
             holder.progressBar.setVisibility(View.VISIBLE);
-            Picasso.get().load(ApiClient.Base_Url +currentItem.getImage())
+            Picasso.get().load(ApiClient.Base_Url+currentItem.getImage())
                     .placeholder(R.drawable.ic_avatar)
                     .into(holder.img_Reviewer_Profile, new Callback() {
                         @Override
@@ -81,7 +81,6 @@ public class RecyclerServiceReviews extends RecyclerView.Adapter<RecyclerService
                             holder.progressBar.setVisibility(View.GONE);
                         }
                     });
-
         }
 
         holder.txt_User_Name.setText(currentItem.getName());

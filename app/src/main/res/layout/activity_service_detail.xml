@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/colorBlack">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -162,7 +162,7 @@
             android:id="@+id/reviews_recycler"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="100dp"
+            android:paddingBottom="50dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline12"
             app:layout_constraintStart_toStartOf="@+id/guideline11"
             app:layout_constraintTop_toBottomOf="@+id/reviewheading" />
@@ -180,7 +180,7 @@
             app:layout_constraintTop_toBottomOf="@+id/recyclerview_service_gallery" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
     <Button
         android:id="@+id/btn_proceed_to_pay"
         android:layout_width="match_parent"

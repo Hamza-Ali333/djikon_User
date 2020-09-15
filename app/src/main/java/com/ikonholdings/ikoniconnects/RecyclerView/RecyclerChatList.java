@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ChatViewerActivity;
 import com.ikonholdings.ikoniconnects.ResponseModels.UserChatListModel;
 import com.ikonholdings.ikoniconnects.R;
@@ -85,7 +86,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 
         if (!currentItem.getImgProfileUrl().equals("no")) {
 
-            Picasso.get().load(currentItem.getImgProfileUrl())
+            Picasso.get().load(ApiClient.Base_Url+currentItem.getImgProfileUrl())
                     .fit()
                     .centerCrop()
                     .placeholder(R.drawable.ic_avatar)

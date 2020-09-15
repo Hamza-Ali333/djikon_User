@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.ChatModel;
@@ -61,7 +62,7 @@ import retrofit2.Response;
 public class ChatViewerActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private CircularImageView currentUserProfile;
+    private CircularImageView currentSubscriberProfile;
     private TextView toolBarTitle;
 
     private SwipeRefreshLayout pullToRefresh;
@@ -112,7 +113,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         //give the Current Time and Date
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
         //tool bar UserProfile
-        currentUserProfile.setOnClickListener(new View.OnClickListener() {
+        currentSubscriberProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ChatViewerActivity.this, DjProfileActivity.class);
@@ -131,6 +132,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         subscriberUid = i.getStringExtra("subscriber_Uid");
         subscriberName = i.getStringExtra("subscriber_Name");
         imgProfileUrl = i.getStringExtra("imgProfileUrl");
+
         setSubscriberProfile(imgProfileUrl);
 
         toolBarTitle.setText(subscriberName);//set Subscriber Name in tool bar
@@ -226,7 +228,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
 
                     mLayoutManager = new LinearLayoutManager(ChatViewerActivity.this);
-                    mAdapter = new RecyclerChatViewer(mChatModel,fuser.getUid(),chatNodeName);
+                    mAdapter = new RecyclerChatViewer(mChatModel,fuser.getUid(),chatNodeName, ChatViewerActivity.this);
 
                     mRecyclerView.setLayoutManager(mLayoutManager);
                     mRecyclerView.setAdapter(mAdapter);
@@ -256,21 +258,19 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     private void setSubscriberProfile(String imageUrl){
         if (!imageUrl.equals("No Image") && !imageUrl.equals("no")){
-
-            Picasso.get().load(imageUrl)
+            Picasso.get().load(ApiClient.Base_Url+imageUrl)
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
                     .centerCrop()
-                    .into(currentUserProfile, new com.squareup.picasso.Callback() {
+                    .into(currentSubscriberProfile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
 
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            // Toast.makeText(getC, "Something Happend Wrong feed image", Toast.LENGTH_LONG).show();
+
                         }
                     });
 
@@ -310,11 +310,10 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     }
 
-
     private void createReferences() {
         toolbar = findViewById(R.id.toolbar);
         toolBarTitle = findViewById(R.id.toolbar_title);
-        currentUserProfile = findViewById(R.id.currentUserProfile);
+        currentSubscriberProfile = findViewById(R.id.currentUserProfile);
 
         pullToRefresh =findViewById(R.id.pullToRefresh);
 
@@ -334,7 +333,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         myRef.child("Massages").child(chatNodeName).push().setValue(chatModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(ChatViewerActivity.this, "Send", Toast.LENGTH_SHORT).show();
+                //msg Send
                 if(!alreadyHaveChat){
                     checkHaveChatOrNot();
                 }
@@ -343,7 +342,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ChatViewerActivity.this, "Not Send", Toast.LENGTH_SHORT).show();
+                //not send
             }
         });
 
@@ -353,7 +352,6 @@ public class ChatViewerActivity extends AppCompatActivity {
                //nead to check this line what is the propose of this line
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
-                    Toast.makeText(ChatViewerActivity.this, Massage, Toast.LENGTH_SHORT).show();
                     sendNotification(subscriberUid,fuser.getUid(),Massage);//1=Reciever,2=Sender,Massage
                 }
                 notify = false;
@@ -385,7 +383,8 @@ public class ChatViewerActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if(! response.isSuccessful()){
-                                        Toast.makeText(ChatViewerActivity.this, "Failed to send Notification", Toast.LENGTH_SHORT).show();
+                                        //notification
+                                       // Toast.makeText(ChatViewerActivity.this, "Failed to send Notification", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 
