@@ -46,7 +46,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button btn_SignUp, btn_SignIn;
 
     private RadioButton radioButton;
-    private PreferenceData preferenceData;
 
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
@@ -80,7 +79,6 @@ public class RegistrationActivity extends AppCompatActivity {
         createReferences();
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
-        preferenceData = new PreferenceData();
 
 
         edt_Password.addTextChangedListener(new TextWatcher() {
@@ -491,6 +489,8 @@ public class RegistrationActivity extends AppCompatActivity {
             this.btn_Resend_OTP = btn_Resend_OTP;
             this.img_close = img_close;
             this.OTP_Timmer = OTP_Timmer;
+            progressDialog = DialogsUtils.showProgressDialog(RegistrationActivity.this,"" +
+                    "Sending OTP","Please wait. While sending OTP on your email.");
         }
 
         @Override
@@ -503,15 +503,17 @@ public class RegistrationActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(RegistrationActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
                                 img_close.setClickable(false);
                                 OTP_Timmer.setVisibility(View.VISIBLE);
                                 startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
+                                progressDialog.dismiss();
+                                Toast.makeText(RegistrationActivity.this, "Check Your Email", Toast.LENGTH_LONG).show();
                             }
                         });
 
                     }else {
-                        alertDialog = DialogsUtils.showResponseMsg(RegistrationActivity.this,false);
+                        progressDialog.dismiss();
+                       DialogsUtils.showResponseMsg(RegistrationActivity.this,false);
                     }
                 }
 
@@ -520,7 +522,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            alertDialog = DialogsUtils.showResponseMsg(RegistrationActivity.this,true);
+                            progressDialog.dismiss();
+                            DialogsUtils.showResponseMsg(RegistrationActivity.this,true);
                         }
                     });
                 }
@@ -579,13 +582,13 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void saveDataInPreferences(String userToken, String userId, String userName, String profileImage,String userEmail,String userPassword){
-        preferenceData.setUserToken(RegistrationActivity.this, userToken);
-        preferenceData.setUserId(RegistrationActivity.this, userId);
-        preferenceData.setUserName(RegistrationActivity.this, userName);
-        preferenceData.setUserImage(RegistrationActivity.this, profileImage);
-        preferenceData.setUserLoggedInStatus(RegistrationActivity.this, true);
-        preferenceData.setUserEmail(RegistrationActivity.this, userEmail);
-        preferenceData.setUserPassword(RegistrationActivity.this, userPassword);
+        PreferenceData.setUserToken(RegistrationActivity.this, userToken);
+        PreferenceData.setUserId(RegistrationActivity.this, userId);
+        PreferenceData.setUserName(RegistrationActivity.this, userName);
+        PreferenceData.setUserImage(RegistrationActivity.this, profileImage);
+        PreferenceData.setUserLoggedInStatus(RegistrationActivity.this, true);
+        PreferenceData.setUserEmail(RegistrationActivity.this, userEmail);
+        PreferenceData.setUserPassword(RegistrationActivity.this, userPassword);
     }
 
     @Override

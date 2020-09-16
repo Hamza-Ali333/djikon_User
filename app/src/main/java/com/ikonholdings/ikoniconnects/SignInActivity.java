@@ -171,7 +171,6 @@ public class SignInActivity extends AppCompatActivity {
         createReferencer();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
         LoginManager.getInstance().logOut();
-
         //Handel the Result When User Sign In Throw the BioMetric
         biometricSingInCallBackHandler();
 
@@ -766,25 +765,28 @@ public class SignInActivity extends AppCompatActivity {
         btn_Resend_OTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                btn_Resend_OTP.setClickable(false);
+                Log.i("TAG", "onClick: btn clicked");
+                progressDialog = DialogsUtils.showProgressDialog(SignInActivity.this,"" +
+                        "Sending OTP","Please wait. While sending OTP on your email.");
 
                 Call<SuccessErrorModel> call = jsonApiHolder.resendOTP(EmailForOTP);
                 call.enqueue(new Callback<SuccessErrorModel>() {
                     @Override
                     public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                         if (response.isSuccessful()) {
-
-                            Toast.makeText(SignInActivity.this, "Check Your Email", Toast.LENGTH_SHORT).show();
                             img_close.setClickable(false);//Make User to Unable to close Dailoge Until the time End
                             startTimer(OTP_Timmer, btn_Resend_OTP, img_close);
+                            progressDialog.dismiss();
+                            Toast.makeText(SignInActivity.this, "Check Your Email", Toast.LENGTH_LONG).show();
                         }else {
-                           DialogsUtils.showResponseMsg(SignInActivity.this,false);
+                            progressDialog.dismiss();
+                            DialogsUtils.showResponseMsg(SignInActivity.this,false);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+                        progressDialog.dismiss();
                         alert_AND_forgetDialog = DialogsUtils.showResponseMsg(SignInActivity.this,true);
                     }
                 });
