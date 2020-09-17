@@ -173,7 +173,6 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-
         btn_Update_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -204,7 +203,6 @@ public class UserProfileActivity extends AppCompatActivity {
         ArrayAdapter<String> Cadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countryArrayList);
 
         edt_Location.setAdapter(Cadapter);///HERE YOUR_LIST_VIEW IS YOUR LISTVIEW NAME
-
 
     }//onCreate
 

@@ -459,7 +459,6 @@ public class RegistrationActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
 
-
             }
 
             public void afterTextChanged(Editable s) {
@@ -478,7 +477,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-    }//openVerifyOTPDialoge
+    }//openVerifyOTPDialog
 
     private class  ResendOTPToEmail extends  AsyncTask<String,Void,Void> {
         Button btn_Resend_OTP;

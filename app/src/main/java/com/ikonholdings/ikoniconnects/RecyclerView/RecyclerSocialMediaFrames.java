@@ -34,7 +34,6 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
     }
 
 
-
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -55,7 +54,6 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
         this.context = context;
 
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -94,6 +92,7 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
             public void onClick(View view) {
                 holder.img_Frame.buildDrawingCache();
                 Bitmap bitmap = holder.img_Frame.getDrawingCache();
+
                 onItemClickListner.onClick(bitmap);
             }
         });

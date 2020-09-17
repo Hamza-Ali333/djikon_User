@@ -685,6 +685,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                         progressDialog.dismiss();
                          DialogsUtils.showAlertDialog(context,
                                 false,
                                 "Note",

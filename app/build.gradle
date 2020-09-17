@@ -76,7 +76,6 @@ dependencies {
     //braintree
     implementation 'com.braintreepayments.api:drop-in:4.6.0'
     implementation 'com.braintreepayments.gateway:braintree-java:3.1.0'
-
     //Async
     implementation 'com.loopj.android:android-async-http:1.4.9'
 
