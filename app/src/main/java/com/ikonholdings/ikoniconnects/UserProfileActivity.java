@@ -90,10 +90,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private String[] serverData;
     private String[] newData;
 
-
     private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 2000;
-
 
     private Bitmap bitmap;
     private Uri Image_uri;

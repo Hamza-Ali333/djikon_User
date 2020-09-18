@@ -1,5 +1,6 @@
 package com.ikonholdings.ikoniconnects.RecyclerView;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
+import com.ikonholdings.ikoniconnects.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.CurrentLiveArtistModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -73,6 +75,15 @@ public class RecyclerLiveToArtist extends RecyclerView.Adapter<RecyclerLiveToArt
                         }
                     });
         }//if
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), DjProfileActivity.class);
+                intent.putExtra("id", currentItem.getId());
+                v.getContext().startActivity(intent);
+            }
+        });
 
 
     }

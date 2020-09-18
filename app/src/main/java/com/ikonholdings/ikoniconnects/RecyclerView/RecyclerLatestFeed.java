@@ -85,10 +85,9 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         FeedBlogModel currentItem = mBlogModelArrayList.get(position);
-
         if (!currentItem.getArtist_image().equals("no")) {
             holder.progressBarProfile.setVisibility(View.VISIBLE);
-            Picasso.get().load(currentItem.getArtist_image())
+            Picasso.get().load(ApiClient.Base_Url+currentItem.getArtist_image())
                     .placeholder(R.drawable.progressbar)
                     .fit()
                     .centerCrop()
