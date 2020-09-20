@@ -64,7 +64,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button btn_Update_Profile;
     private Spinner mSpinner;
     private ImageView img_Profile;
-    private TextView txt_Subscribe, txt_Disclosure, txt_About, txt_Setting;
+    private TextView txt_Disclosure, txt_About, txt_Setting;
     private ImageView img_Disclosure, img_About, img_Setting;
 
     private ConstraintLayout rlt_Parent;
@@ -595,7 +595,6 @@ public class UserProfileActivity extends AppCompatActivity {
         rlt_Parent = findViewById(R.id.parent);
         progressBarProfile = findViewById(R.id.progressBarProfile);
 
-        txt_Subscribe = findViewById(R.id.subscribe);
         txt_Disclosure = findViewById(R.id.disclosure);
         txt_About = findViewById(R.id.about);
         txt_Setting = findViewById(R.id.setting);
