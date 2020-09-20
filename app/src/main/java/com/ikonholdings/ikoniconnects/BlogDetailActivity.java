@@ -63,17 +63,13 @@ public class BlogDetailActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView loading;
 
-
     private SliderView sliderView;
     private ImageView img_Profile;
     private ProgressBar profileProgressBar;
 
-
-
     private int blogId;
     private String Gallery;
     private String Video;
-
 
     private List<SliderModel> mSliderModels = new ArrayList<>();
     private List<CommentModel> mCommentModelList;
@@ -83,9 +79,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-
     private VideoView videoView;
-
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
@@ -128,9 +122,7 @@ public class BlogDetailActivity extends AppCompatActivity {
         Url += String.valueOf(id);
         Featured_image = intent.getStringExtra("featured_image");
 
-
         downloadBlogs(Url);
-
 
         //setting the controller's on the videoView
         MediaController mediaController = new MediaController(this);

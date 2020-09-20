@@ -79,7 +79,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private float totalRating;
 
     private int artistId;
-    private Bitmap BitmapImage;
 
     private List<SliderModel> singleServiceModleArrayList;
     private List<SingleServiceModel> singleServiceModels;
@@ -117,8 +116,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         serviceId = intent.getIntExtra("serviceId", 0);
         artistId = intent.getIntExtra("artistId", 0);
-        BitmapImage = (Bitmap) intent.getParcelableExtra("BitmapImage");
-
 
         new GetServiceDataAndReviews().execute(String.valueOf(serviceId));
 

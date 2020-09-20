@@ -324,7 +324,7 @@
                     app:layout_constraintTop_toTopOf="@+id/txt_days" />
 
                 <TextView
-                    android:id="@+id/textView16"
+                    android:id="@+id/subscribe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -335,15 +335,15 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView17"
+                    android:id="@+id/setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Start Time"
                     android:textColor="@color/colorBlack"
                     android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="@+id/textView16"
-                    app:layout_constraintTop_toBottomOf="@+id/textView16" />
+                    app:layout_constraintStart_toStartOf="@+id/subscribe"
+                    app:layout_constraintTop_toBottomOf="@+id/subscribe" />
 
                 <TextView
                     android:id="@+id/date"
@@ -353,8 +353,8 @@
                     android:text="End Date"
                     android:textColor="@color/colorBlack"
                     android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="@+id/textView17"
-                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                    app:layout_constraintStart_toStartOf="@+id/setting"
+                    app:layout_constraintTop_toBottomOf="@+id/setting" />
 
                 <TextView
                     android:id="@+id/time"
@@ -383,7 +383,7 @@
                     android:text="0 PM"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@+id/start_date"
-                    app:layout_constraintTop_toTopOf="@+id/textView17" />
+                    app:layout_constraintTop_toTopOf="@+id/setting" />
 
                 <TextView
                     android:id="@+id/end_date"

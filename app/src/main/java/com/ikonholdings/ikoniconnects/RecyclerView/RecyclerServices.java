@@ -99,13 +99,10 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
             @Override
             public void onClick(View v) {
                 //sending Featured Image only
-                holder.img_featured.buildDrawingCache();
-                Bitmap bitmap = holder.img_featured.getDrawingCache();
 
                 Intent i = new Intent(v.getContext(), ServiceDetailActivity.class);
                 i.putExtra("serviceId",currentItem.getId());
                 i.putExtra("artistId",artistId);
-                i.putExtra("BitmapImage", bitmap);
                 v.getContext().startActivity(i);
             }
         });

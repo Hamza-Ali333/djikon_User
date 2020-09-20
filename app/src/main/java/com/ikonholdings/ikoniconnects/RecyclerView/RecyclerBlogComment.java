@@ -36,10 +36,6 @@ public class RecyclerBlogComment extends RecyclerView.Adapter<RecyclerBlogCommen
             txt_User_Name = itemView.findViewById(R.id.txt_user_name);
             txt_Body = itemView.findViewById(R.id.txt_body);
             txt_Created_Date = itemView.findViewById(R.id.txt_created_date);
-
-
-
-
         }
     }
 

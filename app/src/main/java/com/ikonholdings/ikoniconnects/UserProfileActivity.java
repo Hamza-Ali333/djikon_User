@@ -64,19 +64,18 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button btn_Update_Profile;
     private Spinner mSpinner;
     private ImageView img_Profile;
+    private TextView txt_Subscribe, txt_Disclosure, txt_About, txt_Setting;
+    private ImageView img_Disclosure, img_About, img_Setting;
 
-    private RelativeLayout rlt_AboutApp, rlt_Setting, rlt_Disclosures;
     private ConstraintLayout rlt_Parent;
     private Switch swt_subcribeState;
-    private ProgressBar mProgressBar;
-    private TextView msg;
 
     private ProgressBar progressBarProfile;
 
     private Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
-    private AlertDialog alertDialog;
+
 
     private String[] genderArray = {"Select Gender", "Male", "Female", "Other"};//for sippiner adapter
     private String FirstName, LastName;
@@ -90,10 +89,10 @@ public class UserProfileActivity extends AppCompatActivity {
     private String[] serverData;
     private String[] newData;
 
-
     private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 2000;
 
+    private AlertDialog loadingDialog;
 
     private Bitmap bitmap;
     private Uri Image_uri;
@@ -119,8 +118,7 @@ public class UserProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         createReferences();
         rlt_Parent.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
-        msg.setVisibility(View.VISIBLE);
+        loadingDialog = DialogsUtils.showLoadingDialogue(this);
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
@@ -150,26 +148,45 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-        rlt_AboutApp.setOnClickListener(new View.OnClickListener() {
+        txt_About.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openAboutAppDialogue();
             }
         });
 
-        rlt_Disclosures.setOnClickListener(new View.OnClickListener() {
+        txt_Disclosure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDisclusorDialog();
             }
         });
 
-        rlt_Setting.setOnClickListener(new View.OnClickListener() {
+        txt_Setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(UserProfileActivity.this, ProfileSettingActivity.class);
-                i.putExtra("password",isHavePassword);
-                startActivity(i);
+               lunchSettingActivity();
+            }
+        });
+
+        img_About.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAboutAppDialogue();
+            }
+        });
+
+        img_Disclosure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDisclusorDialog();
+            }
+        });
+
+        img_Setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lunchSettingActivity();
             }
         });
 
@@ -205,6 +222,12 @@ public class UserProfileActivity extends AppCompatActivity {
         edt_Location.setAdapter(Cadapter);///HERE YOUR_LIST_VIEW IS YOUR LISTVIEW NAME
 
     }//onCreate
+
+    private void lunchSettingActivity () {
+        Intent i = new Intent(UserProfileActivity.this, ProfileSettingActivity.class);
+        i.putExtra("password",isHavePassword);
+        startActivity(i);
+    }
 
 
     private void openAboutAppDialogue() {
@@ -287,20 +310,19 @@ public class UserProfileActivity extends AppCompatActivity {
                         }
                     }
                             rlt_Parent.setVisibility(View.VISIBLE);
-                            mProgressBar.setVisibility(View.GONE);
-                            msg.setVisibility(View.GONE);
+                            loadingDialog.dismiss();
                             setDataInToViews();
                 } else {
                     rlt_Parent.setVisibility(View.VISIBLE);
-                    mProgressBar.setVisibility(View.GONE);
-                    msg.setVisibility(View.GONE);
+                    loadingDialog.dismiss();
                     DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
                 }
             }
 
             @Override
             public void onFailure(Call<DjAndUserProfileModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
+                loadingDialog.dismiss();
+                 DialogsUtils.showResponseMsg(UserProfileActivity.this,false);
             }
         });
     }
@@ -571,13 +593,17 @@ public class UserProfileActivity extends AppCompatActivity {
 
         swt_subcribeState = findViewById(R.id.swt_subscribeState);
         rlt_Parent = findViewById(R.id.parent);
-        mProgressBar = findViewById(R.id.progress_circular);
         progressBarProfile = findViewById(R.id.progressBarProfile);
-        msg = findViewById(R.id.msg);
 
-        rlt_AboutApp = findViewById(R.id.rlt_aboutApp);
-        rlt_Disclosures = findViewById(R.id.rlt_disclosures);
-        rlt_Setting = findViewById(R.id.rlt_setting);
+        txt_Subscribe = findViewById(R.id.subscribe);
+        txt_Disclosure = findViewById(R.id.disclosure);
+        txt_About = findViewById(R.id.about);
+        txt_Setting = findViewById(R.id.setting);
+
+
+        img_Disclosure = findViewById(R.id.disclusor_aero);
+        img_About = findViewById(R.id.about_aero);
+        img_Setting = findViewById(R.id.setting_aero);
     }
 
     @Override

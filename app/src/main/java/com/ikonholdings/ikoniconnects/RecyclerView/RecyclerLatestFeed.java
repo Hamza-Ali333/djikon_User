@@ -40,7 +40,6 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
     private List<FeedBlogModel> mBlogModelArrayList;
 
     private Context context;
-    private AlertDialog alertDialog;
 
     private int total_likes;
 
@@ -229,14 +228,14 @@ public class RecyclerLatestFeed extends RecyclerView.Adapter<RecyclerLatestFeed.
                     view.setEnabled(true);
                     Log.i(TAG, "onResponse: "+response.code());
                 }else {
-                    alertDialog = DialogsUtils.showResponseMsg(context,
+                     DialogsUtils.showResponseMsg(context,
                             false);
                 }
             }
 
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showResponseMsg(context,
+                 DialogsUtils.showResponseMsg(context,
                         true);
             }
         });
