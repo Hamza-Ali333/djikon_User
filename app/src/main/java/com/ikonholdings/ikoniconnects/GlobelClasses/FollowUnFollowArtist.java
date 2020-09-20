@@ -29,6 +29,10 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
 
     private FollowResultInterface mFollowResultInterface;
 
+    public interface FollowResultInterface {
+        void followResponse(Boolean response);
+    }
+
     public FollowUnFollowArtist(int CurrentStatus, String artistID, Context context, View view) {
         this.CurrentStatus = CurrentStatus;
         this.artistID = artistID;

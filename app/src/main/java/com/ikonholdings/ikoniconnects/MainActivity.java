@@ -73,14 +73,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar toolbar;
 
-    private PreferenceData preferenceData;
-
     private CircularImageView currentUserProfile;
     private ImageView UserProfileHeader;
     private TextView UserName;
 
     private ProgressDialog progressDialog;
-    private AlertDialog alertDialog;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
@@ -120,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     new RegisteringUserAlsoOnFirebase().execute(isComeFromRegistrationActivity);
             }
         } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i("TAG", "onStart: "+e.getMessage());
         }
 
         retrofit = ApiClient.retrofit(this);
@@ -132,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         createReferences();
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
-        preferenceData = new PreferenceData();
 
         UserName.setText(PreferenceData.getUserName(MainActivity.this));
 
@@ -143,8 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         currentUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
-                startActivity(i);
+                startActivity( new Intent(MainActivity.this, UserProfileActivity.class));
             }
         });
 
@@ -189,12 +184,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void createReferences(){
 
         toolbar = findViewById(R.id.toolbar);
-        currentUserProfile = findViewById(R.id.currentUserProfile);
 
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_View);
         navHeaderView =  navigationView.getHeaderView(0);
 
+        currentUserProfile = findViewById(R.id.currentUserProfile);
         UserProfileHeader = navHeaderView.findViewById(R.id.img_userProfile);
         UserName = navHeaderView.findViewById(R.id.txt_userName);
     }
@@ -286,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 else {
                     progressDialog.dismiss();
                     Log.i("TAG", "onResponse: "+response.code());
-                    alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,
+                    DialogsUtils.showResponseMsg(MainActivity.this,
                             false);
                 }
             }
@@ -294,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFailure(Call<LoginRegistrationModel> call, Throwable t) {
                 Log.i("TAG", "onFailure: "+t.getMessage());
-                alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,
+                DialogsUtils.showResponseMsg(MainActivity.this,
                         true);
             }
         });
@@ -366,9 +361,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String userUId = mFirebaseUser.getUid();
             Map<String, String> userData = new HashMap<>();
             userData.put("uid", userUId);
-            userData.put("server_id", preferenceData.getUserId(this));
+            userData.put("server_id", PreferenceData.getUserId(this));
 
-            myRef.child("Users").child(preferenceData.getUserId(this)).setValue(userData);
+            myRef.child("Users").child(PreferenceData.getUserId(this)).setValue(userData);
         } else {
             Log.i("TAG", "saveUserIDAndUIDonFirebase: no user found");
         }
@@ -388,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onResponse(Call<Void> call, Response<Void> response) {
                        if(!response.isSuccessful()){
                            //if failed to send token on server then run Again
-                           alertDialog = DialogsUtils.showResponseMsg(MainActivity.this,false);
+                            DialogsUtils.showResponseMsg(MainActivity.this,false);
                        }
                     }
                     @Override

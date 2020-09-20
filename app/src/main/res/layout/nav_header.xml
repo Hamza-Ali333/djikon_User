@@ -15,6 +15,7 @@
         android:id="@+id/img_userProfile"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        app:civ_border_width="2dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="@null"
         app:srcCompat="@drawable/ic_avatar"/>
@@ -28,6 +29,7 @@
         android:textStyle="bold"
         android:textSize="18sp"
         android:textColor="#fff"
+        android:maxLength="@integer/bt_match_parent"
         android:layout_centerHorizontal="true"
         android:text="Gavin Craig"/>
 

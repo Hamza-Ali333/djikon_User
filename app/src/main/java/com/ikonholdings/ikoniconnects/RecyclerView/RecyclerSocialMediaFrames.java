@@ -20,7 +20,6 @@ import java.util.List;
 public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSocialMediaFrames.ViewHolder> {
 
     private List<FramesModel> frameImageList;
-    private Context context;
 
     private onItemClickListner onItemClickListner;
 
@@ -49,10 +48,8 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
     }
 
     //constructor
-    public RecyclerSocialMediaFrames(List<FramesModel> liveArtistModels, Context context) {
+    public RecyclerSocialMediaFrames(List<FramesModel> liveArtistModels) {
         this.frameImageList = liveArtistModels;
-        this.context = context;
-
     }
 
     @Override

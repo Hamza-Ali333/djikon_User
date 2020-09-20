@@ -55,8 +55,7 @@ public class SocialMediaShareFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private AlertDialog.Builder builder;
-    private AlertDialog alertDialog;
+    private AlertDialog loadingDialog;
     private List<FramesModel> listOFImagesName;
 
     private ImageView img_Main;
@@ -84,7 +83,7 @@ public class SocialMediaShareFragment extends Fragment{
        createReferencse(v);
 
         listOFImagesName = new ArrayList<>();
-        showLoadingDialogue();
+        loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
         getFrames();
 
 
@@ -144,11 +143,9 @@ public class SocialMediaShareFragment extends Fragment{
             public void onResponse(Call<List<FramesModel>> call, Response<List<FramesModel>> response) {
 
                 if(response.isSuccessful()){
-                    alertDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
-
                     List<FramesModel> framesModelList= response.body();
-
+                    loadingDialog.dismiss();
                     if(framesModelList.isEmpty()) {
                         //if no data then show dialoge to user
                         DialogsUtils.showAlertDialog(getContext(),false,
@@ -159,7 +156,7 @@ public class SocialMediaShareFragment extends Fragment{
                     }
 
                 }else {
-                    alertDialog.dismiss();
+                    loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.GONE);
 
                     DialogsUtils.showResponseMsg(getContext(),false);
@@ -168,21 +165,11 @@ public class SocialMediaShareFragment extends Fragment{
 
             @Override
             public void onFailure(Call<List<FramesModel>> call, Throwable t) {
-                alertDialog.dismiss();
+                loadingDialog.dismiss();
                 mRecyclerView.setVisibility(View.VISIBLE);
                 DialogsUtils.showResponseMsg(getContext(),true);
             }
         });
-    }
-
-    private void showLoadingDialogue() {
-        builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialoge_loading, null);
-
-        builder.setView(view);
-        builder.setCancelable(false);
-        alertDialog = builder.show();
     }
 
     private void sperationOfArray(List<FramesModel> list){
@@ -202,7 +189,7 @@ public class SocialMediaShareFragment extends Fragment{
     private void buildRecyclerView(List<FramesModel> imageslist){
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        mAdapter = new RecyclerSocialMediaFrames(imageslist,getContext());
+        mAdapter = new RecyclerSocialMediaFrames(imageslist);
         ((RecyclerSocialMediaFrames) mAdapter).setOnItemClickListner(new RecyclerSocialMediaFrames.onItemClickListner() {
                     @Override
                     public void onClick(Bitmap bitmap) {
