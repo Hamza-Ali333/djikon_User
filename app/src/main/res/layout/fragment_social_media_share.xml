@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:weightSum="10"
-    android:padding="10dp"
     android:background="@color/colorBlack"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,13 +13,13 @@
         android:background="@color/colorBlack"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7">
+        android:layout_weight="7.5">
 
         <ImageView
             android:id="@+id/main_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="14dp"
+            android:layout_margin="0dp"
             android:scaleType="fitXY"
             />
 
@@ -28,8 +27,9 @@
             android:id="@+id/fram_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorBlack"
             android:scaleType="fitXY"/>
+
+
 
         <Button
             android:id="@+id/selectIamge"
@@ -66,11 +66,13 @@
         />
 
  <androidx.recyclerview.widget.RecyclerView
-     android:layout_width="wrap_content"
+     android:layout_width="match_parent"
      android:layout_height="0dp"
-     android:padding="6dp"
+     android:background="@color/colorWhite"
+     android:layout_marginTop="4dp"
+     android:padding="4dp"
      android:id="@+id/recyclerView_frame"
-     android:layout_weight="1.5"/>
+     android:layout_weight="1.2"/>
 
     <View
         android:layout_width="match_parent"

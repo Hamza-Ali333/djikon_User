@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.BookArtistOrServiceActivity;
 import com.ikonholdings.ikoniconnects.ResponseModels.ServicesModel;
 import com.ikonholdings.ikoniconnects.R;
@@ -30,7 +31,6 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
 
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
 
         public TextView txt_ServiceName, txt_ServiceDetail, txt_Price,txt_ChargesType;
         public RatingBar ratingBar;
@@ -80,7 +80,7 @@ public class RecyclerServices extends RecyclerView.Adapter<RecyclerServices.View
 
         if (!currentItem.getFeature_image().equals("no")) {
             holder.progressBar.setVisibility(View.VISIBLE);
-            Picasso.get().load(currentItem.getFeature_image())
+            Picasso.get().load(ApiClient.Base_Url+currentItem.getFeature_image())
                     .fit()
                     .centerCrop()
                     .into(holder.img_featured, new com.squareup.picasso.Callback() {

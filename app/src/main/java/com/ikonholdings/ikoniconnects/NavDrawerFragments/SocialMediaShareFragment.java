@@ -47,7 +47,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static android.app.Activity.RESULT_OK;
-//import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class SocialMediaShareFragment extends Fragment{

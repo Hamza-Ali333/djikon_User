@@ -58,7 +58,7 @@ public class RecyclerDjBlogs extends RecyclerView.Adapter<RecyclerDjBlogs.ViewHo
 
         holder.txt_BlogTitle.setText(currentItem.getTitle());
 
-        if (!currentItem.getPhoto().equals("no")) {
+        if (currentItem.getPhoto()!= null && !currentItem.getPhoto().equals("no")) {
             holder.progressBar.setVisibility(View.VISIBLE);
             Picasso.get().load(ApiClient.Base_Url +currentItem.getPhoto())
                     .fit()

@@ -32,10 +32,8 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
         this.onItemClickListner = onItemClickListner;
     }
 
-
     //view holder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
         public ImageView img_Frame;
         public ProgressBar progressBar;
 
@@ -63,14 +61,12 @@ public class RecyclerSocialMediaFrames extends RecyclerView.Adapter<RecyclerSoci
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         FramesModel currentItem = frameImageList.get(position);
-        Log.i("TAG", "onBindViewHolder: "+currentItem);
 
         if (currentItem.getFrame() != null && !currentItem.getFrame().equals("no")) {
             holder.progressBar.setVisibility(View.VISIBLE);
             Picasso.get().load(currentItem.getFrame())
                     .placeholder(R.drawable.ic_avatar)
                     .fit()
-                    .centerCrop()
                     .into(holder.img_Frame, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {

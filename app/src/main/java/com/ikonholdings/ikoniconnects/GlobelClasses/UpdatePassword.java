@@ -2,6 +2,7 @@ package com.ikonholdings.ikoniconnects.GlobelClasses;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.widget.Toast;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
@@ -24,12 +25,18 @@ public class UpdatePassword {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
-                    mProgressDialog.dismiss();
-                    DialogsUtils.showSuccessDialog(context,"Successful","Password is updated successfully.",false);
-                }else {
-                    mProgressDialog.dismiss();
+                    DialogsUtils.showAlertDialog(context,
+                            false,
+                            "Successful",
+                            "Password is updated successfully.");
+                }else if(response.code() == 404){
+                    DialogsUtils.showProgressDialog(context,
+                            "Error",
+                            "Old password is not matched Try Again!.");
+                } else {
                     DialogsUtils.showResponseMsg(context,false);
                 }
+                mProgressDialog.dismiss();
             }
 
             @Override

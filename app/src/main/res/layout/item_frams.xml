@@ -9,9 +9,11 @@
         android:id="@+id/frame"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_avatar" />
+
     <ProgressBar
         android:id="@+id/progressBarProfile"
         style="?android:attr/progressBarStyle"
@@ -23,4 +25,5 @@
         app:layout_constraintEnd_toEndOf="@+id/frame"
         app:layout_constraintStart_toStartOf="@+id/frame"
         app:layout_constraintTop_toTopOf="@+id/frame" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
