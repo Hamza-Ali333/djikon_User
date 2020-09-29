@@ -86,7 +86,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
     Retrofit retrofit;
-    private JSONApiHolder  JsonApiHolder;
+    private JSONApiHolder JsonApiHolder;
 
 
     @Override
@@ -198,23 +198,15 @@ public class BlogDetailActivity extends AppCompatActivity {
                     String Profile = detailModel.getArtist_profile_image();
                     blogId = detailModel.getId();
 
-
                     alertDialog.dismiss();
                     parentLayout.setVisibility(View.VISIBLE);
 
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            
-                            //if comment is not Zero build recycler view
-                            mRecyclerView.setVisibility(View.GONE);
-                            if (Comments != 0) {
-                                mRecyclerView.setVisibility(View.VISIBLE);
-                                initializeCommentRecycler(detailModel.mCommentModels);
-                            }
-                        }
-                    });
-                    thread.start();
+                    //if comment is not Zero build recycler view
+                    mRecyclerView.setVisibility(View.GONE);
+                    if (Comments != 0) {
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        initializeCommentRecycler(detailModel.mCommentModels);
+                    }
 
                     setDataIntoFields(Name, Profile, Title, Description, Likes, Comments, CreateTime);
 
@@ -232,10 +224,6 @@ public class BlogDetailActivity extends AppCompatActivity {
                     }
 
 
-                    Thread VideoThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i("TAG", "thread2: " + Thread.currentThread().getId());
                             if (!Video.equals("no")) {
                                 frameLayout.setVisibility(View.VISIBLE);
                                 progressBar.setVisibility(View.VISIBLE);
@@ -253,13 +241,10 @@ public class BlogDetailActivity extends AppCompatActivity {
                             } else {
                                 frameLayout.setVisibility(View.GONE);
                             }
-                        }
-                    });
-                    VideoThread.start();
 
 
                 } else {
-                   alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,false);
+                    alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this, false);
 
                     return;
                 }
@@ -268,8 +253,8 @@ public class BlogDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SingleBlogDetailModel> call, Throwable t) {
-                alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,true);
-                 progressBar.setVisibility(View.GONE);
+                alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this, true);
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -346,7 +331,7 @@ public class BlogDetailActivity extends AppCompatActivity {
 
         if (Slider) {
             for (int i = 0; i <= Gallery.length - 1; i++) {
-                mSliderModels.add(new SliderModel(ApiClient.Base_Url+"post_images/" + Gallery[i]));
+                mSliderModels.add(new SliderModel(ApiClient.Base_Url + "post_images/" + Gallery[i]));
             }
         } else {
             mSliderModels.add(new SliderModel(Featured_image));
@@ -400,12 +385,12 @@ public class BlogDetailActivity extends AppCompatActivity {
         alertDialog = builder.show();
     }
 
-    private class postComment extends AsyncTask<String,Void,Void> {
+    private class postComment extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... strings) {
             JsonApiHolder = retrofit.create(JSONApiHolder.class);
-            Call<SuccessErrorModel> call = JsonApiHolder.postComment("comment_store/"+String.valueOf(blogId), strings[0]);
+            Call<SuccessErrorModel> call = JsonApiHolder.postComment("comment_store/" + String.valueOf(blogId), strings[0]);
             call.enqueue(new Callback<SuccessErrorModel>() {
                 @Override
                 public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
@@ -413,16 +398,17 @@ public class BlogDetailActivity extends AppCompatActivity {
                         Intent intent = getIntent();
                         finish();
                         startActivity(intent);
-                    }else {
-                        alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,false);
+                    } else {
+                        alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this, false);
                     }
                 }
+
                 @Override
                 public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this,true);
+                            alertDialog = DialogsUtils.showResponseMsg(BlogDetailActivity.this, true);
                         }
                     });
                 }

@@ -68,7 +68,7 @@ public class RecyclerSliderAdapter extends
        // viewHolder.itemView.setBackgroundResource(currentItem.getImage());
 
 
-        if(!currentItem.getImage().isEmpty() && !currentItem.getImage().equals("no") ){
+        if(currentItem.getImage() != null && !currentItem.getImage().isEmpty() && !currentItem.getImage().equals("no") ){
             viewHolder.loading.setVisibility(View.VISIBLE);
             Picasso.get().load(currentItem.getImage())
                     .into(viewHolder.imageViewBackground, new Callback() {
