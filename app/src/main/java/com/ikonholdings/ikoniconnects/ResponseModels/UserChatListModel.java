@@ -5,16 +5,27 @@ public class UserChatListModel {
     private  String subscriber_Id, subscriber_Name, subscriber_Uid, imgProfileUrl, key;
     private  String talkTime,last_send_msg;
 
+    private String status;
+
     public UserChatListModel() {
     }
 
     //this constructor only for id , dJName, imageUrl
-    public UserChatListModel(String subscriber_Id, String subscriber_Uid, String subscriber_Name, String imgProfileUrl, String key) {
+    public UserChatListModel(String subscriber_Id, String subscriber_Uid, String subscriber_Name, String imgProfileUrl,String status ,String key) {
         this.subscriber_Id = subscriber_Id;
         this.subscriber_Uid = subscriber_Uid;
         this.subscriber_Name = subscriber_Name;
         this.imgProfileUrl = imgProfileUrl;
+        this.status = status;
         this.key = key;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getSubscriber_Uid() {

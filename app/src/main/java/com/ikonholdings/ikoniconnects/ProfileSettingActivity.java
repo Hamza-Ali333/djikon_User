@@ -61,6 +61,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
         }else {
             swt_Biometric_State.setChecked(false);
         }
+
         rlt_ChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

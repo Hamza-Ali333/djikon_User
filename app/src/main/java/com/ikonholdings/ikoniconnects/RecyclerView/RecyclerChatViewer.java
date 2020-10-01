@@ -35,6 +35,8 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     private List<ChatModel> mChat_model;
     public  String currentUserId;
     public Context context;
+    public String senderImage, receiverImage;
+    public Boolean sender = false;
 
     DatabaseReference myRef;
 
@@ -60,10 +62,17 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
     }
 
 //constructor
-    public RecyclerChatViewer(List<ChatModel> chat_modelList, String currentUserUid, String chatMainNode, Context context) {
+    public RecyclerChatViewer(List<ChatModel> chat_modelList,
+                              String currentUserUid,
+                              String chatMainNode,
+                              Context context,
+                              String senderimg,
+                              String recieverimg) {
         this.mChat_model = chat_modelList;
         this.currentUserId = currentUserUid;
         this.context = context;
+        this.senderImage = senderimg;
+        this.receiverImage = recieverimg;
         myRef = FirebaseDatabase.getInstance().getReference("Chats").child("Massages").child(chatMainNode);
     }
 
@@ -89,15 +98,19 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
        holder.txt_msg.setText(currentItem.getMessage());
        holder.txt_Time.setText(currentItem.getTime_stemp());
 
-        if (!PreferenceData.getUserImage(context).equals("no")){
-            Picasso.get().load(ApiClient.Base_Url+PreferenceData.getUserImage(context))
+        String imageUrl = null;
+        if(sender){
+            imageUrl = senderImage;
+        }else {
+            imageUrl = receiverImage;
+        }
+        if(imageUrl != null){
+            Picasso.get().load((ApiClient.Base_Url+imageUrl))
                     .placeholder(R.drawable.ic_avatar)
-                    .fit()
-                    .centerCrop()
                     .into(holder.img_Profile, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
-
+                            ;
                         }
 
                         @Override
@@ -105,7 +118,6 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
 
                         }
                     });
-
         }
 
        //image setting remaining
@@ -157,8 +169,10 @@ holder.rlt_ChatItem.setOnLongClickListener(new View.OnLongClickListener() {
     public int getItemViewType(int position) {
 
         if(mChat_model.get(position).getSender().equals(currentUserId)){
+            sender = true;
             return MSG_TYPE_RIGHT;
         }else {
+            sender = false;
             return MSG_TYPE_LEFT;
         }
     }

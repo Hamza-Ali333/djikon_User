@@ -117,6 +117,7 @@ public class ChatListFragment extends Fragment {
                                     snapshot.child("subscriber_Uid").getValue(String.class),
                                     snapshot.child("subscriber_Name").getValue(String.class),
                                     snapshot.child("imgProfileUrl").getValue(String.class),
+                                    snapshot.child("status").getValue(String.class),
                                     snapshot.getKey()
                             ));
                         }

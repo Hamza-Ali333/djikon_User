@@ -80,7 +80,6 @@ public class ChatViewerActivity extends AppCompatActivity {
     private List<ChatModel> mChatModel;
 
     private ProgressDialog mProgressDialog;
-    private AlertDialog alertDialog;
     private Boolean alreadyHaveChat = false;
 
     private String subscriberId;
@@ -111,7 +110,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         apiService = Client.getClient("https://fcm.googleapis.com").create(APIService.class);
 
         //give the Current Time and Date
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         //tool bar UserProfile
         currentSubscriberProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,7 +227,12 @@ public class ChatViewerActivity extends AppCompatActivity {
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
 
                     mLayoutManager = new LinearLayoutManager(ChatViewerActivity.this);
-                    mAdapter = new RecyclerChatViewer(mChatModel,fuser.getUid(),chatNodeName, ChatViewerActivity.this);
+                    mAdapter = new RecyclerChatViewer(mChatModel,fuser.getUid(),
+                            chatNodeName,
+                            ChatViewerActivity.this,
+                            PreferenceData.getUserImage(ChatViewerActivity.this),
+                            imgProfileUrl
+                            );
 
                     mRecyclerView.setLayoutManager(mLayoutManager);
                     mRecyclerView.setAdapter(mAdapter);
@@ -240,7 +244,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                 }else {
                     //open msg dailog
                     mProgressDialog.dismiss();
-                    alertDialog = DialogsUtils.showAlertDialog(ChatViewerActivity.this,
+                    DialogsUtils.showAlertDialog(ChatViewerActivity.this,
                             false,
                             "No Data Found",
                             "Sorry You Not Have"
@@ -438,19 +442,23 @@ public class ChatViewerActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            //sender
             UserChatListModel userChatListModel = new UserChatListModel();
             userChatListModel.setsubscriber_Id(String.valueOf(subscriberId));
             userChatListModel.setsubscriber_Uid(subscriberUid);
             userChatListModel.setsubscriber_Name(subscriberName);
             userChatListModel.setimgProfileUrl(imgProfileUrl);
-            myRef.child("chatListOfUser").child(CurrentUserId).push().setValue(userChatListModel);
+            userChatListModel.setStatus("online");
+            myRef.child("chatListOfUser").child(CurrentUserId).child(subscriberId).setValue(userChatListModel);
 
+            //receiver
             Map<String, String> userData = new HashMap<>();
             userData.put("user_Id", CurrentUserId);
             userData.put("user_Name",userName);
             userData.put("user_Uid", fuser.getUid());
             userData.put("imgProfileUrl",imgProfileUrl);
-            myRef.child("chatListOfSubscriber").child(String.valueOf(subscriberId)).push().setValue(userData);
+            userData.put("status","offline");
+            myRef.child("chatListOfSubscriber").child(String.valueOf(subscriberId)).child(CurrentUserId).setValue(userData);
 
             return null;
         }

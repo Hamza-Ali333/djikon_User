@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,18 +44,19 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
         public TextView txt_msg_Sender_Name;
        // public TextView  txt_Last_msg,txt_Recive_Time;
         public TextView  txt_UnRead;
-        public RelativeLayout rlt_ChatItem;
+        public ImageView offline, online;
+
 
         public ViewHolder(View itemView){
             super(itemView);
             img_msg_Subscriber_Profile = itemView.findViewById(R.id.img_msg_sender);
 
             txt_msg_Sender_Name = itemView.findViewById(R.id.txt_msg_sender_name);
+            offline = itemView.findViewById(R.id.offline);
+            online = itemView.findViewById(R.id.online);
 //            txt_Last_msg = itemView.findViewById(R.id.txt_last_send_msg);
 //            txt_Recive_Time = itemView.findViewById(R.id.txt_recieve_time);
 //            txt_UnRead = itemView.findViewById(R.id.txt_unRead_msgs);
-
-            rlt_ChatItem = itemView.findViewById(R.id.rlt_chatitem);
 
         }
 
@@ -81,8 +83,13 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
     public void onBindViewHolder(final ViewHolder holder, final int position) {
        final UserChatListModel currentItem = mChat_Aera.get(position);
 
-
        holder.txt_msg_Sender_Name.setText(currentItem.getSubscriber_Name());
+
+       if(currentItem.getStatus().equals("online")){
+           holder.online.setVisibility(View.VISIBLE);
+       }else {
+           holder.offline.setVisibility(View.VISIBLE);
+       }
 
         if (!currentItem.getImgProfileUrl().equals("no")) {
 
@@ -109,7 +116,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 //       holder.txt_Recive_Time.setText(currentItem.getMsg_Recieved_Time());
 
 
-       holder.rlt_ChatItem.setOnClickListener(new View.OnClickListener() {
+       holder.itemView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
@@ -122,7 +129,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
        });
 
         //long clicked
-       holder.rlt_ChatItem.setOnLongClickListener(new View.OnLongClickListener() {
+       holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
            @RequiresApi(api = Build.VERSION_CODES.M)
            @Override
            public boolean onLongClick(View view) {
@@ -136,7 +143,7 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 //                   }
 //               });
 //               builder.show();
-               PopupMenu popupMenu = new PopupMenu(view.getContext(), holder.rlt_ChatItem);
+               PopupMenu popupMenu = new PopupMenu(view.getContext(), holder.itemView);
                popupMenu.inflate(R.menu.chat_option);
                popupMenu.setGravity(Gravity.END);
                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

@@ -33,23 +33,25 @@
             android:textSize="20sp"
             />
         <ImageView
+            android:id="@+id/online"
             android:layout_height="15dp"
             android:layout_width="15dp"
             android:src="@drawable/ic_online"
             android:layout_toRightOf="@+id/img_msg_sender"
             android:layout_toEndOf="@+id/img_msg_sender"
             android:layout_marginLeft="-15dp"
-            android:visibility="visible"
+            android:visibility="gone"
             />
+
         <ImageView
-            android:layout_height="15dp"
+            android:id="@+id/offline"
             android:layout_width="15dp"
-            android:src="@drawable/ic_offline"
-            android:layout_toRightOf="@+id/img_msg_sender"
-            android:layout_toEndOf="@+id/img_msg_sender"
+            android:layout_height="15dp"
             android:layout_marginLeft="-15dp"
-            android:visibility="visible"
-            />
+            android:layout_toEndOf="@+id/img_msg_sender"
+            android:layout_toRightOf="@+id/img_msg_sender"
+            android:src="@drawable/ic_offline"
+            android:visibility="gone" />
 
         <!--<TextView
             android:id="@+id/txt_last_send_msg"

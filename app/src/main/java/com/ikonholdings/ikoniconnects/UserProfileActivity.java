@@ -76,7 +76,6 @@ public class UserProfileActivity extends AppCompatActivity {
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
 
-
     private String[] genderArray = {"Select Gender", "Male", "Female", "Other"};//for sippiner adapter
     private String FirstName, LastName;
 
@@ -102,11 +101,9 @@ public class UserProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-
     }
 
     @Override
