@@ -223,7 +223,6 @@ public class BlogDetailActivity extends AppCompatActivity {
                         initializeImageSlider(null, false);
                     }
 
-
                             if (!Video.equals("no")) {
                                 frameLayout.setVisibility(View.VISIBLE);
                                 progressBar.setVisibility(View.VISIBLE);

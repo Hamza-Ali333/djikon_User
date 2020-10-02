@@ -104,8 +104,6 @@ public class SubscribedArtistFragment extends Fragment {
                     loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
                     DialogsUtils.showResponseMsg(getContext(),false);
-
-                    Log.i("TAG", "onResponse: "+response.code());
                 }
             }
 
