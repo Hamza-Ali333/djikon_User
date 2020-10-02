@@ -26,6 +26,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
     @Override
@@ -38,7 +39,17 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         if(firebaseUser != null  && sented.equals(firebaseUser.getUid())){
             //sendNotification(remoteMessage);
-            showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+            boolean foregroud = false;
+            try {
+                foregroud = new ForegroundCheckTask().execute(this).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(foregroud){
+                showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+            }
         }
     }
 
