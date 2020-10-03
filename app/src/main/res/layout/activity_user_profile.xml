@@ -178,7 +178,7 @@
                 android:layout_width="175dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/fullroundshape"
+                android:background="@drawable/round_black_btn"
                 android:fontFamily="@font/montserrat"
                 android:text="Update"
                 android:textAllCaps="false"

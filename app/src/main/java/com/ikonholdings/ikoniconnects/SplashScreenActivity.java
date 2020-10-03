@@ -4,16 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.Toast;
 
 
 import com.ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.google.firebase.auth.FirebaseAuth;
+import com.ikonholdings.ikoniconnects.OnlineOfflineChat.ChangeUserStatus;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -27,6 +25,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         //PreferenceData.clearLoginState(this);
         //mFirebaseAuth.getInstance().signOut();
+
+       // new ChangeUserStatus(true,PreferenceData.getUserId(this)).execute();
+
         getSupportActionBar().hide();
 
        int i = PreferenceData.getBuildVersion(this);

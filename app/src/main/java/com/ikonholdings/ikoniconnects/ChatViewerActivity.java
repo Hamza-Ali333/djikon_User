@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.ChatModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.UserChatListModel;
@@ -94,11 +96,17 @@ public class ChatViewerActivity extends AppCompatActivity {
 
     private String Msg;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
     @Override
     protected void onStart() {
         super.onStart();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         userName = PreferenceData.getUserName(this);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mNetworkChangeReceiver, filter);
     }
 
     @Override
@@ -107,6 +115,7 @@ public class ChatViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_viewer);
         createReferences();
         setSupportActionBar(toolbar);
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
         apiService = Client.getClient("https://fcm.googleapis.com").create(APIService.class);
 
@@ -438,7 +447,6 @@ public class ChatViewerActivity extends AppCompatActivity {
         return true;
     }
 
-
     private class CreateChatListOfUserAndSubscriber extends AsyncTask<Void,Void, Void>{
 
         @Override
@@ -450,7 +458,7 @@ public class ChatViewerActivity extends AppCompatActivity {
             userChatListModel.setsubscriber_Name(subscriberName);
             userChatListModel.setimgProfileUrl(imgProfileUrl);
             userChatListModel.setStatus("online");
-            myRef.child("chatListOfUser").child(CurrentUserId).child(subscriberId).setValue(userChatListModel);
+            myRef.child("chatListOfUser").child(CurrentUserId).push().setValue(userChatListModel);
 
             //receiver
             Map<String, String> userData = new HashMap<>();
@@ -459,10 +467,19 @@ public class ChatViewerActivity extends AppCompatActivity {
             userData.put("user_Uid", fuser.getUid());
             userData.put("imgProfileUrl",imgProfileUrl);
             userData.put("status","offline");
-            myRef.child("chatListOfSubscriber").child(String.valueOf(subscriberId)).child(CurrentUserId).setValue(userData);
+            myRef.child("chatListOfSubscriber").child(String.valueOf(subscriberId)).push().setValue(userData);
 
             return null;
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            unregisterReceiver(mNetworkChangeReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

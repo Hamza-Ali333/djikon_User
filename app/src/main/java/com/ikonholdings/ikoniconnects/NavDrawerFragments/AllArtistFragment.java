@@ -54,15 +54,10 @@ public class AllArtistFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_subscribe_artist,container,false);
         artistList = new ArrayList<>();
 
-       Thread createRefereces = new Thread(new Runnable() {
-           @Override
-           public void run() {
-               mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
-               mRecyclerView.setVisibility(View.GONE);
-               mSearchView = v.findViewById(R.id.txt_search);
-           }
-       });
-       createRefereces.start();
+        mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
+        mRecyclerView.setVisibility(View.GONE);
+        mSearchView = v.findViewById(R.id.txt_search);
+
 
        getAllArtist();
 

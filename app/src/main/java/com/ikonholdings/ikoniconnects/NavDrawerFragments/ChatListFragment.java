@@ -1,12 +1,14 @@
 package com.ikonholdings.ikoniconnects.NavDrawerFragments;
 
 import android.app.AlertDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
+import com.ikonholdings.ikoniconnects.OnlineOfflineChat.StatusModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.UserChatListModel;
 import com.ikonholdings.ikoniconnects.Notification.Token;
 import com.ikonholdings.ikoniconnects.R;
@@ -31,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
 
@@ -103,6 +107,7 @@ public class ChatListFragment extends Fragment {
 
     private void getChatList(){
         loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
+
         //if get some data or not get the default value(No Email) form preferences
         if (!currentUserId.isEmpty() && !currentUserId.equals("No Id")) {
             myRef.child("chatListOfUser").child(currentUserId).addValueEventListener(new ValueEventListener() {
@@ -122,7 +127,7 @@ public class ChatListFragment extends Fragment {
                             ));
                         }
 
-                        mAdapter = new RecyclerChatList(mUserChatList,currentUserId);
+                        mAdapter = new RecyclerChatList(mUserChatList, currentUserId);
                         mRecyclerView.setAdapter(mAdapter);
                         loadingDialog.dismiss();
 

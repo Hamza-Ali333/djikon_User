@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ChatViewerActivity;
+import com.ikonholdings.ikoniconnects.OnlineOfflineChat.StatusModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.UserChatListModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.google.firebase.database.DataSnapshot;
@@ -60,11 +62,10 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 
         }
 
-
     }
 
 //constructor
-    public RecyclerChatList(List<UserChatListModel> chat_List_modelArrayList,String currentUserId) {
+    public RecyclerChatList(List<UserChatListModel> chat_List_modelArrayList, String currentUserId) {
         this.mChat_Aera = chat_List_modelArrayList;
         myRef = FirebaseDatabase.getInstance().getReference("Chats").child("chatListOfUser").child(currentUserId);
     }
@@ -85,11 +86,10 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
 
        holder.txt_msg_Sender_Name.setText(currentItem.getSubscriber_Name());
 
-       if(currentItem.getStatus().equals("online")){
-           holder.online.setVisibility(View.VISIBLE);
-       }else {
-           holder.offline.setVisibility(View.VISIBLE);
-       }
+
+//           if(currentItem.getStatus().equals("online")) holder.online.setVisibility(View.VISIBLE);
+//           else holder.offline.setVisibility(View.VISIBLE);
+
 
         if (!currentItem.getImgProfileUrl().equals("no")) {
 
@@ -119,12 +119,12 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
        holder.itemView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
-               i.putExtra("subscriber_Id", currentItem.getSubscriber_Id());
-               i.putExtra("subscriber_Uid", currentItem.getSubscriber_Uid());
-               i.putExtra("subscriber_Name", currentItem.getSubscriber_Name());
-               i.putExtra("imgProfileUrl", currentItem.getImgProfileUrl());
-               view.getContext().startActivity(i);
+//               Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
+//               i.putExtra("subscriber_Id", currentItem.getSubscriber_Id());
+//               i.putExtra("subscriber_Uid", currentItem.getSubscriber_Uid());
+//               i.putExtra("subscriber_Name", currentItem.getSubscriber_Name());
+//               i.putExtra("imgProfileUrl", currentItem.getImgProfileUrl());
+//               view.getContext().startActivity(i);
            }
        });
 
