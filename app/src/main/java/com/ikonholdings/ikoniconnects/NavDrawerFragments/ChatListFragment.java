@@ -44,7 +44,6 @@ public class ChatListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-
     private TextView txt_progressMsg;
     private SwipeRefreshLayout pullToRefresh;
 

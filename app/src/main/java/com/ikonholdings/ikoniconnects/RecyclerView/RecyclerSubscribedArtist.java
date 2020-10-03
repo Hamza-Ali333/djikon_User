@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
+import com.ikonholdings.ikoniconnects.Interfaces.FollowResultInterface;
 import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.mikhaellopez.circularimageview.CircularImageView;

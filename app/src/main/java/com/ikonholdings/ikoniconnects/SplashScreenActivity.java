@@ -10,13 +10,9 @@ import android.os.Handler;
 
 import com.ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
-import com.google.firebase.auth.FirebaseAuth;
-import com.ikonholdings.ikoniconnects.OnlineOfflineChat.ChangeUserStatus;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
-
-    private FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
