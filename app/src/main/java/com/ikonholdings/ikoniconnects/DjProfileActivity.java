@@ -28,7 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
-import com.ikonholdings.ikoniconnects.Interfaces.FollowResultInterface;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjAndUserProfileModel;
@@ -47,16 +46,14 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class DjProfileActivity extends AppCompatActivity implements FollowResultInterface {
+public class DjProfileActivity extends AppCompatActivity implements FollowUnFollowArtist.FollowResultInterface {
 
     private Button btn_Book_Artist,
             btn_Request_A_Song,
@@ -82,7 +79,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
             mProfile,
             mAbout,
             mOnlineStatus,
-    SubscriberBookingRatePerHour;
+            SubscriberBookingRatePerHour;
 
     private int artistID, mFollower_Count, mFollow_Status;
 
@@ -151,8 +148,9 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                 btn_Follow.setClickable(false);
                 btn_Follow.setEnabled(false);
                 //followUnFollow();
-                new FollowUnFollowArtist(1,
-                        "1",
+                new FollowUnFollowArtist(
+                        mFollow_Status,
+                        String.valueOf(artistID),
                         DjProfileActivity.this).execute();
             }
         });
@@ -302,12 +300,12 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     }
 
     private void getProfileDataFromServer(String subscriberId) {
-         retrofit= ApiClient.retrofit(this);
-         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-         String relativeURL = "user/"+subscriberId;
-         Call<DjAndUserProfileModel> call = jsonApiHolder.getSubscriberOrUserProfile(relativeURL);
+        retrofit= ApiClient.retrofit(this);
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        String relativeURL = "user/"+subscriberId;
+        Call<DjAndUserProfileModel> call = jsonApiHolder.getSubscriberOrUserProfile(relativeURL);
 
-         call.enqueue(new Callback<DjAndUserProfileModel>() {
+        call.enqueue(new Callback<DjAndUserProfileModel>() {
             @Override
             public void onResponse(Call<DjAndUserProfileModel> call, Response<DjAndUserProfileModel> response) {
 
@@ -359,17 +357,17 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     }
 
     private void setOnlineStatus(String onlineStatus) {
-    if(onlineStatus != null) {
-        if (onlineStatus.equals("0")) {
-            this.onlineStatus.setText("Offline");
-            this.onlineStatus.setTextColor(getResources().getColor(R.color.colorRed));
-            this.onlineStatus.setBackgroundResource(R.drawable.redround_stroke);
-        } else {
-            this.onlineStatus.setText("Online ");
-            this.onlineStatus.setTextColor(getResources().getColor(R.color.colorBlue));
-            this.onlineStatus.setBackgroundResource(R.drawable.blueround_stroke);
+        if(onlineStatus != null) {
+            if (onlineStatus.equals("0")) {
+                this.onlineStatus.setText("Offline");
+                this.onlineStatus.setTextColor(getResources().getColor(R.color.colorRed));
+                this.onlineStatus.setBackgroundResource(R.drawable.redround_stroke);
+            } else {
+                this.onlineStatus.setText("Online ");
+                this.onlineStatus.setTextColor(getResources().getColor(R.color.colorBlue));
+                this.onlineStatus.setBackgroundResource(R.drawable.blueround_stroke);
+            }
         }
-    }
     }
 
     private void createReferences() {
@@ -401,15 +399,15 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
         Call<SuccessErrorModel> call = jsonApiHolder.postSongRequest(relativeUrl,
                 UserName,
                 SongName
-                );
+        );
 
         call.enqueue(new Callback<SuccessErrorModel>() {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
-                            progressDialog.dismiss();
-                            snackBarText.setText("Request Posted Successfully");
-                            snackbar.show();
+                    progressDialog.dismiss();
+                    snackBarText.setText("Request Posted Successfully");
+                    snackbar.show();
                 }else {
                     progressDialog.dismiss();
                     DialogsUtils.showResponseMsg(DjProfileActivity.this,false);
@@ -429,27 +427,27 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
 
     private void followUnFollow (Boolean responseResult) {
-                if(responseResult){
-                    if (mFollow_Status == 0){
-                        mFollow_Status = 1;
-                        mFollower_Count++;
-                        snackBarText.setText(" Follow Successfully");
-                        btn_Follow.setText("UnFollow");
-                    }
-                    else {
-                        mFollow_Status = 0;
-                        mFollower_Count--;
-                        snackBarText.setText(" UnFollow Successfully");
-                        btn_Follow.setText("Follow");
-                    }
-                    txt_Total_Follower.setText(String.valueOf(mFollower_Count));
-                    snackbar.show();
-                    btn_Follow.setClickable(true);
-                    btn_Follow.setEnabled(true);
-                }else {
-                    DialogsUtils.showResponseMsg(DjProfileActivity.this,
-                            false);
-                }
+        if(responseResult){
+            if (mFollow_Status == 0){
+                mFollow_Status = 1;
+                mFollower_Count++;
+                snackBarText.setText(" Follow Successfully");
+                btn_Follow.setText("UnFollow");
+            }
+            else {
+                mFollow_Status = 0;
+                mFollower_Count--;
+                snackBarText.setText(" UnFollow Successfully");
+                btn_Follow.setText("Follow");
+            }
+            txt_Total_Follower.setText(String.valueOf(mFollower_Count));
+            snackbar.show();
+            btn_Follow.setClickable(true);
+            btn_Follow.setEnabled(true);
+        }else {
+            DialogsUtils.showResponseMsg(DjProfileActivity.this,
+                    false);
+        }
     }
 
     private void showLoadingDialogue() {
@@ -465,7 +463,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
     @Override
     protected void onStop() {
         super.onStop();
-         try {
+        try {
             unregisterReceiver(mNetworkChangeReceiver);
         } catch (Exception e) {
             e.printStackTrace();
@@ -516,7 +514,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
 
                         lunchMessageActivity();
 
-                        }else {
+                    }else {
 
                         runOnUiThread(new Runnable() {
                             @Override
@@ -541,7 +539,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowResult
                             DialogsUtils.showAlertDialog(DjProfileActivity.this,
                                     false,"Error","Something happened wrong\nplease try again!");
                         }
-                     });
+                    });
                 }
             });
             return null;

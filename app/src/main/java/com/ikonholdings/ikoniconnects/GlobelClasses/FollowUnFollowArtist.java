@@ -3,16 +3,11 @@ package com.ikonholdings.ikoniconnects.GlobelClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
-import com.ikonholdings.ikoniconnects.Interfaces.FollowResultInterface;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
-
-import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -105,7 +100,7 @@ public class FollowUnFollowArtist extends AsyncTask<Void,Void,Void> {
                         ((Activity)context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                  mProgressButton.btnOnCompelet("UnFollow");
+                                mProgressButton.btnOnCompelet("UnFollow");
                             }
                         });
                     }

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
 import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerSubscribedArtist;
@@ -33,7 +34,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 
-public class SubscribedArtistFragment extends Fragment {
+public class SubscribedArtistFragment extends Fragment implements FollowUnFollowArtist.FollowResultInterface {
 
     private RecyclerView mRecyclerView;
     private RecyclerSubscribedArtist mAdapter;
@@ -41,6 +42,8 @@ public class SubscribedArtistFragment extends Fragment {
 
     private AlertDialog loadingDialog;
     private SearchView mSearchView;
+
+
 
     @Override
     public void onStart() {
@@ -130,5 +133,10 @@ public class SubscribedArtistFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getSubscribedArtist();
+    }
+
+    @Override
+    public void followResponse(Boolean response) {
+
     }
 }
