@@ -30,6 +30,7 @@ import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.BookingHistoryFragment;
+import com.ikonholdings.ikoniconnects.NavDrawerFragments.CheckingFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.CurrentLiveArtistFragment;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.AllArtistFragment;
@@ -257,6 +258,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_Logout:
                 progressDialog= DialogsUtils.showProgressDialog(this,"Login Out","Please wait...");
                 userLogOut();
+                break;
+
+            case R.id.nav_Checking:
+                getSupportActionBar().setTitle(R.string.Artist);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new CheckingFragment()).commit();
                 break;
 
         }
