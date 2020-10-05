@@ -2,14 +2,10 @@ package com.ikonholdings.ikoniconnects.NavDrawerFragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -19,12 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
-import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerSubscribedArtist;
+import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
 
 import java.util.List;
 

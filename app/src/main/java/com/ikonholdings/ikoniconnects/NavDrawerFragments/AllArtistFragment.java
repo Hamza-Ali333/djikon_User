@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -15,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
-import com.ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
+import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerAllArtist;
+import com.ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
 
 import java.util.ArrayList;
 import java.util.List;
