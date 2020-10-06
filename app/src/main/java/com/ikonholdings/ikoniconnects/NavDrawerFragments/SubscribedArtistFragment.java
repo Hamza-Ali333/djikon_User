@@ -39,14 +39,6 @@ public class SubscribedArtistFragment extends Fragment implements FollowUnFollow
     private AlertDialog loadingDialog;
     private SearchView mSearchView;
 
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

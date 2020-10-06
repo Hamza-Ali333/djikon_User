@@ -126,6 +126,12 @@ public interface JSONApiHolder {
     );
 
     @FormUrlEncoded
+    @POST("chekout")
+    Call <Void> Checkout(
+            @FieldMap Map<String, String> params
+    );
+
+    @FormUrlEncoded
     @POST("verify_email")
     Call <LoginRegistrationModel> verifyEmail(
             @Field("email") String email,

@@ -88,12 +88,13 @@
             android:layout_weight="1"
             android:background="@drawable/edt_shape"
             android:hint="Name"
+            android:maxLines="1"
             android:textColorHint="#ACACAC"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/edt_booker_phone"
@@ -110,7 +111,7 @@
             android:paddingTop="8dp"
             android:paddingRight="8dp"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <EditText
@@ -125,7 +126,7 @@
         android:paddingTop="8dp"
         android:paddingRight="8dp"
         android:textColor="#fff"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -201,10 +202,11 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/edt_shape"
         android:hint="Address"
+        android:gravity="start"
         android:textColorHint="#ACACAC"
-        android:paddingLeft="8dp"
+        android:padding="8dp"
         android:textColor="#fff"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 
     <RadioButton
         android:id="@+id/radiobtn_payment"

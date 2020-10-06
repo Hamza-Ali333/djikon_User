@@ -44,6 +44,8 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -598,8 +600,8 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
                 String paymentMethodNonce = result.getPaymentMethodNonce().getNonce();
                 progressDialog = DialogsUtils.showProgressDialog(context, "Post Amount", "Please wait while confirming collecting amount of service");
 
-                PostNonceToServer(paymentMethodNonce);
-
+                //PostNonceToServer(paymentMethodNonce);
+                postNonceWithRetrofit(paymentMethodNonce);
             } else if (resultCode == RESULT_CANCELED) {
                 //the user canceled
                 Toast.makeText(this, "Payment Cancle", Toast.LENGTH_SHORT).show();
@@ -661,38 +663,67 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         }
     }
 
-    private void PostNonceToServer(String Nonce) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("payment_method_nonce", Nonce);
-        params.put("amount", TotalAmount);
-        params.put("receiver_id", artistId);
-        params.put("sender_id", Integer.parseInt(PreferenceData.getUserId(this)));
-        params.put("service_id", serviceId);
 
-        client.post(ApiClient.Base_Url+"api/chekout", params,
-                new AsyncHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+    private void postNonceWithRetrofit(String Nonce){
+            String EndDate, EndTime;
 
-                        progressDialog.dismiss();
-                        progressDialog = DialogsUtils.showProgressDialog(context,
-                                "Post Booking",
-                                "Please wait while booking is posting on server");
+            if (priceType.equals("Fix")) {
+                EndDate = "0";
+                EndTime = "0";
+            }else {
+                EndDate = txt_End_Date.getText().toString();
+                EndTime = txt_End_Time.getText().toString();
+            }
 
-                        postBooking(TotalAmount);
-                    }
+        Map<String, String> params = new HashMap<>();
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                         progressDialog.dismiss();
-                         DialogsUtils.showAlertDialog(context,
-                                false,
-                                "Note",
-                                "Please check your internet and try again \n"+error.getMessage());
-                    }
+            params.put("payment_method_nonce", Nonce);
+            params.put("amount", TotalAmount);
+            params.put("receiver_id", String.valueOf(artistId));
+            params.put("sub_id", String.valueOf(artistId));
+            params.put("sender_id", PreferenceData.getUserId(this));
+            params.put("service_id", String.valueOf(serviceId));
+            params.put("name", edt_Name.getText().toString());
+            params.put("email",  edt_Email.getText().toString());
+            params.put("phone",  edt_Phone.getText().toString());
+            params.put("address",  edt_Address.getText().toString());
+            params.put("start_date",  txt_Start_Date.getText().toString());
+            params.put("end_date", EndDate);
+            params.put("start_time",  txt_Start_Time.getText().toString());
+            params.put("end_time", EndTime);
+
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        Call<Void> call = jsonApiHolder.Checkout(params);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    progressDialog.dismiss();
+                    DialogsUtils.showSuccessDialog(BookArtistOrServiceActivity.this,"Congratulation","Your booking is successfully done." +
+                            "You will be inform when if Subscriber accept or reject Booking\nThank You",true);
+
+                }else if(response.code() == 404){
+                    progressDialog.dismiss();
+                    DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this,
+                            false, "Error",
+                            "Something went wrong with your card");
                 }
-        );
+                else {
+                    progressDialog.dismiss();
+                    DialogsUtils.showResponseMsg(BookArtistOrServiceActivity.this, false);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                progressDialog.dismiss();
+                DialogsUtils.showAlertDialog(BookArtistOrServiceActivity.this, false, " Error", t.getMessage());
+            }
+        });
+
+
     }
 
     @Override
