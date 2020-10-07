@@ -1,6 +1,5 @@
 package com.ikonholdings.ikoniconnects.NavDrawerFragments;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +32,6 @@ import com.ikonholdings.ikoniconnects.GlobelClasses.SaveFramImage;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerSocialMediaFrames;
 import com.ikonholdings.ikoniconnects.ResponseModels.FramesModel;
-import com.ikonholdings.ikoniconnects.UserProfileActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -67,9 +64,6 @@ public class SocialMediaShareFragment extends Fragment{
     //for permission handling and onActivity Result
     private static final int IMAGE_PICK_GALLARY_REQUEST_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 2000;
-
-    private String cameraPermission[];
-    private String storagePermission[];
 
     private Uri Image_uri;
     private TextView txt_Change_Image;

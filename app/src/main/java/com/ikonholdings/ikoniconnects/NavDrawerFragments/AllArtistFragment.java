@@ -57,7 +57,6 @@ public class AllArtistFragment extends Fragment {
         mRecyclerView.setVisibility(View.GONE);
         mSearchView = v.findViewById(R.id.txt_search);
 
-
        getAllArtist();
 
        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
