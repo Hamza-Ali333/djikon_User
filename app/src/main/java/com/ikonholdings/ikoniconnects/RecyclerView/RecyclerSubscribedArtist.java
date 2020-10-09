@@ -3,6 +3,7 @@ package com.ikonholdings.ikoniconnects.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -203,6 +204,7 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
                             if(artistID.equals(mSubscribeArtistList.get(i).getId())){
                                 mSubscribeArtistList.remove(i);
                                 notifyItemRangeRemoved(i,mSubscribeArtistList.size());
+                                Log.i("TAG", "onResponse: "+mSubscribeArtistList);
                             }
                         }
                         mProgressButton.btnOnCompelet("UnFollowed");
