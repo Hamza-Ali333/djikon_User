@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.Chat.ChatViewerActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
@@ -255,7 +256,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
     }
 
     private void buildBlogRecycler(List<DjProfileBlogsModel> blogslist) {
-
         mBlogRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         BlogLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         BlogAdapter = new RecyclerDjBlogs(blogslist);
@@ -417,7 +417,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
             @Override
             public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
                 progressDialog.dismiss();
-                progressDialog.dismiss();
                 snackBarText.setText("OPPS Something Happend Wrong Check Network");
                 snackbar.show();
                 DialogsUtils.showResponseMsg(DjProfileActivity.this,true);
@@ -557,7 +556,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
     private void lunchMessageActivity() {
         img_Subscriber_Profile.buildDrawingCache();
         Bitmap bitmap = img_Subscriber_Profile.getDrawingCache();
-        Intent i = new Intent(DjProfileActivity.this,ChatViewerActivity.class);
+        Intent i = new Intent(DjProfileActivity.this, ChatViewerActivity.class);
         i.putExtra("subscriber_Id", String.valueOf(artistID));
         i.putExtra("subscriber_Uid",artist_UID);
         i.putExtra("subscriber_Name",mSubscriberName);

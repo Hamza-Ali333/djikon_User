@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Notification;
+package com.ikonholdings.ikoniconnects.Chat.Notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
-import com.ikonholdings.ikoniconnects.ChatViewerActivity;
+import com.ikonholdings.ikoniconnects.Chat.ChatViewerActivity;
 import com.ikonholdings.ikoniconnects.MainActivity;
 import com.ikonholdings.ikoniconnects.R;
 import com.google.firebase.auth.FirebaseAuth;

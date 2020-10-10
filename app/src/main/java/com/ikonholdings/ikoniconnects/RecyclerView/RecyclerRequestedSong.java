@@ -58,23 +58,6 @@ public class RecyclerRequestedSong extends RecyclerView.Adapter<RecyclerRequeste
         holder.txt_Subscriber_Name.setText(currentItem.getFirstname() +" "+ currentItem.getLastname());
         holder.txt_Song_Name.setText(currentItem.getSong_name());
 
-//        if(currentItem.getCreated_Date() != null){
-//            Picasso.get().load(currentItem.getCreated_Date())
-//                    .placeholder(R.drawable.ic_avatar)
-//                    .fit()
-//                    .centerCrop()
-//                    .into(holder.img_Subscriber_Profile, new com.squareup.picasso.Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//
-//                        }
-//                        @Override
-//                        public void onError(Exception e) {
-//
-//                        }
-//                    });
-    //    }//if
-
 }
 
     @Override

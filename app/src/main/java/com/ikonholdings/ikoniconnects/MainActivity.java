@@ -4,21 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -26,15 +22,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.Chat.MessageRoomFragment;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.BookingHistoryFragment;
-import com.ikonholdings.ikoniconnects.NavDrawerFragments.CheckingFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.CurrentLiveArtistFragment;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.AllArtistFragment;
-import com.ikonholdings.ikoniconnects.NavDrawerFragments.ChatListFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.SubscribedArtistFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.LatestFeedFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.LiveToArtistFragment;
@@ -54,10 +49,6 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -216,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_ChatArea:
                 getSupportActionBar().setTitle(R.string.ChatArea);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ChatListFragment()).commit();
+                        new MessageRoomFragment()).commit();
                 break;
 
             case R.id.nav_Following:
@@ -258,12 +249,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_Logout:
                 progressDialog= DialogsUtils.showProgressDialog(this,"Login Out","Please wait...");
                 userLogOut();
-                break;
-
-            case R.id.nav_Checking:
-                getSupportActionBar().setTitle(R.string.Artist);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CheckingFragment()).commit();
                 break;
 
         }

@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Notification;
+package com.ikonholdings.ikoniconnects.Chat.Notification;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

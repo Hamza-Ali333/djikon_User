@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Chat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -23,18 +22,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
+import com.ikonholdings.ikoniconnects.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
+import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.ChatModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.UserChatListModel;
-import com.ikonholdings.ikoniconnects.Notification.APIService;
-import com.ikonholdings.ikoniconnects.Notification.Client;
-import com.ikonholdings.ikoniconnects.Notification.Data;
-import com.ikonholdings.ikoniconnects.Notification.MyResponse;
-import com.ikonholdings.ikoniconnects.Notification.Sender;
-import com.ikonholdings.ikoniconnects.Notification.Token;
-import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerChatViewer;
+import com.ikonholdings.ikoniconnects.Chat.Notification.APIService;
+import com.ikonholdings.ikoniconnects.Chat.Notification.Client;
+import com.ikonholdings.ikoniconnects.Chat.Notification.Data;
+import com.ikonholdings.ikoniconnects.Chat.Notification.MyResponse;
+import com.ikonholdings.ikoniconnects.Chat.Notification.Sender;
+import com.ikonholdings.ikoniconnects.Chat.Notification.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

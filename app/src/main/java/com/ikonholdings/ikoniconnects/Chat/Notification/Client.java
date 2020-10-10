@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Notification;
+package com.ikonholdings.ikoniconnects.Chat.Notification;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

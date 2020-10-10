@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.RecyclerView;
+package com.ikonholdings.ikoniconnects.Chat;
 
 import android.content.Context;
 import android.os.Build;
@@ -17,7 +17,6 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.ChatModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.google.firebase.database.DataSnapshot;

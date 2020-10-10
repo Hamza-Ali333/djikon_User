@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Notification;
+package com.ikonholdings.ikoniconnects.Chat.Notification;
 
 public class Token  {
     private String token;

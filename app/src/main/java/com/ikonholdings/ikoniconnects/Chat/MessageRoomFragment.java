@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.NavDrawerFragments;
+package com.ikonholdings.ikoniconnects.Chat;
 
 
 import android.os.Bundle;
@@ -12,18 +12,17 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.ikonholdings.ikoniconnects.BlankFragment;
 import com.ikonholdings.ikoniconnects.ChatAdapter.SectionPagerAdapter;
 import com.ikonholdings.ikoniconnects.R;
 
 
-public class CheckingFragment extends Fragment {
+public class MessageRoomFragment extends Fragment {
 
     View mFragment;
     ViewPager mViewPager;
     TabLayout mTabLayout;
 
-    public CheckingFragment() {
+    public MessageRoomFragment() {
         //required
     }
 
@@ -70,7 +69,7 @@ public class CheckingFragment extends Fragment {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getChildFragmentManager());
 
         adapter.addFragment(new ChatListFragment(),"ChatArea");
-        adapter.addFragment(new BlankFragment(),"Groups");
+        adapter.addFragment(new GroupListFragment(),"Groups");
         viewPager.setAdapter(adapter);
     }
 }

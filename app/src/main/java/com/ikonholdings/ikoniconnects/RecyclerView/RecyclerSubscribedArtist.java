@@ -18,6 +18,7 @@ import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
 import com.ikonholdings.ikoniconnects.GlobelClasses.ProgressButton;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
@@ -112,13 +113,13 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
         holder.progressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                new FollowUnFollowArtist(1,
-//                        String.valueOf(currentItem.getId()),
-//                        view.getContext(),
-//                        view).execute();
-                view.setEnabled(false);
-                view.setClickable(false);
-                new UnFollowSubscriber(currentItem.getId(),view).execute();
+                new FollowUnFollowArtist(1,
+                        String.valueOf(currentItem.getId()),
+                        view.getContext(),
+                        view).execute();
+//                view.setEnabled(false);
+//                view.setClickable(false);
+//                new UnFollowSubscriber(currentItem.getId(),view).execute();
             }
         });
 }

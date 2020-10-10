@@ -23,14 +23,17 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.ikonholdings.ikoniconnects.LiveStreaming.LiveVideoStreaming"></activity>
-
-        <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"
+        <activity android:name=".RequestNewSongActivity"></activity>
+        <activity android:name=".LiveStreaming.LiveVideoStreaming" />
+        <activity
+            android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="${applicationId}.braintree" />
             </intent-filter>
         </activity>
@@ -43,7 +46,6 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -61,48 +63,50 @@
             android:resizeableActivity="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name="com.ikonholdings.ikoniconnects.BlogDetailActivity" />
+        <activity android:name=".BlogDetailActivity" />
         <activity
-            android:name="com.ikonholdings.ikoniconnects.MainActivity"
+            android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.ikonholdings.ikoniconnects.ChatViewerActivity"
+            android:name=".Chat.ChatViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.ikonholdings.ikoniconnects.UserProfileActivity"
+            android:name=".UserProfileActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
-            android:name="com.ikonholdings.ikoniconnects.PurchaseServiceActivity"
+            android:name=".PurchaseServiceActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
-        <activity android:name="com.ikonholdings.ikoniconnects.BookArtistOrServiceActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.ServiceDetailActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.ResetPasswordActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.DjProfileActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.ProfileSettingActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.PaymentMethodActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.BookingPaymentMethodActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.SignInActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.RegistrationActivity" />
-        <activity android:name="com.ikonholdings.ikoniconnects.SplashScreenActivity">
+        <activity android:name=".BookArtistOrServiceActivity" />
+        <activity android:name=".ServiceDetailActivity" />
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".DjProfileActivity" />
+        <activity android:name=".ProfileSettingActivity" />
+        <activity android:name=".PaymentMethodActivity" />
+        <activity android:name=".BookingPaymentMethodActivity" />
+        <activity android:name=".SignInActivity" />
+        <activity android:name=".RegistrationActivity" />
+        <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name="com.ikonholdings.ikoniconnects.Notification.MyFirebaseIdService"
+        <service
+            android:name=".Chat.Notification.MyFirebaseIdService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name="com.ikonholdings.ikoniconnects.Notification.MyFirebaseMessaging"
+        <service
+            android:name=".Chat.Notification.MyFirebaseMessaging"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>

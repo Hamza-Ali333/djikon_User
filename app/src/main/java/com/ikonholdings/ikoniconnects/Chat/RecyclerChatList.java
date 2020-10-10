@@ -1,6 +1,5 @@
-package com.ikonholdings.ikoniconnects.RecyclerView;
+package com.ikonholdings.ikoniconnects.Chat;
 
-import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -10,17 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.ChatViewerActivity;
-import com.ikonholdings.ikoniconnects.OnlineOfflineChat.StatusModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.UserChatListModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.google.firebase.database.DataSnapshot;

@@ -1,6 +1,8 @@
 package com.ikonholdings.ikoniconnects.NavDrawerFragments;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +16,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.RequestNewSongActivity;
 import com.ikonholdings.ikoniconnects.ResponseModels.RequestedSongsModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerRequestedSong;
+import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
 
 import java.util.List;
 
@@ -38,32 +43,41 @@ public class RequestedSongFragment extends Fragment {
 
     private AlertDialog loadingDialog;
 
+    private FloatingActionButton btn_AddSongRequest;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-       View v =  inflater.inflate(R.layout.fragment_requested_songs,container,false);
+        View v = inflater.inflate(R.layout.fragment_requested_songs, container, false);
 
-       Thread createRefreces = new Thread(new Runnable() {
-           @Override
-           public void run() {
-               mRecyclerView = v.findViewById(R.id.recyclerView_song_request);
-               mRecyclerView.setVisibility(View.GONE);
-               txt_Requested_Song_Count = v.findViewById(R.id.txt_new_request);
-           }
-       });
-       createRefreces.start();
+        mRecyclerView = v.findViewById(R.id.recyclerView_song_request);
+        mRecyclerView.setVisibility(View.GONE);
+        txt_Requested_Song_Count = v.findViewById(R.id.txt_new_request);
+        btn_AddSongRequest = v.findViewById(R.id.add);
 
-       getRequestedSong();
 
-       return v;
+
+        btn_AddSongRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), RequestNewSongActivity.class));
+            }
+        });
+
+        return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getRequestedSong();
+    }
 
     private void getRequestedSong() {
         loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
-                //return all the requested song of this user
-        Retrofit retrofit= ApiClient.retrofit(getContext());
+        //return all the requested song of this user
+        Retrofit retrofit = ApiClient.retrofit(getContext());
         JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
         Call<List<RequestedSongsModel>> call = jsonApiHolder.getRequestedSongs();
 
@@ -71,25 +85,23 @@ public class RequestedSongFragment extends Fragment {
             @Override
             public void onResponse(Call<List<RequestedSongsModel>> call, Response<List<RequestedSongsModel>> response) {
 
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
-                            List<RequestedSongsModel> artistModels = response.body();
-                            if(artistModels.isEmpty()){
-                                //if no data then show dialoge to user
-                                DialogsUtils.showAlertDialog(getContext(),false,
-                                        "No Song Found","it's seems like you din't Request any Song yet");
-                            }
-                           else{
-                               txt_Requested_Song_Count.setText("You have "+String.valueOf(artistModels.size())+" requested song.");
-                                initializeRecycler(artistModels);
-                            }
+                    List<RequestedSongsModel> artistModels = response.body();
+                    if (artistModels.isEmpty()) {
+                        //if no data then show dialoge to user
+                        DialogsUtils.showAlertDialog(getContext(), false,
+                                "No Song Found", "it's seems like you din't Request any Song yet");
+                    } else {
+                        txt_Requested_Song_Count.setText("You have " + String.valueOf(artistModels.size()) + " requested song.");
+                        initializeRecycler(artistModels);
+                    }
                     loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
-
-                }else {
+                } else {
                     loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.GONE);
-                    DialogsUtils.showResponseMsg(getContext(),false);
+                    DialogsUtils.showResponseMsg(getContext(), false);
                 }
             }
 
@@ -97,14 +109,12 @@ public class RequestedSongFragment extends Fragment {
             public void onFailure(Call<List<RequestedSongsModel>> call, Throwable t) {
                 loadingDialog.dismiss();
                 mRecyclerView.setVisibility(View.GONE);
-                DialogsUtils.showResponseMsg(getContext(),true);
+                DialogsUtils.showResponseMsg(getContext(), true);
             }
         });
-
     }
 
-    private void initializeRecycler (List<RequestedSongsModel> requestedSongs) {
-
+    private void initializeRecycler(List<RequestedSongsModel> requestedSongs) {
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this.getContext());
         mAdapter = new RecyclerRequestedSong(requestedSongs);
@@ -112,6 +122,8 @@ public class RequestedSongFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
+
+
 
 
 }
