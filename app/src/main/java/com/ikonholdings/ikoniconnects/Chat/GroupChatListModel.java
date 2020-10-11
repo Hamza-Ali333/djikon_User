@@ -4,35 +4,28 @@ import java.util.List;
 
 public class GroupChatListModel {
 
-   private String group_Name, group_Profile, creator_Id, key;
+    private String group_Name,creator_Id, group_Profile, groupId;
 
-   private List<Integer> group_User_Ids;
+    private List<Integer> group_User_Ids;
+
     public GroupChatListModel() {
         //required
     }
 
-    public GroupChatListModel(String group_Name, List<Integer> group_User_Ids, String group_Profile, String creator_Id, String key) {
+    public GroupChatListModel(String group_Name, List<Integer> group_User_Ids, String group_Profile, String creator_Id, String groupId) {
         this.group_Name = group_Name;
-        this.key = key;
+        this.groupId = groupId;
         this.group_User_Ids = group_User_Ids;
         this.group_Profile = group_Profile;
         this.creator_Id = creator_Id;
     }
 
-    public String getCreator_Id() {
-        return creator_Id;
+    public String getGroupId() {
+        return groupId;
     }
 
-    public void setCreator_Id(String creator_Id) {
-        this.creator_Id = creator_Id;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public String getGroup_Name() {
@@ -41,6 +34,14 @@ public class GroupChatListModel {
 
     public void setGroup_Name(String group_Name) {
         this.group_Name = group_Name;
+    }
+
+    public String getCreator_Id() {
+        return creator_Id;
+    }
+
+    public void setCreator_Id(String creator_Id) {
+        this.creator_Id = creator_Id;
     }
 
     public List<Integer> getGroup_User_Ids() {

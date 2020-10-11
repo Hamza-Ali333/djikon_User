@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,11 +36,12 @@ import java.util.List;
 public class ChatListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerChatList mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private TextView txt_progressMsg;
+    private TextView txt_Info;
     private SwipeRefreshLayout pullToRefresh;
+    private SearchView mSearchView;
 
     private DatabaseReference myRef;
     private List<UserChatListModel> mUserChatList;
@@ -85,17 +87,42 @@ public class ChatListFragment extends Fragment {
             }
         });
 
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                filter(s);
+                return false;
+            }
+        });
+
         updateToken(FirebaseInstanceId.getInstance().getToken());
 
         return v;
     }
-
 
     private void updateToken(String token){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
         Token token1 = new Token(token);
         if(fuser != null)
         reference.child(fuser.getUid()).setValue(token1);
+    }
+
+    private void filter(String searchText){
+        List<UserChatListModel> filteredlist = new ArrayList<>();
+        String ConcatinatName;
+        for(UserChatListModel item: mUserChatList) {
+            ConcatinatName = item.getSubscriber_Name();
+            if(ConcatinatName.toLowerCase().contains(searchText.toLowerCase())){
+                filteredlist.add(item);
+            }
+        }
+
+        mAdapter.filterList(filteredlist);
     }
 
     private void getChatList(){
@@ -122,27 +149,31 @@ public class ChatListFragment extends Fragment {
 
                         mAdapter = new RecyclerChatList(mUserChatList, currentUserId);
                         mRecyclerView.setAdapter(mAdapter);
-                        loadingDialog.dismiss();
 
                     }else {
-                        loadingDialog.dismiss();
-                        DialogsUtils.showAlertDialog(getContext(),false,"Note","It's seems like you didn't have conversation with any Subscriber");
+
+                        txt_Info.setVisibility(View.VISIBLE);
                     }
+                    loadingDialog.dismiss();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     loadingDialog.dismiss();
-                    DialogsUtils.showAlertDialog(getContext(),false,"Error","It's seems like you didn't have conversation with any Subscriber");
+                    DialogsUtils.showAlertDialog(getContext(),
+                            false,
+                            "Error","Something went wrong.\n" +
+                                    "Your login section is expire please login and try again.");
                 }
             });
         }
     }
 
     private void createReferences(View v) {
-
         mRecyclerView = v.findViewById(R.id.recyclerView_Chat);
         pullToRefresh =v.findViewById(R.id.pullToRefresh);
+        mSearchView = v.findViewById(R.id.edt_search);
+        txt_Info = v.findViewById(R.id.info);
     }
 
 

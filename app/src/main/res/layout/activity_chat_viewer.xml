@@ -92,7 +92,7 @@
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:layout_marginBottom="5dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/edt_comment"
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

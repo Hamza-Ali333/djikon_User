@@ -1,5 +1,6 @@
 package com.ikonholdings.ikoniconnects.Chat;
 
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -24,6 +26,7 @@ import com.ikonholdings.ikoniconnects.R;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class RecyclerGroupChatList extends RecyclerView.Adapter<RecyclerGroupChatList.ViewHolder>{
@@ -82,12 +85,14 @@ public class RecyclerGroupChatList extends RecyclerView.Adapter<RecyclerGroupCha
        holder.itemView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-             //  Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
-//               i.putExtra("user_Id",currentItem.getUser_Id());
-//               i.putExtra("user_Uid",currentItem.getUser_Uid());
-//               i.putExtra("user_Name",currentItem.getUser_Name());
-//               i.putExtra("imgProfileUrl",currentItem.getImageUrl());
-               //view.getContext().startActivity(i);
+               Intent i = new Intent(view.getContext(), GroupChatViewerActivity.class);
+               i.putExtra("list",(Serializable)currentItem.getGroup_User_Ids());
+               i.putExtra("groupKey",currentItem.getGroupId());
+               i.putExtra("creatorId",currentItem.getCreator_Id());
+               i.putExtra("groupName",currentItem.getGroup_Name());
+               i.putExtra("groupImage",currentItem.getGroup_Profile());
+               view.getContext().startActivity(i);
+
            }
        });
 
@@ -104,7 +109,7 @@ public class RecyclerGroupChatList extends RecyclerView.Adapter<RecyclerGroupCha
                    public boolean onMenuItemClick(MenuItem item) {
                        switch (item.getItemId()) {
                            case R.id.delete:
-                              deleteNode(currentItem.getKey(),position);
+                              deleteNode(currentItem.getGroupId(),position);
                                break;
                            default:
                                break;

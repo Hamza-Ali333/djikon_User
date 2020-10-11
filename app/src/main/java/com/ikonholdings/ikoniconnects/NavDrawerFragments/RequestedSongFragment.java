@@ -89,7 +89,7 @@ public class RequestedSongFragment extends Fragment {
 
                     List<RequestedSongsModel> artistModels = response.body();
                     if (artistModels.isEmpty()) {
-                        //if no data then show dialoge to user
+                        //if no data then show dialog to user
                         DialogsUtils.showAlertDialog(getContext(), false,
                                 "No Song Found", "it's seems like you din't Request any Song yet");
                     } else {

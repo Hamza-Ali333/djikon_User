@@ -15,7 +15,7 @@
                 android:id="@+id/msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create Group For User"
+                android:text="No Group."
                 android:textSize="25sp"
                 android:textColor="@color/grey"
                 android:visibility="gone"

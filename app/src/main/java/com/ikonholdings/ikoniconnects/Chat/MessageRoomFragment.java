@@ -29,7 +29,6 @@ public class MessageRoomFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         mFragment =  inflater.inflate(R.layout.fragment_checking,container,false);
 
         mViewPager = mFragment.findViewById(R.id.viewPager);
@@ -39,7 +38,6 @@ public class MessageRoomFragment extends Fragment {
     }
 
     //onActivity Create Method
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -68,7 +66,7 @@ public class MessageRoomFragment extends Fragment {
     private void setUpViewPager(ViewPager viewPager) {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getChildFragmentManager());
 
-        adapter.addFragment(new ChatListFragment(),"ChatArea");
+        adapter.addFragment(new ChatListFragment(),"Chats");
         adapter.addFragment(new GroupListFragment(),"Groups");
         viewPager.setAdapter(adapter);
     }

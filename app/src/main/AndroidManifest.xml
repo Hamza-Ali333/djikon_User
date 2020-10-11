@@ -87,6 +87,11 @@
         <activity
             android:configChanges="orientation"
             android:screenOrientation="portrait"
+            android:name=".Chat.GroupChatViewerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:name=".UserProfileActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity

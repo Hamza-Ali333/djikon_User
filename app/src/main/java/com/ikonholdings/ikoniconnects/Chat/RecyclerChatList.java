@@ -167,6 +167,11 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
         return mChat_Aera.size();
     }
 
+    public void filterList(List<UserChatListModel> list) {
+        mChat_Aera = list;
+        notifyDataSetChanged();
+    }
+
     private void deleteNode(String Key,int position) {
         mChat_Aera.remove(position);
         notifyItemRemoved(position);
