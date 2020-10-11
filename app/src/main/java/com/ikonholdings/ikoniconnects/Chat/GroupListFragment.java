@@ -124,16 +124,16 @@ public class GroupListFragment extends Fragment  {
                                 GroupChatListModel singleNode = snapshot.getValue(GroupChatListModel.class);
                                 AllGroups.add(singleNode);
                             }
-                            for (int i = 0; i < AllGroups.size() ; i++) {
-                                GroupChatListModel list = AllGroups.get(i);
-                                    for (int j = 0; j < list.getGroup_User_Ids().size(); j++) {
-                                        if(list.getGroup_User_Ids().get(j) ==
-                                                Integer.parseInt(PreferenceData.getUserId(getContext()))
-                                        ){
-                                            mGroupChatList.add(list);//Contain only those group in which this current User is also added
-                                        }
-                                    }
-                            }
+//                            for (int i = 0; i < AllGroups.size() ; i++) {
+//                                GroupChatListModel list = AllGroups.get(i);
+//                                    for (int j = 0; j < list.getGroup_User_Ids().size(); j++) {
+//                                        if(list.getGroup_User_Ids().get(j) ==
+//                                                Integer.parseInt(PreferenceData.getUserId(getContext()))
+//                                        ){
+//                                            mGroupChatList.add(list);//Contain only those group in which this current User is also added
+//                                        }
+//                                    }
+//                            }
 
                             mAdapter = new RecyclerGroupChatList(mGroupChatList, PreferenceData.getUserId(getContext()));
                             mRecyclerView.setAdapter(mAdapter);

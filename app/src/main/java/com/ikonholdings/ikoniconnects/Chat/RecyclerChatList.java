@@ -1,5 +1,6 @@
 package com.ikonholdings.ikoniconnects.Chat;
 
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -114,12 +115,12 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
        holder.itemView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-//               Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
-//               i.putExtra("subscriber_Id", currentItem.getSubscriber_Id());
-//               i.putExtra("subscriber_Uid", currentItem.getSubscriber_Uid());
-//               i.putExtra("subscriber_Name", currentItem.getSubscriber_Name());
-//               i.putExtra("imgProfileUrl", currentItem.getImgProfileUrl());
-//               view.getContext().startActivity(i);
+               Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
+               i.putExtra("subscriber_Id", currentItem.getSubscriber_Id());
+               i.putExtra("subscriber_Uid", currentItem.getSubscriber_Uid());
+               i.putExtra("subscriber_Name", currentItem.getSubscriber_Name());
+               i.putExtra("imgProfileUrl", currentItem.getImgProfileUrl());
+               view.getContext().startActivity(i);
            }
        });
 
