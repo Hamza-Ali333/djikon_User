@@ -80,8 +80,6 @@ public class GroupChatViewerActivity extends AppCompatActivity {
     private String[] ReceiverList;
 
 
-
-
     private APIService apiService;
 
     private Boolean notify = false;
@@ -196,14 +194,6 @@ public class GroupChatViewerActivity extends AppCompatActivity {
                         //now here set data in to the field
                         ManytoManyChatModel list = snapshot.getValue(ManytoManyChatModel.class);
                         mManytoManyChatModels.add(list);
-                   /*     mManytoManyChatModels.add(new ManytoManyChatModel(
-                                snapshot.child("receivers").getValue(String.class),
-                                snapshot.child("sender").getValue(String.class),
-                                snapshot.child("message").getValue(String.class),
-                                snapshot.child("time_stemp").getValue(String.class),
-                                snapshot.child("image").getValue(String.class),
-                                snapshot.getKey()
-                        ));*/
 
                     }
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
@@ -286,9 +276,10 @@ public class GroupChatViewerActivity extends AppCompatActivity {
 
     }
 
-    private void sendMassage (String Massage, String Sender, List<Integer> Receivers,String sendTime) {
+    private void sendMassage (String Massage, String Sender_id, List<Integer> Receivers,String sendTime) {
         ManytoManyChatModel manytoManyChatModel = new ManytoManyChatModel();
-        manytoManyChatModel.setSender(Sender);
+        manytoManyChatModel.setSender_Id(Sender_id);
+        manytoManyChatModel.setSender_Name(PreferenceData.getUserName(GroupChatViewerActivity.this));
         manytoManyChatModel.setReceivers(Receivers);
         manytoManyChatModel.setMessage(Massage);
         manytoManyChatModel.setTime_stemp(sendTime);

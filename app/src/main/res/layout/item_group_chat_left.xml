@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/profile_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/colorWhite"
+        app:srcCompat="@drawable/ic_avatar"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rlt_chatitem"
+        android:layout_toRightOf="@+id/profile_image"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:padding="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_left_chat">
+        <TextView
+            android:id="@+id/sender_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:gravity="start"
+            android:text="Hamza Ali"
+            android:textStyle="bold"
+            android:textColor="#B32555"
+            android:textSize="12sp" />
+    <TextView
+        android:id="@+id/msg"
+        android:layout_below="@+id/sender_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_below="@+id/rlt_chatitem"
+        android:text="12:09 PM"
+        android:fontFamily="@font/montserrat"
+        android:layout_alignParentLeft="true"
+        android:textColor="#f1f1f1"
+        android:textSize="10sp" />
+</RelativeLayout>

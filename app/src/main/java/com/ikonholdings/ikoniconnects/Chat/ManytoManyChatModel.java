@@ -5,28 +5,21 @@ import java.util.List;
 public class ManytoManyChatModel {
 
     private List<Integer> receivers;
-    private String sender, message, time_stemp, image, key;
+    private String sender_Id, message, time_stemp, image, sender_Name, key;
 
 
     public ManytoManyChatModel() {
         //required
     }
 
-    public ManytoManyChatModel(List<Integer> receivers, String sender, String message, String time_stemp, String image, String key) {
+    public ManytoManyChatModel(List<Integer> receivers, String sender_Id, String message, String time_stemp, String image, String sender_Name, String key) {
         this.receivers = receivers;
-        this.sender = sender;
+        this.sender_Id = sender_Id;
         this.message = message;
         this.time_stemp = time_stemp;
         this.image = image;
+        this.sender_Name = sender_Name;
         this.key = key;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public List<Integer> getReceivers() {
@@ -37,12 +30,12 @@ public class ManytoManyChatModel {
         this.receivers = receivers;
     }
 
-    public String getSender() {
-        return sender;
+    public String getSender_Id() {
+        return sender_Id;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setSender_Id(String sender_Id) {
+        this.sender_Id = sender_Id;
     }
 
     public String getMessage() {
@@ -59,6 +52,22 @@ public class ManytoManyChatModel {
 
     public void setTime_stemp(String time_stemp) {
         this.time_stemp = time_stemp;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getSender_Name() {
+        return sender_Name;
+    }
+
+    public void setSender_Name(String sender_Name) {
+        this.sender_Name = sender_Name;
     }
 
     public String getKey() {
