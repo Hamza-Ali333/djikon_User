@@ -119,6 +119,7 @@ public class SignInActivity extends AppCompatActivity {
     private int OTP = 0;
     private String EmailForOTP;
     private int seconds;//seconds for showing CountDown
+    private int hour;//hour for showing CountDown
 
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
@@ -795,7 +796,8 @@ public class SignInActivity extends AppCompatActivity {
     }//openVerifyOTPDialoge
 
     private void startTimer(TextView otp_timmer, Button resentOTP, ImageView closeDailoge) {
-        seconds = 30;
+        seconds = 60;
+        hour = 4;
         Timer t = new Timer();    //declare the timer
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -803,8 +805,11 @@ public class SignInActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (seconds == 00) {
-                            otp_timmer.setText(String.format("%02d", seconds));
+                        if (seconds == 00 && hour != 00) {
+                            hour--;
+                            seconds = 60;
+                        }else if(seconds == 00 && hour == 00){
+                            otp_timmer.setText(String.format("%02d : %02d", hour, seconds));
 
                             t.cancel();
                             otp_timmer.setVisibility(View.GONE);
@@ -813,7 +818,7 @@ public class SignInActivity extends AppCompatActivity {
                             closeDailoge.setClickable(true);
                         }
                         seconds--;
-                        otp_timmer.setText("Resend OTP In " + String.format("%02d", seconds));
+                        otp_timmer.setText("Resend OTP In " + String.format("%02d : %02d", hour, seconds));
                     }
                 });
             }
