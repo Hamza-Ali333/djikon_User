@@ -336,7 +336,7 @@ public class GroupChatViewerActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
                     //first parameter is for user list
-                    Data data = new Data(PreferenceData.getUserId(GroupChatViewerActivity.this),R.mipmap.ic_launcher,userName+": "+messaage,"New Message",
+                    Data data = new Data(false,PreferenceData.getUserId(GroupChatViewerActivity.this),R.mipmap.ic_launcher,userName+": "+messaage,"New Message",
                             String.valueOf(ReceiverList));
 
                     Sender sender = new Sender(data, token.getToken());

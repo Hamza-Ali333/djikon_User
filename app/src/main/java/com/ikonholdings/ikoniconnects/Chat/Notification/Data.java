@@ -6,8 +6,10 @@ public class Data {
     private String body;
     private String title;
     private String sented;
+    private Boolean single;
 
-    public Data(String user, int icon, String body, String title, String sented) {
+    public Data(Boolean single,String user, int icon, String body, String title, String sented) {
+        this.single = single;
         this.user = user;
         this.icon = icon;
         this.body = body;
@@ -16,6 +18,14 @@ public class Data {
     }
 
     public Data() {
+    }
+
+    public Boolean getSingle() {
+        return single;
+    }
+
+    public void setSingle(Boolean single) {
+        this.single = single;
     }
 
     public String getUser() {

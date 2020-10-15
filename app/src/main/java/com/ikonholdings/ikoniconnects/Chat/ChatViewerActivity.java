@@ -366,7 +366,9 @@ public class ChatViewerActivity extends AppCompatActivity {
                //nead to check this line what is the propose of this line
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
-                    sendNotification(subscriberUid,fuser.getUid(),Msg);//1=Reciever,2=Sender,Massage
+                    sendNotification(subscriberUid,
+                            PreferenceData.getUserName(ChatViewerActivity.this),
+                            Msg);//1=Reciever,2=Sender,Massage
                 }
                 notify = false;
             }
@@ -387,8 +389,11 @@ public class ChatViewerActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(fuser.getUid(),R.mipmap.ic_launcher,userName+": "+message,"New Message",
-                            subscriberUid);
+                    Data data = new Data(true,
+                            fuser.getUid(),
+                            R.mipmap.ic_launcher,
+                            userName+": "+message,"New Message",
+                            subscriberId);
 
                     Sender sender = new Sender(data,token.getToken());
 

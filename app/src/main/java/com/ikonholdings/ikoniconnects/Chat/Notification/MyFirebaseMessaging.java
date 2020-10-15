@@ -1,5 +1,6 @@
 package com.ikonholdings.ikoniconnects.Chat.Notification;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.ikonholdings.ikoniconnects.Chat.ChatViewerActivity;
+import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.MainActivity;
 import com.ikonholdings.ikoniconnects.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,27 +31,20 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
         String sented = remoteMessage.getData().get("sented");
+        Boolean signle = Boolean.valueOf(remoteMessage.getData().get("single"));
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(firebaseUser != null  && sented.equals(firebaseUser.getUid())){
+        if(signle && sented.equals(PreferenceData.getUserId(getApplicationContext()))){
             //sendNotification(remoteMessage);
-            boolean foregroud = false;
-            try {
-                foregroud = new ForegroundCheckTask().execute(this).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(foregroud){
+
                 showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
-            }
         }
     }
 
