@@ -95,7 +95,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
     private JSONApiHolder jsonApiHolder;
     private ProgressDialog progressDialog;
 
-    private String artist_UID;
     private int allowMessage;
     private int allowBooking;
 
@@ -106,7 +105,6 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
     private TextView snackBarText;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
-    private DatabaseReference myRef;
     private ValueEventListener listener;
 
     @Override
@@ -199,7 +197,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
                     btn_Message.setClickable(false);
                     btn_Message.setEnabled(false);
 
-                    new GetSubscriberUidFromFirebase().execute();
+                    lunchMessageActivity();
                 }else {
                     DialogsUtils.showAlertDialog(DjProfileActivity.this,
                             false,
@@ -487,78 +485,11 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
 
     }
 
-    private class GetSubscriberUidFromFirebase extends AsyncTask<Void,Void,Void>{
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = DialogsUtils.showProgressDialog(DjProfileActivity.this,
-                    "Getting Ready","Please Wait...");
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            myRef= FirebaseDatabase.getInstance().getReference("All_Users");
-
-            myRef.child("Subscribers").child(String.valueOf(artistID)).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressDialog.dismiss();
-                            }
-                        });
-                        artist_UID = dataSnapshot.child("uid").getValue(String.class);
-
-                        lunchMessageActivity();
-
-                    }else {
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                btn_Message.setClickable(true);
-                                btn_Message.setEnabled(true);
-                                progressDialog.dismiss();
-                                DialogsUtils.showAlertDialog(DjProfileActivity.this,
-                                        false, "Firebase Not Connected", "May currently this Subscriber is not able to get massage.\nor try again!");
-                            }
-                        });
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialog.dismiss();
-                            btn_Message.setClickable(true);
-                            btn_Message.setEnabled(true);
-                            DialogsUtils.showAlertDialog(DjProfileActivity.this,
-                                    false,"Error","Something happened wrong\nplease try again!");
-                        }
-                    });
-                }
-            });
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if(artist_UID != null){
-                lunchMessageActivity();
-            }
-        }
-    }
-
     private void lunchMessageActivity() {
         img_Subscriber_Profile.buildDrawingCache();
         Bitmap bitmap = img_Subscriber_Profile.getDrawingCache();
         Intent i = new Intent(DjProfileActivity.this, ChatViewerActivity.class);
         i.putExtra("subscriber_Id", String.valueOf(artistID));
-        i.putExtra("subscriber_Uid",artist_UID);
         i.putExtra("subscriber_Name",mSubscriberName);
         i.putExtra("imgProfileUrl",mProfile);
         startActivity(i);

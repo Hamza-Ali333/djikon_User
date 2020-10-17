@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +21,6 @@ import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.UserChatListModel;
 import com.ikonholdings.ikoniconnects.Chat.Notification.Token;
 import com.ikonholdings.ikoniconnects.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,8 +47,6 @@ public class ChatListFragment extends Fragment {
 
     private String currentUserId;
 
-    private FirebaseUser fuser;
-
     private AlertDialog loadingDialog;
 
     @Override
@@ -69,8 +66,6 @@ public class ChatListFragment extends Fragment {
         ((LinearLayoutManager) mLayoutManager).setReverseLayout(true);//will make layout reverse
         ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);//always at new entry at the top
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
 
         //this will contain the currentUser id
         currentUserId = PreferenceData.getUserId(getContext());
@@ -108,8 +103,7 @@ public class ChatListFragment extends Fragment {
     private void updateToken(String token){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
         Token token1 = new Token(token);
-        if(fuser != null)
-        reference.child(fuser.getUid()).setValue(token1);
+        reference.child(PreferenceData.getUserId(getContext())).setValue(token1);
     }
 
     private void filter(String searchText){
@@ -139,7 +133,6 @@ public class ChatListFragment extends Fragment {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             mUserChatList.add(new UserChatListModel(
                                     snapshot.child("subscriber_Id").getValue(String.class),
-                                    snapshot.child("subscriber_Uid").getValue(String.class),
                                     snapshot.child("subscriber_Name").getValue(String.class),
                                     snapshot.child("imgProfileUrl").getValue(String.class),
                                     snapshot.child("status").getValue(String.class),

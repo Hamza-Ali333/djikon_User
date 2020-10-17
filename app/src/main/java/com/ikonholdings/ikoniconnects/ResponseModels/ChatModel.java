@@ -2,19 +2,16 @@ package com.ikonholdings.ikoniconnects.ResponseModels;
 
 public class ChatModel {
     public String sender,
-    receiver,
     message,
-            time_stemp,
+   time_stemp,
     key;
-
 
     public ChatModel() {
         //required for firebase
     }
 
-    public ChatModel(String sender, String receiver, String message, String time_stemp, String key) {
+    public ChatModel(String sender, String message, String time_stemp, String key) {
         this.sender = sender;
-        this.receiver = receiver;
         this.message = message;
         this.time_stemp = time_stemp;
         this.key = key;
@@ -34,14 +31,6 @@ public class ChatModel {
 
     public void setSender(String sender) {
         this.sender = sender;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
     }
 
     public String getMessage() {

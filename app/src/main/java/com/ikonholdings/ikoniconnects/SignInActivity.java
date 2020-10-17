@@ -64,7 +64,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONObject;
 
@@ -129,8 +128,6 @@ public class SignInActivity extends AppCompatActivity {
     private Cipher cipher;
     private String KEY_NAME = "AndroidKey";
 
-    //FireBase Authentication
-    FirebaseAuth mFirebaseAuth;
     //Google Biometric Promot
     private Executor executor;
     public BiometricPrompt biometricPrompt;
@@ -158,8 +155,6 @@ public class SignInActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
-        //firebase Auth
-        mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)

@@ -88,9 +88,7 @@ public class BookingHistoryFragment extends Fragment {
         });
     }
 
-
     private void initializeRecycler (List<BookingHistory> bookingHistory) {
-
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(getContext());
         mAdapter = new RecyclerBookingHistory(bookingHistory);

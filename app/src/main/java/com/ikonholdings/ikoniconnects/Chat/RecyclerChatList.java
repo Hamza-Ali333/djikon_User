@@ -117,7 +117,6 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
            public void onClick(View view) {
                Intent i = new Intent(view.getContext(), ChatViewerActivity.class);
                i.putExtra("subscriber_Id", currentItem.getSubscriber_Id());
-               i.putExtra("subscriber_Uid", currentItem.getSubscriber_Uid());
                i.putExtra("subscriber_Name", currentItem.getSubscriber_Name());
                i.putExtra("imgProfileUrl", currentItem.getImgProfileUrl());
                view.getContext().startActivity(i);

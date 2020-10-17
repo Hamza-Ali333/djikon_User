@@ -38,8 +38,6 @@ import com.ikonholdings.ikoniconnects.Chat.Notification.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -85,13 +83,11 @@ public class ChatViewerActivity extends AppCompatActivity {
     private Boolean alreadyHaveChat = false;
 
     private String subscriberId;
-    private String subscriberUid;
     private String subscriberName , imgProfileUrl;
     private String userName;
     private String CurrentUserId;
 
     private APIService apiService;
-    private FirebaseUser fuser;
     private Boolean notify = false;
 
     private String Msg;
@@ -101,7 +97,6 @@ public class ChatViewerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
         userName = PreferenceData.getUserName(this);
 
         IntentFilter filter = new IntentFilter();
@@ -138,7 +133,6 @@ public class ChatViewerActivity extends AppCompatActivity {
         //getting data of the Receiver
         Intent i = getIntent();
         subscriberId =i.getStringExtra("subscriber_Id");
-        subscriberUid = i.getStringExtra("subscriber_Uid");
         subscriberName = i.getStringExtra("subscriber_Name");
         imgProfileUrl = i.getStringExtra("imgProfileUrl");
 
@@ -181,7 +175,8 @@ public class ChatViewerActivity extends AppCompatActivity {
                     }
 
                     Msg = edt_Massage.getText().toString();
-                    sendMassage(edt_Massage.getText().toString(), fuser.getUid(), subscriberUid, currentDateAndTime);
+                    sendMassage(edt_Massage.getText().toString(),
+                            PreferenceData.getUserId(ChatViewerActivity.this), currentDateAndTime);
                 }else{
                     Toast.makeText(ChatViewerActivity.this, "You Can't Send Empty massage", Toast.LENGTH_SHORT).show();
                 }
@@ -228,21 +223,20 @@ public class ChatViewerActivity extends AppCompatActivity {
 
                         mChatModel.add(new ChatModel(
                                 snapshot.child("sender").getValue(String.class),
-                                snapshot.child("receiver").getValue(String.class),
                                 snapshot.child("message").getValue(String.class),
                                 snapshot.child("time_stemp").getValue(String.class),
                                 snapshot.getKey()
                                 ));
 
                     }
+
                     mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
 
                     mLayoutManager = new LinearLayoutManager(ChatViewerActivity.this);
-                    mAdapter = new RecyclerChatViewer(mChatModel,fuser.getUid(),
+                    mAdapter = new RecyclerChatViewer(mChatModel,
                             chatNodeName,
-                            ChatViewerActivity.this,
-                            PreferenceData.getUserImage(ChatViewerActivity.this),
-                            imgProfileUrl
+                            imgProfileUrl,
+                            ChatViewerActivity.this
                             );
 
                     mRecyclerView.setLayoutManager(mLayoutManager);
@@ -337,11 +331,10 @@ public class ChatViewerActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.chat_viewer_recycler);
     }
 
-    private void sendMassage (String Massage, String Sender, String Receiver,String sendTime) {
+    private void sendMassage (String Massage, String Sender,String sendTime) {
 
         ChatModel chatModel = new ChatModel();
         chatModel.setSender(Sender);
-        chatModel.setReceiver(Receiver);
         chatModel.setMessage(Massage);
         chatModel.setTime_stemp(sendTime);
         myRef.child("Massages").child(chatNodeName).push().setValue(chatModel).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -366,9 +359,9 @@ public class ChatViewerActivity extends AppCompatActivity {
                //nead to check this line what is the propose of this line
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
-                    sendNotification(subscriberUid,
+                    sendNotification(subscriberId,
                             PreferenceData.getUserName(ChatViewerActivity.this),
-                            Msg);//1=Reciever,2=Sender,Massage
+                            Msg);
                 }
                 notify = false;
             }
@@ -390,7 +383,7 @@ public class ChatViewerActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
                     Data data = new Data(true,
-                            fuser.getUid(),
+                            PreferenceData.getUserId(ChatViewerActivity.this),
                             R.mipmap.ic_launcher,
                             userName+": "+message,"New Message",
                             subscriberId);
@@ -459,19 +452,17 @@ public class ChatViewerActivity extends AppCompatActivity {
             //sender
             UserChatListModel userChatListModel = new UserChatListModel();
             userChatListModel.setsubscriber_Id(String.valueOf(subscriberId));
-            userChatListModel.setsubscriber_Uid(subscriberUid);
             userChatListModel.setsubscriber_Name(subscriberName);
             userChatListModel.setimgProfileUrl(imgProfileUrl);
-            userChatListModel.setStatus("online");
+           // userChatListModel.setStatus("online");
             myRef.child("chatListOfUser").child(CurrentUserId).push().setValue(userChatListModel);
 
             //receiver
             Map<String, String> userData = new HashMap<>();
             userData.put("user_Id", CurrentUserId);
             userData.put("user_Name",userName);
-            userData.put("user_Uid", fuser.getUid());
             userData.put("imgProfileUrl",imgProfileUrl);
-            userData.put("status","offline");
+           // userData.put("status","offline");
             myRef.child("chatListOfSubscriber").child(String.valueOf(subscriberId)).push().setValue(userData);
 
             return null;

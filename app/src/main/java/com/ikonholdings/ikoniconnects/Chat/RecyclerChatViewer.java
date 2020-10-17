@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
+import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.ResponseModels.ChatModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +33,8 @@ import java.util.List;
 public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.ViewHolder>{
 
     private List<ChatModel> mChat_model;
-    public  String currentUserId;
     public Context context;
-    public String senderImage, receiverImage;
+    public String  receiverImage;
     public Boolean sender = false;
 
     DatabaseReference myRef;
@@ -62,15 +62,11 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
 
 //constructor
     public RecyclerChatViewer(List<ChatModel> chat_modelList,
-                              String currentUserUid,
                               String chatMainNode,
-                              Context context,
-                              String senderimg,
-                              String recieverimg) {
+                              String recieverimg,
+     Context context) {
         this.mChat_model = chat_modelList;
-        this.currentUserId = currentUserUid;
         this.context = context;
-        this.senderImage = senderimg;
         this.receiverImage = recieverimg;
         myRef = FirebaseDatabase.getInstance().getReference("Chats").child("Massages").child(chatMainNode);
     }
@@ -99,7 +95,7 @@ public class RecyclerChatViewer extends RecyclerView.Adapter<RecyclerChatViewer.
 
         String imageUrl = null;
         if(sender){
-            imageUrl = senderImage;
+            imageUrl = PreferenceData.getUserImage(context);
         }else {
             imageUrl = receiverImage;
         }
@@ -167,7 +163,7 @@ holder.rlt_ChatItem.setOnLongClickListener(new View.OnLongClickListener() {
     @Override
     public int getItemViewType(int position) {
 
-        if(mChat_model.get(position).getSender().equals(currentUserId)){
+        if(mChat_model.get(position).getSender().equals(PreferenceData.getUserId(context))){
             sender = true;
             return MSG_TYPE_RIGHT;
         }else {

@@ -2,7 +2,7 @@ package com.ikonholdings.ikoniconnects.ResponseModels;
 
 public class UserChatListModel {
 
-    private  String subscriber_Id, subscriber_Name, subscriber_Uid, imgProfileUrl, key;
+    private  String subscriber_Id, subscriber_Name, imgProfileUrl, key;
     private  String talkTime,last_send_msg;
 
     private String status;
@@ -12,13 +12,11 @@ public class UserChatListModel {
 
     //this constructor only for id , dJName, imageUrl
     public UserChatListModel(String subscriber_Id,
-                             String subscriber_Uid,
                              String subscriber_Name,
                              String imgProfileUrl,
                              String status,
                              String key) {
         this.subscriber_Id = subscriber_Id;
-        this.subscriber_Uid = subscriber_Uid;
         this.subscriber_Name = subscriber_Name;
         this.imgProfileUrl = imgProfileUrl;
         this.status = status;
@@ -33,13 +31,6 @@ public class UserChatListModel {
         return status;
     }
 
-    public String getSubscriber_Uid() {
-        return subscriber_Uid;
-    }
-
-    public void setsubscriber_Uid(String subscriber_Uid) {
-        this.subscriber_Uid = subscriber_Uid;
-    }
 
     public void setsubscriber_Id(String subscriber_Id) {
         this.subscriber_Id = subscriber_Id;

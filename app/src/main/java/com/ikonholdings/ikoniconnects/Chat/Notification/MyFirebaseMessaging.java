@@ -1,6 +1,5 @@
 package com.ikonholdings.ikoniconnects.Chat.Notification;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,17 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.ikonholdings.ikoniconnects.Chat.ChatViewerActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.MainActivity;
 import com.ikonholdings.ikoniconnects.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
 
@@ -39,12 +36,9 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         String sented = remoteMessage.getData().get("sented");
         Boolean signle = Boolean.valueOf(remoteMessage.getData().get("single"));
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if(signle && sented.equals(PreferenceData.getUserId(getApplicationContext()))){
+        if(sented.equals(PreferenceData.getUserId(getApplicationContext()))){
             //sendNotification(remoteMessage);
-
-                showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+             showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
         }
     }
 
