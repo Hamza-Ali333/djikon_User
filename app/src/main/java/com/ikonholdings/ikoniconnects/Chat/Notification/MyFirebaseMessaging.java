@@ -1,5 +1,6 @@
 package com.ikonholdings.ikoniconnects.Chat.Notification;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -25,7 +26,11 @@ import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.MainActivity;
 import com.ikonholdings.ikoniconnects.R;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
 
@@ -36,10 +41,33 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         String sented = remoteMessage.getData().get("sented");
         Boolean signle = Boolean.valueOf(remoteMessage.getData().get("single"));
 
-        if(sented.equals(PreferenceData.getUserId(getApplicationContext()))){
+      //  if(sented.equals(PreferenceData.getUserId(getApplicationContext()))){
             //sendNotification(remoteMessage);
              showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+    }
+
+    private boolean isAppInForground(Context context, String packageName){
+        String[] activePackages;
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        activePackages = getActivePackages(am);
+
+        if (activePackages != null) {
+            return activePackages[0].equals(packageName);
         }
+        return false;
+    }
+
+
+
+    private String[] getActivePackages(ActivityManager mActivityManager) {
+        final Set<String> activePackages = new HashSet<>();
+        final List<ActivityManager.RunningAppProcessInfo> processInfos = mActivityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo processInfo : processInfos) {
+            if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                activePackages.addAll(Arrays.asList(processInfo.pkgList));
+            }
+        }
+        return activePackages.toArray(new String[activePackages.size()]);
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {
