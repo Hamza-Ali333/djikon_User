@@ -545,12 +545,14 @@ public class UserProfileActivity extends AppCompatActivity {
             if (requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE) {
                 CropImage.activity(Image_uri)
                         .setGuidelines(CropImageView.Guidelines.ON)
+                        .setCropMenuCropButtonTitle("Select")
                         .start(UserProfileActivity.this);
             }
             //from gallary
             if (requestCode == IMAGE_PICK_GALLARY_REQUEST_CODE) {
                 CropImage.activity(data.getData())
                         .setGuidelines(CropImageView.Guidelines.ON)
+                        .setCropMenuCropButtonTitle("Select")
                         .start(this);
             }
             //getcroped Image

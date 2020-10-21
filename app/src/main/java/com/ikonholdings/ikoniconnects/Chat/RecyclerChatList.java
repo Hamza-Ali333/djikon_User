@@ -44,7 +44,6 @@ public class RecyclerChatList extends RecyclerView.Adapter<RecyclerChatList.View
         public TextView  txt_UnRead;
         public ImageView offline, online;
 
-
         public ViewHolder(View itemView){
             super(itemView);
             img_msg_Subscriber_Profile = itemView.findViewById(R.id.img_msg_sender);
