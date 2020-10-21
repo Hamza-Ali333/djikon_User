@@ -40,10 +40,15 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         String sented = remoteMessage.getData().get("sented");
         Boolean signle = Boolean.valueOf(remoteMessage.getData().get("single"));
+        if(remoteMessage.getNotification() != null){
 
+        }
       //  if(sented.equals(PreferenceData.getUserId(getApplicationContext()))){
             //sendNotification(remoteMessage);
-             showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+        if(remoteMessage.getData().size() > 0){
+            showNotification(this,remoteMessage.getData().get("title"),remoteMessage.getData().get("body"));
+        }
+
     }
 
     private boolean isAppInForground(Context context, String packageName){
