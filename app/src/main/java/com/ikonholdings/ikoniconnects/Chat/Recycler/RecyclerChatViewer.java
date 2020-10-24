@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Chat;
+package com.ikonholdings.ikoniconnects.Chat.Recycler;
 
 import android.content.Context;
 import android.os.Build;

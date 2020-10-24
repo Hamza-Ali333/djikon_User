@@ -14,10 +14,10 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.BookArtistOrServiceActivity;
+import com.ikonholdings.ikoniconnects.Activity.BookArtistOrServiceActivity;
 import com.ikonholdings.ikoniconnects.ResponseModels.ServicesModel;
 import com.ikonholdings.ikoniconnects.R;
-import com.ikonholdings.ikoniconnects.ServiceDetailActivity;
+import com.ikonholdings.ikoniconnects.Activity.ServiceDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

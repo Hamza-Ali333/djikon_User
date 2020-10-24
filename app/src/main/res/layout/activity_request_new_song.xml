@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBlack"
     android:padding="16dp"
-    tools:context=".RequestNewSongActivity">
+    tools:context=".Activity.RequestNewSongActivity">
 
         <TextView
             android:id="@+id/textView13"

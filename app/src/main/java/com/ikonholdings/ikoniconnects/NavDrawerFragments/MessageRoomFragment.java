@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.ikonholdings.ikoniconnects.BlankFragment;
-import com.ikonholdings.ikoniconnects.Chat.ChatListFragment;
+import com.ikonholdings.ikoniconnects.Chat.Fragment.ChatListFragment;
+import com.ikonholdings.ikoniconnects.Chat.Fragment.GroupListFragment;
 import com.ikonholdings.ikoniconnects.ChatAdapter.SectionPagerAdapter;
 import com.ikonholdings.ikoniconnects.R;
 
@@ -52,8 +52,8 @@ public class MessageRoomFragment extends Fragment {
     private void setUpViewPager(ViewPager viewPager) {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getChildFragmentManager());
 
-        adapter.addFragment(new ChatListFragment(),"ChatArea");
-        adapter.addFragment(new BlankFragment(),"Groups");
+        adapter.addFragment(new ChatListFragment(),"Chats");
+        adapter.addFragment(new GroupListFragment(),"Groups");
         viewPager.setAdapter(adapter);
     }
 }

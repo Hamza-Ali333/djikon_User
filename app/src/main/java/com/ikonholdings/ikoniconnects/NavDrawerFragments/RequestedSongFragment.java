@@ -2,12 +2,10 @@ package com.ikonholdings.ikoniconnects.NavDrawerFragments;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,11 +18,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
-import com.ikonholdings.ikoniconnects.RequestNewSongActivity;
+import com.ikonholdings.ikoniconnects.Activity.RequestNewSongActivity;
 import com.ikonholdings.ikoniconnects.ResponseModels.RequestedSongsModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerRequestedSong;
-import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
 
 import java.util.List;
 

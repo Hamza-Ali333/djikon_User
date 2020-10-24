@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -25,7 +25,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
-import com.ikonholdings.ikoniconnects.Chat.MessageRoomFragment;
+import com.ikonholdings.ikoniconnects.Chat.Fragment.MessageRoomFragment;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
@@ -37,6 +37,7 @@ import com.ikonholdings.ikoniconnects.NavDrawerFragments.LiveToArtistFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.RequestedSongFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.SocialMediaShareFragment;
 import com.ikonholdings.ikoniconnects.NavDrawerFragments.SubscribedArtistFragment;
+import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;

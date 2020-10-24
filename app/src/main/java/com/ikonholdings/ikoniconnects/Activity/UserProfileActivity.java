@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -38,6 +37,7 @@ import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
+import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjAndUserProfileModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
 import com.squareup.picasso.Picasso;

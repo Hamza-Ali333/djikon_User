@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -36,7 +36,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -48,12 +47,14 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.ikonholdings.ikoniconnects.BuildConfig;
 import com.ikonholdings.ikoniconnects.CustomDialogs.CreateNewPasswordDialog;
 import com.ikonholdings.ikoniconnects.CustomDialogs.ReferralCodeDialog;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FingerPrintHandler;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
+import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
 
@@ -170,7 +171,7 @@ public class SignInActivity extends AppCompatActivity {
         //Handel the Result When User Sign In Throw the BioMetric
         biometricSingInCallBackHandler();
 
-        PreferenceData.setBuildVersion(this,BuildConfig.VERSION_CODE);//saving Version Number
+        PreferenceData.setBuildVersion(this, BuildConfig.VERSION_CODE);//saving Version Number
 
         retrofit = ApiClient.retrofit( this);
         jsonApiHolder = retrofit.create(JSONApiHolder.class);

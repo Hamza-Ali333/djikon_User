@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
+import com.ikonholdings.ikoniconnects.R;
 
 public class PurchaseServiceActivity extends AppCompatActivity {
 

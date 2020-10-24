@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -23,6 +23,7 @@ import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
+import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.SingleServiceReviews;
 import com.ikonholdings.ikoniconnects.ResponseModels.SingleServiceModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SliderModel;

@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Chat;
+package com.ikonholdings.ikoniconnects.Chat.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -28,12 +28,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
+import com.ikonholdings.ikoniconnects.Chat.Models.ManytoManyChatModel;
 import com.ikonholdings.ikoniconnects.Chat.Notification.APIService;
 import com.ikonholdings.ikoniconnects.Chat.Notification.Client;
 import com.ikonholdings.ikoniconnects.Chat.Notification.Data;
+import com.ikonholdings.ikoniconnects.Chat.Notification.GroupMembers;
 import com.ikonholdings.ikoniconnects.Chat.Notification.MyResponse;
 import com.ikonholdings.ikoniconnects.Chat.Notification.Sender;
 import com.ikonholdings.ikoniconnects.Chat.Notification.Token;
+import com.ikonholdings.ikoniconnects.Chat.Recycler.RecyclerGroupChat;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
@@ -77,6 +80,10 @@ public class GroupChatViewerActivity extends AppCompatActivity {
     private String groupName, imgProfileUrl, groupKey, creator_id;
     private String[] ReceiverList;
 
+    List<Integer> list = new ArrayList<>();//recieverslist which come from group list fragment
+
+    private List<Token> mTokenList;
+
 
     private APIService apiService;
 
@@ -88,7 +95,6 @@ public class GroupChatViewerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mNetworkChangeReceiver, filter);
@@ -120,7 +126,7 @@ public class GroupChatViewerActivity extends AppCompatActivity {
         groupKey = i.getStringExtra("groupKey");
         creator_id = i.getStringExtra("creatorId");
         imgProfileUrl = i.getStringExtra("groupImage");
-        List<Integer> list  = i.getIntegerArrayListExtra("list");
+        list  = i.getIntegerArrayListExtra("list");
 
         setSubscriberProfile(imgProfileUrl);
 
@@ -151,7 +157,6 @@ public class GroupChatViewerActivity extends AppCompatActivity {
         });
 
         mProgressDialog = DialogsUtils.showProgressDialog(this,"Getting Massages","Please Wait");
-
 
         btn_SendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -313,7 +318,7 @@ public class GroupChatViewerActivity extends AppCompatActivity {
                 //nead to check this line what is the propose of this line
                 // String user= dataSnapshot.getValue(String.class);
                 if(notify){
-                   // sendNotification("userUid",PreferenceData.getUserName(GroupChatViewerActivity.this),Msg);
+                    sendNotification(PreferenceData.getUserName(GroupChatViewerActivity.this),Msg);
                 }
                 notify = false;
             }
@@ -325,35 +330,44 @@ public class GroupChatViewerActivity extends AppCompatActivity {
         });
     }
 
-    private void sendNotification(String receiver,final String userName,final String messaage) {
+    private void sendNotification(final String userName,final String messaage) {
+
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receiver);
-        query.addValueEventListener(new ValueEventListener() {
+        tokens.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    Token token = snapshot.getValue(Token.class);
-                    //first parameter is for user list
-                    Data data = new Data(false,PreferenceData.getUserId(GroupChatViewerActivity.this),R.mipmap.ic_launcher,userName+": "+messaage,"New Message",
-                            String.valueOf(ReceiverList));
 
-                    Sender sender = new Sender(data, token.getToken());
+                for (int j = 0; j < dataSnapshot.getChildrenCount() ; j++) {
+                    for (int i = 0; i < list.size()-1 ; i++) {
+                        //check if node key is equal to Reicever which coming from group list
+                        if(dataSnapshot.getKey().equals(String.valueOf(list.get(i)))){
+                            mTokenList.add(dataSnapshot.getValue(Token.class));
+                        }
+                    }
+                }
 
-                    apiService.sendNotification(sender)
-                            .enqueue(new Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if(!response.isSuccessful()){
+                //first parameter is for user list
+                Data data = new Data(false,PreferenceData.getUserId(GroupChatViewerActivity.this),R.mipmap.ic_launcher,userName+": "+messaage,"New Message",
+                        String.valueOf(ReceiverList));
+
+                String[] tokens = (String[]) mTokenList.toArray();
+
+                GroupMembers groupMembers = new GroupMembers(data, tokens);
+
+                apiService.sendNotification(groupMembers)
+                        .enqueue(new Callback<MyResponse>() {
+                            @Override
+                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                if(!response.isSuccessful()){
 //                                        if(response.body().success != 1)
 //                                        Toast.makeText(ChatViewerActivity.this, "Failed to send Notification", Toast.LENGTH_SHORT).show();
-                                    }
                                 }
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
+                            }
+                            @Override
+                            public void onFailure(Call<MyResponse> call, Throwable t) {
 
-                                }
-                            });
-                }
+                            }
+                        });
             }
 
             @Override

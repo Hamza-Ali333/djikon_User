@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.DjProfileActivity;
+import com.ikonholdings.ikoniconnects.Activity.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.CurrentLiveArtistModel;
 import com.mikhaellopez.circularimageview.CircularImageView;

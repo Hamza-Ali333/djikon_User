@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
-import com.ikonholdings.ikoniconnects.MainActivity;
+import com.ikonholdings.ikoniconnects.Activity.MainActivity;
 import com.ikonholdings.ikoniconnects.R;
 
 @RequiresApi(api = Build.VERSION_CODES.M)

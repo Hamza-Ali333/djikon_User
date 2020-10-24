@@ -1,7 +1,6 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,10 +16,8 @@ import android.widget.Toast;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
-import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerRequestedSong;
+import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerSelectArtist;
-import com.ikonholdings.ikoniconnects.RecyclerView.RecyclerSubscribedArtist;
-import com.ikonholdings.ikoniconnects.ResponseModels.RequestedSongsModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
 

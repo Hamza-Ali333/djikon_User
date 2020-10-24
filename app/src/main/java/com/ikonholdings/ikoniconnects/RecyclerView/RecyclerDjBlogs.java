@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.BlogDetailActivity;
+import com.ikonholdings.ikoniconnects.Activity.BlogDetailActivity;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjProfileBlogsModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.squareup.picasso.Picasso;

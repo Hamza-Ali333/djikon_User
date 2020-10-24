@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Chat;
+package com.ikonholdings.ikoniconnects.Chat.Recycler;
 
 import android.os.Build;
 import android.view.Gravity;
@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
+import com.ikonholdings.ikoniconnects.Chat.Models.ManytoManyChatModel;
 import com.ikonholdings.ikoniconnects.R;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;

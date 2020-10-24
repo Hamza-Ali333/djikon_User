@@ -1,6 +1,5 @@
 package com.ikonholdings.ikoniconnects.RecyclerView;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -17,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.BlogDetailActivity;
+import com.ikonholdings.ikoniconnects.Activity.BlogDetailActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
-import com.ikonholdings.ikoniconnects.DjProfileActivity;
+import com.ikonholdings.ikoniconnects.Activity.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.ResponseModels.FeedBlogModel;
 import com.ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;

@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Chat;
+package com.ikonholdings.ikoniconnects.Chat.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.ikonholdings.ikoniconnects.DjProfileActivity;
+import com.ikonholdings.ikoniconnects.Activity.DjProfileActivity;
+import com.ikonholdings.ikoniconnects.Chat.Notification.Notification;
+import com.ikonholdings.ikoniconnects.Chat.Recycler.RecyclerChatViewer;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
@@ -382,13 +384,13 @@ public class ChatViewerActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(true,
+                    Notification notification = new Notification(true,
                             PreferenceData.getUserId(ChatViewerActivity.this),
                             R.mipmap.ic_launcher,
                             userName+": "+message,"New Message",
                             subscriberId);
 
-                    Sender sender = new Sender(data,token.getToken());
+                    Sender sender = new Sender(notification,token.getToken());
 
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<MyResponse>() {

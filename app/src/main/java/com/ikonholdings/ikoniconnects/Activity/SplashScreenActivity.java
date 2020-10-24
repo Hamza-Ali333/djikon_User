@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.os.Handler;
 
 
+import com.ikonholdings.ikoniconnects.BuildConfig;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
+import com.ikonholdings.ikoniconnects.R;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -23,6 +25,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         //mFirebaseAuth.getInstance().signOut();
 
        // new ChangeUserStatus(true,PreferenceData.getUserId(this)).execute();
+
+      //  startActivity(new Intent(this,StreamingActivity.class));
 
         getSupportActionBar().hide();
 

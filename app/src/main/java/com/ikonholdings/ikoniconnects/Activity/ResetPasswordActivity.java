@@ -1,16 +1,21 @@
-package com.ikonholdings.ikoniconnects;
+package com.ikonholdings.ikoniconnects.Activity;
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
+import com.ikonholdings.ikoniconnects.R;
 
-public class PaymentMethodActivity extends AppCompatActivity {
+public class ResetPasswordActivity extends AppCompatActivity {
+
+    Button btn_Change_Password;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
-
 
     @Override
     protected void onStart() {
@@ -24,15 +29,28 @@ public class PaymentMethodActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paymentmethod);
-        getSupportActionBar().setTitle("Payment Methods");
+        setContentView(R.layout.activity_reset_password);
+        getSupportActionBar().setTitle("Reset Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        createRefrences();
 
         mNetworkChangeReceiver = new NetworkChangeReceiver(this);
 
+        btn_Change_Password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ResetPasswordActivity.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
+    private void createRefrences(){
+
+        btn_Change_Password = findViewById(R.id.btn_changepassword);
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -49,4 +67,5 @@ public class PaymentMethodActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 }

@@ -21,9 +21,8 @@ import androidx.core.content.ContextCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.ikonholdings.ikoniconnects.Chat.ChatViewerActivity;
-import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
-import com.ikonholdings.ikoniconnects.MainActivity;
+import com.ikonholdings.ikoniconnects.Chat.Activity.ChatViewerActivity;
+import com.ikonholdings.ikoniconnects.Activity.MainActivity;
 import com.ikonholdings.ikoniconnects.R;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.ikonholdings.ikoniconnects.Chat;
+package com.ikonholdings.ikoniconnects.Chat.Fragment;
 
 
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.ikonholdings.ikoniconnects.Chat.Fragment.ChatListFragment;
+import com.ikonholdings.ikoniconnects.Chat.Fragment.GroupListFragment;
 import com.ikonholdings.ikoniconnects.ChatAdapter.SectionPagerAdapter;
 import com.ikonholdings.ikoniconnects.R;
 

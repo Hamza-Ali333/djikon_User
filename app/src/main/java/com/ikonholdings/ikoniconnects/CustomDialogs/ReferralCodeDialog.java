@@ -15,11 +15,9 @@ import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
-import com.ikonholdings.ikoniconnects.MainActivity;
+import com.ikonholdings.ikoniconnects.Activity.MainActivity;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.LoginRegistrationModel;
-
-import java.util.jar.Attributes;
 
 import retrofit2.Call;
 import retrofit2.Callback;
