@@ -198,7 +198,7 @@
                 android:padding="0dp"
                 android:text="Subscribe to a email list from the artist"
                 android:textColor="@color/Graycolor"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:theme="@style/SCBSwitch"
                 app:layout_constraintEnd_toStartOf="@+id/guideline9"
                 app:layout_constraintStart_toStartOf="@+id/guideline8"
@@ -260,7 +260,7 @@
                 android:fontFamily="@font/montserrat"
                 android:text="Disclosures"
                 android:textColor="@color/Graycolor"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@+id/guideline8"
                 app:layout_constraintTop_toBottomOf="@+id/view2" />
 

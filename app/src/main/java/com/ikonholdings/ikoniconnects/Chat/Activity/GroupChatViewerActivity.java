@@ -111,7 +111,7 @@ public class GroupChatViewerActivity extends AppCompatActivity {
         apiService = Client.getClient("https://fcm.googleapis.com").create(APIService.class);
 
         //give the Current Time and Date
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         //tool bar UserProfile
         currentUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
