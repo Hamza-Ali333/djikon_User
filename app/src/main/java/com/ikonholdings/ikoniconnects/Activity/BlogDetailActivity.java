@@ -31,6 +31,7 @@ import android.widget.VideoView;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.CommentModel;
@@ -141,7 +142,7 @@ public class BlogDetailActivity extends AppCompatActivity {
                 if (!edt_Comment.getText().toString().trim().isEmpty()) {
                     String comment = edt_Comment.getText().toString().trim();
                     edt_Comment.getText().clear();
-                    hideKeyboard(BlogDetailActivity.this);
+                    KeyBoard.hideKeyboard(BlogDetailActivity.this);
 
                     new postComment().execute(comment);
 
@@ -361,17 +362,6 @@ public class BlogDetailActivity extends AppCompatActivity {
         mAdapter = new RecyclerBlogComment(mCommentModelList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void showLoadingDialogue() {

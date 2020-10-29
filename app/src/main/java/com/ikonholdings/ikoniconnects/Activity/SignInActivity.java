@@ -52,6 +52,7 @@ import com.ikonholdings.ikoniconnects.CustomDialogs.CreateNewPasswordDialog;
 import com.ikonholdings.ikoniconnects.CustomDialogs.ReferralCodeDialog;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FingerPrintHandler;
+import com.ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.R;
@@ -1173,8 +1174,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void lunchNextActivity(){
+        KeyBoard.hideKeyboard(SignInActivity.this);
         Intent i = new Intent(SignInActivity.this,MainActivity.class);
-        i.putExtra("come_from_registration",false);
         progressDialog.dismiss();
         startActivity(i);
         finish();

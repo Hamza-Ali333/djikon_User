@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.R;
@@ -146,6 +147,7 @@ public class RegistrationActivity extends AppCompatActivity {
         btn_SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KeyBoard.hideKeyboard(RegistrationActivity.this);
                 startActivity(new Intent(RegistrationActivity.this,SignInActivity.class));
             }
         });
@@ -575,8 +577,8 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void lunchNextActivity(){
+        KeyBoard.hideKeyboard(RegistrationActivity.this);
         Intent i = new Intent(RegistrationActivity.this,MainActivity.class);
-        i.putExtra("come_from_registration",true);
         startActivity(i);
         finish();
     }

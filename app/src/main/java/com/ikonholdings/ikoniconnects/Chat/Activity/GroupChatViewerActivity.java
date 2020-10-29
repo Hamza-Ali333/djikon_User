@@ -38,6 +38,7 @@ import com.ikonholdings.ikoniconnects.Chat.Notification.Sender;
 import com.ikonholdings.ikoniconnects.Chat.Notification.Token;
 import com.ikonholdings.ikoniconnects.Chat.Recycler.RecyclerGroupChat;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.R;
@@ -162,6 +163,7 @@ public class GroupChatViewerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 notify = true;
+                KeyBoard.hideKeyboard(GroupChatViewerActivity.this);
                 String currentDateAndTime = sdf.format(new Date());
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){

@@ -26,6 +26,7 @@ import com.ikonholdings.ikoniconnects.Activity.DjProfileActivity;
 import com.ikonholdings.ikoniconnects.Chat.Notification.Notification;
 import com.ikonholdings.ikoniconnects.Chat.Recycler.RecyclerChatViewer;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.R;
@@ -168,6 +169,7 @@ public class ChatViewerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 notify = true;
+                KeyBoard.hideKeyboard(ChatViewerActivity.this);
                 String currentDateAndTime = sdf.format(new Date());
                 if(!edt_Massage.getText().toString().isEmpty()){
                     if(!alreadyHaveChat){

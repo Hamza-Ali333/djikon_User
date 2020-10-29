@@ -34,6 +34,7 @@ import com.braintreepayments.api.dropin.DropInResult;
 import com.ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
 import com.ikonholdings.ikoniconnects.R;
@@ -183,6 +184,7 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
         btn_Check_Cost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                KeyBoard.hideKeyboard(BookArtistOrServiceActivity.this);
                 if (isInfoRight()) {
                     if (!priceType.equals("Fix")) {
                         String startDate = txt_Start_Date.getText().toString() + " " + txt_Start_Time.getText().toString();
@@ -206,8 +208,6 @@ public class BookArtistOrServiceActivity extends AppCompatActivity {
 
         if (!PreferenceData.getUserPhoneNo(this).equals("no"))
             edt_Phone.setText(PreferenceData.getUserPhoneNo(this));
-
-
     }
 
     private void showDatPiker(TextView textView) {

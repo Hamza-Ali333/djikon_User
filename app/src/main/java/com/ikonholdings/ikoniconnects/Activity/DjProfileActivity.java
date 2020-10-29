@@ -28,6 +28,7 @@ import com.ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.ikonholdings.ikoniconnects.Chat.Activity.ChatViewerActivity;
 import com.ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
+import com.ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.ikonholdings.ikoniconnects.R;
 import com.ikonholdings.ikoniconnects.ResponseModels.DjAndUserProfileModel;
@@ -275,7 +276,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
         btn_Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                KeyBoard.hideKeyboard(DjProfileActivity.this);
                 if (!edt_Requester_Name.getText().toString().isEmpty() && !edt_Song_Name.getText().toString().isEmpty()) {
 
                     progressDialog = DialogsUtils.showProgressDialog(DjProfileActivity.this,"Posting Request","Please Wait...");
