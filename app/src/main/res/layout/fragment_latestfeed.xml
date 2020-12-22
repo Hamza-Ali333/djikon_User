@@ -15,5 +15,18 @@
         android:background="#000000"
         android:layout_height="match_parent"/>
 
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="22sp"
+            android:paddingLeft="8dp"
+            android:gravity="center_horizontal"
+            android:paddingRight="8dp"
+            android:visibility="gone"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/grey"
+            android:text="follow Artist to see their blogs." />
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

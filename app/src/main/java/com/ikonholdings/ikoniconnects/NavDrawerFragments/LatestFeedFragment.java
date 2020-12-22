@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,8 @@ public class LatestFeedFragment extends Fragment {
 
     private AlertDialog loadingDialog;
 
+    private TextView txt_Msg;
+
 
     @Nullable
     @Override
@@ -68,6 +71,7 @@ public class LatestFeedFragment extends Fragment {
     private void createReferences(View v) {
         mRecyclerView = v.findViewById(R.id.recyclerViewLatestFeed);
         pullToRefresh =v.findViewById(R.id.pullToRefresh);
+        txt_Msg = v.findViewById(R.id.info);
     }
 
     private void downloadBlogs() {
@@ -87,8 +91,14 @@ public class LatestFeedFragment extends Fragment {
                 loadingDialog.dismiss();
                 List<FeedBlogModel> blogs = response.body();
 
-                mAdapter = new RecyclerLatestFeed(blogs,getContext());
-                mRecyclerView.setAdapter(mAdapter);
+                if(blogs.isEmpty()){
+                    txt_Msg.setVisibility(View.VISIBLE);
+                }else {
+                    txt_Msg.setVisibility(View.GONE);
+                    mAdapter = new RecyclerLatestFeed(blogs,getContext());
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+
             }
 
             @Override
