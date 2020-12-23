@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:750969288865:android:daaed84835663e48a598e0",
+        "mobilesdk_app_id": "1:750969288865:android:e17ca8e4715434e8a598e0",
         "android_client_info": {
-          "package_name": "com.ikonholdings.ikoniconnects"
+          "package_name": "com.Ikonholdings.ikoniconnects"
         }
       },
       "oauth_client": [
@@ -32,10 +32,62 @@
               "client_type": 3
             },
             {
-              "client_id": "750969288865-jo1vb2uou16al6pcphk451aqsscc5e8v.apps.googleusercontent.com",
+              "client_id": "750969288865-3v6pmtiug9pacrjlpgsn64ncs4rim735.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.djikonuser"
+                "bundle_id": "com.ikonholdings.ikoniconnects"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750969288865:android:b4495cc278d0a267a598e0",
+        "android_client_info": {
+          "package_name": "com.Ikonholdings.ikoniconnects_subscriber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750969288865-44ch498ngh4rv0cqqnl9ojbt4et34gpg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Ikonholdings.ikoniconnects_subscriber",
+            "certificate_hash": "c5897d57c73bad60546ad36b779a437ad756a7e8"
+          }
+        },
+        {
+          "client_id": "750969288865-s13jv7d40p2hs6o74daer21s90lo0shg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Ikonholdings.ikoniconnects_subscriber",
+            "certificate_hash": "3e639a9cd4646eb0f46a10657507729b0eb3d494"
+          }
+        },
+        {
+          "client_id": "750969288865-3mickj73d6irvg0ckbf2uo7cgb85sr57.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-pqg9enZZMylkm6gw4X3k55k1WuUHI6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "750969288865-3mickj73d6irvg0ckbf2uo7cgb85sr57.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "750969288865-3v6pmtiug9pacrjlpgsn64ncs4rim735.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ikonholdings.ikoniconnects"
               }
             }
           ]

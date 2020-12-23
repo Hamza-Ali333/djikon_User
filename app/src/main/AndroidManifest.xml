@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.ikonholdings.ikoniconnects">
+    package="com.Ikonholdings.ikoniconnects">
 
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
@@ -23,10 +23,10 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.RequestNewSongActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.RequestNewSongActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".LiveStreaming.LiveVideoStreaming"
+        <activity android:name="com.Ikonholdings.ikoniconnects.LiveStreaming.LiveVideoStreaming"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
         <activity
@@ -73,63 +73,63 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:resizeableActivity="false"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Activity.BlogDetailActivity" />
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.BlogDetailActivity" />
         <activity
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:name=".Activity.MainActivity"
+            android:name="com.Ikonholdings.ikoniconnects.Activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:name=".Chat.Activity.ChatViewerActivity"
+            android:name="com.Ikonholdings.ikoniconnects.Chat.Activity.ChatViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:name=".Chat.Activity.GroupChatViewerActivity"
+            android:name="com.Ikonholdings.ikoniconnects.Chat.Activity.GroupChatViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:name=".Activity.UserProfileActivity"
+            android:name="com.Ikonholdings.ikoniconnects.Activity.UserProfileActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:name=".Activity.PurchaseServiceActivity"
+            android:name="com.Ikonholdings.ikoniconnects.Activity.PurchaseServiceActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
-        <activity android:name=".Activity.BookArtistOrServiceActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.BookArtistOrServiceActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.StreamingActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.StreamingActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.ServiceDetailActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.ServiceDetailActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.ResetPasswordActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.ResetPasswordActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.DjProfileActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.DjProfileActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.ProfileSettingActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.ProfileSettingActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.PaymentMethodActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.PaymentMethodActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.BookingPaymentMethodActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.BookingPaymentMethodActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.SignInActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.SignInActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.RegistrationActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.RegistrationActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.SplashScreenActivity"
+        <activity android:name="com.Ikonholdings.ikoniconnects.Activity.SplashScreenActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -140,7 +140,7 @@
         </activity>
 
         <service
-            android:name=".Chat.Notification.MyFirebaseIdService"
+            android:name="com.Ikonholdings.ikoniconnects.Chat.Notification.MyFirebaseIdService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -148,7 +148,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".Chat.Notification.MyFirebaseMessaging"
+            android:name="com.Ikonholdings.ikoniconnects.Chat.Notification.MyFirebaseMessaging"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

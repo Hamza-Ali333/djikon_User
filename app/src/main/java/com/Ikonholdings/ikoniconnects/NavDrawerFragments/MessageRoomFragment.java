@@ -1,0 +1,59 @@
+package com.Ikonholdings.ikoniconnects.NavDrawerFragments;
+
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.Ikonholdings.ikoniconnects.Chat.Fragment.ChatListFragment;
+import com.Ikonholdings.ikoniconnects.Chat.Fragment.GroupListFragment;
+import com.Ikonholdings.ikoniconnects.ChatAdapter.SectionPagerAdapter;
+import com.Ikonholdings.ikoniconnects.R;
+
+
+public class MessageRoomFragment extends Fragment {
+
+    View mFragment;
+    ViewPager mViewPager;
+    TabLayout mTabLayout;
+
+    public MessageRoomFragment() {
+        //required
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mFragment =  inflater.inflate(R.layout.fragment_checking,container,false);
+
+        mViewPager = mFragment.findViewById(R.id.viewPager);
+        mTabLayout = mFragment.findViewById(R.id.tabMode);
+
+       return mFragment;
+    }
+
+    //onActivity Create Method
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        setUpViewPager(mViewPager);
+        mTabLayout.setupWithViewPager(mViewPager);
+
+    }
+
+    private void setUpViewPager(ViewPager viewPager) {
+        SectionPagerAdapter adapter = new SectionPagerAdapter(getChildFragmentManager());
+
+        adapter.addFragment(new ChatListFragment(),"Chats");
+        adapter.addFragment(new GroupListFragment(),"Groups");
+        viewPager.setAdapter(adapter);
+    }
+}
