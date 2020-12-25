@@ -24,7 +24,6 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
     //view holder class
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
-        public ImageView img_more_option;
         public CircularImageView img_booker_image;
         public TextView  txt_Name, txt_Date, txt_EventTitle, txt_Charges;
         private ProgressBar profileProgressBar;
@@ -35,10 +34,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
 
             txt_Name = itemView.findViewById(R.id.txt_booker_name);
             txt_Date = itemView.findViewById(R.id.txt_booking_date);
-            txt_EventTitle = itemView.findViewById(R.id.txt_booked_event_title);
             txt_Charges = itemView.findViewById(R.id.txt_booking_charges);
-
-            img_more_option = itemView.findViewById(R.id.img_booking_option);
 
             profileProgressBar = itemView.findViewById(R.id.progressBarProfile);
 
@@ -83,7 +79,6 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
         }
 
         holder.txt_Name.setText(currentItem.getFirstname()+" "+currentItem.getLastname());
-        holder.txt_EventTitle.setText(currentItem.getName());
         holder.txt_Date.setText(currentItem.getStart_date()+" to "+currentItem.getEnd_date());
         holder.txt_Charges.setText(currentItem.getPrice());
 

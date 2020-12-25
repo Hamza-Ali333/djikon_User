@@ -11,6 +11,21 @@ public class BookingHistory {
    private String address;
    private String start_date;
    private String end_date;
+   private String created_at;
+   private String end_time;
+   private String status;
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getEnd_time() {
+        return end_time;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 
     public int getId() {
         return id;

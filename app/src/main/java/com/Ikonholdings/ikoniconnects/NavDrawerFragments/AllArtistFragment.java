@@ -1,5 +1,6 @@
 package com.Ikonholdings.ikoniconnects.NavDrawerFragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.Ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.Ikonholdings.ikoniconnects.R;
 import com.Ikonholdings.ikoniconnects.RecyclerView.RecyclerAllArtist;
 import com.Ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
@@ -144,5 +146,11 @@ public class AllArtistFragment extends Fragment {
         super.onResume();
         loadingDialog.show();
         getAllArtist();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        KeyBoard.hideKeyboard(getActivity());
     }
 }

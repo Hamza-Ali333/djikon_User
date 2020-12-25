@@ -36,7 +36,7 @@ public class CreateNewPasswordDialog {
         Button btn_update = view.findViewById(R.id.btn_changepassword);
 
         builder.setView(view);
-        builder.setCancelable(false);
+        builder.setCancelable(true);
 
         final AlertDialog alertDialog = builder.show();
 

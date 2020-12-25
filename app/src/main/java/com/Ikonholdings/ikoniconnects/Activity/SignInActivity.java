@@ -1,6 +1,7 @@
 package com.Ikonholdings.ikoniconnects.Activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ProgressDialog;
@@ -212,6 +213,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isInfoRight()) {
+                    KeyBoard.hideKeyboard(SignInActivity.this);
                     Email = edt_Email.getText().toString().trim();
                     Password = edt_Password.getText().toString().trim();
                     manageUserLogin(false);

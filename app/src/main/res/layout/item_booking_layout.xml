@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#5392F1"
-        android:paddingBottom="10dp">
+        android:background="#606367">
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/img_booker_image"
@@ -63,59 +62,65 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_booker_name" />
 
         <TextView
-            android:id="@+id/txt_booked_event_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Booked EventTitle"
-            android:textColor="#fff"
-            android:textSize="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/img_booker_image"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
-
-        <TextView
             android:id="@+id/textView12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Charges:"
             android:textColor="#fff"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/txt_booked_event_title"
-            app:layout_constraintTop_toBottomOf="@+id/txt_booked_event_title" />
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/img_booker_image"
+            app:layout_constraintTop_toBottomOf="@+id/img_booker_image" />
 
         <TextView
             android:id="@+id/txt_booking_charges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:layout_marginLeft="6dp"
             android:text="900$"
             android:textColor="#fff"
-            android:textSize="14sp"
+            android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView12"
             app:layout_constraintStart_toEndOf="@+id/textView12"
             app:layout_constraintTop_toTopOf="@+id/textView12" />
 
-        <ImageView
-            android:id="@+id/img_booking_option"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_booking_charges"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_more_horiz" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+             android:background="@drawable/bg_booking_history"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView12">
 
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Event Title"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="@+id/img_booker_image"
-            app:layout_constraintTop_toBottomOf="@+id/img_booker_image" />
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="#BDFABF"
+                android:fontFamily="@font/montserrat"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="TextView"
+                android:textColor="#08BD10"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Dec, 23/13"
+                android:fontFamily="@font/montserrat"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

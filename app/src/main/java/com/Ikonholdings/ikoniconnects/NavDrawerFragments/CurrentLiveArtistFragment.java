@@ -12,9 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Ikonholdings.ikoniconnects.Activity.RegistrationActivity;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.Ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.Ikonholdings.ikoniconnects.R;
 import com.Ikonholdings.ikoniconnects.RecyclerView.RecyclerLiveToArtist;
 import com.Ikonholdings.ikoniconnects.ResponseModels.CurrentLiveArtistModel;
@@ -45,9 +47,9 @@ public class CurrentLiveArtistFragment extends Fragment {
 
         getCurrentLiveArtist();
 
-
        return v;
     }
+
     private void getCurrentLiveArtist(){
         loadingDialog = DialogsUtils.showLoadingDialogue(getContext());
         Retrofit retrofit= ApiClient.retrofit(getContext());
@@ -96,5 +98,11 @@ public class CurrentLiveArtistFragment extends Fragment {
         mAdapter = new RecyclerLiveToArtist(liveToArtistList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        KeyBoard.hideKeyboard(getActivity());
     }
 }
