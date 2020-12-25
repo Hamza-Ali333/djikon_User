@@ -24,10 +24,10 @@ public class UpdatePassword {
             @Override
             public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
                 if(response.isSuccessful()){
-                    DialogsUtils.showAlertDialog(context,
-                            false,
-                            "Successful",
-                            "Password is updated successfully.");
+                    DialogsUtils.showSuccessDialog(context,
+                            "Successfully update!",
+                            "Password update successfully",
+                            false);
                 }else if(response.code() == 404){
                     DialogsUtils.showProgressDialog(context,
                             "Error",

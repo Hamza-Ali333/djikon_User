@@ -34,6 +34,7 @@ import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.CountriesList;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.Ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.PreferenceData;
@@ -191,13 +192,13 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isInfoRight()){
+                    KeyBoard.hideKeyboard(UserProfileActivity.this);
                     if(isDataChange()){
                         updateProfile();
                     }else {
                         Toast.makeText(UserProfileActivity.this, "Already Updated", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
         });
 

@@ -1,5 +1,6 @@
 package com.Ikonholdings.ikoniconnects.Activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -135,6 +136,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isInfoRight()) {
+                    KeyBoard.hideKeyboard(RegistrationActivity.this);
                     EmailForOTP = edt_Email.getText().toString().trim();
                     Password = edt_Password.getText().toString().trim();
                     signUpNewUser(false, edt_Name.getText().toString().trim(),
