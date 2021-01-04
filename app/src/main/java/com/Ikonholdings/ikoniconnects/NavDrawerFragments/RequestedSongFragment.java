@@ -36,7 +36,7 @@ public class RequestedSongFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private TextView txt_Requested_Song_Count;
+    private TextView txt_Requested_Song_Count, txt_Msg;
 
     private AlertDialog loadingDialog;
 
@@ -51,6 +51,7 @@ public class RequestedSongFragment extends Fragment {
         mRecyclerView = v.findViewById(R.id.recyclerView_song_request);
         mRecyclerView.setVisibility(View.GONE);
         txt_Requested_Song_Count = v.findViewById(R.id.txt_new_request);
+        txt_Msg = v.findViewById(R.id.msg);
         btn_AddSongRequest = v.findViewById(R.id.add);
 
 
@@ -87,9 +88,9 @@ public class RequestedSongFragment extends Fragment {
                     List<RequestedSongsModel> artistModels = response.body();
                     if (artistModels.isEmpty()) {
                         //if no data then show dialog to user
-                        DialogsUtils.showAlertDialog(getContext(), false,
-                                "No Song Found", "it's seems like you din't Request any Song yet");
+                       txt_Msg.setVisibility(View.VISIBLE);
                     } else {
+                        txt_Msg.setVisibility(View.GONE);
                         txt_Requested_Song_Count.setText("You have " + String.valueOf(artistModels.size()) + " requested song.");
                         initializeRecycler(artistModels);
                     }
@@ -100,6 +101,7 @@ public class RequestedSongFragment extends Fragment {
                     mRecyclerView.setVisibility(View.GONE);
                     DialogsUtils.showResponseMsg(getContext(), false);
                 }
+
             }
 
             @Override

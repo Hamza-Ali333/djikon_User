@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +25,6 @@ import com.Ikonholdings.ikoniconnects.ResponseModels.BookingHistory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SplittableRandom;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,7 +38,9 @@ public class BookingHistoryFragment extends Fragment {
     private RecyclerBookingHistory mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    List<BookingHistory> bookingHistoryList;
+    private TextView txtMsg;
+
+    private List<BookingHistory> bookingHistoryList;
 
     private Spinner mFilterSpinner;
     private Boolean activityAlreadyRuned = false;
@@ -50,10 +51,11 @@ public class BookingHistoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =  inflater.inflate(R.layout.activity_booking_history,container,false);
+        View v =  inflater.inflate(R.layout.fragment_booking_history,container,false);
 
         mRecyclerView = v.findViewById(R.id.recyclerViewBookingHistory);
         mFilterSpinner = v.findViewById(R.id.spinner_status);
+        txtMsg = v.findViewById(R.id.msg);
         mFilterSpinner.setVisibility(View.GONE);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
@@ -113,19 +115,16 @@ public class BookingHistoryFragment extends Fragment {
                         //if no data then show dialoge to user
                         loadingDialog.dismiss();
                         mFilterSpinner.setVisibility(View.GONE);
-                        mRecyclerView.setVisibility(View.GONE);
-                        DialogsUtils.showAlertDialog(getContext(),false,
-                                "No Booking Found","it's seems like you didn't done any booking yet");
+                       txtMsg.setVisibility(View.VISIBLE);
                     }
                     else{
                         mFilterSpinner.setVisibility(View.VISIBLE);
                         initializeRecycler(bookingHistoryList);
                         loadingDialog.dismiss();
-                        mRecyclerView.setVisibility(View.VISIBLE);
+                        txtMsg.setVisibility(View.GONE);
                     }
 
                 }else {
-
                     loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.GONE);
                     DialogsUtils.showResponseMsg(getContext(),false);

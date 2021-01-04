@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,8 @@ public class AllArtistFragment extends Fragment {
     private RecyclerAllArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private TextView txt_Msg;
+
     private SearchView mSearchView;
     private List<AllArtistModel> artistList;
 
@@ -55,6 +58,8 @@ public class AllArtistFragment extends Fragment {
         artistList = new ArrayList<>();
 
         mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
+        txt_Msg = v.findViewById(R.id.msg);
+        txt_Msg.setText("You Already Subscribed All Artist.");
         mRecyclerView.setVisibility(View.GONE);
         mSearchView = v.findViewById(R.id.txt_search);
 
@@ -107,12 +112,12 @@ public class AllArtistFragment extends Fragment {
 
                     artistList = response.body();
                     if(artistList.isEmpty()) {
-                        DialogsUtils.showAlertDialog(getContext(),false,
-                                "No Artist Found","it's seems like on Artist is registered Yet.!");
+                        txt_Msg.setVisibility(View.VISIBLE);
                     }
                     else{
                         initializeRecycler(artistList);
                         loadingDialog.dismiss();
+                        txt_Msg.setVisibility(View.GONE);
                     }
 
                 }else {

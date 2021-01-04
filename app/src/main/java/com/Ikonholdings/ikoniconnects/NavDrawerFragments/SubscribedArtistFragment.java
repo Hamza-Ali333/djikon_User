@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,8 @@ public class SubscribedArtistFragment extends Fragment implements FollowUnFollow
     private AlertDialog loadingDialog;
     private SearchView mSearchView;
 
+    private TextView txt_Msg;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class SubscribedArtistFragment extends Fragment implements FollowUnFollow
         View v =  inflater.inflate(R.layout.fragment_subscribe_artist,container,false);
 
          mRecyclerView = v.findViewById(R.id.recyclerViewSubscribeArtist);
+         txt_Msg = v.findViewById(R.id.msg);
+         txt_Msg.setText("No Subscribe Artist Founds");
          mRecyclerView.setVisibility(View.GONE);
          mSearchView = v.findViewById(R.id.txt_search);
          mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -83,11 +88,13 @@ public class SubscribedArtistFragment extends Fragment implements FollowUnFollow
 
                             List<SubscribeArtistModel> artistModels = response.body();
                             if(artistModels.isEmpty()){
-                               DialogsUtils.showAlertDialog(getContext(),false,
-                                        "No Subscribed Artist Found","it's seems like you din't follow any artist now");
+                                txt_Msg.setVisibility(View.VISIBLE);
                             }
-                           else
-                            initializeRecycler(artistModels);
+                           else{
+                                txt_Msg.setVisibility(View.GONE);
+                                initializeRecycler(artistModels);
+                            }
+
 
                     loadingDialog.dismiss();
 

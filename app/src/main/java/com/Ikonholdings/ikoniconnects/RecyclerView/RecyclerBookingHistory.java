@@ -30,7 +30,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
         public CircularImageView img_booker_image;
-        public TextView  txt_Name, txt_Date, txt_Status, txt_Charges;
+        public TextView  txt_Name, txt_Date, txt_Status, txt_Charges, txt_BookingOf;
         private ProgressBar profileProgressBar;
 
         public ViewHolder(View itemView){
@@ -41,6 +41,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
             txt_Status = itemView.findViewById(R.id.status);
             txt_Date = itemView.findViewById(R.id.txt_booking_date);
             txt_Charges = itemView.findViewById(R.id.txt_booking_charges);
+            txt_BookingOf = itemView.findViewById(R.id.bookingof);
 
             profileProgressBar = itemView.findViewById(R.id.progressBarProfile);
 
@@ -55,7 +56,6 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
 
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
-
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_booking_layout,parent,false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
@@ -79,7 +79,6 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
                         @Override
                         public void onError(Exception e) {
                             holder.profileProgressBar.setVisibility(View.GONE);
-                           // holder.img_booker_image.setImageResource(R.drawable.ic_avatar);
                         }
                     });
         }
@@ -88,8 +87,16 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
         holder.txt_Date.setText(currentItem.getStart_date()+" to "+currentItem.getEnd_date());
         holder.txt_Charges.setText("$"+currentItem.getPrice());
 
+        if(currentItem.getService_id() != null && currentItem.getService_id() != 0){
+            holder.txt_BookingOf.setText("Service");
+        }else {
+            holder.txt_BookingOf.setText("Artist");
+        }
+
         if(currentItem.getStatus().equals("1")){
             holder.txt_Status.setText("Completed");
+            holder.txt_Status.setTextColor(ContextCompat.getColor(holder.txt_Status.getContext(),R.color.colorGreen));
+            holder.txt_Status.setBackgroundResource(R.drawable.bg_booking_accepted);
         }
         else if (currentItem.getStatus().equals("0")){
             holder.txt_Status.setText("Pending");
@@ -110,9 +117,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
                     i.putExtra("serviceId",currentItem.getService_id());
                     v.getContext().startActivity(i);
                 }else {
-                    Intent i = new Intent(v.getContext(), DjProfileActivity.class);
-                    i.putExtra("id", currentItem.getSub_id());
-                    v.getContext().startActivity(i);
+                    lunchSubscriberActivity(v, currentItem.getSub_id());
                 }
 
             }
@@ -121,10 +126,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
         holder.img_booker_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), DjProfileActivity.class);
-                i.putExtra("id", currentItem.getSub_id());
-                v.getContext().startActivity(i);
-
+                lunchSubscriberActivity(v, currentItem.getSub_id());
             }
         });
 
@@ -139,4 +141,11 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
     public int getItemCount() {
         return mbookingHistoryArrayList.size();
     }
+
+    private void lunchSubscriberActivity(View v, int artistId){
+        Intent i = new Intent(v.getContext(), DjProfileActivity.class);
+        i.putExtra("id", artistId);
+        v.getContext().startActivity(i);
+    }
+
 }

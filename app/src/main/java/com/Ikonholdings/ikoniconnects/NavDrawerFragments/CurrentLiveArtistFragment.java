@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +38,8 @@ public class CurrentLiveArtistFragment extends Fragment {
     private RecyclerLiveToArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private TextView txt_Msg;
+
     private AlertDialog loadingDialog;
     private SearchView mSearchView;
 
@@ -50,6 +53,7 @@ public class CurrentLiveArtistFragment extends Fragment {
 
         mRecyclerView = v.findViewById(R.id.recyclerViewLiveToArtist);
         mSearchView = v.findViewById(R.id.txt_search);
+        txt_Msg = v.findViewById(R.id.msg);
         mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         liveArtistModels = new ArrayList<>();
@@ -90,14 +94,13 @@ public class CurrentLiveArtistFragment extends Fragment {
                    liveArtistModels = response.body();
                     if(liveArtistModels.isEmpty()) {
                         //if no data then show dialoge to user
-                         DialogsUtils.showAlertDialog(getContext(),false,
-                                "Note","No live artist found at this moment.");
+                        txt_Msg.setVisibility(View.VISIBLE);
                     } else{
                        buildRecyclerView(liveArtistModels);
+                        txt_Msg.setVisibility(View.GONE);
                     }
                     loadingDialog.dismiss();
                     mRecyclerView.setVisibility(View.VISIBLE);
-
 
                 }else {
                     loadingDialog.dismiss();

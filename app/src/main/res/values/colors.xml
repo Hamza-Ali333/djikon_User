@@ -12,5 +12,6 @@
     <color name="insta_btn_color">#EB3555</color>
     <color name="print_btn_color">#FC0000</color>
     <color name="colorYellow">#FB9908</color>
+    <color name="colorGreen">#08BD10</color>
 
 </resources>
