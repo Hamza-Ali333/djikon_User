@@ -6,7 +6,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
@@ -25,7 +27,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
     public static class ViewHolder extends  RecyclerView.ViewHolder{
 
         public CircularImageView img_booker_image;
-        public TextView  txt_Name, txt_Date, txt_EventTitle, txt_Charges;
+        public TextView  txt_Name, txt_Date, txt_Status, txt_Charges;
         private ProgressBar profileProgressBar;
 
         public ViewHolder(View itemView){
@@ -33,6 +35,7 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
             img_booker_image = itemView.findViewById(R.id.img_booker_image);
 
             txt_Name = itemView.findViewById(R.id.txt_booker_name);
+            txt_Status = itemView.findViewById(R.id.status);
             txt_Date = itemView.findViewById(R.id.txt_booking_date);
             txt_Charges = itemView.findViewById(R.id.txt_booking_charges);
 
@@ -80,9 +83,35 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
 
         holder.txt_Name.setText(currentItem.getFirstname()+" "+currentItem.getLastname());
         holder.txt_Date.setText(currentItem.getStart_date()+" to "+currentItem.getEnd_date());
-        holder.txt_Charges.setText(currentItem.getPrice());
+        holder.txt_Charges.setText("$"+currentItem.getPrice());
+
+        if(currentItem.getStatus().equals("1")){
+            holder.txt_Status.setText("Completed");
+        }
+        else if (currentItem.getStatus().equals("0")){
+            holder.txt_Status.setText("Pending");
+            holder.txt_Status.setBackgroundResource(R.drawable.bg_booking_pending);
+            holder.txt_Status.setTextColor(ContextCompat.getColor(holder.txt_Status.getContext(),R.color.colorYellow));
+        }
+        else {
+            holder.txt_Status.setText("ReJected");
+            holder.txt_Status.setTextColor(ContextCompat.getColor(holder.txt_Status.getContext(),R.color.colorgoogle));
+            holder.txt_Status.setBackgroundResource(R.drawable.bg_booking_rejected);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(holder.itemView.getContext(), currentItem.getStatus(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
 }
+
+    public void filterList(List<BookingHistory> list) {
+        mbookingHistoryArrayList = list;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

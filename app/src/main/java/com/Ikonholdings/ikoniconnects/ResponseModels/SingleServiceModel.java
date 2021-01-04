@@ -14,7 +14,12 @@ public class SingleServiceModel {
     private String feature_image;
     private String gallery;
     private String artist_name;
+    private int review_status;
     private float rating;
+
+    public int getReview_status() {
+        return review_status;
+    }
 
     @SerializedName("reviews")
     @Expose

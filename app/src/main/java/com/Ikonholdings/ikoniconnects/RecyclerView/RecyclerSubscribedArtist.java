@@ -1,9 +1,6 @@
 package com.Ikonholdings.ikoniconnects.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,25 +11,17 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
-import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.Ikonholdings.ikoniconnects.Activity.DjProfileActivity;
-import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.FollowUnFollowArtist;
-import com.Ikonholdings.ikoniconnects.GlobelClasses.ProgressButton;
 import com.Ikonholdings.ikoniconnects.R;
 import com.Ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
-import com.Ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubscribedArtist.ViewHolder> implements Filterable {
 
@@ -143,11 +132,11 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
                 filteredList.addAll(mSearchList);
             } else{
                 String filterPattern = charSequence.toString().toLowerCase().trim();
-                String nameConcatination;
+                String nameConcatenation;
 
                 for(SubscribeArtistModel item : mSearchList){
-                    nameConcatination= item.getFirstname()+" "+item.getLastname();
-                    if(nameConcatination.toLowerCase().contains(filterPattern)){
+                    nameConcatenation= item.getFirstname()+" "+item.getLastname();
+                    if(nameConcatenation.toLowerCase().contains(filterPattern)){
                         filteredList.add(item);
                     }
                 }
@@ -166,74 +155,5 @@ public class RecyclerSubscribedArtist extends RecyclerView.Adapter<RecyclerSubsc
             notifyDataSetChanged();
         }
     };
-
-    private class UnFollowSubscriber extends AsyncTask<Void,Void,Void> {
-
-        Integer artistID;
-        Context context;
-        private ProgressButton mProgressButton;
-        public UnFollowSubscriber(Integer artistID, View view) {
-            this.artistID = artistID;
-            this.context = view.getContext();
-            mProgressButton = new ProgressButton(context,view);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressButton.btnOnClick("UnFollowing...");
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Retrofit retrofit = ApiClient.retrofit(context);
-            JSONApiHolder jsonApiHolder = retrofit.create(JSONApiHolder.class);
-
-            String relativeUrl = "";
-            //0 means not following yet
-
-            relativeUrl = "unfollow_artist/"+artistID;
-
-
-            Call<SuccessErrorModel> call = jsonApiHolder.followUnFollowArtist(relativeUrl);
-
-            call.enqueue(new retrofit2.Callback<SuccessErrorModel>() {
-                @Override
-                public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
-                    if(response.isSuccessful()){
-                        for (int i = 0; i < mSubscribeArtistList.size() ; i++) {
-                            if(artistID.equals(mSubscribeArtistList.get(i).getId())){
-                                mSubscribeArtistList.remove(i);
-                                notifyItemRangeRemoved(i,mSubscribeArtistList.size());
-                                Log.i("TAG", "onResponse: "+mSubscribeArtistList);
-                            }
-                        }
-                        mProgressButton.btnOnCompelet("UnFollowed");
-                    }else if(response.code() == 400){
-                        DialogsUtils.showAlertDialog(context,
-                                false,
-                                "Note",
-                                "You can't unfollow this Subscriber.\n" +
-                                        "Your account is created by this Subscriber referral");
-
-                        mProgressButton.btnOnCompelet("UnFollow");
-
-                    }
-                    //response is not successful
-                  else {
-                        mProgressButton.btnOnCompelet("UnFollow");
-                        DialogsUtils.showResponseMsg(context,false);
-                        }
-                    }//response is not successful
-                //onResponse
-                @Override
-                public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
-                    mProgressButton.btnOnCompelet("UnFollow");
-                    DialogsUtils.showResponseMsg(context,true);
-                }
-            });
-            return null;
-        }
-    }
 
 }

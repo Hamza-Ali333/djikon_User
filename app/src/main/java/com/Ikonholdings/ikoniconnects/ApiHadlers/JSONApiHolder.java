@@ -1,5 +1,6 @@
 package com.Ikonholdings.ikoniconnects.ApiHadlers;
 
+import com.Ikonholdings.ikoniconnects.ResponseModels.AboutAndDisclouserModel;
 import com.Ikonholdings.ikoniconnects.ResponseModels.AllArtistModel;
 import com.Ikonholdings.ikoniconnects.ResponseModels.BookingHistory;
 import com.Ikonholdings.ikoniconnects.ResponseModels.CurrentLiveArtistModel;
@@ -71,6 +72,10 @@ public interface JSONApiHolder {
 
     @GET("socialFrames")
     Call<List<FramesModel>>getFrames();
+
+    //this will return current About of App
+    @GET("about")
+    Call<AboutAndDisclouserModel> getAboutAndDisclosure();
 
     @FormUrlEncoded
     @POST("register")
@@ -214,6 +219,20 @@ public interface JSONApiHolder {
     Call<LoginRegistrationModel> postReferral(
             @Field("refferal") String Code,
             @Field("email") String Email
+    );
+
+    @FormUrlEncoded
+    @POST("subscribeEmailList")
+    Call<Void> postsubscribeEmailListStatus(
+            @Field("status") int Status
+    );
+
+    @FormUrlEncoded
+    @POST()
+    Call<SuccessErrorModel> postReview(
+            @Url String relativeUrl,
+            @Field("review ") String review,
+            @Field("star ") float star
     );
 
 }

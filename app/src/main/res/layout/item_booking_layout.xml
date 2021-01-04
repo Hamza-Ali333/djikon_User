@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="15dp"
+    android:layout_marginTop="8dp"
     app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             app:srcCompat="@drawable/ic_avatar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-             />
+            />
 
         <ProgressBar
             android:id="@+id/progressBarProfile"
@@ -88,7 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-             android:background="@drawable/bg_booking_history"
+            android:background="@drawable/bg_booking_history"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12">
 
@@ -97,11 +97,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="#BDFABF"
+                android:background="@drawable/bg_booking_accepted"
                 android:fontFamily="@font/montserrat"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="TextView"
+                android:text="status"
                 android:textColor="#08BD10"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +109,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/created_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

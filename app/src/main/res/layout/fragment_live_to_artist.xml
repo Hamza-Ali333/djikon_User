@@ -6,27 +6,15 @@
     android:orientation="vertical"
     android:background="@color/colorBlack">
 
-    <RelativeLayout
-        android:id="@+id/search_bar"
-        android:layout_marginTop="6dp"
+    <SearchView
+        android:id="@+id/txt_search"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
-        android:background="#1F1E22">
-
-        <EditText
-            android:id="@+id/txt_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:fontFamily="@font/montserrat"
-            android:hint="Search"
-            android:textColor="@color/colorWhite"
-            android:textColorHint="@color/colorWhite"
-            android:textSize="12sp" />
-
-    </RelativeLayout>
-
+        android:layout_height="40dp"
+        android:fontFamily="@font/montserrat"
+        android:queryHint="Search Artist"
+        android:iconifiedByDefault="false"
+        android:background="@drawable/edt_shape"
+        android:textSize="12sp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -9,6 +9,8 @@ public class SubscribeArtistModel {
     profile_image,
     location;
 
+    private boolean checkState = false;
+
     public int getId() {
         return id;
     }
@@ -27,5 +29,13 @@ public class SubscribeArtistModel {
 
     public String getLocation() {
         return location;
+    }
+
+    public void setCheckState(boolean checkState) {
+        this.checkState = checkState;
+    }
+
+    public boolean getCheckState() {
+        return checkState;
     }
 }

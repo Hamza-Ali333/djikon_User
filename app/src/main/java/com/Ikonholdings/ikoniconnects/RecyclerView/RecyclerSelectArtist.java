@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,13 +25,15 @@ public class RecyclerSelectArtist extends RecyclerView.Adapter<RecyclerSelectArt
 
     private RecyclerSelectArtist.onItemClickListner onItemClickListner;
 
+    private static int LastCheckPosition = -1;
+
     public interface onItemClickListner{
         void add(Integer id);
         void remove(Integer id);
     }
 
     //initailizing
-    public void setOnItemClickListner(RecyclerSelectArtist.onItemClickListner onItemClickListner) {
+    public void setOnItemClickListener(RecyclerSelectArtist.onItemClickListner onItemClickListner) {
         this.onItemClickListner = onItemClickListner;
     }
 
@@ -89,16 +92,31 @@ public class RecyclerSelectArtist extends RecyclerView.Adapter<RecyclerSelectArt
                         }
                     });
         }
+
        holder.txt_Subscribe_Artist_Name.setText(currentItem.getFirstname()+" "+ currentItem.getLastname());
        holder.txt_Subscribe_Artist_Location.setText(currentItem.getLocation());
+       holder.mCheckBox.setChecked(currentItem.getCheckState());
 
        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               if(holder.mCheckBox.isChecked()){
-                   onItemClickListner.add(currentItem.getId());
-               }else {
+
+               //if User Click Last Check item again so Just unchecked it and change the value of the variable
+               if (position == LastCheckPosition) {
+                   //item removed
+                   holder.mCheckBox.setChecked(false);
+                   LastCheckPosition = -1;
                    onItemClickListner.remove(currentItem.getId());
+               } else {
+                   //Item checked
+                   //Same or Change for both
+                   if (LastCheckPosition != -1)
+                   mSubscribeArtistList.get(LastCheckPosition).setCheckState(false);
+
+                   mSubscribeArtistList.get(position).setCheckState(true);
+                   LastCheckPosition = position;
+                   onItemClickListner.add(currentItem.getId());
+                   notifyDataSetChanged();
                }
 
            }

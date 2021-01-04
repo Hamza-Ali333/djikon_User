@@ -34,6 +34,7 @@ import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.CountriesList;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.Ikonholdings.ikoniconnects.GlobelClasses.GetAppAboutAndDisclosure;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.PermissionHelper;
@@ -58,7 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity implements GetAppAboutAndDisclosure.onGetData {
 
     private EditText edt_FirstName, edt_LastName, edt_Email, edt_Phone_No, edt_Address;
     private AutoCompleteTextView edt_Location;
@@ -85,6 +86,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private String Address = "no";
     private String Profile;
     private static boolean isHavePassword;
+
+    private static boolean ALLREADYCLICKED = false;
 
     private String[] serverData;
     private String[] newData;
@@ -125,6 +128,16 @@ public class UserProfileActivity extends AppCompatActivity {
         swt_subcribeState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!ALLREADYCLICKED){
+                    if(swt_subcribeState.isChecked()) {
+                        subscribeToEmailList(1);//on
+                    }else  {
+                        subscribeToEmailList(0);//off
+                    }
+                    ALLREADYCLICKED = true;
+                }else {
+                    Toast.makeText(UserProfileActivity.this, "Already clicked Please wait", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -149,14 +162,16 @@ public class UserProfileActivity extends AppCompatActivity {
         txt_About.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAboutAppDialogue();
+                new GetAppAboutAndDisclosure(UserProfileActivity.this,
+                        true).execute();
             }
         });
 
         txt_Disclosure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDisclusorDialog();
+                new GetAppAboutAndDisclosure(UserProfileActivity.this,
+                        false).execute();
             }
         });
 
@@ -170,14 +185,16 @@ public class UserProfileActivity extends AppCompatActivity {
         img_About.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAboutAppDialogue();
+                new GetAppAboutAndDisclosure(UserProfileActivity.this,
+                        true).execute();
             }
         });
 
         img_Disclosure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDisclusorDialog();
+                new GetAppAboutAndDisclosure(UserProfileActivity.this,
+                        false).execute();
             }
         });
 
@@ -227,44 +244,42 @@ public class UserProfileActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    private void subscribeToEmailList(int status){
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        Call<Void> call = jsonApiHolder.postsubscribeEmailListStatus(status);
 
-    private void openAboutAppDialogue() {
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                ALLREADYCLICKED = false;
+            }
 
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                ALLREADYCLICKED = false;
+                DialogsUtils.showResponseMsg(UserProfileActivity.this,true);
+            }
+        });
+    }
+
+
+    private void openAboutAndDisclouserDialog(String text, String title) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialoge_about_app, null);
 
         ImageView img_close = view.findViewById(R.id.close);
+        TextView txt_title = view.findViewById(R.id.title);
+        TextView txt_text = view.findViewById(R.id.txt_aboutapp);
 
         builder.setView(view);
         builder.setCancelable(false);
 
-        final AlertDialog alertDialog = builder.show();
+        txt_title.setText(title);
+        txt_text.setText(text);
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-
-    }
-
-
-    private void openDisclusorDialog() {
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialoge_disclusore, null);
-
-        ImageView img_close = view.findViewById(R.id.close);
-
-        builder.setView(view);
-        builder.setCancelable(false);
-
-        final AlertDialog alertDialog = builder.show();
+        final AlertDialog alertDialog =  builder.show();
 
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,6 +316,8 @@ public class UserProfileActivity extends AppCompatActivity {
                     SelectedGender =data.getGender();
                     Profile = data.getProfile_image();
                     isHavePassword = data.getPassword();
+
+                    swt_subcribeState.setChecked(data.getEmailList());
 
                     for (int j = 0; j < genderArray.length - 1; j++) {
                         if (genderArray[j].equals(SelectedGender)) {
@@ -613,5 +630,15 @@ public class UserProfileActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onGetAbout(String about) {
+        openAboutAndDisclouserDialog(about, "About App");
+    }
+
+    @Override
+    public void onGetDisclosure(String disclosure) {
+        openAboutAndDisclouserDialog(disclosure,"Disclosure");
     }
 }

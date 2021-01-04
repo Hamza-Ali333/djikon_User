@@ -1049,6 +1049,7 @@ public class SignInActivity extends AppCompatActivity {
                     txt_Error.setText("Email or password is wrong.");
                     txt_Error.setVisibility(View.VISIBLE);
                 }else if(response.code() == 400){
+                    progressDialog.dismiss();
                     ReferralCodeDialog.showReferralCodeDialog(SignInActivity.this,Email,providerId,providerName);
                 }
                 else {

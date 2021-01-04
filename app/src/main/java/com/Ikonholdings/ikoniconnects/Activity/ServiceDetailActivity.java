@@ -21,14 +21,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
+import com.Ikonholdings.ikoniconnects.CustomDialogs.ReviewBottomSheetDialog;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.NetworkChangeReceiver;
 import com.Ikonholdings.ikoniconnects.R;
-import com.Ikonholdings.ikoniconnects.ResponseModels.SingleServiceReviews;
-import com.Ikonholdings.ikoniconnects.ResponseModels.SingleServiceModel;
-import com.Ikonholdings.ikoniconnects.ResponseModels.SliderModel;
 import com.Ikonholdings.ikoniconnects.RecyclerView.RecyclerServiceGallery;
 import com.Ikonholdings.ikoniconnects.RecyclerView.RecyclerServiceReviews;
+import com.Ikonholdings.ikoniconnects.ResponseModels.SingleServiceModel;
+import com.Ikonholdings.ikoniconnects.ResponseModels.SingleServiceReviews;
+import com.Ikonholdings.ikoniconnects.ResponseModels.SliderModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ServiceDetailActivity extends AppCompatActivity {
+public class ServiceDetailActivity extends AppCompatActivity implements ReviewBottomSheetDialog.BottomSheetListener {
 
     //Service Recycler View
     private RecyclerView mGalleryRecyclerView;
@@ -51,7 +52,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private RecyclerView.Adapter mReviewsAdapter;
     private RecyclerView.LayoutManager mReviewsLayoutManager;
     
-    private Button btn_Proceed_To_Pay;
+    private Button btn_Proceed_To_Pay, btn_Give_Review;
 
     private TextView txt_Service_Name,
             txt_Subscriber_Name,
@@ -121,6 +122,15 @@ public class ServiceDetailActivity extends AppCompatActivity {
         new GetServiceDataAndReviews().execute(String.valueOf(serviceId));
 
         singleServiceModleArrayList = new ArrayList<>();
+
+        btn_Give_Review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ReviewBottomSheetDialog bottomSheetDialog = new ReviewBottomSheetDialog();
+                bottomSheetDialog.show(getSupportFragmentManager(),"Review Dialog");
+
+            }
+        });
 
         btn_Proceed_To_Pay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,7 +250,31 @@ public class ServiceDetailActivity extends AppCompatActivity {
         mGalleryRecyclerView = findViewById(R.id.recyclerview_service_gallery);
         mReviewsRecyclerView = findViewById(R.id.reviews_recycler);
         btn_Proceed_To_Pay = findViewById(R.id.btn_proceed_to_pay);
+        btn_Give_Review = findViewById(R.id.give_review);
 
+    }
+
+    @Override
+    public void onReviewSubmit(String Review, Float rating) {
+        jsonApiHolder = retrofit.create(JSONApiHolder.class);
+        Call<SingleServiceModel> call = jsonApiHolder.getSingleServiceData("products/"+serviceId+"/reviews");
+
+        call.enqueue(new Callback<SingleServiceModel>() {
+            @Override
+            public void onResponse(Call<SingleServiceModel> call, Response<SingleServiceModel> response) {
+                if(response.isSuccessful()){
+                    finish();
+                    startActivity(getIntent());
+                }else {
+                    Toast.makeText(ServiceDetailActivity.this, "Something happened wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SingleServiceModel> call, Throwable t) {
+                Toast.makeText(ServiceDetailActivity.this, "Something happened wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private class GetServiceDataAndReviews extends AsyncTask<String,Void, Void> {
@@ -305,6 +339,10 @@ public class ServiceDetailActivity extends AppCompatActivity {
                                 Parent.setVisibility(View.VISIBLE);
                                 loadingDialog.dismiss();
                                 btn_Proceed_To_Pay.setVisibility(View.VISIBLE);
+
+                                if(response.body().getReview_status() == 1){
+                                    btn_Give_Review.setVisibility(View.VISIBLE);
+                                }
                             }
                         });
 

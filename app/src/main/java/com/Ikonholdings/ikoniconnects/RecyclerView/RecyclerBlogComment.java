@@ -76,7 +76,7 @@ public class RecyclerBlogComment extends RecyclerView.Adapter<RecyclerBlogCommen
 
         }
 
-       holder.txt_User_Name.setText(currentItem.user_name);
+       holder.txt_User_Name.setText(currentItem.getUser_name());
        holder.txt_Body.setText(currentItem.getBody());
        holder.txt_Created_Date.setText(currentItem.getCreatedAtDate());
 

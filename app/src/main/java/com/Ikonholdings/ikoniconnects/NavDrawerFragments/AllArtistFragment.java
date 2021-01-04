@@ -1,6 +1,5 @@
 package com.Ikonholdings.ikoniconnects.NavDrawerFragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -109,7 +108,7 @@ public class AllArtistFragment extends Fragment {
                     artistList = response.body();
                     if(artistList.isEmpty()) {
                         DialogsUtils.showAlertDialog(getContext(),false,
-                                "No Artist Found","it's seems like you din't follow any artist now");
+                                "No Artist Found","it's seems like on Artist is registered Yet.!");
                     }
                     else{
                         initializeRecycler(artistList);

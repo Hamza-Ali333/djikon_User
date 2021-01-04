@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.Activity.DjProfileActivity;
 import com.Ikonholdings.ikoniconnects.R;
+import com.Ikonholdings.ikoniconnects.ResponseModels.BookingHistory;
 import com.Ikonholdings.ikoniconnects.ResponseModels.CurrentLiveArtistModel;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -85,7 +86,11 @@ public class RecyclerLiveToArtist extends RecyclerView.Adapter<RecyclerLiveToArt
             }
         });
 
+    }
 
+    public void filterList(List<CurrentLiveArtistModel>  list) {
+        currentLiveArtistModels = list;
+        notifyDataSetChanged();
     }
 
     @Override

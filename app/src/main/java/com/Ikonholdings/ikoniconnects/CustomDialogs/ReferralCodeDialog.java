@@ -103,7 +103,7 @@ public class ReferralCodeDialog {
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.dismiss();
+                if (progressDialog != null) progressDialog.dismiss();
                 alertDialog.dismiss();
             }
         });

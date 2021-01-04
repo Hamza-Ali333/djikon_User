@@ -179,6 +179,25 @@
             app:layout_constraintStart_toStartOf="@+id/guideline11"
             app:layout_constraintTop_toBottomOf="@+id/recyclerview_service_gallery" />
 
+        <Button
+            android:id="@+id/give_review"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/redround_stroke"
+            android:fontFamily="@font/montserrat"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:visibility="visible"
+            android:text="Give Review"
+            android:textAllCaps="false"
+            android:textColor="@color/colorRed"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
+            app:layout_constraintEnd_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toTopOf="@+id/ratingBar" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
     <Button

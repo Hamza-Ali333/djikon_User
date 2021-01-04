@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.Ikonholdings.ikoniconnects.Activity.RegistrationActivity;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
@@ -21,6 +22,7 @@ import com.Ikonholdings.ikoniconnects.R;
 import com.Ikonholdings.ikoniconnects.RecyclerView.RecyclerLiveToArtist;
 import com.Ikonholdings.ikoniconnects.ResponseModels.CurrentLiveArtistModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,10 +34,13 @@ import retrofit2.Retrofit;
 public class CurrentLiveArtistFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerLiveToArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private AlertDialog loadingDialog;
+    private SearchView mSearchView;
+
+    List<CurrentLiveArtistModel> liveArtistModels;
 
     @Nullable
     @Override
@@ -44,8 +49,28 @@ public class CurrentLiveArtistFragment extends Fragment {
        View v =  inflater.inflate(R.layout.fragment_live_to_artist,container,false);
 
         mRecyclerView = v.findViewById(R.id.recyclerViewLiveToArtist);
+        mSearchView = v.findViewById(R.id.txt_search);
+        mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        liveArtistModels = new ArrayList<>();
+
+        mSearchView = v.findViewById(R.id.txt_search);
+        mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         getCurrentLiveArtist();
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                filter(s);
+                return false;
+            }
+        });
 
        return v;
     }
@@ -62,7 +87,7 @@ public class CurrentLiveArtistFragment extends Fragment {
 
                 if(response.isSuccessful()){
 
-                    List<CurrentLiveArtistModel> liveArtistModels = response.body();
+                   liveArtistModels = response.body();
                     if(liveArtistModels.isEmpty()) {
                         //if no data then show dialoge to user
                          DialogsUtils.showAlertDialog(getContext(),false,
@@ -98,6 +123,19 @@ public class CurrentLiveArtistFragment extends Fragment {
         mAdapter = new RecyclerLiveToArtist(liveToArtistList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void filter(String searchStatus){
+        List<CurrentLiveArtistModel> filteredList = new ArrayList<>();
+        String searchArtistName;
+        for(CurrentLiveArtistModel item: this.liveArtistModels) {
+            searchArtistName = item.getFirstname()+" "+item.getLastname();
+            if(searchArtistName.toLowerCase().contains(searchStatus)){
+                filteredList.add(item);
+            }
+        }
+
+        mAdapter.filterList(filteredList);
     }
 
     @Override

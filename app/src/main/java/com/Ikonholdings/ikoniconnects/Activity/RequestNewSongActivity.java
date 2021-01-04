@@ -11,11 +11,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.JSONApiHolder;
 import com.Ikonholdings.ikoniconnects.GlobelClasses.DialogsUtils;
+import com.Ikonholdings.ikoniconnects.GlobelClasses.KeyBoard;
 import com.Ikonholdings.ikoniconnects.R;
 import com.Ikonholdings.ikoniconnects.RecyclerView.RecyclerSelectArtist;
 import com.Ikonholdings.ikoniconnects.ResponseModels.SubscribeArtistModel;
@@ -34,9 +36,8 @@ public class RequestNewSongActivity extends AppCompatActivity implements Recycle
     private RecyclerSelectArtist mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    EditText edt_Song_Name;
-    EditText edt_Requester_Name;
-    Button btn_Submit;
+    private EditText edt_Song_Name, edt_Requester_Name;
+    private Button btn_Submit;
 
     private AlertDialog loadingDialog;
 
@@ -46,39 +47,51 @@ public class RequestNewSongActivity extends AppCompatActivity implements Recycle
     private  Retrofit retrofit;
     private JSONApiHolder jsonApiHolder;
 
+    private ProgressBar loadingSubscriber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_new_song);
-        mRecyclerView =findViewById(R.id.recycler_artist);
+        getSupportActionBar().setTitle("Request A Song");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mRecyclerView = findViewById(R.id.recycler_artist);
+        loadingSubscriber = findViewById(R.id.subscriberProgressbar);
 
         retrofit= ApiClient.retrofit(this);
         new GetSubscriberArtist().execute();
 
          edt_Song_Name = findViewById(R.id.edt_Song_Name);
-         edt_Requester_Name = findViewById(R.id.edt_requester_Name);
+         edt_Requester_Name = findViewById(R.id.reivew);
          btn_Submit = findViewById(R.id.btn_submit);
 
 
         btn_Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(loadingSubscriber.getVisibility() == View.GONE){
 
-                if (!edt_Requester_Name.getText().toString().isEmpty() &&
-                        !edt_Song_Name.getText().toString().isEmpty() && artistId!= null) {
+                    if (!edt_Requester_Name.getText().toString().isEmpty() &&
+                            !edt_Song_Name.getText().toString().isEmpty() && artistId != null) {
+                        KeyBoard.hideKeyboard(RequestNewSongActivity.this);
+                        progressDialog = DialogsUtils.showProgressDialog(RequestNewSongActivity.this,"Posting Request","Please Wait...");
+                        postRequestSong(edt_Requester_Name.getText().toString(), edt_Song_Name.getText().toString());
 
-                    progressDialog = DialogsUtils.showProgressDialog(RequestNewSongActivity.this,"Posting Request","Please Wait...");
-                    postRequestSong(edt_Requester_Name.getText().toString(), edt_Song_Name.getText().toString());
-
-                }else {
-                    if(artistId == null){
-                        Toast.makeText(RequestNewSongActivity.this, "Please Select A Artist.", Toast.LENGTH_SHORT).show();
-                    } else if(edt_Requester_Name.getText().toString().isEmpty()){
-                        edt_Requester_Name.setError("Please enter your name");
                     }else {
-                        edt_Song_Name.setError("Please enter song name");
+                        if(artistId == null){
+                            Toast.makeText(RequestNewSongActivity.this, "Please Select A Artist.", Toast.LENGTH_SHORT).show();
+                        } else if(edt_Requester_Name.getText().toString().isEmpty()){
+                            edt_Requester_Name.setError("Please enter your name");
+                        }else {
+                            edt_Song_Name.setError("Please enter song name");
+                        }
                     }
+                }else {
+                    Toast.makeText(RequestNewSongActivity.this, "Please Wait while loading Artist List", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -118,7 +131,7 @@ public class RequestNewSongActivity extends AppCompatActivity implements Recycle
         mRecyclerView.setHasFixedSize(true);//if the recycler view not increase run time
         mLayoutManager = new LinearLayoutManager(this);
         mAdapter = new RecyclerSelectArtist(ArtistList);
-        mAdapter.setOnItemClickListner(this);
+        mAdapter.setOnItemClickListener(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -126,7 +139,7 @@ public class RequestNewSongActivity extends AppCompatActivity implements Recycle
     @Override
     public void add(Integer id) {
         artistId = id;
-        Toast.makeText(this, "yes", Toast.LENGTH_SHORT).show();
+        KeyBoard.hideKeyboard(RequestNewSongActivity.this);
     }
 
     @Override
@@ -149,27 +162,31 @@ public class RequestNewSongActivity extends AppCompatActivity implements Recycle
             call.enqueue(new Callback<List<SubscribeArtistModel>>() {
                 @Override
                 public void onResponse(Call<List<SubscribeArtistModel>> call, Response<List<SubscribeArtistModel>> response) {
-
+                    loadingSubscriber.setVisibility(View.GONE);
                     if(response.isSuccessful()){
                         mRecyclerView.setVisibility(View.VISIBLE);
 
                         List<SubscribeArtistModel> artistModels = response.body();
                         if(artistModels.isEmpty()){
+
                             DialogsUtils.showAlertDialog(RequestNewSongActivity.this,false,
-                                    "No Subscribed Artist Found","it's seems like you din't follow any artist now");
+                                    "No Subscribed Artist Found",
+                                    "it's seems like you didn't follow any artist!" +
+                                            "\n You can't make request until You follow at least one artist.");
                         }
                         else{
+
                             initializeRecycler(artistModels);
                         }
-
                     }else {
                         DialogsUtils.showResponseMsg(RequestNewSongActivity.this,false);
                     }
+
                 }
 
                 @Override
                 public void onFailure(Call<List<SubscribeArtistModel>> call, Throwable t) {
-                    mRecyclerView.setVisibility(View.VISIBLE);
+                    loadingSubscriber.setVisibility(View.GONE);
                     DialogsUtils.showResponseMsg(RequestNewSongActivity.this,true);
                 }
             });
@@ -182,6 +199,12 @@ public class RequestNewSongActivity extends AppCompatActivity implements Recycle
             super.onPostExecute(aVoid);
             loadingDialog.dismiss();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 

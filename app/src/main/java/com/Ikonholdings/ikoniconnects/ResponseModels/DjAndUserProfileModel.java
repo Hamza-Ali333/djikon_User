@@ -18,6 +18,7 @@ public class DjAndUserProfileModel {
             rate_per_hour,
             online_status;
     private Boolean password;
+    private boolean emailList;
 
     private int allow_message;
     private int allow_booking;
@@ -99,5 +100,9 @@ public class DjAndUserProfileModel {
 
     public Boolean getPassword() {
         return password;
+    }
+
+    public Boolean getEmailList() {
+        return emailList;
     }
 }

@@ -11,5 +11,6 @@
     <color name="fb_btn_color">#3B5998</color>
     <color name="insta_btn_color">#EB3555</color>
     <color name="print_btn_color">#FC0000</color>
+    <color name="colorYellow">#FDE405</color>
 
 </resources>

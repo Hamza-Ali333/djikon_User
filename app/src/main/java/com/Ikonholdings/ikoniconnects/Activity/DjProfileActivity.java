@@ -265,7 +265,7 @@ public class DjProfileActivity extends AppCompatActivity implements FollowUnFoll
         final View view = inflater.inflate(R.layout.dailoge_request_song, null);
 
         EditText edt_Song_Name = view.findViewById(R.id.edt_Song_Name);
-        EditText edt_Requester_Name = view.findViewById(R.id.edt_requester_Name);
+        EditText edt_Requester_Name = view.findViewById(R.id.reivew);
         Button btn_Submit = view.findViewById(R.id.btn_submit);
 
         builder.setView(view);
