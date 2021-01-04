@@ -1,8 +1,12 @@
 package com.Ikonholdings.ikoniconnects.ResponseModels;
 
+import android.content.Intent;
+
 public class BookingHistory {
 
    private  int id;
+   private Integer service_id;
+   private Integer sub_id;
    private String firstname;
    private String lastname;
    private String name;
@@ -14,6 +18,14 @@ public class BookingHistory {
    private String created_at;
    private String end_time;
    private String status;
+
+    public Integer getService_id() {
+        return service_id;
+    }
+
+    public Integer getSub_id() {
+        return sub_id;
+    }
 
     public String getCreated_at() {
         return created_at;

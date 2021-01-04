@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +54,7 @@ public class BookingHistoryFragment extends Fragment {
 
         mRecyclerView = v.findViewById(R.id.recyclerViewBookingHistory);
         mFilterSpinner = v.findViewById(R.id.spinner_status);
+        mFilterSpinner.setVisibility(View.GONE);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
                 R.layout.item_gender_spinner, R.id.genders, statusArray);
@@ -110,11 +112,13 @@ public class BookingHistoryFragment extends Fragment {
                     if(bookingHistoryList.isEmpty()){
                         //if no data then show dialoge to user
                         loadingDialog.dismiss();
+                        mFilterSpinner.setVisibility(View.GONE);
                         mRecyclerView.setVisibility(View.GONE);
                         DialogsUtils.showAlertDialog(getContext(),false,
-                                "No Booking Found","it's seems like you din't done any booking yet");
+                                "No Booking Found","it's seems like you didn't done any booking yet");
                     }
                     else{
+                        mFilterSpinner.setVisibility(View.VISIBLE);
                         initializeRecycler(bookingHistoryList);
                         loadingDialog.dismiss();
                         mRecyclerView.setVisibility(View.VISIBLE);
@@ -131,6 +135,7 @@ public class BookingHistoryFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<BookingHistory>> call, Throwable t) {
+                loadingDialog.dismiss();
                 DialogsUtils.showResponseMsg(getContext(),true);
             }
         });

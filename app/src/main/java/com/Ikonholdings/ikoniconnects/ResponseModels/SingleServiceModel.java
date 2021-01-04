@@ -14,8 +14,13 @@ public class SingleServiceModel {
     private String feature_image;
     private String gallery;
     private String artist_name;
+    private int booking_id;
     private int review_status;
     private float rating;
+
+    public int getBooking_id() {
+        return booking_id;
+    }
 
     public int getReview_status() {
         return review_status;

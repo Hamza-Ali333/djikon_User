@@ -231,8 +231,9 @@ public interface JSONApiHolder {
     @POST()
     Call<SuccessErrorModel> postReview(
             @Url String relativeUrl,
-            @Field("review ") String review,
-            @Field("star ") float star
+            @Field("review") String review,
+            @Field("star") float star,
+            @Field("booking_id") int bookingId
     );
 
 }

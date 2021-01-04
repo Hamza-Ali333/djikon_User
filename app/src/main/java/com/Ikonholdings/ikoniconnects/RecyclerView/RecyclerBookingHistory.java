@@ -1,5 +1,6 @@
 package com.Ikonholdings.ikoniconnects.RecyclerView;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Ikonholdings.ikoniconnects.Activity.DjProfileActivity;
+import com.Ikonholdings.ikoniconnects.Activity.ServiceDetailActivity;
 import com.Ikonholdings.ikoniconnects.ApiHadlers.ApiClient;
 import com.Ikonholdings.ikoniconnects.ResponseModels.BookingHistory;
 import com.Ikonholdings.ikoniconnects.R;
@@ -101,8 +104,27 @@ public class RecyclerBookingHistory extends RecyclerView.Adapter<RecyclerBooking
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(holder.itemView.getContext(), currentItem.getStatus(), Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                if(currentItem.getService_id() != null && currentItem.getService_id() != 0){
+                    Intent i = new Intent(v.getContext(), ServiceDetailActivity.class);
+                    i.putExtra("serviceId",currentItem.getService_id());
+                    v.getContext().startActivity(i);
+                }else {
+                    Intent i = new Intent(v.getContext(), DjProfileActivity.class);
+                    i.putExtra("id", currentItem.getSub_id());
+                    v.getContext().startActivity(i);
+                }
+
+            }
+        });
+
+        holder.img_booker_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), DjProfileActivity.class);
+                i.putExtra("id", currentItem.getSub_id());
+                v.getContext().startActivity(i);
+
             }
         });
 

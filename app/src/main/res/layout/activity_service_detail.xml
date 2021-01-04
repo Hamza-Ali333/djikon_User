@@ -189,7 +189,7 @@
             android:fontFamily="@font/montserrat"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:visibility="visible"
+            android:visibility="gone"
             android:text="Give Review"
             android:textAllCaps="false"
             android:textColor="@color/colorRed"

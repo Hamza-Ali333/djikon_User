@@ -30,6 +30,7 @@ import com.Ikonholdings.ikoniconnects.RecyclerView.RecyclerServiceReviews;
 import com.Ikonholdings.ikoniconnects.ResponseModels.SingleServiceModel;
 import com.Ikonholdings.ikoniconnects.ResponseModels.SingleServiceReviews;
 import com.Ikonholdings.ikoniconnects.ResponseModels.SliderModel;
+import com.Ikonholdings.ikoniconnects.ResponseModels.SuccessErrorModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class ServiceDetailActivity extends AppCompatActivity implements ReviewBo
 
     private ConstraintLayout Parent;
 
-    private String
+    private static String
             serviceImage,
             serviceName,
             subscriber_Name,
@@ -77,7 +78,10 @@ public class ServiceDetailActivity extends AppCompatActivity implements ReviewBo
             price_type,
             description,
             Gallery;
-    private int serviceId;
+
+    private static int serviceId,
+    booking_id;
+
     private float totalRating;
 
     private int artistId;
@@ -257,24 +261,28 @@ public class ServiceDetailActivity extends AppCompatActivity implements ReviewBo
     @Override
     public void onReviewSubmit(String Review, Float rating) {
         jsonApiHolder = retrofit.create(JSONApiHolder.class);
-        Call<SingleServiceModel> call = jsonApiHolder.getSingleServiceData("products/"+serviceId+"/reviews");
+        Call<SuccessErrorModel> call = jsonApiHolder.postReview("products/"+serviceId+"/reviews",
+                Review,
+                rating,
+                booking_id);
 
-        call.enqueue(new Callback<SingleServiceModel>() {
-            @Override
-            public void onResponse(Call<SingleServiceModel> call, Response<SingleServiceModel> response) {
-                if(response.isSuccessful()){
-                    finish();
-                    startActivity(getIntent());
-                }else {
-                    Toast.makeText(ServiceDetailActivity.this, "Something happened wrong", Toast.LENGTH_SHORT).show();
-                }
-            }
+       call.enqueue(new Callback<SuccessErrorModel>() {
+           @Override
+           public void onResponse(Call<SuccessErrorModel> call, Response<SuccessErrorModel> response) {
+               if(response.isSuccessful()){
+                   finish();
+                   startActivity(getIntent());
+               }else {
+                   Toast.makeText(ServiceDetailActivity.this, "Something happened wrong", Toast.LENGTH_SHORT).show();
+               }
+           }
 
-            @Override
-            public void onFailure(Call<SingleServiceModel> call, Throwable t) {
-                Toast.makeText(ServiceDetailActivity.this, "Something happened wrong", Toast.LENGTH_SHORT).show();
-            }
-        });
+           @Override
+           public void onFailure(Call<SuccessErrorModel> call, Throwable t) {
+               Toast.makeText(ServiceDetailActivity.this, "Something happened wrong", Toast.LENGTH_SHORT).show();
+           }
+       });
+
     }
 
     private class GetServiceDataAndReviews extends AsyncTask<String,Void, Void> {
@@ -309,6 +317,8 @@ public class ServiceDetailActivity extends AppCompatActivity implements ReviewBo
 
                         btn_Proceed_To_Pay.setText("Proceed To Pay " + price + "$");
                         Gallery = response.body().getGallery();
+
+                        booking_id = response.body().getBooking_id();
 
                         reviewsModels = response.body().getSingleServiceReviews();
 
