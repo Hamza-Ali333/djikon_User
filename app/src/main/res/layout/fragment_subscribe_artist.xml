@@ -37,6 +37,9 @@
 
     <TextView
         android:id="@+id/msg"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

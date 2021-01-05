@@ -1,7 +1,5 @@
 package com.Ikonholdings.ikoniconnects.ResponseModels;
 
-import android.content.Intent;
-
 public class BookingHistory {
 
    private  int id;
